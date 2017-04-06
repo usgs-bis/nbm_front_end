@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="application/javascript">
+        var homePath = "";
+    </script>
+    <script src="javascripts/third_party/jquery-1.11.3/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="javascripts/application.js" ></script>
+
+    <script type="text/javascript" src="javascripts/third_party/jquery-ui-1.11.4.custom/jquery-ui.min.js" ></script>
+    <script type="text/javascript" src="javascripts/third_party/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js" ></script>
+
+    <script type="text/javascript" src="javascripts/third_party/bootstrapcdn/bootstrap.min.js" ></script>
+
+    <script src="https://www.w3schools.com/lib/w3data.js"></script>
+
+    <link rel="stylesheet" href="javascripts/third_party/leaflet.draw/leaflet.draw.css" >
+    <link rel="stylesheet" href="stylesheets/application.css" >
+    <link rel="stylesheet" href="stylesheets/bcb_mobile.css" >
+    <link rel="stylesheet" href="stylesheets/errors.css" >
+    <link rel="stylesheet" href="stylesheets/main.css" >
+    <link rel="stylesheet" href="stylesheets/mobile.css" >
+    <link rel="stylesheet" href="stylesheets/nbm_css.css" >
+    <link rel="stylesheet" href="stylesheets/styles.nonmin.css" >
+    <link rel="stylesheet" href="stylesheets/third_party/amcharts/plugins/export/export.css" >
+    <link rel="stylesheet" href="stylesheets/third_party/bootstrapcdn/bootstrap.min.css" >
+    <link rel="stylesheet" href="stylesheets/third_party/bootstrapcdn/font-awesome.min.css" >
+    <link rel="stylesheet" href="stylesheets/third_party/jquery-ui-1.11.4.custom/jquery-ui.min.css" >
+    <link rel="stylesheet" href="stylesheets/third_party/leaflet-1.0.1/leaflet.css" >
+    <link rel="stylesheet" href="stylesheets/third_party_overrides.css" >
+
+    <link rel="stylesheet" href="stylesheets/bcb.css" >
+
+    <title>Biogeography</title>
+</head>
+<body>
+<div class="container">
+    <div id="map"></div>
+    <div class="not-map">
+        <div id="mapTopLeft" style="position:absolute;left:0;top:0;">
+            <div id="header" class="overMap menu-vis-id unit_info" style="float:left;position:relative;z-index:1001;overflow:hidden;">
+                <img src="images/usgs/usgs-logo-transparent.png" alt="usgs-logo" style="width:178px;height:72px;"/>
+            </div>
+            <div id="mapControlContainer" style="display:inline-block;margin-left:44px;">
+                <a id="baseMapContainer" class="unit_info overMap mapControl grayLink" tabindex="0" role="button" data-toggle="popover">
+                    <i class="fa fa-globe" aria-hidden="true" style="font-size:18px;vertical-align:middle;"></i>&nbsp;Base Maps
+                </a>
+            </div>
+        </div>
+        <div id="unit_info_left"  style="position:absolute;">
+            <div class="unit_info unit_info_main" style="">
+                <div class="unit_info_header">
+                    <div class="panelTitle" style="display:block;">
+                        <h1 id="bioScapeTitle" class="panelTitle" style="display:inline;"></h1>
+                        <span id="userHelpLink" data-toggle="modal" data-target="#disclaimerModal" style="cursor:pointer;white-space:nowrap;">
+                                <i class="fa fa-circle fa-first" aria-hidden="true" style="margin-right:-17px;"></i>
+                                <i class="fa fa-question-circle fa-second" aria-hidden="true"></i>
+                            </span>
+                    </div>
+                    <div id="bioScapeDetails"></div>
+                </div>
+                <div class="unit_info_content_main">
+                    <div id="bioScape" class="menu-layers"></div>
+                    <div class="buttonBar">
+                        <div id="mobileBioScapeLegend">
+                            <button type="button" class="btn displayLegendLink disabled">
+                                <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
+                                <span style="font-weight: bold;">Legend</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="mobileBioScapeLegendContainer"></div>
+                </div>
+            </div>
+            <div id="bioScapeSelector" class="unit_info bottomBar" style="height:30px;">
+                <div class="buttonBar">
+                    <div id="bioScapeLegend" style="display:none;">
+                        <button type="button" class="btn displayLegendLink disabled" data-toggle="tooltip" data-placement="top"
+                                title="Show the legend">
+                            <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
+                            <span style="font-weight: bold;">Legend</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="unit_info unit_info_control left">
+                <div id="unit_info_left_control">
+                    <span id="ui_left_control_span"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+        <div id="mapBottomLeft">
+            <div id="mapScaleContainer" class="unit_info overMap mapControl">
+                <div id="mapScale"></div>
+            </div>
+            <div id="mouseCoordinates" class="unit_info overMap mapControl">
+                <span style="font-weight:bold;">Lat</span>:<span id="latCoordinates"></span>,
+                <span style="font-weight:bold;">Lng</span>:<span id="lngCoordinates"></span>
+            </div>
+        </div>
+        <div id="unit_info_right" style="position:absolute;">
+            <div id="unit_info_right_inner" class="unit_info unit_info_main" style="height: calc(100% - 25px);z-index:1002;">
+                <div id="synthesisCompositionBody" class="unit_info_content_main"></div>
+            </div>
+            <div id="synthCompBottomBar" class="unit_info bottomBar" style="height:25px;"></div>
+            <div class="unit_info unit_info_control right">
+                <div id="unit_info_right_control">
+                    <span id="ui_right_control_span"><i class="fa fa-chevron-left" aria-hidden="true"></i></span>
+                </div>
+            </div>
+        </div>
+        <div id="enlargedBAPContainer" class="chartContainer">
+            <div id="closeOverlay" class="closeChart" title="Close display">X</div>
+            <div id="enlargedBAPHtmlContainer" style="display:block;width:100%;height:100%;float:left;"></div>
+        </div>
+        <div class="leaflet-control-attribution leaflet-control menu attr" style="z-index:1003;">
+            <a style="cursor: pointer;" class="info-link" data-toggle="modal" data-target="#attrModal"><div class="menu-button"><div class="i"><i class="fa fa-info"></i></div></div></a>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="disclaimerModalLabel">
+    <div class="leftPaneHelpBox helpBox"><div>1</div></div>
+    <div class="mapHelpBox helpBox"><div>2</div></div>
+    <div class="rightPaneHelpBox helpBox"><div>3</div></div>
+    <div class="modal-dialog">
+        <div id="disclaimerContent" class="modal-content" style="">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="disclaimerModalLabel">How to use this tool</h4>
+            </div>
+            <div class="modal-body">
+                <div id="userHelp">
+                    <div>
+                        <span class="arrow left_arrow">&nbsp;</span>
+                        <span class="user_help_number">1</span> ‘Regional Summary’ designates the type of spatial boundary to be used in your analysis.
+                        The other expandable sections represent the data themes you can display on the map.
+                        Expand a data theme to view individual datasets under that theme.
+                    </div>
+                    <div>
+                        <span class="user_help_number">2</span> Select a location on the map to retrieve a summary for the region. The region's spatial boundary will be shown.
+                    </div>
+                    <div>
+                        <span class="user_help_number">3</span> The summary for your selected region is generated. It is available for review and export in the analysis pane.
+                        <span class="arrow right_arrow">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="modal fade" id="attrModal" tabindex="-1" role="dialog" aria-labelledby="attrModalLabel">
+    <div class="modal-dialog">
+        <div id="attrContent" class="modal-content" style="overflow-y: auto;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="attrModalLabel">Attributions</h4>
+            </div>
+            <div class="modal-body">
+                <div class="attrDiv">
+                    <strong>Mapping API: </strong><a href="http://leafletjs.com" title="A JS library for interactive maps" target="_blank">Leaflet</a>.
+                </div>
+                <div class="attrDiv">
+                    <strong>Black & white tiles: </strong><a href="http://stamen.com" target="_blank">Stamen Design</a>, under
+                    <a href="http://creativecommons.org/licenses/by/3.0" target="_blank">CC BY 3.0</a>. Data by
+                    <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a>, under
+                    <a href="http://www.openstreetmap.org/copyright" target="_blank">ODbL</a>.
+                </div>
+                <div class="attrDiv">
+                    <strong>Satellite tiles: </strong><a href="https://www.mapbox.com/about/maps/" target="_blank">Mapbox</a>. Data by
+                    <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a>, under
+                    <a href="http://www.openstreetmap.org/copyright" target="_blank">ODbL</a>.
+                </div>
+                <div class="attrDiv">
+                    <strong>Biogeography interface </strong>heavily influenced by: UW-Macrostrat project
+                    <a href="https://github.com/UW-Macrostrat/gmna-app" target="_blank">on Github</a>.
+                </div>
+                <div class="attrDiv">
+                    <strong>NatureServe Species Data: </strong>Natureserve. 2008. NatureServe Web Service. Arlington, VA. U.S.A. Available
+                    <a href="http://services.natureserve.org" target="_blank">http://services.natureserve.org</a>.
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="tempPopupMessage"></div>
+
+<div id="mySpinner" style="display: none;"><img alt="spinner" src="images/ajax-loader.gif" /></div>
+<div id="myDialog" style="display: none;"></div>
+<div id="legendDialog" style="display: none;"><button type="button" class="btn narrowLegend" onclick="narrowLegend();"><span>Narrow Legend</span></button>&nbsp;<span class="legendMessage"></span></div>
+<div id="identifyDialog" style="display: none;line-height: normal;"></div>
+
+<script type="text/javascript" src="javascripts/third_party/amcharts/amcharts.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/pie.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/export.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/blob.js/blob.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/fabric.js/fabric.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/FileSaver.js/FileSaver.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/jszip/jszip.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/pdfmake/pdfmake.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/pdfmake/vfs_fonts.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/plugins/export/libs/xlsx/xlsx.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/serial.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/themes/light.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/amcharts/xy.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/canvg/rgbcolor.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/canvg/StackBlur.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/canvg/canvg.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/clipboard.js/clipboard.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/es6-promise/es6-promise.auto.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/html2canvas/html2canvas.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/html2canvas/html2canvas.svg.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/jsrender/jsrender.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/libs.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/pdfmake/pdfmake.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/pdfmake/vfs_fonts.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/proj4js-2.3.15/proj4.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/rbush-2.0.1/rbush.min.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/topojson/topojson-client@2.1.0.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/topojson/topojson-server@2.0.0.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/topojson/topojson-simplify@2.0.0.js" ></script>
+
+<script type="text/javascript" src="javascripts/nbm/utilities.js" ></script>
+<script type="text/javascript" src="javascripts/bioscape/submit.js" ></script>
+<script type="text/javascript" src="javascripts/bioscape_scripts.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/SynthesisComposition.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/actions/ActionHandler.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/actions/ActionHandlerHelper.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/actions/DrawPolygonActionHandler.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/actions/GetFeatureActionHandler.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/actions/GetFeatureGeojsonActionHandler.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/actions/IdentifyActionHandler.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/baps/BAP.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/baps/HeaderBAP.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScape.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScapeGroupBase.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScapeLayerBase.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScapeBaseMapGroup.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScapeBaseMapLayer.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScapeGroup.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/BioScapeLayer.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/bioScapeLegends.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/bioScape/LayerHtmlControl.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/contextReport.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/WidgetHelper.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/map/MapLayerBase.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/map/esriMapLayers.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/map/FileDownloader.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/map/TileMapLayers.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/map/wmsMapLayers.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/panelControl.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/PDF.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/services/AmChartsHelper.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/services/BioScapeParser.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/services/FishChartHelper.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/services/HtmlToPdfMakeParser.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/services/Initializer.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/services/StateKeeper.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/Widget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/BoxAndWhiskerWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/CnrMatrixWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/EcosystemProtectionWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/HierarchyByPixelWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/HierarchyTableWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/SpeciesProtectionWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/SpeciesRichnessWidget.js" ></script>
+<script type="text/javascript" src="javascripts/nbm_scripts.js" ></script>
+
+<script type="text/javascript" src="javascripts/third_party/leaflet-1.0.1/leaflet-src.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/leaflet.draw/leaflet.draw.js" ></script>
+<script type="text/javascript" src="javascripts/third_party/leaflet.wms-gh-pages/leaflet.wms.js" ></script>
+
+<script type="text/javascript" src="javascripts/third_party/esri-leaflet-v2.0.4/esri-leaflet.js" ></script>
+
+<script type="text/javascript" src="javascripts/nbm/map/leafletProxyObjects.js" ></script>
+
+<script type="text/javascript" src="javascripts/nbm/index.js" ></script>
+
+<!--<div w3-include-html="javascripts/templates/allRenderTemplates.html"></div>-->
+
+<!--<script>-->
+    <!--w3IncludeHTML();-->
+<!--</script>-->
+
+<script id="bioScapeLayerLegendTemplate" type="text/x-jsrender">
+    <div style="padding: 5px 0;">
+        <div class="legendTitle">{{:title}}</div>
+        <div style="margin-left: .5em;">
+            {{for legendItems}}
+                <div>
+                <img class="legendImg" src="{{:imageUrl}}" alt="legend-key"/>
+                <span class="legendLabel">{{:label}}</span>
+                <br>
+                </div>
+            {{/for}}
+        </div>
+    </div>
+</script>
+
+<script id="bioScapeDetailsTemplate" type="text/x-jsrender">
+    <div>
+        {{include summaryData tmpl="#summaryTemplate"/}}
+    </div>
+</script>
+
+<script id="bioScapeGroupTemplate" type="text/x-jsrender">
+    <div class="contextHeader layerExpander" data-section="{{:divId}}">
+        <span id="{{:divId}}Control">&#9658;</span>
+        {{:title}}
+    </div>
+    <div id="{{:divId}}" class="layerSection">
+        {{for layers tmpl="#bioScapeLayerTemplate" /}}
+    </div>
+</script>
+
+<script id="bioScapeBaseMapTemplate" type="text/x-jsrender">
+    {{for layers}}
+        <div class="contextHeader">
+            <button type="button" id="{{:id}}" class="baseMapSelect btn btn-default {{:active}}" href="#" style="font-size:18px;">
+                {{if thumbnailImage}}
+                    <img src="{{:thumbnailImage}}" alt="{{:id}}-preview" height="35">
+                {{/if}}
+                {{:title}}
+            </button>
+        </div>
+    {{/for}}
+</script>
+
+<script id="bioScapeLayerTemplate" type="text/x-jsrender">
+    <div class="layer" id="{{:divId}}">
+        <div class="layerTitle">
+            <span>{{:title}}</span>
+            <span style="white-space:nowrap">
+                <i class="fa fa-circle fa-first" aria-hidden="true"></i>
+                <i class="fa fa-info-circle fa-second layerMoreInfo" aria-hidden="true" data-layer="{{:divId}}"></i>
+            </span>
+        </div>
+        {{if !disableControl}}
+            <i class="fa {{:toggle}} layer-control"
+            {{if zoomLimits}}
+                title=""
+            {{/if}}
+            ></i>
+        {{/if}}
+        {{if opacitySettings}}
+            <div class="sliderContainer" style="text-align:right;display:{{:opacitySettings.displayCss}};">
+                <label for="{{:divId}}Slider">Opacity:</label>
+                <input id="{{:divId}}Slider" class="opacitySlider" type="range" min="0" max="1" value="{{:opacitySettings.opacity}}" step=".05" style="width:50%;display:inline;vertical-align:middle;"/>
+            </div>
+        {{/if}}
+        {{if timeControl}}
+            <div class="sliderContainer" id="{{:divId}}TimeControl" style="text-align: right; display: none;"></div>
+        {{/if}}
+    </div>
+</script>
+
+<script id="bioScapeInfoDiv" type="text/x-jsrender">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="generalModalLabel">{{:title}}</h4>
+    </div>
+    <div class="modal-body" style="font-size:16px;">
+        {{if body}}
+            {{:body}}
+            {{if citation}}
+                <div style="margin-top:10px;font-size:14px;"><strong>Citation: </strong>{{:citation}}</div>
+            {{/if}}
+        {{else}}
+            This item is not currently documented in ScienceBase. You may contact the Biogeographic Characterization Branch
+            to request this information: <a href="mailto:bcb@usgs.gov" target="_blank">bcb@usgs.gov</a>
+        {{/if}}
+    </div>
+    <div class="modal-footer" style="text-align:left;">
+        {{if url}}
+            <strong>ScienceBase Url: </strong>
+            <a target="_blank" href="{{:url}}">{{:url}}</a>
+        {{/if}}
+    </div>
+</script>
+
+<script id="emptyTemplate" type="text/x-jsrender"></script>
+
+<script id="bioScapeEsriMetadataTemplate" type="text/x-jsrender">
+    {{if layerInfo}}
+        <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeSbInfo')">
+            <span id="bioScapeSbInfoControl">&#9660;</span>
+            <span>Layer Level Metadata:</span>
+        </div>
+        <div id="bioScapeSbInfo" class="dropDownContainer">
+            {{for layerInfo}}
+                <span class="metadataTitle">Layer Name</span>
+                <div class="dialogData">{{:name}}</div>
+                <span class="metadataTitle">Description</span>
+                <div class="dialogData">{{:description}}</div>
+            {{/for}}
+        </div>
+    {{/if}}
+    <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeServiceInfo')">
+        <span id="bioScapeServiceInfoControl">&#9660;</span>
+        <span>Service Level Metadata:</span>
+    </div>
+    <div id="bioScapeServiceInfo" class="dropDownContainer">
+        <span class="metadataTitle">Service Description</span>
+        <div class="dialogData">{{:serviceDescription}}</div>
+        <span class="metadataTitle">Map Name</span>
+        <div class="dialogData">{{:mapName}}</div>
+        <span class="metadataTitle">Description</span>
+        <div class="dialogData">{{:description}}</div>
+        <span class="metadataTitle">Copyright Text</span>
+        <div class="dialogData">{{:copyrightText}}</div>
+        <span class="metadataTitle">Document Info</span>
+        <div class="dialogData well">
+            <span class="metadataTitle">Title</span>
+            <div class="dialogData">{{:documentInfo.Title}}</div>
+            <span class="metadataTitle">Author</span>
+            <div class="dialogData">{{:documentInfo.Author}}</div>
+            <span class="metadataTitle">Comments</span>
+            <div class="dialogData">{{:documentInfo.Comments}}</div>
+            <span class="metadataTitle">Subject</span>
+            <div class="dialogData">{{:documentInfo.Subject}}</div>
+        </div>
+    </div>
+</script>
+
+<script id="bioScapeWMSMetadataTemplate" type="text/x-jsrender">
+    <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeSbInfo')">
+        <span id="bioScapeSbInfoControl">&#9660;</span>
+        <span>Layer Level Metadata:</span>
+    </div>
+    <div id="bioScapeSbInfo" class="dropDownContainer">
+    {{if layerInfo}}
+        {{for layerInfo}}
+            <span class="metadataTitle">Layer Name</span>
+            <div class="dialogData">{{:name}}</div>
+            <span class="metadataTitle">Layer Title</span>
+            <div class="dialogData">{{:title}}</div>
+            <span class="metadataTitle">Abstract</span>
+            <div class="dialogData">{{:abstract}}</div>
+        {{/for}}
+     {{/if}}
+    </div>
+    <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeServiceInfo')">
+        <span id="bioScapeServiceInfoControl">&#9660;</span>
+        <span>Service Level Metadata:</span>
+    </div>
+    <div id="bioScapeServiceInfo" class="dropDownContainer">
+        <div id="bioScapeServiceInfo">
+            <span class="metadataTitle">Title</span>
+            <div class="dialogData">{{:serviceTitle}}</div>
+            <span class="metadataTitle">Abstract</span>
+            <div class="dialogData">{{:abstract}}</div>
+        </div>
+    </div>
+</script>
+
+<script id="timeSliderTemplate" type="text/x-jsrender">
+    %{--<label id="{{:layerId}}TimeSliderLabel" {{if disableSlider}}class="disabled"{{/if}} for="{{:layerId}}TimeSlider">Time Control:</label>&nbsp;--}%
+    <div style="width:100%;text-align:center;line-height:initial;" id="{{:layerId}}YearVal">
+        Current {{:stepLabel}}: {{:defaultDate}}
+    </div>
+    <input id="{{:layerId}}TimeSlider" class="opacitySlider" type="range" {{if disableSlider}}disabled{{/if}} min="{{:start}}"
+        max="{{:end}}" step="1" style="width:100%;display:inline;vertical-align:middle;" value="{{:default}}" />
+
+    %{--<div style="width:100%; text-align:center;" id="{{:layerId}}YearVal">--}%
+        %{--{{:stepLabel}} range from {{:startDate}} to {{:endDate}}--}%
+    %{--</div>--}%
+    {{if !disableSlider}}
+        <div style="width:100%">
+            <div class="sliderLabelLeft">{{:startDate}}</div>
+            <div class="sliderLabelCenter">{{:stepLabel}} Range</div>
+            <div class="sliderLabelRight">{{:endDate}}</div>
+        </div>
+        <div style="clear:both;"></div>
+    {{/if}}
+    %{--<label for="{{:layerId}}TimeSelector">Layer:</label>&nbsp;--}%
+    %{--<select style="color: black;" id="{{:layerId}}TimeSelector">--}%
+        %{--{{for layers}}--}%
+            %{--<option style="color: white;" {{if selected}}selected{{/if}} val="{{:name}}">{{:name}}</option>--}%
+        %{--{{/for}}--}%
+    %{--</select>--}%
+</script>
+
+<script id="onMapClickToggleButton" type="text/x-jsrender">
+    <a id="toggleClick" class="unit_info overMap mapControl grayLink" tabindex="0" role="button" data-toggle="tooltip" data-placement="bottom"
+        title="Click here to switch functionality when map is clicked.">
+        On map click: <span id="toggleClickType">{{:handler}}</span>
+    </a>
+</script>
+
+<script id="downloadButton" type="text/x-jsrender">
+    <a id="downloadFile" class="unit_info overMap mapControl grayLink" tabindex="0" role="button" data-toggle="popover" data-placement="bottom">
+        <i class="fa fa-download" aria-hidden="true" style="font-size:18px;vertical-align:middle;"></i>&nbsp;Download
+    </a>
+</script>
+
+<div id="modalContainer">
+    <div class="modal fade" id="generalModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-mdm">
+            <div id="generalModalContent" class="modal-content">
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<script id="infoDivTemplate" type="text/x-jsrender">
+    <div class="modal fade" id="{{:id}}" tabindex="-1" role="dialog" aria-labelledby="{{:id}}Label">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="{{:id}}Label">{{:title}}</h4>
+                </div>
+                <div class="modal-body">
+                    {{:description}}
+                </div>
+                <div class="modal-footer" style="text-align:left;">
+                    ScienceBase Item: <a target="_blank" href="{{:bapReference}}">{{:bapReference}}</a>
+                    <div>Last updated: {{:lastUpdated}}</div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</script>
+
+<script id="identifyResultsTemplate" type="text/x-jsrender">
+    {{if results.length > 0}}
+        {{for results}}
+            <div class="identifyResult layerExpander contextHeader" data-section="identifyResult{{:#index}}">
+                <span id="identifyResult{{:#index}}Control">
+                    {{if #index === 0}}
+                        &#9660;
+                    {{else}}
+                        &#9658;
+                    {{/if}}
+                </span>
+                {{:layerName}}{{if name}}: {{:name}}{{/if}}
+            </div>
+            <div id="identifyResult{{:#index}}" class="layerSection dropDownContainer" {{if #index === 0}}style="display:block;"{{/if}}>
+                <div style="table">
+                    <table style="width:100%;font-size:13px;">
+                        <tbody>
+                            {{include geojson.properties tmpl="#getObjectPropertiesTemplate"/}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {{/for}}
+    {{else}}
+        No results were found for these coordinates. Make sure at least one layer is turned on.
+    {{/if}}
+</script>
+
+<script id="getObjectPropertiesTemplate" type="text/x-jsrender">
+    {{props #data}}
+        <tr class="tableRow">
+            <td>{{>key}} </td>
+            <td>{{:prop}}</td>
+        </tr>
+    {{else}}
+    {{/props}}
+</script>
+
+<script id="betaBannerTemplate" type="text/x-jsrender">
+    <span id="beta-banner" data-toggle="modal" data-target="#disclaimerModal">beta</span>
+</script>
+
+<script id="downloadPopoverTemplate" type="text/x-jsrender">
+    {{if layers.length === 0}}
+        Please select a layer for the map.
+    {{else zoomedOut}}
+        Download not available at this zoom level. Try zooming in closer.
+    {{else}}
+        {{for layers}}
+
+            {{if !mapLayer.downloader}}
+                <button type="button" id="{{:id}}" class="layerDownload btn btn-default disabled" data-toggle="tooltip" title="Download is unavailable for this layer.">
+            {{else}}
+                <button type="button" id="{{:id}}" class="layerDownload btn btn-default">
+            {{/if}}
+                {{: section.title}}: {{:title}}</button>
+        {{/for}}
+    {{/if}}
+</script>
+
+<script id="userHelpTemplate" type="text/x-jsrender">
+    {{if isBetaEnvironment }}
+        <div style="margin-top:10px;font-weight:bold;font-size:18px;text-align:center;">How to use this analysis tool:</div>
+    {{/if}}
+    <div>
+        <span class="arrow left_arrow">&nbsp;</span>
+        <span class="user_help_number">1</span> ‘Regional Summary’ designates the type of spatial boundary to be used in your analysis.
+        The other expandable sections represent the data themes you can display on the map.
+        Expand a data theme to view individual datasets under that theme.
+    </div>
+    <div>
+        <span class="user_help_number">2</span> Select a location on the map to retrieve a summary for the region. The region's spatial boundary will be shown.
+    </div>
+    <div>
+        <span class="user_help_number">3</span> The summary for your selected region is generated. It is available for review and export in the analysis pane.
+        <span class="arrow right_arrow">&nbsp;</span>
+    </div>
+</script>
+
+<script id="summaryTemplate" type="text/x-jsrender">
+    {{if shortSummary}}
+        <div class="{{:toggleId}}ShortVersion inline">
+            <span style="line-height: 18px;">{{:shortSummary}}</span>
+            <br>
+            <div onclick="$('.{{:toggleId}}ShortVersion').hide();$('.{{:toggleId}}LongVersion').show();" class="descriptionToggle">more...</div>
+        </div>
+    {{/if}}
+    <div class="{{:toggleId}}LongVersion inline" style="display:{{:longDisplayCss}};">
+        <span class="summary" style="line-height: 18px;">{{:summary}}</span>
+        {{if webLinks}}
+            <div class="generalInfo">
+                <span class="webLinksLabel summaryHeader">Web Links:</span>
+                <span>
+                    <ul>
+                        {{for webLinks}}
+                            <li>
+                                <a class="webLink grayLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:title}}</a>
+                            </li>
+                        {{/for}}
+                    </ul>
+                </span>
+            </div>
+        {{/if}}
+        {{if shortSummary}}
+            <div onclick="$('.{{:toggleId}}LongVersion').hide();$('.{{:toggleId}}ShortVersion').show();" class="descriptionToggle">less...</div>
+        {{/if}}
+    </div>
+</script>
+
+<script id="speciesJsonLoadingTemplate" type="text/x-jsrender">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="generalModalLabel">{{:title}}</h4>
+    </div>
+    <div id="speciesJsonBody" class="modal-body">
+        Loading...
+    </div>
+</script>
+
+<script id="speciesJsonResultsTemplate" type="text/x-jsrender">
+    <a class="coordinates" target="_blank" href="{{:url}}" style="margin:0;">[Full Species JSON]</a>
+    <div style="clear:both;"></div>
+    {{include tmpl="#ecosResultsTemplate" /}}
+    {{include tmpl="#itisResultsTemplate" /}}
+    {{include tmpl="#nsResultsStuff" /}}
+    {{include tmpl="#sbResultsTemplate" /}}
+    {{include tmpl="#wrmsResultsTemplate" /}}
+</script>
+
+<script id="ecosResultsTemplate" type="text/x-jsrender">
+    {{if ecosStuff.results && !ecosStuff.error}}
+        <div class="dialogHeader ">ECOS:</div>
+        <div class="dialogData">
+                Species Detail:
+        {{props ecosStuff.results.SPECIES_DETAIL}}
+        <br>
+            <span style="margin-left: 1em;">{{:key}}: {{:prop}}</span>
+            {{/props}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="itisResultsTemplate" type="text/x-jsrender">
+    {{if itisStuff.hierarchyList}}
+        <div class="dialogHeader">ITIS:</div>
+        <div class="dialogData">
+            Taxonomic Hierarchy:
+            {{for itisStuff.hierarchyList}}
+                <br>
+                <span style="margin-left: {{:(#index + 1) * 10}}px;">{{:rankName onError=''}}: {{:taxonName onError=''}}</span>
+            {{/for}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="nsResultsStuff" type="text/x-jsrender">
+    {{if nsStuff && !nsStuff.error}}
+        <div class="dialogHeader">NatureServe:</div>
+        <div class="dialogData">
+            <span>Species Code: {{:nsStuff.code}}</span>
+            <br>
+            <span>Global Rank: {{:nsStuff.rank}}</span>
+        </div>
+    {{/if}}
+</script>
+
+<script id="sbResultsTemplate" type="text/x-jsrender">
+    {{if sbStuff && !sbStuff.error}}
+        <div class="dialogHeader">Sciencebase:</div>
+        <div class="dialogData">
+            Item ID: {{:sbStuff.id}}
+            <br>
+            Last Updated: {{:sbStuff.provenance.lastUpdated}}
+            <br>
+            Web Links:
+            <br>
+            {{for sbStuff.webLinks}}
+                <a style="margin-left: 1em;" href="{{:uri}}" target="_blank">{{:title}}</a><br>
+            {{/for}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="wrmsResultsTemplate" type="text/x-jsrender">
+    {{if wrmsStuff && !wrmsStuff.error}}
+        <div class="dialogHeader">WoRMS:</div>
+        <div class="dialogData">
+            Aphia ID: {{:wrmsStuff.AphiaID}}
+            <br>
+            Status: {{:wrmsStuff.status}}
+            <br>
+            Rank: {{:wrmsStuff.rank}}
+            <br>
+            Last Updated: {{:wrmsStuff.modified}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="errorResultsTemplate" type="text/x-jsrender">
+    <div class="modal-footer" style="text-align:left;">
+        The following sources did not return a match for this species:
+        {{for errorModels}}
+            <div>
+                <span style="font-weight:bold;">{{:service}}</span>
+            </div>
+        {{/for}}
+    </div>
+</script>
+
+<script id="noDataTemplate" type="text/x-jsrender">
+    <div class="contextHeader" style="padding-top:10px;">
+        {{:message}}
+        {{if bapHtml}}
+            <div style="margin:30px 0 5px;">Reports contain these analyses:</div>
+            {{:bapHtml}}
+        {{/if}}
+    </div>
+</script>
+
+<script id="emptySynthesisCompositionTemplate" type="text/x-jsrender">
+    <div class="contextHeader" style="padding-top:10px;">
+        {{if message}}
+            {{:message}}
+        {{else}}
+            Please click somewhere to populate this report.
+        {{/if}}
+        <div class="bapList" style="padding-top: 30px;"></div>
+    </div>
+</script>
+
+<script id="emptySynthCompBapListTemplate" type="text/x-jsrender">
+    <div style="margin-bottom:20px;">Available Analysis Packages:</div>
+    {{:html}}
+</script>
+
+<script id="bapListTemplate" type="text/x-jsrender">
+    {{for baps}}
+        <div style="padding:10px 0 0 10px;">{{:title}}</div>
+    {{/for}}
+</script>
+
+<script id="synthesisCompositionDetailsTemplate" type="text/x-jsrender">
+<div class="unit_info_header">
+{{if title}}
+ <h1 class="panelTitle" style="color:lightblue;">{{:title}}</h1>
+{{/if}}
+{{if type}}
+    <div style="text-align:center;font-size:16px;">{{:type}}</div>
+{{/if}}
+{{if acres}}
+    <div id="synthCompAcres" class="generalInfo">
+        <span class="summaryHeader">Area: </span>{{:acres}} acres
+    </div>
+{{/if}}
+{{if hasSummaryData}}
+    <div>
+        <span class="summaryLabel summaryHeader">Summary: </span>
+        {{include summaryData tmpl="#summaryTemplate"/}}
+    </div>
+{{/if}}
+</div>
+</script>
+
+<script id="headerBapSpinner" type="text/x-jsrender">
+<div class="unit_info_header">
+ <div class="spinnerContainer" style="margin-bottom: 20px;"><i class="fa fa-spinner fa-pulse"></i></div>
+</div>
+</script>
+
+<script id="synthesisCompositionDetailsError" type="text/x-jsrender">
+<div class="unit_info_header">
+ <div class="generalInfo">
+        <span class="contextHeader">{{:error}}</span>
+    </div>
+</div>
+</script>
+
+<script id="synthesisCompositionHeaderTemplate" type="text/x-jsrender">
+    {{if reportJsonUrl}}
+        <div class="buttonBar" style="margin-bottom:10px;">
+            <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip" title="Share this map by copying the URL to your clipboard.">
+                <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
+                Share Map
+            </button>
+            <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
+                <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
+                Download Report as PDF
+            </button>
+            <a class="grayLink" target="_blank" href="{{:reportJsonUrl}}">
+                <button class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
+                    <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+                    View JSON Report
+                </button>
+            </a>
+        </div>
+        <div style="clear:both"></div>
+    {{/if}}
+</script>
+
+<script id="buttonBar" type="text/x-jsrender">
+        <div class="buttonBar" style="margin-bottom:10px;">
+            <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip" title="Share this map by copying the URL to your clipboard.">
+                <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
+                Share Map
+            </button>
+            <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
+                <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
+                Download Report as PDF
+            </button>
+            {{if viewJson}}
+            <button onclick='actionHandlerHelper.viewSynthCompJson()' class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
+                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+                View JSON Report
+            </button>
+            {{/if}}
+        </div>
+        <div style="clear:both"></div>
+</script>
+
+<script id="bapSpinner" type="text/x-jsrender">
+<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>
+</script>
+
+<script id="emptyBapTemplate" type="text/x-jsrender">
+<div id="{{:id}}BapCase">
+<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>
+</div>
+</script>
+
+<script id="bapSectionTemplate" type="text/x-jsrender">
+<div id="{{:id}}BapCase">
+<div class="layerExpander contextHeader" data-section="{{:id}}BAP">
+<div style='width: calc(100% - 45px);'>
+{{if !leaveOutJson}}
+<div style='width: 100%;'>
+<button onclick="window.event.stopPropagation(); actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: 25px; left: 100%;'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
+                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+</div>
+{{/if}}
+{{if simplified}}
+<div style='width: 100%;'>
+            <button onclick="window.event.stopPropagation(); actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: 25px; left: 100%;'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the simplified polygon used for analysis.">
+                <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+</div>
+{{/if}}
+<span id="{{:id}}BAPControl">{{if openByDefault}}&#9660;{{else}}&#9658;{{/if}}</span>
+        <span class="bapTitle">{{:title}}</span>
+        {{if hasInfoDiv}}
+        &nbsp;
+            <div id="{{:id}}" class="moreInfo" style="display: inline-block;white-space:nowrap;">
+                <i class="fa fa-circle fa-first" aria-hidden="true" style="margin-right:-16px;"></i>
+                <i class="fa fa-info-circle fa-second" aria-hidden="true"></i>
+            </div>
+        {{/if}}
+</div>
+</div>
+    <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
+        {{:sectionHtml}}
+    </div>
+</div>
+</script>
+
+<script id="identifyUnitTemplate" type="text/x-jsrender">
+    <div class="layerExpander contextHeader" data-section="identify{{:id}}"
+    {{if isOn}}style="color:orange; font-weight: bold; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"
+    {{else}}style="color:#f3f3f3; font-weight: normal; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"{{/if}}>
+        <span id="identify{{:id}}Control">&#9658;</span>
+        {{:type}}: {{:code}} {{:title}}
+    </div>
+    <div id="identify{{:id}}" class="dropDownContainer" style="display:none;">
+        {{if description}}
+            {{:description}}
+        {{else}}
+            No description available.
+        {{/if}}
+    </div>
+    {{if additionalHtml}}
+        <div>
+            {{: additionalHtml}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="boxAndWhiskerTemplate" type="text/x-jsrender">
+    <div>
+        <div style="text-align:center;margin-bottom:5px;">Graph input:</div>
+        <div id="rangeSlider" style="margin-bottom:5px;"></div>
+        <div class="sliderLabelLeft">{{: startDate}}</div>
+        <div id="bapRangeSlider" class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
+        <div class="sliderLabelRight">{{: endDate}}</div>
+    </div>
+    <div style="clear:both;"></div>
+    <div style="text-align:center;width:100%;">
+        <button id="getBWData" class="btn-xs">Submit</button>
+    </div>
+    <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+    <div id="boxAndWhiskerError"></div>
+    <div id="boxAndWhisker" class="myNpnInfo" style="width:100%;height:500px;"></div>
+</script>
+
+<script id="unknownBapTemplate" type="text/x-jsrender">
+    <strong>This is not a recognized Analysis Package.</strong>
+</script>
+
+<script id="synthCompBottomBarTemp" type="text/x-jsrender">
+    <button id="rightPanelReset" class="btn-xs">Clear this selection</button>
+    {{include #data tmpl="#coordinatesTemplate"/}}
+</script>
+
+<script id="coordinatesTemplate" type="text/x-jsrender">
+    <div class="coordinates">Coordinates clicked: {{:lat}}, {{:lng}}</div>
+</script>
+
+<script id="hierarchyTableTemplate" type="text/x-jsrender">
+    <div style='font-size: 14px; color: white;'>{{:description}}</div>
+    <div class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal;">{{:title}}</div>
+    <div class='hierarchyTable'>
+        <div style='height: 1em;'>
+            <span style='float: left; font-size: 14px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px;'>{{:textHeader}}</span>
+            <span style='float: right; font-size: 14px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px;'>{{:areaHeader}}</span>
+        </div>
+        {{for rows}}
+            <div class='hierarchyRow'>
+            <span class="otherExpander">
+            <span style='float: right; margin-left: .5em; margin-right: .1em; font-size: 14px; vertical-align: middle'>{{:area}}</span>
+            {{:text}}
+            </span>
+            </div>
+        {{/for}}
+    </div>
+</script>
+
+<script id="genericBapInfoTemplate" type="text/x-jsrender">
+    <div id="genericBapDescription{{:id}}" style='font-size: 14px; color: white; margin-bottom: -.5em;'></div>
+    <div id="genericBapSubtitle{{:id}}" class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal;"></div>
+    <div class="divider"></div>
+    {{for charts}}
+            <div id="genericChartSubtitle{{:id}}{{:#index}}" class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal; font-size: 18px;"></div>
+            <div id="genericChart{{:id}}{{:#index}}" style="margin:0 auto; color: #f3f3f3; background: rgba(30,30,35,.5); border: 1px solid rgba(245,245,245,.2); border-radius: 1em; padding: 7px 0 7px 0;"></div>
+            <div id="genericLegend{{:id}}{{:#index}}" style="position:relative;"></div>
+    {{/for}}
+</script>
+
+<script id="ecosystemProtectionInfoTemplate" type="text/x-jsrender">
+    <div id="regionProtectionSubtitle" class="contextSubHeader subHeaderTitle">Protection Status of Ecoregion Compared to the Continental United States</div>
+    <div style="height: 300px;" id="protectionChart"></div>
+    <div class="divider"></div>
+    <div class="contextSubHeader">
+        <div id="ecoProtectionSubtitle" class="subHeaderTitle">Protection Status of Ecological Systems</div>
+        (Click on a slice to filter the table and see only systems with that percent of protection.)
+    </div>
+    <div id="gap12chart" style="width: 48%;display:inline-block;height:430px;text-align:center;"></div>
+    <div id="gap123chart" style="width: 48%;display:inline-block;height:430px;text-align:center;"></div>
+    <div style="clear: both;"></div>
+    <div id="ecosReset" class="tableReset">
+        <button id="resetEcosTable" class="btn-xs">Clear chart selection</button>
+    </div>
+    <div id="ecosTableContainer">
+        {{include tmpl="#ecosTableContainerTemplate"/}}
+    </div>
+    <div class="divider"></div>
+    <div id="ecoCoverageSubtitle" class="contextSubHeader subHeaderTitle">Percent Coverage by National Vegetation Classification Class</div>
+    <div id="ecoCoverageChart" style="height:350px;width:370px;margin:0 auto;"></div>
+    <div id="ecoCoverageLegend" style="position:relative;"></div>
+</script>
+
+<script id="ecosTableContainerTemplate" type="text/x-render">
+    <div id="ecosystemTableTitle" class="contextSubHeader">
+        All Ecological Systems ({{:ecosystems.length}})
+    </div>
+    <div class="table">
+        <table id="ecosTable">
+            <tr style="font-weight: bold; color: lightblue;">
+                <th>Ecological System</th>
+                <th id="middleColTitle" style="width: 25%;">GAP 1 & 2 Protection (%)</th>
+                <th id="rightColTitle" style="width: 25%;">GAP 1, 2 & 3 Protection (%)</th>
+            </tr>
+            {{for ecosystems}}
+                <tr class="ecosRow tableRow">
+                    <td>{{:name}}</td>
+                    <td style="text-align: right;">{{:~format(status_1_2)}}</td>
+                    <td style="text-align: right;">{{:~format(status_1_2_3)}}</td>
+                </tr>
+            {{/for}}
+        </table>
+    </div>
+</script>
+
+<script id="updateEcosTableTemplate" type="text/x-jsrender">
+    <tbody>
+        <tr style="font-weight: bold; color: lightblue;">
+            <th>Ecological System</th>
+            <th id="middleColTitle" style="width: 25%;">Acres Protected</th>
+            <th id="rightColTitle" style="width: 25%;">% Protected</th>
+        </tr>
+        {{for ecosystems}}
+            <tr class="ecosRow tableRow">
+                <td>{{:name}}</td>
+                <td style="text-align: right;">{{:~acresFormat(acres, percent)}}</td>
+                <td style="text-align: right;">{{:~format(percent)}}</td>
+            </tr>
+        {{/for}}
+    </tbody>
+</script>
+
+<script id="speciesProtectionInfoTemplate" type="text/x-jsrender">
+    <div class="contextSubHeader">
+        <div id="speciesBAPSubtitle" class="subHeaderTitle">Protection Status of Species</div>
+        (Click on a slice to filter the table and see only species who's habitat falls in that percent of protection.
+            Click on a radio button to see only species of that type.)
+    </div>
+    <form>
+        <fieldset>
+        <legend style="display:none;">Species type</legend>
+        <label for="allTaxa">All ({{:totalSpecies}})
+            <input id="allTaxa" type="radio" name="taxaType" value="all" checked />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="aTaxa">Amphibians ({{:totalAmphibians}})
+            <input id="aTaxa" type="radio" name="taxaType" value="a" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="bTaxa">Birds ({{:totalBirds}})
+            <input id="bTaxa" type="radio" name="taxaType" value="b" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="mTaxa">Mammals ({{:totalMammals}})
+            <input id="mTaxa" type="radio" name="taxaType" value="m" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="rTaxa">Reptiles ({{:totalReptiles}})
+            <input id="rTaxa" type="radio" name="taxaType" value="r" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        </fieldset>
+    </form>
+    <div style="clear: both;"></div>
+    <div id="sp12chart" style="width: 48%; height: 430px; display:inline-block; float: left;"></div>
+    <div id="sp123chart" style="width: 48%; height: 430px; display:inline-block; float: right;"></div>
+    <div style="clear: both;"></div>
+    <div id="speciesReset" class="tableReset">
+        <button id="resetSpeciesTable" class="btn-xs">Clear chart selection</button>
+    </div>
+    <div class="contextSubHeader" style="padding:0;">(Click on a row for individual species information.)</div>
+    <div id="spNameToggle" style="display:none;">
+        <label id="spNameLabel" for="spNameCheckbox" style="font-weight:normal;font-size:12px;margin-bottom:0px;margin-left:20px;">Show Scientific Name
+            <input id="spNameCheckbox" type="checkbox" style="vertical-align:sub;" />
+            <i class="fa fa-custom-checkbox-class" aria-hidden="true"></i>
+        </label>
+    </div>
+    <div style="clear: both;"></div>
+    <div id="speciesTableContainer">
+        {{include tmpl="#speciesTableContainerTemplate"/}}
+    </div>
+</script>
+
+<script id="speciesTableContainerTemplate" type="text/x-jsrender">
+    <div id="speciesTableTitle" class="contextSubHeader">
+        {{:speciesType}} in this Ecoregion ({{:species.length}})
+    </div>
+    <div class="table">
+        <table id="spTable" style="width:100%">
+            <tr class="even" style="font-weight: bold; color: lightblue;">
+                <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
+                <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">Scientific Name</th>
+            </tr>
+            {{for species}}
+                <tr id="{{:scientific_name}}" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');" class="spRow tableRow">
+                    <td>{{:common_name ? common_name : "No common name recorded"}}</td>
+                    <td>{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
+                </tr>
+            {{/for}}
+        </table>
+    </div>
+</script>
+
+<script id="updateSpeciesProtectionTableTemplate" type="text/x-jsrender">
+    <tbody>
+        <tr class="even" style="font-weight: bold; color: lightblue;">
+            <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
+            <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">% Protected</th>
+        </tr>
+        {{for species}}
+            <tr class="spRow tableRow" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');" >
+                <td class="spCommonName shownTd">{{:common_name}}</td>
+                <td class="spScientificName hiddenTd">{{:scientific_name}}</td>
+                <td style="text-align: right;">{{:~format(percent)}}</td>
+            </tr>
+        {{/for}}
+    </tbody>
+</script>
+
+<script id="fishChartTemplate" type="text/x-jsrender">
+    <div>&nbsp;</div>
+    <div id="miniFishChart" style="width: 100%; height: 350px; background-color: white;border-radius: 6px;"></div>
+    <div style="width: 100%; text-align: center;">
+        <button id="fishButton" class="btn-xs expand-chart">Expand Chart</button>
+    </div>
+</script>
+
+<script id="matrixTemplate" type="text/x-jsrender">
+    <style type="text/css">
+        .matrix-box {
+            height: 140px;
+            text-align: center;
+            display: table;
+            border: black solid 1px;
+        }
+        .matrix-text {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .matrix-axis-title {
+            width: 450px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .matrix-dark {
+            color:black;
+        }
+    </style>
+    <div class="matrix-axis-title">Landscape-Scale Sage-Grouse Breeding Habitat Probability</div>
+    <div style="width:390px;margin-left:45px;text-align:center;">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="matrix-top-tooltip" data-toggle="tooltip" title="Landscape context is likely limiting habitat suitability. If limiting factors are within management control,
+                    significant restoration may be needed. These landscapes may still be important for other seasonal habitat needs or connectivity.">Low (0.25 to < 0.5 probability)</div>
+            </div>
+            <div class="col-md-4">
+                <div class="matrix-top-tooltip" data-toggle="tooltip" title="Landscape context may be affecting habitat suitability and could be aided by restoration. These landscapes may
+                    be at higher risk of becoming unsuitable with additional disturbances that degrade habitat.">Moderate (0.5 to < 0.75 probability)</div>
+            </div>
+            <div class="col-md-4">
+                <div class="matrix-top-tooltip" data-toggle="tooltip" title="Landscape context is highly suitable to support breeding habitat. Management strategies to maintain and enhance
+                    these landscapes have a high likelihood of benefiting sage-grouse.">High (&#8805; 0.75 probability)</div>
+            </div>
+        </div>
+        {{for data}}
+            {{if (#getIndex() % 3) == 0}}
+                {{if #getIndex() == 0}}
+                    <div class="row">
+                    {{include tmpl="#matrixBoxTemplate"/}}
+                {{else}}
+                    </div>
+                    <div class="row">
+                    {{include tmpl="#matrixBoxTemplate"/}}
+                {{/if}}
+            {{else}}
+                {{include tmpl="#matrixBoxTemplate"/}}
+                {{if #getIndex() == 8}}
+                    </div>
+                {{/if}}
+            {{/if}}
+        {{/for}}
+    </div>
+    <div style="float:left;transform:rotate(270deg);transform-origin:left;margin-top:-15px;width:420px;margin-left:10px;"">
+        <div class="matrix-axis-title">Ecosystem Resilience to Disturbance and Resistance to Invasion</div>
+        <div style="text-align:center;">
+            <span class="matrix-html-tooltip" title="Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually low.</br>
+                Risk of invasive annual grasses becoming dominant is high. EDRR can be used to address problematic invasive plants in relatively intact areas.</br>
+                Seeding/transplanting success depends on site characteristics, extent of annual invasive plants, and posttreatment precipitation, but is often low. More than one intervention likely will be required.</br>
+                Recovery following inappropriate livestock use is unlikely without active restoration.">
+                Low
+            </span>
+            ---------------------
+            <span class="matrix-html-tooltip" title="Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually moderately high, especially on cooler and moister sites.</br>
+                Risk of invasive annual grasses becoming dominant is moderate, especially on warmer sites. EDRR can be used to address problematic invasive plants in many areas.</br>
+                Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                Seeding-transplanting success depends on site characteristics, and more than one intervention may be required especially on warmer and drier sites.</br>
+                Recovery following inappropriate livestock use depends on site characteristics and management.">
+                Moderate
+            </span>
+            ---------------------
+            <span class="matrix-html-tooltip" title="Potential for favorable perennial herbaceous species recovery after disturbance without seeding is typically high.</br>
+                Risk of invasive annual grasses becoming dominant is relatively low. EDRR can be used to address problematic invasive plants.</br>
+                Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                Seeding/transplanting success is typically high.</br>Recovery following inappropriate livestock use is often possible given changes in management.">
+                High
+            </span>
+        </div>
+    </div>
+    <div style="width: 100%; text-align: center;">
+        <button id="cnrButton" class="btn-xs expand-chart">Expand Chart</button>
+    </div>
+</script>
+
+<script id="bigMatrixTemplate" type="text/x-jsrender">
+    <div class="big-matrix">
+        <div class="matrix-axis-title">Landscape-Scale Sage-Grouse Breeding Habitat Probability</div>
+        <div style="width:600px;margin-left:45px;text-align:center;">
+            <div class="row">
+                <div class="col-md-4">
+                    <div style="font-weight:bold;height:45px;">Low (0.25 to < 0.5 probability)</div>
+                    <div style="font-size:12px;">
+                        Landscape context is likely limiting habitat suitability. If limiting factors are within management control,
+                        significant restoration may be needed. These landscapes may still be important for other seasonal habitat needs or connectivity.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                <div style="font-weight:bold;height:45px;">Moderate (0.5 to < 0.75 probability)</div>
+                    <div style="font-size:12px;">
+                        Landscape context may be affecting habitat suitability and could be aided by restoration. These landscapes may
+                        be at higher risk of becoming unsuitable with additional disturbances that degrade habitat.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                <div style="font-weight:bold;height:45px;">High (&#8805; 0.75 probability)</div>
+                    <div style="font-size:12px;">
+                        Landscape context is highly suitable to support breeding habitat. Management strategies to maintain and enhance
+                        these landscapes have a high likelihood of benefiting sage-grouse.
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="position:relative;">
+                {{include data[0] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[1] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[2] tmpl="#bigMatrixBoxTemplate"/}}
+                <div style="position:absolute;top:0;left:0;width:90%;margin:40px 5%;height:130px;background:rgba(255,255,255,.9);color:black;font-size:12px;">
+                    Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually low.</br>
+                    Risk of invasive annual grasses becoming dominant is high. EDRR can be used to address problematic invasive plants in relatively intact areas.</br>
+                    Seeding/transplanting success depends on site characteristics, extent of annual invasive plants, and posttreatment precipitation, but is often low. More than one intervention likely will be required.</br>
+                    Recovery following inappropriate livestock use is unlikely without active restoration.
+                </div>
+            </div>
+            <div class="row" style="position:relative;">
+                {{include data[3] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[4] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[5] tmpl="#bigMatrixBoxTemplate"/}}
+                <div style="position:absolute;top:0;left:0;width:90%;margin:40px 5%;height:130px;background:rgba(255,255,255,.9);color:black;font-size:12px;">
+                    Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually moderately high, especially on cooler and moister sites.</br>
+                    Risk of invasive annual grasses becoming dominant is moderate, especially on warmer sites. EDRR can be used to address problematic invasive plants in many areas.</br>
+                    Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                    Seeding-transplanting success depends on site characteristics, and more than one intervention may be required especially on warmer and drier sites.</br>
+                    Recovery following inappropriate livestock use depends on site characteristics and management.
+                </div>
+            </div>
+            <div class="row" style="position:relative;">
+                {{include data[6] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[7] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[8] tmpl="#bigMatrixBoxTemplate"/}}
+                <div style="position:absolute;top:0;left:0;width:90%;margin:40px 5%;height:130px;background:rgba(255,255,255,.9);color:black;font-size:12px;">
+                    Potential for favorable perennial herbaceous species recovery after disturbance without seeding is typically high.</br>
+                    Risk of invasive annual grasses becoming dominant is relatively low. EDRR can be used to address problematic invasive plants.</br>
+                    Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                    Seeding/transplanting success is typically high.</br>Recovery following inappropriate livestock use is often possible given changes in management.
+                </div>
+            </div>
+        </div>
+        <div style="float:left;transform:rotate(270deg);transform-origin:left;margin-top:-15px;width:650px;margin-left:10px;"">
+            <div class="matrix-axis-title">Ecosystem Resilience to Disturbance and Resistance to Invasion</div>
+            <div style="text-align:center;">
+                <span>
+                    Low
+                </span>
+                --------------------------------
+                <span>
+                    Moderate
+                </span>
+                --------------------------------
+                <span>
+                    High
+                </span>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="matrixBoxTemplate" type="text/x-jsrender">
+    <div class="col-md-4 matrix-box" style="color:{{:color}};background-color:{{:backgroundColor}};">
+        <div class="matrix-text">
+            <div style="font-weight:bold">{{:label}}</div>
+            {{:~acresFormat(acres)}} ({{:~format(percent)}}% of total area)
+        </div>
+    </div>
+</script>
+
+<script id="bigMatrixBoxTemplate" type="text/x-jsrender">
+    <div class="col-md-4 matrix-box" style="color:{{:color}};background-color:{{:backgroundColor}};">
+        <div class="matrix-text">
+            <div style="font-weight:bold">{{:label}}</div>
+            <div>{{:~acresFormat(acres)}}</div>
+        </div>
+        <div style="position:absolute;bottom:0;width:100%;margin:0 -15px;">
+            ({{:~format(percent)}}% of total area)
+        </div>
+    </div>
+</script>
+
+<script id="reportSpeciesTemplate" type="text/x-jsrender">
+    <div id="lmeSpeciesChart" style="width: 100%; height: 400px;"></div>
+</script>
+
+</body>
+</html>

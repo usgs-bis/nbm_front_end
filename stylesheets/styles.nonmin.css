@@ -1,0 +1,139 @@
+.unit_info, .ui-widget-content, .unit_info_control > div {
+    background-color: rgba(10, 10, 15, .6);
+    color: #f3f3f3;
+}
+
+.unit_info {
+    z-index: 1000;
+    overflow-y: auto;
+    line-height: 16px;
+    -webkit-transition: all .6s ease;
+    -moz-transition: all .6s ease;
+    -o-transition: all .6s ease;
+    -ms-transition: all .6s ease;
+    transition: all .6s ease;
+}
+
+#unit_info_left {
+    left: -400px;
+    top: 72px;
+    height: calc(100% - 72px);
+    transition-property: all;
+    transition-duration: .5s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+#unit_info_left.open {
+    left: 0;
+}
+
+.unit_info_control {
+    z-index: 1001;
+    width: 25px;
+    overflow-y: visible;
+    line-height: 100px;
+    cursor: pointer;
+    font-size: 20px;
+    text-align: center;
+    -webkit-perspective: 55px;
+    -moz-perspective: 55px;
+    -ms-perspective: 55px;
+    background-color: transparent;
+}
+
+.unit_info_control.left {
+    right: -25px;
+    bottom: calc(42% + (72px * .42));
+}
+
+.unit_info_control.right {
+    left: -25px;
+    bottom: 42%;
+}
+
+#unit_info_right_control {
+    border-radius: 10px 0 0 10px;
+    -webkit-border-radius: 10px 0 0 10px;
+    -moz-border-radius: 10px 0 0 10px;
+    transform: rotateY(-25deg);
+    -webkit-transform: rotateY(-25deg);
+    -ms-transform: rotateY(-25deg);
+}
+
+#unit_info_left_control {
+    border-radius: 0 10px 10px 0;
+    -webkit-border-radius: 0 10px 10px 0;
+    -moz-border-radius: 0 10px 10px 0;
+    transform: rotateY(25deg);
+    -webkit-transform: rotateY(25deg);
+    -ms-transform: rotateY(25deg);
+}
+
+#unit_info_left .unit_info_main {
+    overflow-y: auto;
+    height: calc(100% - 30px);
+}
+
+#unit_info_right {
+    transition-property: all;
+    transition-duration: .5s;
+    transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+    top:0;
+    width: 500px;
+    height: 100%;
+    right: -500px;
+}
+
+#unit_info_right.open {
+    right: 0;
+    left: auto;
+}
+
+.unit_info_content, .unit_info_content_main {
+    padding: 0 15px;
+    z-index: 0;
+    height: auto
+}
+
+.unit_info_content_main {
+    padding: 0;
+}
+
+.unit_info_header, .ui-widget-header {
+    background-color:rgba(30, 30, 35, .7);
+}
+
+.unit_info_header {
+    padding: 10px;
+}
+
+.unit_info_main {
+    width:100%;
+}
+
+.layer {
+    font-size: 14px;
+    line-height: 30px;
+    border-bottom: 1px solid rgba(245, 245, 245, .2)
+}
+
+.layer-control {
+    float: right;
+    padding: 8px 8px 0 0;
+    cursor: pointer
+}
+
+.disabled {
+    color: #777;
+    cursor: not-allowed
+}
+
+.close.left {
+    right: 0;
+    display: table-cell;
+    float: right
+}
+
+.hidden {
+    display: none
+}
