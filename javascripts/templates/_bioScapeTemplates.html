@@ -1,0 +1,187 @@
+<script id="bioScapeLayerLegendTemplate" type="text/x-jsrender">
+    <div style="padding: 5px 0;">
+        <div class="legendTitle">{{:title}}</div>
+        <div style="margin-left: .5em;">
+            {{for legendItems}}
+                <div>
+                <img class="legendImg" src="{{:imageUrl}}" alt="legend-key"/>
+                <span class="legendLabel">{{:label}}</span>
+                <br>
+                </div>
+            {{/for}}
+        </div>
+    </div>
+</script>
+
+<script id="bioScapeDetailsTemplate" type="text/x-jsrender">
+    <div>
+        {{include summaryData tmpl="#summaryTemplate"/}}
+    </div>
+</script>
+
+<script id="bioScapeGroupTemplate" type="text/x-jsrender">
+    <div class="contextHeader layerExpander" data-section="{{:divId}}">
+        <span id="{{:divId}}Control">&#9658;</span>
+        {{:title}}
+    </div>
+    <div id="{{:divId}}" class="layerSection">
+        {{for layers tmpl="#bioScapeLayerTemplate" /}}
+    </div>
+</script>
+
+<script id="bioScapeBaseMapTemplate" type="text/x-jsrender">
+    {{for layers}}
+        <div class="contextHeader">
+            <button type="button" id="{{:id}}" class="baseMapSelect btn btn-default {{:active}}" href="#" style="font-size:18px;">
+                {{if thumbnailImage}}
+                    <img src="{{:thumbnailImage}}" alt="{{:id}}-preview" height="35">
+                {{/if}}
+                {{:title}}
+            </button>
+        </div>
+    {{/for}}
+</script>
+
+<script id="bioScapeLayerTemplate" type="text/x-jsrender">
+    <div class="layer" id="{{:divId}}">
+        <div class="layerTitle">
+            <span>{{:title}}</span>
+            <span style="white-space:nowrap">
+                <i class="fa fa-circle fa-first" aria-hidden="true"></i>
+                <i class="fa fa-info-circle fa-second layerMoreInfo" aria-hidden="true" data-layer="{{:divId}}"></i>
+            </span>
+        </div>
+        {{if !disableControl}}
+            <i class="fa {{:toggle}} layer-control"
+            {{if zoomLimits}}
+                title=""
+            {{/if}}
+            ></i>
+        {{/if}}
+        {{if opacitySettings}}
+            <div class="sliderContainer" style="text-align:right;display:{{:opacitySettings.displayCss}};">
+                <label for="{{:divId}}Slider">Opacity:</label>
+                <input id="{{:divId}}Slider" class="opacitySlider" type="range" min="0" max="1" value="{{:opacitySettings.opacity}}" step=".05" style="width:50%;display:inline;vertical-align:middle;"/>
+            </div>
+        {{/if}}
+        {{if timeControl}}
+            <div class="sliderContainer" id="{{:divId}}TimeControl" style="text-align: right; display: none;"></div>
+        {{/if}}
+    </div>
+</script>
+
+<script id="bioScapeInfoDiv" type="text/x-jsrender">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="generalModalLabel">{{:title}}</h4>
+    </div>
+    <div class="modal-body" style="font-size:16px;">
+        {{if body}}
+            {{:body}}
+            {{if citation}}
+                <div style="margin-top:10px;font-size:14px;"><strong>Citation: </strong>{{:citation}}</div>
+            {{/if}}
+        {{else}}
+            This item is not currently documented in ScienceBase. You may contact the Biogeographic Characterization Branch
+            to request this information: <a href="mailto:bcb@usgs.gov" target="_blank">bcb@usgs.gov</a>
+        {{/if}}
+    </div>
+    <div class="modal-footer" style="text-align:left;">
+        {{if url}}
+            <strong>ScienceBase Url: </strong>
+            <a target="_blank" href="{{:url}}">{{:url}}</a>
+        {{/if}}
+    </div>
+</script>
+
+<script id="emptyTemplate" type="text/x-jsrender"></script>
+
+<script id="bioScapeEsriMetadataTemplate" type="text/x-jsrender">
+    {{if layerInfo}}
+        <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeSbInfo')">
+            <span id="bioScapeSbInfoControl">&#9660;</span>
+            <span>Layer Level Metadata:</span>
+        </div>
+        <div id="bioScapeSbInfo" class="dropDownContainer">
+            {{for layerInfo}}
+                <span class="metadataTitle">Layer Name</span>
+                <div class="dialogData">{{:name}}</div>
+                <span class="metadataTitle">Description</span>
+                <div class="dialogData">{{:description}}</div>
+            {{/for}}
+        </div>
+    {{/if}}
+    <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeServiceInfo')">
+        <span id="bioScapeServiceInfoControl">&#9660;</span>
+        <span>Service Level Metadata:</span>
+    </div>
+    <div id="bioScapeServiceInfo" class="dropDownContainer">
+        <span class="metadataTitle">Service Description</span>
+        <div class="dialogData">{{:serviceDescription}}</div>
+        <span class="metadataTitle">Map Name</span>
+        <div class="dialogData">{{:mapName}}</div>
+        <span class="metadataTitle">Description</span>
+        <div class="dialogData">{{:description}}</div>
+        <span class="metadataTitle">Copyright Text</span>
+        <div class="dialogData">{{:copyrightText}}</div>
+        <span class="metadataTitle">Document Info</span>
+        <div class="dialogData well">
+            <span class="metadataTitle">Title</span>
+            <div class="dialogData">{{:documentInfo.Title}}</div>
+            <span class="metadataTitle">Author</span>
+            <div class="dialogData">{{:documentInfo.Author}}</div>
+            <span class="metadataTitle">Comments</span>
+            <div class="dialogData">{{:documentInfo.Comments}}</div>
+            <span class="metadataTitle">Subject</span>
+            <div class="dialogData">{{:documentInfo.Subject}}</div>
+        </div>
+    </div>
+</script>
+
+<script id="bioScapeWMSMetadataTemplate" type="text/x-jsrender">
+    <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeSbInfo')">
+        <span id="bioScapeSbInfoControl">&#9660;</span>
+        <span>Layer Level Metadata:</span>
+    </div>
+    <div id="bioScapeSbInfo" class="dropDownContainer">
+    {{if layerInfo}}
+        {{for layerInfo}}
+            <span class="metadataTitle">Layer Name</span>
+            <div class="dialogData">{{:name}}</div>
+            <span class="metadataTitle">Layer Title</span>
+            <div class="dialogData">{{:title}}</div>
+            <span class="metadataTitle">Abstract</span>
+            <div class="dialogData">{{:abstract}}</div>
+        {{/for}}
+     {{/if}}
+    </div>
+    <div class="contextHeader layerExpander grayHover" onclick="toggleContainer('bioScapeServiceInfo')">
+        <span id="bioScapeServiceInfoControl">&#9660;</span>
+        <span>Service Level Metadata:</span>
+    </div>
+    <div id="bioScapeServiceInfo" class="dropDownContainer">
+        <div id="bioScapeServiceInfo">
+            <span class="metadataTitle">Title</span>
+            <div class="dialogData">{{:serviceTitle}}</div>
+            <span class="metadataTitle">Abstract</span>
+            <div class="dialogData">{{:abstract}}</div>
+        </div>
+    </div>
+</script>
+
+<script id="timeSliderTemplate" type="text/x-jsrender">
+    <div style="width:100%;text-align:center;line-height:initial;" id="{{:layerId}}YearVal">
+        Current {{:stepLabel}}: {{:defaultDate}}
+    </div>
+    <input id="{{:layerId}}TimeSlider" class="opacitySlider" type="range" {{if disableSlider}}disabled{{/if}} min="{{:start}}"
+        max="{{:end}}" step="1" style="width:100%;display:inline;vertical-align:middle;" value="{{:default}}" />
+
+    {{if !disableSlider}}
+        <div style="width:100%">
+            <div class="sliderLabelLeft">{{:startDate}}</div>
+            <div class="sliderLabelCenter">{{:stepLabel}} Range</div>
+            <div class="sliderLabelRight">{{:endDate}}</div>
+        </div>
+        <div style="clear:both;"></div>
+    {{/if}}
+</script>

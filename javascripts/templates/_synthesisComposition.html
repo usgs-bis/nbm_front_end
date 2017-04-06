@@ -1,0 +1,187 @@
+<script id="matrixTemplate" type="text/x-jsrender">
+    <style type="text/css">
+        .matrix-box {
+            height: 140px;
+            text-align: center;
+            display: table;
+            border: black solid 1px;
+        }
+        .matrix-text {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        .matrix-axis-title {
+            width: 450px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .matrix-dark {
+            color:black;
+        }
+    </style>
+    <div class="matrix-axis-title">Landscape-Scale Sage-Grouse Breeding Habitat Probability</div>
+    <div style="width:390px;margin-left:45px;text-align:center;">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="matrix-top-tooltip" data-toggle="tooltip" title="Landscape context is likely limiting habitat suitability. If limiting factors are within management control,
+                    significant restoration may be needed. These landscapes may still be important for other seasonal habitat needs or connectivity.">Low (0.25 to < 0.5 probability)</div>
+            </div>
+            <div class="col-md-4">
+                <div class="matrix-top-tooltip" data-toggle="tooltip" title="Landscape context may be affecting habitat suitability and could be aided by restoration. These landscapes may
+                    be at higher risk of becoming unsuitable with additional disturbances that degrade habitat.">Moderate (0.5 to < 0.75 probability)</div>
+            </div>
+            <div class="col-md-4">
+                <div class="matrix-top-tooltip" data-toggle="tooltip" title="Landscape context is highly suitable to support breeding habitat. Management strategies to maintain and enhance
+                    these landscapes have a high likelihood of benefiting sage-grouse.">High (&#8805; 0.75 probability)</div>
+            </div>
+        </div>
+        {{for data}}
+            {{if (#getIndex() % 3) == 0}}
+                {{if #getIndex() == 0}}
+                    <div class="row">
+                    {{include tmpl="#matrixBoxTemplate"/}}
+                {{else}}
+                    </div>
+                    <div class="row">
+                    {{include tmpl="#matrixBoxTemplate"/}}
+                {{/if}}
+            {{else}}
+                {{include tmpl="#matrixBoxTemplate"/}}
+                {{if #getIndex() == 8}}
+                    </div>
+                {{/if}}
+            {{/if}}
+        {{/for}}
+    </div>
+    <div style="float:left;transform:rotate(270deg);transform-origin:left;margin-top:-15px;width:420px;margin-left:10px;"">
+        <div class="matrix-axis-title">Ecosystem Resilience to Disturbance and Resistance to Invasion</div>
+        <div style="text-align:center;">
+            <span class="matrix-html-tooltip" title="Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually low.</br>
+                Risk of invasive annual grasses becoming dominant is high. EDRR can be used to address problematic invasive plants in relatively intact areas.</br>
+                Seeding/transplanting success depends on site characteristics, extent of annual invasive plants, and posttreatment precipitation, but is often low. More than one intervention likely will be required.</br>
+                Recovery following inappropriate livestock use is unlikely without active restoration.">
+                Low
+            </span>
+            ---------------------
+            <span class="matrix-html-tooltip" title="Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually moderately high, especially on cooler and moister sites.</br>
+                Risk of invasive annual grasses becoming dominant is moderate, especially on warmer sites. EDRR can be used to address problematic invasive plants in many areas.</br>
+                Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                Seeding-transplanting success depends on site characteristics, and more than one intervention may be required especially on warmer and drier sites.</br>
+                Recovery following inappropriate livestock use depends on site characteristics and management.">
+                Moderate
+            </span>
+            ---------------------
+            <span class="matrix-html-tooltip" title="Potential for favorable perennial herbaceous species recovery after disturbance without seeding is typically high.</br>
+                Risk of invasive annual grasses becoming dominant is relatively low. EDRR can be used to address problematic invasive plants.</br>
+                Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                Seeding/transplanting success is typically high.</br>Recovery following inappropriate livestock use is often possible given changes in management.">
+                High
+            </span>
+        </div>
+    </div>
+    <div style="width: 100%; text-align: center;">
+        <button id="cnrButton" class="btn-xs expand-chart">Expand Chart</button>
+    </div>
+</script>
+
+<script id="bigMatrixTemplate" type="text/x-jsrender">
+    <div class="big-matrix">
+        <div class="matrix-axis-title">Landscape-Scale Sage-Grouse Breeding Habitat Probability</div>
+        <div style="width:600px;margin-left:45px;text-align:center;">
+            <div class="row">
+                <div class="col-md-4">
+                    <div style="font-weight:bold;height:45px;">Low (0.25 to < 0.5 probability)</div>
+                    <div style="font-size:12px;">
+                        Landscape context is likely limiting habitat suitability. If limiting factors are within management control,
+                        significant restoration may be needed. These landscapes may still be important for other seasonal habitat needs or connectivity.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                <div style="font-weight:bold;height:45px;">Moderate (0.5 to < 0.75 probability)</div>
+                    <div style="font-size:12px;">
+                        Landscape context may be affecting habitat suitability and could be aided by restoration. These landscapes may
+                        be at higher risk of becoming unsuitable with additional disturbances that degrade habitat.
+                    </div>
+                </div>
+                <div class="col-md-4">
+                <div style="font-weight:bold;height:45px;">High (&#8805; 0.75 probability)</div>
+                    <div style="font-size:12px;">
+                        Landscape context is highly suitable to support breeding habitat. Management strategies to maintain and enhance
+                        these landscapes have a high likelihood of benefiting sage-grouse.
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="position:relative;">
+                {{include data[0] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[1] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[2] tmpl="#bigMatrixBoxTemplate"/}}
+                <div style="position:absolute;top:0;left:0;width:90%;margin:40px 5%;height:130px;background:rgba(255,255,255,.9);color:black;font-size:12px;">
+                    Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually low.</br>
+                    Risk of invasive annual grasses becoming dominant is high. EDRR can be used to address problematic invasive plants in relatively intact areas.</br>
+                    Seeding/transplanting success depends on site characteristics, extent of annual invasive plants, and posttreatment precipitation, but is often low. More than one intervention likely will be required.</br>
+                    Recovery following inappropriate livestock use is unlikely without active restoration.
+                </div>
+            </div>
+            <div class="row" style="position:relative;">
+                {{include data[3] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[4] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[5] tmpl="#bigMatrixBoxTemplate"/}}
+                <div style="position:absolute;top:0;left:0;width:90%;margin:40px 5%;height:130px;background:rgba(255,255,255,.9);color:black;font-size:12px;">
+                    Potential for favorable perennial herbaceous species recovery after disturbance without seeding is usually moderately high, especially on cooler and moister sites.</br>
+                    Risk of invasive annual grasses becoming dominant is moderate, especially on warmer sites. EDRR can be used to address problematic invasive plants in many areas.</br>
+                    Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                    Seeding-transplanting success depends on site characteristics, and more than one intervention may be required especially on warmer and drier sites.</br>
+                    Recovery following inappropriate livestock use depends on site characteristics and management.
+                </div>
+            </div>
+            <div class="row" style="position:relative;">
+                {{include data[6] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[7] tmpl="#bigMatrixBoxTemplate"/}}
+                {{include data[8] tmpl="#bigMatrixBoxTemplate"/}}
+                <div style="position:absolute;top:0;left:0;width:90%;margin:40px 5%;height:130px;background:rgba(255,255,255,.9);color:black;font-size:12px;">
+                    Potential for favorable perennial herbaceous species recovery after disturbance without seeding is typically high.</br>
+                    Risk of invasive annual grasses becoming dominant is relatively low. EDRR can be used to address problematic invasive plants.</br>
+                    Tree removal can increase habitat availability and connectivity in expansion areas.</br>
+                    Seeding/transplanting success is typically high.</br>Recovery following inappropriate livestock use is often possible given changes in management.
+                </div>
+            </div>
+        </div>
+        <div style="float:left;transform:rotate(270deg);transform-origin:left;margin-top:-15px;width:650px;margin-left:10px;"">
+            <div class="matrix-axis-title">Ecosystem Resilience to Disturbance and Resistance to Invasion</div>
+            <div style="text-align:center;">
+                <span>
+                    Low
+                </span>
+                --------------------------------
+                <span>
+                    Moderate
+                </span>
+                --------------------------------
+                <span>
+                    High
+                </span>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="matrixBoxTemplate" type="text/x-jsrender">
+    <div class="col-md-4 matrix-box" style="color:{{:color}};background-color:{{:backgroundColor}};">
+        <div class="matrix-text">
+            <div style="font-weight:bold">{{:label}}</div>
+            {{:~acresFormat(acres)}} ({{:~format(percent)}}% of total area)
+        </div>
+    </div>
+</script>
+
+<script id="bigMatrixBoxTemplate" type="text/x-jsrender">
+    <div class="col-md-4 matrix-box" style="color:{{:color}};background-color:{{:backgroundColor}};">
+        <div class="matrix-text">
+            <div style="font-weight:bold">{{:label}}</div>
+            <div>{{:~acresFormat(acres)}}</div>
+        </div>
+        <div style="position:absolute;bottom:0;width:100%;margin:0 -15px;">
+            ({{:~format(percent)}}% of total area)
+        </div>
+    </div>
+</script>

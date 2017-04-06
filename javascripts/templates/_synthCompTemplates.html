@@ -1,0 +1,227 @@
+<script id="noDataTemplate" type="text/x-jsrender">
+    <div class="contextHeader" style="padding-top:10px;">
+        {{:message}}
+        {{if bapHtml}}
+            <div style="margin:30px 0 5px;">Reports contain these analyses:</div>
+            {{:bapHtml}}
+        {{/if}}
+    </div>
+</script>
+
+<script id="emptySynthesisCompositionTemplate" type="text/x-jsrender">
+    <div class="contextHeader" style="padding-top:10px;">
+        {{if message}}
+            {{:message}}
+        {{else}}
+            Please click somewhere to populate this report.
+        {{/if}}
+        <div class="bapList" style="padding-top: 30px;"></div>
+    </div>
+</script>
+
+<script id="emptySynthCompBapListTemplate" type="text/x-jsrender">
+    <div style="margin-bottom:20px;">Available Analysis Packages:</div>
+    {{:html}}
+</script>
+
+<script id="bapListTemplate" type="text/x-jsrender">
+    {{for baps}}
+        <div style="padding:10px 0 0 10px;">{{:title}}</div>
+    {{/for}}
+</script>
+
+<script id="synthesisCompositionDetailsTemplate" type="text/x-jsrender">
+<div class="unit_info_header">
+{{if title}}
+ <h1 class="panelTitle" style="color:lightblue;">{{:title}}</h1>
+{{/if}}
+{{if type}}
+    <div style="text-align:center;font-size:16px;">{{:type}}</div>
+{{/if}}
+{{if acres}}
+    <div id="synthCompAcres" class="generalInfo">
+        <span class="summaryHeader">Area: </span>{{:acres}} acres
+    </div>
+{{/if}}
+{{if hasSummaryData}}
+    <div>
+        <span class="summaryLabel summaryHeader">Summary: </span>
+        {{include summaryData tmpl="#summaryTemplate"/}}
+    </div>
+{{/if}}
+</div>
+</script>
+
+<script id="headerBapSpinner" type="text/x-jsrender">
+<div class="unit_info_header">
+ <div class="spinnerContainer" style="margin-bottom: 20px;"><i class="fa fa-spinner fa-pulse"></i></div>
+</div>
+</script>
+
+<script id="synthesisCompositionDetailsError" type="text/x-jsrender">
+<div class="unit_info_header">
+ <div class="generalInfo">
+        <span class="contextHeader">{{:error}}</span>
+    </div>
+</div>
+</script>
+
+<script id="synthesisCompositionHeaderTemplate" type="text/x-jsrender">
+    {{if reportJsonUrl}}
+        <div class="buttonBar" style="margin-bottom:10px;">
+            <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip" title="Share this map by copying the URL to your clipboard.">
+                <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
+                Share Map
+            </button>
+            <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
+                <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
+                Download Report as PDF
+            </button>
+            <a class="grayLink" target="_blank" href="{{:reportJsonUrl}}">
+                <button class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
+                    <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+                    View JSON Report
+                </button>
+            </a>
+        </div>
+        <div style="clear:both"></div>
+    {{/if}}
+</script>
+
+<script id="buttonBar" type="text/x-jsrender">
+        <div class="buttonBar" style="margin-bottom:10px;">
+            <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip" title="Share this map by copying the URL to your clipboard.">
+                <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
+                Share Map
+            </button>
+            <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
+                <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
+                Download Report as PDF
+            </button>
+            {{if viewJson}}
+            <button onclick='actionHandlerHelper.viewSynthCompJson()' class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
+                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+                View JSON Report
+            </button>
+            {{/if}}
+        </div>
+        <div style="clear:both"></div>
+</script>
+
+<script id="bapSpinner" type="text/x-jsrender">
+<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>
+</script>
+
+<script id="emptyBapTemplate" type="text/x-jsrender">
+<div id="{{:id}}BapCase">
+<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>
+</div>
+</script>
+
+<script id="bapSectionTemplate" type="text/x-jsrender">
+<div id="{{:id}}BapCase">
+
+<div class="layerExpander contextHeader" data-section="{{:id}}BAP">
+<div style='width: calc(100% - 45px);'>
+{{if !leaveOutJson}}
+<div style='width: 100%;'>
+<button onclick="window.event.stopPropagation(); actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: 25px; left: 100%;'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
+                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+</div>
+{{/if}}
+{{if simplified}}
+<div style='width: 100%;'>
+            <button onclick="window.event.stopPropagation(); actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: 25px; left: 100%;'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the simplified polygon used for analysis.">
+                <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+</div>
+{{/if}}
+<span id="{{:id}}BAPControl">{{if openByDefault}}&#9660;{{else}}&#9658;{{/if}}</span>
+        <span class="bapTitle">{{:title}}</span>
+        {{if hasInfoDiv}}
+        &nbsp;
+            <div id="{{:id}}" class="moreInfo" style="display: inline-block;white-space:nowrap;">
+                <i class="fa fa-circle fa-first" aria-hidden="true" style="margin-right:-16px;"></i>
+                <i class="fa fa-info-circle fa-second" aria-hidden="true"></i>
+            </div>
+        {{/if}}
+</div>
+</div>
+    <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
+        {{:sectionHtml}}
+    </div>
+</div>
+</script>
+
+<script id="identifyUnitTemplate" type="text/x-jsrender">
+    <div class="layerExpander contextHeader" data-section="identify{{:id}}"
+    {{if isOn}}style="color:orange; font-weight: bold; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"
+    {{else}}style="color:#f3f3f3; font-weight: normal; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"{{/if}}>
+        <span id="identify{{:id}}Control">&#9658;</span>
+        {{:type}}: {{:code}} {{:title}}
+    </div>
+    <div id="identify{{:id}}" class="dropDownContainer" style="display:none;">
+        {{if description}}
+            {{:description}}
+        {{else}}
+            No description available.
+        {{/if}}
+    </div>
+    {{if additionalHtml}}
+        <div>
+            {{: additionalHtml}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="boxAndWhiskerTemplate" type="text/x-jsrender">
+    <div>
+        <div style="text-align:center;margin-bottom:5px;">Graph input:</div>
+        <div id="rangeSlider" style="margin-bottom:5px;"></div>
+        <div class="sliderLabelLeft">{{: startDate}}</div>
+        <div id="bapRangeSlider" class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
+        <div class="sliderLabelRight">{{: endDate}}</div>
+    </div>
+    <div style="clear:both;"></div>
+    <div style="text-align:center;width:100%;">
+        <button id="getBWData" class="btn-xs">Submit</button>
+    </div>
+    <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+    <div id="boxAndWhiskerError"></div>
+    <div id="boxAndWhisker" class="myNpnInfo" style="width:100%;height:500px;"></div>
+</script>
+
+<script id="unknownBapTemplate" type="text/x-jsrender">
+    <strong>This is not a recognized Analysis Package.</strong>
+</script>
+
+<script id="synthCompBottomBarTemp" type="text/x-jsrender">
+    <button id="rightPanelReset" class="btn-xs">Clear this selection</button>
+    {{include #data tmpl="#coordinatesTemplate"/}}
+</script>
+
+<script id="coordinatesTemplate" type="text/x-jsrender">
+    <div class="coordinates">Coordinates clicked: {{:lat}}, {{:lng}}</div>
+</script>
+
+<script id="hierarchyTableTemplate" type="text/x-jsrender">
+    <div style='font-size: 14px; color: white;'>{{:description}}</div>
+    <div class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal;">{{:title}}</div>
+    <div class='hierarchyTable'>
+        <div style='height: 1em;'>
+            <span style='float: left; font-size: 14px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px;'>{{:textHeader}}</span>
+            <span style='float: right; font-size: 14px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px;'>{{:areaHeader}}</span>
+        </div>
+        {{for rows}}
+            <div class='hierarchyRow'>
+            <span class="otherExpander">
+            <span style='float: right; margin-left: .5em; margin-right: .1em; font-size: 14px; vertical-align: middle'>{{:area}}</span>
+            {{:text}}
+            </span>
+            </div>
+        {{/for}}
+    </div>
+</script>

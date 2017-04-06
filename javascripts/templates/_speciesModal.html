@@ -1,0 +1,99 @@
+<script id="speciesJsonLoadingTemplate" type="text/x-jsrender">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="generalModalLabel">{{:title}}</h4>
+    </div>
+    <div id="speciesJsonBody" class="modal-body">
+        Loading...
+    </div>
+</script>
+
+<script id="speciesJsonResultsTemplate" type="text/x-jsrender">
+    <a class="coordinates" target="_blank" href="{{:url}}" style="margin:0;">[Full Species JSON]</a>
+    <div style="clear:both;"></div>
+    {{include tmpl="#ecosResultsTemplate" /}}
+    {{include tmpl="#itisResultsTemplate" /}}
+    {{include tmpl="#nsResultsStuff" /}}
+    {{include tmpl="#sbResultsTemplate" /}}
+    {{include tmpl="#wrmsResultsTemplate" /}}
+</script>
+
+<script id="ecosResultsTemplate" type="text/x-jsrender">
+    {{if ecosStuff.results && !ecosStuff.error}}
+        <div class="dialogHeader ">ECOS:</div>
+        <div class="dialogData">
+                Species Detail:
+        {{props ecosStuff.results.SPECIES_DETAIL}}
+        <br>
+            <span style="margin-left: 1em;">{{:key}}: {{:prop}}</span>
+            {{/props}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="itisResultsTemplate" type="text/x-jsrender">
+    {{if itisStuff.hierarchyList}}
+        <div class="dialogHeader">ITIS:</div>
+        <div class="dialogData">
+            Taxonomic Hierarchy:
+            {{for itisStuff.hierarchyList}}
+                <br>
+                <span style="margin-left: {{:(#index + 1) * 10}}px;">{{:rankName onError=''}}: {{:taxonName onError=''}}</span>
+            {{/for}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="nsResultsStuff" type="text/x-jsrender">
+    {{if nsStuff && !nsStuff.error}}
+        <div class="dialogHeader">NatureServe:</div>
+        <div class="dialogData">
+            <span>Species Code: {{:nsStuff.code}}</span>
+            <br>
+            <span>Global Rank: {{:nsStuff.rank}}</span>
+        </div>
+    {{/if}}
+</script>
+
+<script id="sbResultsTemplate" type="text/x-jsrender">
+    {{if sbStuff && !sbStuff.error}}
+        <div class="dialogHeader">Sciencebase:</div>
+        <div class="dialogData">
+            Item ID: {{:sbStuff.id}}
+            <br>
+            Last Updated: {{:sbStuff.provenance.lastUpdated}}
+            <br>
+            Web Links:
+            <br>
+            {{for sbStuff.webLinks}}
+                <a style="margin-left: 1em;" href="{{:uri}}" target="_blank">{{:title}}</a><br>
+            {{/for}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="wrmsResultsTemplate" type="text/x-jsrender">
+    {{if wrmsStuff && !wrmsStuff.error}}
+        <div class="dialogHeader">WoRMS:</div>
+        <div class="dialogData">
+            Aphia ID: {{:wrmsStuff.AphiaID}}
+            <br>
+            Status: {{:wrmsStuff.status}}
+            <br>
+            Rank: {{:wrmsStuff.rank}}
+            <br>
+            Last Updated: {{:wrmsStuff.modified}}
+        </div>
+    {{/if}}
+</script>
+
+<script id="errorResultsTemplate" type="text/x-jsrender">
+    <div class="modal-footer" style="text-align:left;">
+        The following sources did not return a match for this species:
+        {{for errorModels}}
+            <div>
+                <span style="font-weight:bold;">{{:service}}</span>
+            </div>
+        {{/for}}
+    </div>
+</script>

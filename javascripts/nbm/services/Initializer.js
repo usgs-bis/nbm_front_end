@@ -164,6 +164,8 @@ var Initializer = (function(initializer) {
      * @param {Object} state - state of the application
      */
     function setupPage(bioscapeJson, configJson, state) {
+        console.log("Got here");
+
         disclaimerModal.element
             .on('hide.bs.modal', function() {
                 if(disclaimerModal.closeRightPanel) {

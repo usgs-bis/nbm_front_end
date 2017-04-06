@@ -1,0 +1,29 @@
+<script id="summaryTemplate" type="text/x-jsrender">
+    {{if shortSummary}}
+        <div class="{{:toggleId}}ShortVersion inline">
+            <span style="line-height: 18px;">{{:shortSummary}}</span>
+            <br>
+            <div onclick="$('.{{:toggleId}}ShortVersion').hide();$('.{{:toggleId}}LongVersion').show();" class="descriptionToggle">more...</div>
+        </div>
+    {{/if}}
+    <div class="{{:toggleId}}LongVersion inline" style="display:{{:longDisplayCss}};">
+        <span class="summary" style="line-height: 18px;">{{:summary}}</span>
+        {{if webLinks}}
+            <div class="generalInfo">
+                <span class="webLinksLabel summaryHeader">Web Links:</span>
+                <span>
+                    <ul>
+                        {{for webLinks}}
+                            <li>
+                                <a class="webLink grayLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:title}}</a>
+                            </li>
+                        {{/for}}
+                    </ul>
+                </span>
+            </div>
+        {{/if}}
+        {{if shortSummary}}
+            <div onclick="$('.{{:toggleId}}LongVersion').hide();$('.{{:toggleId}}ShortVersion').show();" class="descriptionToggle">less...</div>
+        {{/if}}
+    </div>
+</script>

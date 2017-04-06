@@ -1,0 +1,171 @@
+<script id="genericBapInfoTemplate" type="text/x-jsrender">
+    <div id="genericBapDescription{{:id}}" style='font-size: 14px; color: white; margin-bottom: -.5em;'></div>
+    <div id="genericBapSubtitle{{:id}}" class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal;"></div>
+    <div class="divider"></div>
+    {{for charts}}
+            <div id="genericChartSubtitle{{:id}}{{:#index}}" class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal; font-size: 18px;"></div>
+            <div id="genericChart{{:id}}{{:#index}}" style="margin:0 auto; color: #f3f3f3; background: rgba(30,30,35,.5); border: 1px solid rgba(245,245,245,.2); border-radius: 1em; padding: 7px 0 7px 0;"></div>
+            <div id="genericLegend{{:id}}{{:#index}}" style="position:relative;"></div>
+    {{/for}}
+</script>
+
+<script id="ecosystemProtectionInfoTemplate" type="text/x-jsrender">
+    <div id="regionProtectionSubtitle" class="contextSubHeader subHeaderTitle">Protection Status of Ecoregion Compared to the Continental United States</div>
+    <div style="height: 300px;" id="protectionChart"></div>
+    <div class="divider"></div>
+    <div class="contextSubHeader">
+        <div id="ecoProtectionSubtitle" class="subHeaderTitle">Protection Status of Ecological Systems</div>
+        (Click on a slice to filter the table and see only systems with that percent of protection.)
+    </div>
+    <div id="gap12chart" style="width: 48%;display:inline-block;height:430px;text-align:center;"></div>
+    <div id="gap123chart" style="width: 48%;display:inline-block;height:430px;text-align:center;"></div>
+    <div style="clear: both;"></div>
+    <div id="ecosReset" class="tableReset">
+        <button id="resetEcosTable" class="btn-xs">Clear chart selection</button>
+    </div>
+    <div id="ecosTableContainer">
+        {{include tmpl="#ecosTableContainerTemplate"/}}
+    </div>
+    <div class="divider"></div>
+    <div id="ecoCoverageSubtitle" class="contextSubHeader subHeaderTitle">Percent Coverage by National Vegetation Classification Class</div>
+    <div id="ecoCoverageChart" style="height:350px;width:370px;margin:0 auto;"></div>
+    <div id="ecoCoverageLegend" style="position:relative;"></div>
+</script>
+
+<script id="ecosTableContainerTemplate" type="text/x-render">
+    <div id="ecosystemTableTitle" class="contextSubHeader">
+        All Ecological Systems ({{:ecosystems.length}})
+    </div>
+    <div class="table">
+        <table id="ecosTable">
+            <tr style="font-weight: bold; color: lightblue;">
+                <th>Ecological System</th>
+                <th id="middleColTitle" style="width: 25%;">GAP 1 & 2 Protection (%)</th>
+                <th id="rightColTitle" style="width: 25%;">GAP 1, 2 & 3 Protection (%)</th>
+            </tr>
+            {{for ecosystems}}
+                <tr class="ecosRow tableRow">
+                    <td>{{:name}}</td>
+                    <td style="text-align: right;">{{:~format(status_1_2)}}</td>
+                    <td style="text-align: right;">{{:~format(status_1_2_3)}}</td>
+                </tr>
+            {{/for}}
+        </table>
+    </div>
+</script>
+
+<script id="updateEcosTableTemplate" type="text/x-jsrender">
+    <tbody>
+        <tr style="font-weight: bold; color: lightblue;">
+            <th>Ecological System</th>
+            <th id="middleColTitle" style="width: 25%;">Acres Protected</th>
+            <th id="rightColTitle" style="width: 25%;">% Protected</th>
+        </tr>
+        {{for ecosystems}}
+            <tr class="ecosRow tableRow">
+                <td>{{:name}}</td>
+                <td style="text-align: right;">{{:~acresFormat(acres, percent)}}</td>
+                <td style="text-align: right;">{{:~format(percent)}}</td>
+            </tr>
+        {{/for}}
+    </tbody>
+</script>
+
+<script id="speciesProtectionInfoTemplate" type="text/x-jsrender">
+    <div class="contextSubHeader">
+        <div id="speciesBAPSubtitle" class="subHeaderTitle">Protection Status of Species</div>
+        (Click on a slice to filter the table and see only species who's habitat falls in that percent of protection.
+            Click on a radio button to see only species of that type.)
+    </div>
+    <form>
+        <fieldset>
+        <legend style="display:none;">Species type</legend>
+        <label for="allTaxa">All ({{:totalSpecies}})
+            <input id="allTaxa" type="radio" name="taxaType" value="all" checked />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="aTaxa">Amphibians ({{:totalAmphibians}})
+            <input id="aTaxa" type="radio" name="taxaType" value="a" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="bTaxa">Birds ({{:totalBirds}})
+            <input id="bTaxa" type="radio" name="taxaType" value="b" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="mTaxa">Mammals ({{:totalMammals}})
+            <input id="mTaxa" type="radio" name="taxaType" value="m" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        <br>
+        <label for="rTaxa">Reptiles ({{:totalReptiles}})
+            <input id="rTaxa" type="radio" name="taxaType" value="r" />
+            <i class="fa fa-custom-radio-class" aria-hidden="true"></i>
+        </label>
+        </fieldset>
+    </form>
+    <div style="clear: both;"></div>
+    <div id="sp12chart" style="width: 48%; height: 430px; display:inline-block; float: left;"></div>
+    <div id="sp123chart" style="width: 48%; height: 430px; display:inline-block; float: right;"></div>
+    <div style="clear: both;"></div>
+    <div id="speciesReset" class="tableReset">
+        <button id="resetSpeciesTable" class="btn-xs">Clear chart selection</button>
+    </div>
+    <div class="contextSubHeader" style="padding:0;">(Click on a row for individual species information.)</div>
+    <div id="spNameToggle" style="display:none;">
+        <label id="spNameLabel" for="spNameCheckbox" style="font-weight:normal;font-size:12px;margin-bottom:0px;margin-left:20px;">Show Scientific Name
+            <input id="spNameCheckbox" type="checkbox" style="vertical-align:sub;" />
+            <i class="fa fa-custom-checkbox-class" aria-hidden="true"></i>
+        </label>
+    </div>
+    <div style="clear: both;"></div>
+    <div id="speciesTableContainer">
+        {{include tmpl="#speciesTableContainerTemplate"/}}
+    </div>
+</script>
+
+<script id="speciesTableContainerTemplate" type="text/x-jsrender">
+    <div id="speciesTableTitle" class="contextSubHeader">
+        {{:speciesType}} in this Ecoregion ({{:species.length}})
+    </div>
+    <div class="table">
+        <table id="spTable" style="width:100%">
+            <tr class="even" style="font-weight: bold; color: lightblue;">
+                <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
+                <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">Scientific Name</th>
+            </tr>
+            {{for species}}
+                <tr id="{{:scientific_name}}" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');" class="spRow tableRow">
+                    <td>{{:common_name ? common_name : "No common name recorded"}}</td>
+                    <td>{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
+                </tr>
+            {{/for}}
+        </table>
+    </div>
+</script>
+
+<script id="updateSpeciesProtectionTableTemplate" type="text/x-jsrender">
+    <tbody>
+        <tr class="even" style="font-weight: bold; color: lightblue;">
+            <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
+            <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">% Protected</th>
+        </tr>
+        {{for species}}
+            <tr class="spRow tableRow" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');" >
+                <td class="spCommonName shownTd">{{:common_name}}</td>
+                <td class="spScientificName hiddenTd">{{:scientific_name}}</td>
+                <td style="text-align: right;">{{:~format(percent)}}</td>
+            </tr>
+        {{/for}}
+    </tbody>
+</script>
+
+<script id="fishChartTemplate" type="text/x-jsrender">
+    <div>&nbsp;</div>
+    <div id="miniFishChart" style="width: 100%; height: 350px; background-color: white;border-radius: 6px;"></div>
+    <div style="width: 100%; text-align: center;">
+        <button id="fishButton" class="btn-xs expand-chart">Expand Chart</button>
+    </div>
+</script>

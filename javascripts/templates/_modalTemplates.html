@@ -1,0 +1,107 @@
+<div id="modalContainer">
+    <div class="modal fade" id="generalModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-mdm">
+            <div id="generalModalContent" class="modal-content">
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+
+<script id="infoDivTemplate" type="text/x-jsrender">
+    <div class="modal fade" id="{{:id}}" tabindex="-1" role="dialog" aria-labelledby="{{:id}}Label">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="{{:id}}Label">{{:title}}</h4>
+                </div>
+                <div class="modal-body">
+                    {{:description}}
+                </div>
+                <div class="modal-footer" style="text-align:left;">
+                    ScienceBase Item: <a target="_blank" href="{{:bapReference}}">{{:bapReference}}</a>
+                    <div>Last updated: {{:lastUpdated}}</div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</script>
+
+<script id="identifyResultsTemplate" type="text/x-jsrender">
+    {{if results.length > 0}}
+        {{for results}}
+            <div class="identifyResult layerExpander contextHeader" data-section="identifyResult{{:#index}}">
+                <span id="identifyResult{{:#index}}Control">
+                    {{if #index === 0}}
+                        &#9660;
+                    {{else}}
+                        &#9658;
+                    {{/if}}
+                </span>
+                {{:layerName}}{{if name}}: {{:name}}{{/if}}
+            </div>
+            <div id="identifyResult{{:#index}}" class="layerSection dropDownContainer" {{if #index === 0}}style="display:block;"{{/if}}>
+                <div style="table">
+                    <table style="width:100%;font-size:13px;">
+                        <tbody>
+                            {{include geojson.properties tmpl="#getObjectPropertiesTemplate"/}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {{/for}}
+    {{else}}
+        No results were found for these coordinates. Make sure at least one layer is turned on.
+    {{/if}}
+</script>
+
+<script id="getObjectPropertiesTemplate" type="text/x-jsrender">
+    {{props #data}}
+        <tr class="tableRow">
+            <td>{{>key}} </td>
+            <td>{{:prop}}</td>
+        </tr>
+    {{else}}
+    {{/props}}
+</script>
+
+<script id="betaBannerTemplate" type="text/x-jsrender">
+    <span id="beta-banner" data-toggle="modal" data-target="#disclaimerModal">beta</span>
+</script>
+
+<script id="downloadPopoverTemplate" type="text/x-jsrender">
+    {{if layers.length === 0}}
+        Please select a layer for the map.
+    {{else zoomedOut}}
+        Download not available at this zoom level. Try zooming in closer.
+    {{else}}
+        {{for layers}}
+
+            {{if !mapLayer.downloader}}
+                <button type="button" id="{{:id}}" class="layerDownload btn btn-default disabled" data-toggle="tooltip" title="Download is unavailable for this layer.">
+            {{else}}
+                <button type="button" id="{{:id}}" class="layerDownload btn btn-default">
+            {{/if}}
+                {{: section.title}}: {{:title}}</button>
+        {{/for}}
+    {{/if}}
+</script>
+
+<script id="userHelpTemplate" type="text/x-jsrender">
+    {{if isBetaEnvironment }}
+        <div style="margin-top:10px;font-weight:bold;font-size:18px;text-align:center;">How to use this analysis tool:</div>
+    {{/if}}
+    <div>
+        <span class="arrow left_arrow">&nbsp;</span>
+        <span class="user_help_number">1</span> ‘Regional Summary’ designates the type of spatial boundary to be used in your analysis.
+        The other expandable sections represent the data themes you can display on the map.
+        Expand a data theme to view individual datasets under that theme.
+    </div>
+    <div>
+        <span class="user_help_number">2</span> Select a location on the map to retrieve a summary for the region. The region's spatial boundary will be shown.
+    </div>
+    <div>
+        <span class="user_help_number">3</span> The summary for your selected region is generated. It is available for review and export in the analysis pane.
+        <span class="arrow right_arrow">&nbsp;</span>
+    </div>
+</script>
