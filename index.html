@@ -455,16 +455,16 @@
 </script>
 
 <script id="timeSliderTemplate" type="text/x-jsrender">
-    %{--<label id="{{:layerId}}TimeSliderLabel" {{if disableSlider}}class="disabled"{{/if}} for="{{:layerId}}TimeSlider">Time Control:</label>&nbsp;--}%
+    <!--<label id="{{:layerId}}TimeSliderLabel" {{if disableSlider}}class="disabled"{{/if}} for="{{:layerId}}TimeSlider">Time Control:</label>&nbsp;-->
     <div style="width:100%;text-align:center;line-height:initial;" id="{{:layerId}}YearVal">
         Current {{:stepLabel}}: {{:defaultDate}}
     </div>
     <input id="{{:layerId}}TimeSlider" class="opacitySlider" type="range" {{if disableSlider}}disabled{{/if}} min="{{:start}}"
         max="{{:end}}" step="1" style="width:100%;display:inline;vertical-align:middle;" value="{{:default}}" />
 
-    %{--<div style="width:100%; text-align:center;" id="{{:layerId}}YearVal">--}%
-        %{--{{:stepLabel}} range from {{:startDate}} to {{:endDate}}--}%
-    %{--</div>--}%
+    <!--<div style="width:100%; text-align:center;" id="{{:layerId}}YearVal">-->
+        <!--{{:stepLabel}} range from {{:startDate}} to {{:endDate}}-->
+    <!--</div>-->
     {{if !disableSlider}}
         <div style="width:100%">
             <div class="sliderLabelLeft">{{:startDate}}</div>
@@ -473,12 +473,12 @@
         </div>
         <div style="clear:both;"></div>
     {{/if}}
-    %{--<label for="{{:layerId}}TimeSelector">Layer:</label>&nbsp;--}%
-    %{--<select style="color: black;" id="{{:layerId}}TimeSelector">--}%
-        %{--{{for layers}}--}%
-            %{--<option style="color: white;" {{if selected}}selected{{/if}} val="{{:name}}">{{:name}}</option>--}%
-        %{--{{/for}}--}%
-    %{--</select>--}%
+    <!--<label for="{{:layerId}}TimeSelector">Layer:</label>&nbsp;-->
+    <!--<select style="color: black;" id="{{:layerId}}TimeSelector">-->
+        <!--{{for layers}}-->
+            <!--<option style="color: white;" {{if selected}}selected{{/if}} val="{{:name}}">{{:name}}</option>-->
+        <!--{{/for}}-->
+    <!--</select>-->
 </script>
 
 <script id="onMapClickToggleButton" type="text/x-jsrender">
