@@ -39,7 +39,7 @@ var Initializer = (function(initializer) {
         disclaimerModal.element = $('#disclaimerModal');
 
         var bioscapeJson = {};
-        console.log(bioScapeId);
+
         //request information from the bioScape ScienceBase item
         sendScienceBaseItemRequest(bioScapeId, 5000)
             .then(function(data) {
@@ -52,7 +52,7 @@ var Initializer = (function(initializer) {
                 };
 
                 var configUrl = getConfigUrl(data);
-                console.log(configUrl);
+
                 if(configUrl === '') {
                     alert('This collection doesn\'t seem to have a config file. Please add one otherwise the site may not work correctly. SB Item #: ' + bioScapeId);
                 }
@@ -164,8 +164,6 @@ var Initializer = (function(initializer) {
      * @param {Object} state - state of the application
      */
     function setupPage(bioscapeJson, configJson, state) {
-        console.log("Got here");
-
         disclaimerModal.element
             .on('hide.bs.modal', function() {
                 if(disclaimerModal.closeRightPanel) {
