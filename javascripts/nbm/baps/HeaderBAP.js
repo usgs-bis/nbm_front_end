@@ -16,6 +16,7 @@ var HeaderBAP = function(serverAP, headerBapId) {
 
 HeaderBAP.prototype.getHtml = function () {
     var details = this.config;
+
     var html = '';
     if (details.error) {
         html = getHtmlFromJsRenderTemplate('#synthesisCompositionDetailsError', details);
@@ -30,6 +31,7 @@ HeaderBAP.prototype.getHtml = function () {
         var viewData = {
             type: details.type,
             title: details.title,
+            approximate: details.bapType == "User Defined Polygon",
             acres: formatAcres(details.acres),
             hasSummaryData: !!(details.description.length || details.webLinks.length),
             summaryData: {
