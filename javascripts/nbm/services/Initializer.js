@@ -51,6 +51,8 @@ var Initializer = (function(initializer) {
                     lastUpdated: data.provenance ? data.provenance.lastUpdated : new Date()
                 };
 
+                document.title = data.title;
+
                 var configUrl = getConfigUrl(data);
 
                 if(configUrl === '') {
