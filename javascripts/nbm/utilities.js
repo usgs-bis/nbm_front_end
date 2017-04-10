@@ -5,9 +5,7 @@ if (myServer == "localhost") {
 } else {
     myServer = "https://" + myServer + "/bcb"
 }
-console.log("Server: " + myServer);
-// var myServer = host;
-//myServer = "https://my-beta.usgs.gov/biogeography";
+
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
 var colorMap = {};
