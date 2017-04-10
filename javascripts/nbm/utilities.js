@@ -1,7 +1,11 @@
 'use strict';
+var myServer = location.host;
+if (myServer == "localhost") {
+    myServer = "http://localhost:8080/bcb"
+} else {
+    myServer = "https://" + myServer + "/bcb"
+}
 
-var myServer = "http://localhost:8080" + homePath;
-//myServer = "https://my-beta.usgs.gov/biogeography";
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
 var colorMap = {};
