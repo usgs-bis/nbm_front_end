@@ -118,26 +118,40 @@ var EsriDynamicMapLayer = function(properties, identifyAttributes) {
     // (Leaflet won't for L.esri.dynamicMapLayers)
     //if zIndex from the config isn't present default zIndex to 1 (base maps are usually 0)
     this.zIndex = properties.zIndex ? properties.zIndex : 1;
-};
-inherit(EsriMapLayer, EsriDynamicMapLayer);
 
-EsriDynamicMapLayer.prototype.addToMap = function() {
-    MapLayerBase.prototype.addToMap.call(this);
     var self = this;
     //once the layer has been added to the map we update the zIndex so it'll display correctly
     // relative to the other layers in the 'tilePane' pane
-    self.leafletLayer.on('load', updateZIndex);
-    function updateZIndex() {
-        var children = map.getPane('tilePane').childNodes;
-        var highestIndex = undefined;
-        for(var i = 0; i < children.length; i++) {
-            if(children[i].nodeName == 'IMG') {
-                highestIndex = i;
-            }
-        }
-        //the highestIndex points to the newest IMG node in the pane, this layer
-        if(highestIndex) {
-            $(children[highestIndex]).css('zIndex', self.zIndex);
+    this.leafletLayer.on('load', function () {
+        self.updateZIndex();
+    });
+};
+inherit(EsriMapLayer, EsriDynamicMapLayer);
+
+var esriDynamicLayerQueue = [];
+
+EsriDynamicMapLayer.prototype.updateZIndex = function () {
+    var self = this;
+    for (var i = esriDynamicLayerQueue.indexOf(self) + 1; i < esriDynamicLayerQueue.length; i++) {
+        if (esriDynamicLayerQueue[i].zIndex == self.zIndex) {
+            esriDynamicLayerQueue[i].leafletLayer.bringToFront();
         }
     }
+
+    $.each(esriDynamicLayerQueue, function (index, layer) {
+        if (layer.zIndex > self.zIndex) {
+            layer.leafletLayer.bringToFront();
+        }
+    });
+};
+
+EsriDynamicMapLayer.prototype.addToMap = function() {
+    esriDynamicLayerQueue.push(this);
+    MapLayerBase.prototype.addToMap.call(this);
+};
+
+
+EsriDynamicMapLayer.prototype.removeFromMap = function () {
+    esriDynamicLayerQueue.splice(esriDynamicLayerQueue.indexOf(this), 1);
+    MapLayerBase.prototype.removeFromMap.call(this);
 };
