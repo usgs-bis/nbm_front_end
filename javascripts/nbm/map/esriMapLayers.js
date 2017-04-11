@@ -129,22 +129,15 @@ var EsriDynamicMapLayer = function(properties, identifyAttributes) {
 inherit(EsriMapLayer, EsriDynamicMapLayer);
 
 var esriDynamicLayerQueue = [];
+var sortedEsriDynamicQueue = [];
 
 /**
  * z indexes aren't managed well with the esri plugin so we do it ourselves
  */
 EsriDynamicMapLayer.prototype.updateZIndex = function () {
-    var self = this;
-    for (var i = esriDynamicLayerQueue.indexOf(self) + 1; i < esriDynamicLayerQueue.length; i++) {
-        if (esriDynamicLayerQueue[i].zIndex == self.zIndex) {
-            esriDynamicLayerQueue[i].leafletLayer.bringToFront();
-        }
-    }
-
-    $.each(esriDynamicLayerQueue, function (index, layer) {
-        if (layer.zIndex > self.zIndex) {
-            layer.leafletLayer.bringToFront();
-        }
+    //Iterate through the sorted array, bringing each layer to the front in ascending zIndex order (sorted below).
+    $.each(sortedEsriDynamicQueue, function (index, layer) {
+        layer.leafletLayer.bringToFront();
     });
 };
 
@@ -153,6 +146,16 @@ EsriDynamicMapLayer.prototype.updateZIndex = function () {
  */
 EsriDynamicMapLayer.prototype.addToMap = function() {
     esriDynamicLayerQueue.push(this);
+
+    //First create a shallow copy (we want them pointing at the same objects) of the queue so we aren't modifying the actual queue object.
+    //Sort the array first based on zIndex. If those are equal, sort on the order they were added to the queue.
+    sortedEsriDynamicQueue = esriDynamicLayerQueue.slice().sort(function (a,b) {
+        if (a.zIndex == b.zIndex) {
+            return esriDynamicLayerQueue.indexOf(a) - esriDynamicLayerQueue.indexOf(b);
+        }
+        return a.zIndex - b.zIndex;
+    });
+
     MapLayerBase.prototype.addToMap.call(this);
 };
 
@@ -161,5 +164,6 @@ EsriDynamicMapLayer.prototype.addToMap = function() {
  */
 EsriDynamicMapLayer.prototype.removeFromMap = function () {
     esriDynamicLayerQueue.splice(esriDynamicLayerQueue.indexOf(this), 1);
+    sortedEsriDynamicQueue.splice(sortedEsriDynamicQueue.indexOf(this), 1);
     MapLayerBase.prototype.removeFromMap.call(this);
 };
