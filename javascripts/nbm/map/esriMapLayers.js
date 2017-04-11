@@ -118,26 +118,52 @@ var EsriDynamicMapLayer = function(properties, identifyAttributes) {
     // (Leaflet won't for L.esri.dynamicMapLayers)
     //if zIndex from the config isn't present default zIndex to 1 (base maps are usually 0)
     this.zIndex = properties.zIndex ? properties.zIndex : 1;
-};
-inherit(EsriMapLayer, EsriDynamicMapLayer);
 
-EsriDynamicMapLayer.prototype.addToMap = function() {
-    MapLayerBase.prototype.addToMap.call(this);
     var self = this;
     //once the layer has been added to the map we update the zIndex so it'll display correctly
     // relative to the other layers in the 'tilePane' pane
-    self.leafletLayer.on('load', updateZIndex);
-    function updateZIndex() {
-        var children = map.getPane('tilePane').childNodes;
-        var highestIndex = undefined;
-        for(var i = 0; i < children.length; i++) {
-            if(children[i].nodeName == 'IMG') {
-                highestIndex = i;
-            }
+    this.leafletLayer.on('load', function () {
+        self.updateZIndex();
+    });
+};
+inherit(EsriMapLayer, EsriDynamicMapLayer);
+
+var esriDynamicLayerQueue = [];
+var sortedEsriDynamicQueue = [];
+
+/**
+ * z indexes aren't managed well with the esri plugin so we do it ourselves
+ */
+EsriDynamicMapLayer.prototype.updateZIndex = function () {
+    //Iterate through the sorted array, bringing each layer to the front in ascending zIndex order (sorted below).
+    $.each(sortedEsriDynamicQueue, function (index, layer) {
+        layer.leafletLayer.bringToFront();
+    });
+};
+
+/**
+ * Pushes this layer into the queue for zIndex handling, then calls the parent function to add it to the map.
+ */
+EsriDynamicMapLayer.prototype.addToMap = function() {
+    esriDynamicLayerQueue.push(this);
+
+    //First create a shallow copy (we want them pointing at the same objects) of the queue so we aren't modifying the actual queue object.
+    //Sort the array first based on zIndex. If those are equal, sort on the order they were added to the queue.
+    sortedEsriDynamicQueue = esriDynamicLayerQueue.slice().sort(function (a,b) {
+        if (a.zIndex == b.zIndex) {
+            return esriDynamicLayerQueue.indexOf(a) - esriDynamicLayerQueue.indexOf(b);
         }
-        //the highestIndex points to the newest IMG node in the pane, this layer
-        if(highestIndex) {
-            $(children[highestIndex]).css('zIndex', self.zIndex);
-        }
-    }
+        return a.zIndex - b.zIndex;
+    });
+
+    MapLayerBase.prototype.addToMap.call(this);
+};
+
+/**
+ * Removes this layer from the z index queue, then calls the parent function to add it to the map.
+ */
+EsriDynamicMapLayer.prototype.removeFromMap = function () {
+    esriDynamicLayerQueue.splice(esriDynamicLayerQueue.indexOf(this), 1);
+    sortedEsriDynamicQueue.splice(sortedEsriDynamicQueue.indexOf(this), 1);
+    MapLayerBase.prototype.removeFromMap.call(this);
 };
