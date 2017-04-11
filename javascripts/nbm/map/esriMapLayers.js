@@ -130,6 +130,9 @@ inherit(EsriMapLayer, EsriDynamicMapLayer);
 
 var esriDynamicLayerQueue = [];
 
+/**
+ * z indexes aren't managed well with the esri plugin so we do it ourselves
+ */
 EsriDynamicMapLayer.prototype.updateZIndex = function () {
     var self = this;
     for (var i = esriDynamicLayerQueue.indexOf(self) + 1; i < esriDynamicLayerQueue.length; i++) {
@@ -145,12 +148,17 @@ EsriDynamicMapLayer.prototype.updateZIndex = function () {
     });
 };
 
+/**
+ * Pushes this layer into the queue for zIndex handling, then calls the parent function to add it to the map.
+ */
 EsriDynamicMapLayer.prototype.addToMap = function() {
     esriDynamicLayerQueue.push(this);
     MapLayerBase.prototype.addToMap.call(this);
 };
 
-
+/**
+ * Removes this layer from the z index queue, then calls the parent function to add it to the map.
+ */
 EsriDynamicMapLayer.prototype.removeFromMap = function () {
     esriDynamicLayerQueue.splice(esriDynamicLayerQueue.indexOf(this), 1);
     MapLayerBase.prototype.removeFromMap.call(this);
