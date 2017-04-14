@@ -3,7 +3,7 @@ var myServer = location.host;
 if (myServer == "localhost") {
     myServer = "http://localhost:8080/bcb"
 } else {
-    myServer = "https://" + myServer + "/bcb"
+    myServer = "https://my-beta.usgs.gov/bcb"
 }
 
 var allowsMixedContent = undefined;
