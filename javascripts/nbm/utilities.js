@@ -94,7 +94,7 @@ function displayMixedContentWarning(layerTitle) {
     showErrorDialog("You must allow mixed content in order to display the " + layerTitle + " layer because it is loaded over http, not https.<br><br>" +
         "<b>Chrome: </b>Click on the shield on the right-hand side of the URL box, then click \"Load unsafe scripts.\"<br><br>" +
         "<b>Firefox: </b>Click on the lock on the left-hand side of the URL box, then click \"Disable protection for now.\"<br><br>" +
-        "<b>Internet Explorer: </b>In the popup box at the bottom, click \"Show all content.\" If the popup box isn't there, refresh your browser.");
+        "<b>Internet Explorer: </b>In the popup box at the bottom, click \"Show all content.\" If the popup box isn't there, refresh your browser.", true);
 }
 /**
  * Show the spinner to the user.
@@ -113,11 +113,12 @@ function hideSpinner() {
 /**
  * Display error dialog to the user.
  * @param {string} html
+ * @param {boolean} warning - True if it is a warning instead of an error
  */
-function showErrorDialog(html) {
+function showErrorDialog(html, warning) {
     createDialog(
         "#myDialog",
-        "Error",
+        warning ? "Warning" : "Error",
         {
             resizable: false,
             buttons: [

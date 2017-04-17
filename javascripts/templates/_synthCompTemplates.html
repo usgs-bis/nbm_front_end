@@ -123,22 +123,6 @@
 
 <div class="layerExpander contextHeader" data-section="{{:id}}BAP">
 <div style='width: calc(100% - 45px);'>
-{{if !leaveOutJson}}
-<div style='width: 100%;'>
-<button onclick="window.event.stopPropagation(); actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: 25px; left: 100%;'
-class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
-                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
-            </button>
-</div>
-{{/if}}
-{{if simplified}}
-<div style='width: 100%;'>
-            <button onclick="window.event.stopPropagation(); actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: 25px; left: 100%;'
-class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the simplified polygon used for analysis.">
-                <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
-            </button>
-</div>
-{{/if}}
 <span id="{{:id}}BAPControl">{{if openByDefault}}&#9660;{{else}}&#9658;{{/if}}</span>
         <span class="bapTitle">{{:title}}</span>
         {{if hasInfoDiv}}
@@ -150,6 +134,22 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the sim
         {{/if}}
 </div>
 </div>
+{{if !leaveOutJson}}
+<div style='width: 100%;'>
+<button onclick="actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: -25px; left: calc(100% - 45px);'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
+                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+</div>
+{{/if}}
+{{if simplified}}
+<div style='width: 100%;'>
+            <button onclick="actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: -25px; left: calc(100% - 45px);'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the simplified polygon used for analysis.">
+                <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+</div>
+{{/if}}
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
         {{:sectionHtml}}
     </div>
