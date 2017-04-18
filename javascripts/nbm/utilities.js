@@ -1,10 +1,14 @@
 'use strict';
+
 var myServer = location.host;
-if (myServer == "localhost") {
+
+if (myServer.indexOf("igskbac") == 0) {
     myServer = "http://localhost:8080/bcb"
 } else {
     myServer = "https://my-beta.usgs.gov/bcb"
 }
+
+console.log("API: " + myServer);
 
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
