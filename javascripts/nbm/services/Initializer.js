@@ -10,10 +10,10 @@
  */
 var Initializer = (function(initializer) {
     var PRETTY_URL_MAP = {
-        biogeography: '58c9c471e4b0849ce97b4c0d',
-        cnr: '58d1942ce4b0236b68f6b7d1',
-        nvcs: '58d2bbc0e4b0236b68f84dc8',
-        npn: '58d1a934e4b0236b68f6b840'
+        biogeography: '5667130ee4b06a3ea36c8be8',
+        cnr: '57b625d2e4b03fd6b7d83e1f',
+        nvcs: '5810cd6fe4b0f497e7975237',
+        npn: '58a5f318e4b057081a24f6ab'
     };
     var disclaimerModal = {
         closeRightPanel: true,
@@ -57,7 +57,10 @@ var Initializer = (function(initializer) {
 
                 if(configUrl === '') {
                     alert('This collection doesn\'t seem to have a config file. Please add one otherwise the site may not work correctly. SB Item #: ' + bioScapeId);
+                } else if (configUrl.indexOf("/v2/") == -1) {
+                    configUrl = configUrl.replace("https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/", "https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/")
                 }
+
                 return configUrl;
             })
             .then(function(data) {
@@ -68,7 +71,7 @@ var Initializer = (function(initializer) {
             })
             .catch(function(err) {
                 console.log('There was an error trying to receive information from ScienceBase: ' + err + '. The default National Biogeographic Map will be loaded.');
-                $.getJSON('https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/nbm_config.json')
+                $.getJSON('https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json')
                     .done(function(data) {
                         var json = parseConfigFromBitBucket(data.lines);
                         setupPage(bioscapeJson, json, state);
