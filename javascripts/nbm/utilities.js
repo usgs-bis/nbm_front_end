@@ -8,8 +8,6 @@ if (myServer.indexOf("igskbac") == 0) {
     myServer = "https://my-beta.usgs.gov/bcb"
 }
 
-console.log("API: " + myServer);
-
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
 var colorMap = {};
