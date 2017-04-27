@@ -510,6 +510,7 @@ PDF.prototype.getAnalysisPackageContent = function() {
     }
 };
 PDF.prototype.getAppendix = function () {
+    var that = this;
     var layers = this.bioScape.getVisibleLayers();
     if(!layers.length) {
         return Promise.resolve([]);
@@ -564,7 +565,7 @@ PDF.prototype.getAppendix = function () {
                             }
                         }
                     } else {
-                        content.push({text: info});
+                        content.push(that.getParsedHtml(info, {style: 'appendixContent'}));
                     }
                 }
             }

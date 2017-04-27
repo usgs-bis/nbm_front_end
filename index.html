@@ -37,24 +37,28 @@
     <script type="application/javascript">
         var homePath = "";
     </script>
+    <script src="applicationProperties.js"></script>
     <script src="javascripts/third_party/jquery-1.11.3/jquery-1.11.3.js"></script>
     <script type="text/javascript" src="javascripts/application.js" ></script>
+
+    <script type="text/javascript" src="javascripts/third_party/bootstrapcdn/bootstrap.min.js" ></script>
 
     <script type="text/javascript" src="javascripts/third_party/jquery-ui-1.11.4.custom/jquery-ui.min.js" ></script>
     <script type="text/javascript" src="javascripts/third_party/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js" ></script>
 
-    <script type="text/javascript" src="javascripts/third_party/bootstrapcdn/bootstrap.min.js" ></script>
-
     <link rel="stylesheet" href="stylesheets/third_party/bootstrapcdn/bootstrap.min.css" >
     <link rel="stylesheet" href="stylesheets/third_party/bootstrapcdn/font-awesome.min.css" >
     <link rel="stylesheet" href="javascripts/third_party/leaflet.draw/leaflet.draw.css" >
+
     <link rel="stylesheet" href="stylesheets/third_party/jquery-ui-1.11.4.custom/jquery-ui.min.css" >
     <link rel="stylesheet" href="stylesheets/third_party/leaflet-1.0.1/leaflet.css" >
     <link rel="stylesheet" href="stylesheets/third_party/amcharts/plugins/export/export.css" >
-
     <link rel="stylesheet" href="stylesheets/styles.nonmin.css" >
     <link rel="stylesheet" href="stylesheets/bcb.css" >
     <link rel="stylesheet" href="stylesheets/bcb_mobile.css" >
+
+    <!--<link rel="stylesheet" href="stylesheets/styles.nonmin.css" >-->
+    <!--<link rel="stylesheet" href="stylesheets/bcb_mobile.css" >-->
     <link rel="stylesheet" href="stylesheets/third_party_overrides.css" >
 
     <!--<link rel="stylesheet" href="stylesheets/application.css" >-->
@@ -212,6 +216,31 @@
                     <strong>NatureServe Species Data: </strong>Natureserve. 2008. NatureServe Web Service. Arlington, VA. U.S.A. Available
                     <a href="http://services.natureserve.org" target="_blank">http://services.natureserve.org</a>.
                 </div>
+                <div class="attrDiv">
+                    <div id="popup-footer-bar">
+                        <ul>
+                            <li>
+                                <a href="https://www2.usgs.gov/laws/accessibility.html" target="_blank">Accessibility</a>
+                            </li>
+                            <li>
+                                <a href="https://www2.usgs.gov/foia/" target="_blank">FOIA</a>
+                            </li>
+                            <li>
+                                <a href="https://www2.usgs.gov/laws/privacy.html" target="_blank">Privacy</a>
+                            </li>
+                            <li>
+                                <a href="https://www2.usgs.gov/laws/policies_notices.html" target="_blank">Policies and Notices</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="footer-text">
+                        <a href="https://www.doi.gov/" target="_blank">U.S. Department of the Interior</a> |
+                        <a href="https://www.usgs.gov/" target="_blank">U.S. Geological Survey</a>
+                        <div>Contact Information: <a href="mailto:bcb@usgs.gov" target="_blank">bcb@usgs.gov</a></div>
+                        <div>Application Version: <span id="frontEndVersion"></span></div>
+                        <div>API Version: <span id="apiVersion"></span></div>
+                    </div>
+                </div>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -323,6 +352,15 @@
 
 <script>
     w3IncludeHTML();
+
+    $(document).ready( function () {
+        $("#frontEndVersion").text(appVersion);
+
+        sendJsonAjaxRequest(myServer + "/main/apiProperties", {})
+            .then(function (props) {
+                $("#apiVersion").text(props.version);
+            });
+    });
 </script>
 
 </body>
