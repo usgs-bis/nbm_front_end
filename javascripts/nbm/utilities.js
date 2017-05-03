@@ -641,6 +641,10 @@ function resetLegendCull() {
     $(".hideLegendItem").removeClass("hideLegendItem").addClass("showLegendItem");
 }
 
+function updateUrlWithState() {
+    window.location.href = window.location.href.replace(window.location.hash, '') + StateKeeper.getState();
+}
+
 function toggleLegendCullButton() {
     if (map.getZoom() < 9 || (window.location.hostname != "localhost" && window.location.hostname.indexOf("igs"))) {
         $(".narrowLegend").hide();
