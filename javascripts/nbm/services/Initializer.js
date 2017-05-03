@@ -266,6 +266,7 @@ var Initializer = (function(initializer) {
                 if(state.center && state.zoom) {
                     map.setView(L.latLng(state.center.split(',')), state.zoom);
                 }
+                updateUrlWithState();
             });
 
         //bind all of the click events for the bioScape
