@@ -1,11 +1,10 @@
-var assert = chai.assert;
+describe('ActionHandler.js', function() {
+    var assert = chai.assert;
+    var testActionHandler = new ActionHandler({}, undefined);
 
-var actionHandler = new ActionHandler({}, undefined);
-
-describe('ActionHandler', function() {
     describe('created', function() {
         it('ActionHandler object successfully created', function() {
-            assert (actionHandler !== undefined);
+            assert.isDefined (testActionHandler, "action handler should not be undefined");
         });
     });
 });
