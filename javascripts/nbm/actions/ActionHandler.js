@@ -186,7 +186,6 @@ ActionHandler.prototype.setBapValue = function (id, value) {
  * Sets the value of the bap in the bap map in the synthesis composition. The bap map comes in really handy for the
  * PDF creation
  * @param id
- * @param value
  */
 ActionHandler.prototype.getBapValue = function (id) {
     return actionHandlerHelper.sc.baps[id];

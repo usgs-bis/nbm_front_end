@@ -184,6 +184,7 @@ ActionHandlerHelper.prototype.initializeRightPanel = function () {
 
     $('#rightPanelReset').click(function() {
         that.cleanUp(true);
+        updateUrlWithState();
     });
     $("#closeOverlay").click(function () {
         $("#enlargedBAPContainer").fadeOut(300, function () {

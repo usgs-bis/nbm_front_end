@@ -73,16 +73,19 @@ var LeafletMapService = (function (leafletMapService){
                     return false;
                 }
                 actionHandlerHelper.handleEverything(d.latlng);
+                updateUrlWithState();
             })
             .on('zoomend', function () {
                 map.getContainer().focus();
                 toggleLegendCullButton();
                 resetLegendCull();
                 adjustLayersToZoom();
+                updateUrlWithState();
             })
             .on('move', function() {
                 resetLegendCull();
                 scale.update();
+                updateUrlWithState();
             })
             .on('mousemove', function(e) {
                 updateLatLngDisplay(e.latlng);

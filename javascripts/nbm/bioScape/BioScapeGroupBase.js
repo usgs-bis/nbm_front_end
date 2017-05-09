@@ -118,6 +118,7 @@ BioScapeGroupBase.prototype.toggleLayer = function(layerId, secondPass) {
         bioScape.updateState();
         if (!secondPass) {
             actionHandlerHelper.handleLayerChange();
+            updateUrlWithState();
         }
     }
 };
