@@ -70,7 +70,7 @@ function checkMixedContent(layerTitle) {
     var promise = Promise.resolve(allowsMixedContent);
     if(allowsMixedContent === undefined) {
         promise = sendAjaxRequest({
-            url: 'http://maps.usgs.gov/biogeography/main/jsTest.js',
+            url: 'http://my-beta.usgs.gov/bcb/main/jsTest.js',
             dataType: 'script',
             timeout: '2000'
         }).then(function() {
