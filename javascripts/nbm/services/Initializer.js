@@ -36,6 +36,10 @@ var Initializer = (function(initializer) {
             state = parseHash(window.location.hash);
         }
 
+        if (state.customBioscape) {
+            bioScapeId = state.customBioscape;
+        }
+
         disclaimerModal.element = $('#disclaimerModal');
 
         var bioscapeJson = {};

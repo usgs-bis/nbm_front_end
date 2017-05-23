@@ -26,7 +26,7 @@ var BioScapeParser = (function(bioScapeParser) {
             groups.push(group);
             summarizationLayers = summarizationLayers.concat(group.getSummarizationLayers());
         }
-        return new BioScape(data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers);
+        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape);
     }
 
     /**
