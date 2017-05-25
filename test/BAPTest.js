@@ -41,4 +41,16 @@ describe('BAP.js', function() {
             assert.equal(model.divId, mockConfig.id, "the div id should match the id of the config sent in");
         });
     });
+
+    describe('setErrorMessage', function() {
+        it('set error message (with message and BAP ID) in the html element for the BAP', function() {
+            if (!bap.htmlElement || !bap.htmlElement.prop("id")) {
+                bap.htmlElement = $("<div style='display: none;'></div>");
+                $("html, body").append(bap.htmlElement);
+            }
+            bap.setErrorMessage("My error message");
+            assert.notEqual(bap.htmlElement.html().indexOf("My error message"), -1, "The error message should exist in the Bap's html");
+            assert.notEqual(bap.htmlElement.html().indexOf(bap.id), -1, "The id of the Bap should exist in the message");
+        });
+    });
 });

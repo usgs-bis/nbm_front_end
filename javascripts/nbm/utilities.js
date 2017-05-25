@@ -586,7 +586,14 @@ function sendPostRequest(url, params) {
         type: 'POST',
         url: url,
         data: params,
-        dataType: 'json'
+        dataType: 'json',
+        error: function (xhr, options, thrownError) {
+            if (url.indexOf("/bap/get") != -1) {
+                if (!actionHandlerHelper.handleBapError(params.sbId, "Error sending request to BCB API")) {
+                    console.log("Could not set BAP error, BAP does not exist");
+                }
+            }
+        }
     })
 }
 
