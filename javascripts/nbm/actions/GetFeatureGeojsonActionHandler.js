@@ -41,7 +41,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                 myMap.sbId = bapId;
                 myMap.featureValue = JSON.stringify(newGj.geometry);
 
-                promises.push(sendPostRequest(myServer + "/bap/get", myMap)
+                promises.push(sendPostRequest(myServer + "/bap/get", myMap, true)
                     .then(function(data) {
                         var bap = that.getBapValue(data.id);
                         bap.reconstruct(data, true);

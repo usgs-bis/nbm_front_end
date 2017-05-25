@@ -1,5 +1,4 @@
 describe('ActionHandler.js', function() {
-    var assert = chai.assert;
     var testActionHandler = new ActionHandler({}, undefined);
 
     describe('created', function() {

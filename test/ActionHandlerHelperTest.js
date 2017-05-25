@@ -1,5 +1,4 @@
 describe('ActionHandlerHelper.js', function() {
-    var assert = chai.assert;
     var testActionHandlerHelper = new ActionHandlerHelper();
 
     describe('handleBapError', function() {

@@ -52,7 +52,11 @@
 <div w3-include-html="javascripts/templates/_lmeContextReport.html"></div>
 <div w3-include-html="javascripts/templates/_synthesisComposition.html"></div>
 
-<script>mocha.setup('bdd');w3IncludeHTML();</script>
+<script>
+    mocha.setup('bdd');
+    w3IncludeHTML();
+    var assert = chai.assert;
+</script>
 
 
 <!-- load code you want to test here -->
