@@ -581,24 +581,12 @@ function sendAjaxRequest(options) {
     return Promise.resolve($.ajax(options));
 }
 
-function sendPostRequest(url, params, possibleGeojson) {
+function sendPostRequest(url, params) {
     return sendAjaxRequest({
         type: 'POST',
         url: url,
         data: params,
-        dataType: 'json',
-        error: function (xhr, options, thrownError) {
-            if (url.indexOf("/bap/get") != -1) {
-                var message = "Error sending request to the  BCB API.";
-                if (possibleGeojson) {
-                    message = "Error sending request to the BCB API, ";
-                    message += "the dynamic polygon may be too complex."
-                }
-                if (!actionHandlerHelper.handleBapError(params.sbId, message)) {
-                    console.log("Could not set BAP error, BAP does not exist");
-                }
-            }
-        }
+        dataType: 'json'
     })
 }
 
