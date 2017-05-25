@@ -231,3 +231,8 @@ BAP.prototype.toggleSimplifiedFeature = function () {
         this.simplifiedFeature.addTo(map);
     }
 };
+
+BAP.prototype.setErrorMessage = function (message) {
+    var that = this;
+    this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', {error: message, id: that.id}));
+};

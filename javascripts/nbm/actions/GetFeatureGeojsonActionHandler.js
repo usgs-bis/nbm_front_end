@@ -41,7 +41,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                 myMap.sbId = bapId;
                 myMap.featureValue = JSON.stringify(newGj.geometry);
 
-                promises.push(sendPostRequest(myServer + "/bap/get", myMap)
+                promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
                     .then(function(data) {
                         var bap = that.getBapValue(data.id);
                         bap.reconstruct(data, true);
@@ -348,4 +348,21 @@ GetFeatureGeojsonActionHandler.prototype.cleanUp = function () {
     }
 
     this.cleanUpBaps();
+};
+
+GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params) {
+        return sendAjaxRequest({
+            type: 'POST',
+            url: url,
+            data: params,
+            dataType: 'json',
+            error: function (xhr, options, thrownError) {
+                    var message = "Error sending request to the BCB API, ";
+                        message += "the dynamic polygon may be too complex.";
+
+                    if (!actionHandlerHelper.handleBapError(params.sbId, message)) {
+                        console.log("Could not set BAP error, BAP does not exist");
+                    }
+            }
+        })
 };

@@ -566,3 +566,13 @@ ActionHandlerHelper.prototype.loadEmptySynthComp = function(message) {
         return Promise.resolve(html);
     }
 };
+
+ActionHandlerHelper.prototype.handleBapError = function (id, message) {
+    var bap = this.sc.baps[id];
+
+    if (!bap) return false;
+
+    bap.setErrorMessage(message);
+
+    return true;
+};

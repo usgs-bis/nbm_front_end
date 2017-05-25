@@ -35,13 +35,28 @@
     <script type="text/javascript" src="javascripts/third_party/topojson/topojson-client@2.1.0.js" ></script>
     <script type="text/javascript" src="javascripts/third_party/topojson/topojson-server@2.0.0.js" ></script>
     <script type="text/javascript" src="javascripts/third_party/topojson/topojson-simplify@2.0.0.js" ></script>
+    <script type="text/javascript" src="javascripts/third_party/w3data/w3data.js"></script>
 </head>
 <body>
 <div id="mocha"></div>
 <script src="node_modules/mocha/mocha.js"></script>
 <script src="node_modules/chai/chai.js"></script>
 
-<script>mocha.setup('bdd')</script>
+<div w3-include-html="javascripts/templates/_bioScapeTemplates.html"></div>
+<div w3-include-html="javascripts/templates/_mapButtons.html"></div>
+<div w3-include-html="javascripts/templates/_modalTemplates.html"></div>
+<div w3-include-html="javascripts/templates/_panelTemplates.html"></div>
+<div w3-include-html="javascripts/templates/_speciesModal.html"></div>
+<div w3-include-html="javascripts/templates/_synthCompTemplates.html"></div>
+<div w3-include-html="javascripts/templates/_ecoregionContextReport.html"></div>
+<div w3-include-html="javascripts/templates/_lmeContextReport.html"></div>
+<div w3-include-html="javascripts/templates/_synthesisComposition.html"></div>
+
+<script>
+    mocha.setup('bdd');
+    w3IncludeHTML();
+    var assert = chai.assert;
+</script>
 
 
 <!-- load code you want to test here -->
@@ -59,11 +74,15 @@
 <script type="text/javascript" src="javascripts/nbm/widgets/SpeciesProtectionWidget.js" ></script>
 <script type="text/javascript" src="javascripts/nbm/widgets/SpeciesRichnessWidget.js" ></script>
 
+<script type="text/javascript" src="javascripts/nbm/SynthesisComposition.js" ></script>
+<script src="javascripts/nbm/actions/ActionHandlerHelper.js"></script>
+
 
 <!-- load your test files here -->
 <script src="test/ActionHandlerTest.js"></script>
 <script src="test/BAPTest.js"></script>
 <script src="test/utilitiesTest.js"></script>
+<script src="test/ActionHandlerHelperTest.js"></script>
 
 <script>
     mocha.run();

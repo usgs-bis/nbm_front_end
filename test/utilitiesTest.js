@@ -1,5 +1,4 @@
 describe('utilities.js', function() {
-    var assert = chai.assert;
     var a, b;
 
     describe('isEquivalent', function() {
