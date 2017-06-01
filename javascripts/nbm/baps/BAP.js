@@ -11,6 +11,10 @@ var BAP = function(serverAP, leaveOutJson) {
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
+    this.alternateTitles = serverAP.alternateTitles;
+    this.contacts = serverAP.contacts;
+    this.webLinks = serverAP.webLinks;
+
     this.id = serverAP.id;
     if (!this.config.data) this.config.data = {};
     this.description = this.config.data.description;
@@ -29,9 +33,14 @@ var BAP = function(serverAP, leaveOutJson) {
 };
 
 BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
+    //console.dir(serverAP)
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
+    this.alternateTitles = serverAP.alternateTitles;
+    this.contacts = serverAP.contacts;
+    this.webLinks = serverAP.webLinks;
+
     this.id = serverAP.id;
     if (!this.config.data) this.config.data = {};
     this.description = this.config.data.description;
@@ -48,6 +57,9 @@ BAP.prototype.getInfoDivModel = function () {
     return {
         divId: this.id,
         title: this.title,
+        alternateTitles: this.alternateTitles,
+        contacts: this.contacts,
+        webLinks: this.webLinks,
         description: this.description,
         bapReference: this.bapReference,
         lastUpdated: this.lastUpdated
@@ -58,6 +70,9 @@ BAP.prototype.getInfoDivInfo = function () {
     return {
         divId: this.id,
         title: this.title,
+        alternateTitles: this.alternateTitles,
+        contacts: this.contacts,
+        webLinks: this.webLinks,
         description: this.description,
         bapReference: this.bapReference,
         lastUpdated: this.lastUpdated
@@ -90,9 +105,16 @@ BAP.prototype.getFullHtml = function () {
     var widgetHtml = this.getWidgetHtml();
     var infoDivModel = this.getInfoDivModel();
 
+    var title =  this.title;
+    var altTitle = this.alternateTitles;
+
+    if ( altTitle ) {
+        title = altTitle[0];
+    }
+
     var apViewModel = {
         id: this.config.id,
-        title: this.config.title,
+        title: title,
         hasInfoDiv: infoDivModel,
         simplified: this.simplified,
         openByDefault: this.config.openByDefault,
@@ -122,6 +144,9 @@ BAP.prototype.getFullHtml = function () {
         var viewData = {
             id: info.divId + "Modal",
             title: info.title,
+            alternateTitles: info.alternateTitles,
+            contacts: info.contacts,
+            webLinks: info.webLinks,
             description: info.description,
             bapReference: info.bapReference,
             lastUpdated: info.lastUpdated
