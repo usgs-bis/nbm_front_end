@@ -10,9 +10,24 @@
 var BioScapeLayerBase = function(id, group, layer) {
     this.id = id;
     this.section = group;
+
+    var altTitle = '';
+
+    if (layer.metadataSBId) {
+        altTitle = fetchAlternateTitle(layer.metadataSBId, id);
+    }
+
+
     //console.log(layer);
     this.parsePropertiesFromServer(function(bslb) {
-        bslb.title = layer.title;
+
+        if (altTitle !== '') {
+            bslb.title =  altTitle;
+        }
+        else {
+            bslb.title = layer.title;
+        }
+
         bslb.serviceUrl = layer.serviceUrl;
         bslb.http = bslb.serviceUrl.indexOf("http://") == 0;
         bslb.selected = getValueOrDefault(layer.selected, false);
@@ -21,7 +36,33 @@ var BioScapeLayerBase = function(id, group, layer) {
         //anything that changes with the layer.serviceType is retrieved here
         bslb.setServiceTypeDependantProperties(layer);
     }, this);
+
+
 };
+
+
+// function fetchAlternateTitle(sbId, elementId) {
+//
+//     var url = "https://www.sciencebase.gov/catalog/item/" + sbId;
+//     var altTitle = "";
+//
+//     $.ajax({
+//         url: url,
+//         dataType: 'json',
+//         async: false,
+//         success: function (data) {
+//             var altTitles = data.alternateTitles;
+//             if (altTitles) {
+//                 altTitle = altTitles[0];
+//                 //console.log("found it: " + altTitle + " elementId: " + elementId);
+//             }
+//         }
+//
+//     });
+//
+//     return altTitle;
+// }
+
 
 /**
  * This callback is called to set the server properties on the BioScape layer.

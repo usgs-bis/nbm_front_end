@@ -2,7 +2,7 @@
 
 var myServer = location.host;
 
-if (myServer.indexOf("igskbac") == 0) {
+if (myServer.indexOf("qwerfqdfadfrq ") == 0) {
     myServer = "http://localhost:8080/bcb"
 } else {
     myServer = "https://my-beta.usgs.gov/bcb"
@@ -732,4 +732,27 @@ function isEquivalent(a, b) {
     // If we made it this far, objects
     // are considered equivalent
     return true;
+}
+
+
+function fetchAlternateTitle(sbId, elementId) {
+
+    var url = "https://www.sciencebase.gov/catalog/item/" + sbId;
+    var altTitle = "";
+
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            var altTitles = data.alternateTitles;
+            if (altTitles) {
+                altTitle = altTitles[0];
+                //console.log("found it: " + altTitle + " elementId: " + elementId);
+            }
+        }
+
+    });
+
+    return altTitle;
 }
