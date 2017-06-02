@@ -733,26 +733,3 @@ function isEquivalent(a, b) {
     // are considered equivalent
     return true;
 }
-
-
-function fetchAlternateTitle(sbId, elementId) {
-
-    var url = "https://www.sciencebase.gov/catalog/item/" + sbId;
-    var altTitle = "";
-
-    $.ajax({
-        url: url,
-        dataType: 'json',
-        async: false,
-        success: function (data) {
-            var altTitles = data.alternateTitles;
-            if (altTitles) {
-                altTitle = altTitles[0];
-                //console.log("found it: " + altTitle + " elementId: " + elementId);
-            }
-        }
-
-    });
-
-    return altTitle;
-}

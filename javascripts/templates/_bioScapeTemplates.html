@@ -82,7 +82,7 @@
     <div class="modal-body">    <!--style="font-size:16px;" removed per Don's observation 5/23/17-->
         {{if body}}
             {{:body}}
-            {{if contacts.length > 0}}
+            {{if contacts && contacts.length > 0}}
                 <h5><strong>Contacts:</strong></h5>
                     <div class="contacts-web-links">
                         <span>
@@ -99,7 +99,7 @@
                         </span>
                     </div>
             {{/if}}
-            {{if webLinks.length > 0}}
+            {{if webLinks && webLinks.length > 0}}
                 <div class="generalInfo">
                 <h5><strong>Web Links:</strong></h5>
                 <div class="contacts-web-links">
