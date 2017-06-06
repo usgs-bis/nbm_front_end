@@ -24,7 +24,7 @@ var Initializer = (function(initializer) {
     function initialize() {
         displayBetaBanner();
         var state = {};
-        var bioScapeId = '58d1942ce4b0236b68f6b7d1';//Default is set to the National Biogeographic Map
+        var bioScapeId = '5667130ee4b06a3ea36c8be8';//Default is set to the National Biogeographic Map
 
         var path = window.location.pathname.replace(homePath, '');
         if (path.length > 1) {

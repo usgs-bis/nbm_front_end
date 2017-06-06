@@ -63,6 +63,16 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
 
         promises.push(sendJsonAjaxRequest(myServer + "/bap/get", myMap)
             .then(function (myJson) {
+                if (myJson.error) {
+                    var message = "Error sending request to the BCB API, ";
+                    message += "please contact site admin if the problem continues.";
+
+                    if (!actionHandlerHelper.handleBapError(myJson.requestParams.id, message)) {
+                        console.log("Could not set BAP error, BAP does not exist");
+                    }
+                    return Promise.resolve();
+                }
+
                 var bap = that.getBapValue(myJson.id);
                 bap.reconstruct(myJson);
                 bap.initializeBAP();
@@ -70,6 +80,7 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
 
                 return Promise.resolve();
             }).catch(function(ex) {
+                console.log("Getting an error here?");
                 return Promise.resolve();
             }));
     });
