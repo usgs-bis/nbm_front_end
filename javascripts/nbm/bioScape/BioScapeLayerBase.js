@@ -10,7 +10,11 @@
 var BioScapeLayerBase = function(id, group, layer) {
     this.id = id;
     this.section = group;
-    //console.log(layer);
+    this.metadataSBId = layer.metadataSBId;
+
+    if (this.metadataSBId) {
+        this.fetchAlternateTitle();
+    }
     this.parsePropertiesFromServer(function(bslb) {
         bslb.title = layer.title;
         bslb.serviceUrl = layer.serviceUrl;
@@ -21,6 +25,29 @@ var BioScapeLayerBase = function(id, group, layer) {
         //anything that changes with the layer.serviceType is retrieved here
         bslb.setServiceTypeDependantProperties(layer);
     }, this);
+};
+
+/**
+ * AJAX call to ScienceBase to check if alternate title exists for item.
+ * Retrieves the first alternate title, if that doesn't exist it grabs the main title from ScienceBase.
+ * notifies user if there is an error retrieving info from ScienceBase
+ */
+BioScapeLayerBase.prototype.fetchAlternateTitle = function () {
+    var that = this;
+    sendJsonAjaxRequest("https://www.sciencebase.gov/catalog/item/" + this.metadataSBId)
+        .then(function (data) {
+            var altTitles = data.alternateTitles;
+            if (altTitles) {
+                that.title = altTitles[0];
+              }
+            else {
+                that.title = data.title;
+             }
+            $( "#" + that.id +" > div.layerTitle > span:first-child" ).text(that.title);
+        })
+        .catch(function (ex) {
+            $( "#" + that.id +" > div.layerTitle > span:first-child" ).text("Error loading title from ScienceBase");
+        });
 };
 
 /**

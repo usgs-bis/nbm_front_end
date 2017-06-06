@@ -2,7 +2,7 @@
 
 var myServer = location.host;
 
-if (myServer.indexOf("igskbac") == 0) {
+if (myServer.indexOf("qwerfqdfadfrq ") == 0) {
     myServer = "http://localhost:8080/bcb"
 } else {
     myServer = "https://my-beta.usgs.gov/bcb"
