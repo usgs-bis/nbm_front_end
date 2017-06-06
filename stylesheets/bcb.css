@@ -996,3 +996,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 #footer-text {
     padding-left: 19px;
 }
+
+.contacts-web-links {
+    margin-left: 20px;
+}

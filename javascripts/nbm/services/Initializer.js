@@ -11,9 +11,10 @@
 var Initializer = (function(initializer) {
     var PRETTY_URL_MAP = {
         biogeography: '5667130ee4b06a3ea36c8be8',
+        nbm_front_end: '5667130ee4b06a3ea36c8be8',
         cnr: '57b625d2e4b03fd6b7d83e1f',
         nvcs: '5810cd6fe4b0f497e7975237',
-        npn: '58a5f318e4b057081a24f6ab'
+        npn: '591c7160e4b0a7fdb43dea93'
     };
     var disclaimerModal = {
         closeRightPanel: true,
