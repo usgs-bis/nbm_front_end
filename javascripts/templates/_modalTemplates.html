@@ -46,7 +46,12 @@
                                     <ul>
                                         {{for webLinks}}
                                             <li>
-                                                <a class="webLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:title}}</a>
+                                                <!--<a class="webLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:title}}</a>-->
+                                                {{if title}}
+                                                    <a class="webLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:title}}</a>
+                                                {{else}}
+                                                    <a class="webLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:uri}}</a>
+                                                {{/if}}
                                             </li>
                                         {{/for}}
                                     </ul>
