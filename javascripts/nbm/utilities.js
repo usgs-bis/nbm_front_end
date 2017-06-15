@@ -241,10 +241,10 @@ function rgbToHex(r, g, b) {
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
 }
 
 
@@ -629,11 +629,11 @@ function formatLocalDateToISO8601() {
     return now.getFullYear()
         + '-' + pad(now.getMonth()+1)
         + '-' + pad(now.getDate());
-        // + 'T' + pad(now.getHours())
-        // + ':' + pad(now.getMinutes())
-        // + ':' + pad(now.getSeconds())
-        // + dif + pad(tzo / 60)
-        // + ':' + pad(tzo % 60);
+    // + 'T' + pad(now.getHours())
+    // + ':' + pad(now.getMinutes())
+    // + ':' + pad(now.getSeconds())
+    // + dif + pad(tzo / 60)
+    // + ':' + pad(tzo % 60);
 }
 
 function resetLegendCull() {
@@ -732,4 +732,55 @@ function isEquivalent(a, b) {
     // If we made it this far, objects
     // are considered equivalent
     return true;
+}
+
+function getTemplateHtml(path) {
+    if (path && path.indexOf("javascripts/templates/") == 0 && path.indexOf("..") == -1) {
+        return sendAjaxRequest({
+            type: 'GET',
+            url: path,
+            dataType: 'html',
+            timeout: getValueOrDefault(undefined, DEFAULT_AJAX_TIMEOUT)
+        })
+            .then(function (data) {
+                return Promise.resolve(data);
+            })
+            .catch(function (ex) {
+                return Promise.resolve(ex)
+            });
+    } else {
+        return Promise.resolve("Error retrieving template data");
+    }
+}
+
+function getHtmlTemplateElements() {
+    return $("div[html-template]");
+}
+
+function getTemplatePath(el) {
+    return $(el).attr("html-template");
+}
+
+function loadHtmlTemplates() {
+    var promises = [];
+
+    var templateHolder = $("#templateHolder");
+
+    getHtmlTemplateElements().each(function () {
+        promises.push(
+            getTemplateHtml(getTemplatePath(this))
+                .then(function (data){
+                    templateHolder.append(data);
+                    return Promise.resolve();
+                })
+                .catch(function (ex) {
+                    showErrorDialog("Some html templates were not loaded in the page. " +
+                        "Some elements may not render properly. Please refresh the page and try again. " +
+                        "Contact website admin if the problem continues.", "Warning");
+                    return Promise.resolve();
+                })
+        );
+    });
+
+    return Promise.all(promises);
 }

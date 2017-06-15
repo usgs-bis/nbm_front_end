@@ -250,17 +250,19 @@
     <span id="beta-banner" data-toggle="modal" data-target="#disclaimerModal">beta</span>
 </script>
 
-<script type="text/javascript" src="javascripts/third_party/w3data/w3data.js"></script>
-<!--<div w3-include-html="javascripts/templates/_modals.html"></div>-->
-<div w3-include-html="javascripts/templates/_bioScapeTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_mapButtons.html"></div>
-<div w3-include-html="javascripts/templates/_modalTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_panelTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_speciesModal.html"></div>
-<div w3-include-html="javascripts/templates/_synthCompTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_ecoregionContextReport.html"></div>
-<div w3-include-html="javascripts/templates/_lmeContextReport.html"></div>
-<div w3-include-html="javascripts/templates/_synthesisComposition.html"></div>
+<!--<script type="text/javascript" src="javascripts/third_party/w3data/w3data.js"></script>-->
+<!--<div html-template="javascripts/templates/_modals.html"></div>-->
+<div html-template="javascripts/templates/_bioScapeTemplates.html"></div>
+<div html-template="javascripts/templates/_mapButtons.html"></div>
+<div html-template="javascripts/templates/_modalTemplates.html"></div>
+<div html-template="javascripts/templates/_panelTemplates.html"></div>
+<div html-template="javascripts/templates/_speciesModal.html"></div>
+<div html-template="javascripts/templates/_synthCompTemplates.html"></div>
+<div html-template="javascripts/templates/_ecoregionContextReport.html"></div>
+<div html-template="javascripts/templates/_lmeContextReport.html"></div>
+<div html-template="javascripts/templates/_synthesisComposition.html"></div>
+
+<div id="templateHolder"></div>
 
 <div id="tempPopupMessage"></div>
 
@@ -356,8 +358,6 @@
 <script type="text/javascript" src="javascripts/nbm/index.js" ></script>
 
 <script>
-    w3IncludeHTML();
-
     $(document).ready( function () {
         $("#frontEndVersion").text(appVersion);
 

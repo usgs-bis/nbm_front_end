@@ -20,6 +20,7 @@ describe('BAP.js', function() {
                     done();
                 })
                 .catch(function(ex) {
+                    assert.equal(true, false, "caught an exception with ajax request");
                     done(ex);
                 });
         });
