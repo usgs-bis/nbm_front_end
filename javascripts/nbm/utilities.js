@@ -741,9 +741,13 @@ function getTemplateHtml(path) {
             url: path,
             dataType: 'html',
             timeout: getValueOrDefault(undefined, DEFAULT_AJAX_TIMEOUT)
-        }).then(function (data) {
-            return Promise.resolve(data);
-        });
+        })
+            .then(function (data) {
+                return Promise.resolve(data);
+            })
+            .catch(function (ex) {
+                return Promise.resolve(ex)
+            });
     } else {
         return Promise.resolve("Error retrieving template data");
     }
@@ -767,6 +771,12 @@ function loadHtmlTemplates() {
             getTemplateHtml(getTemplatePath(this))
                 .then(function (data){
                     templateHolder.append(data);
+                    return Promise.resolve();
+                })
+                .catch(function (ex) {
+                    showErrorDialog("Some html templates were not loaded in the page. " +
+                        "Some elements may not render properly. Please refresh the page and try again. " +
+                        "Contact website admin if the problem continues.", "Warning");
                     return Promise.resolve();
                 })
         );
