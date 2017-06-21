@@ -7,11 +7,12 @@ var HtmlToPdfMakeParser = (function(parser) {
     function parseContainer(cnt, e, p, styles) {
         var elements = [];
         var children = e.childNodes;
+        var i;
         if (children.length != 0) {
-            for (var i = 0; i < children.length; i++) p = parseElement(elements, children[i], p, styles);
+            for (i = 0; i < children.length; i++) p = parseElement(elements, children[i], p, styles);
         }
         if (elements.length != 0) {
-            for (var i = 0; i < elements.length; i++) cnt.push(elements[i]);
+            for (i = 0; i < elements.length; i++) cnt.push(elements[i]);
         }
         return p;
     }
@@ -76,26 +77,27 @@ var HtmlToPdfMakeParser = (function(parser) {
     }
 
     function parseElement(cnt, e, p, styles) {
+        var t, k, st;
         if (!styles) styles = [];
         if (e.getAttribute) {
             var nodeStyle = e.getAttribute("style");
             if (nodeStyle) {
                 var ns = nodeStyle.split(";");
-                for (var k = 0; k < ns.length; k++) styles.push(ns[k]);
+                for (k = 0; k < ns.length; k++) styles.push(ns[k]);
             }
         }
 
         switch (e.nodeName.toLowerCase()) {
             case "#text":
             {
-                var t = {text: e.textContent.replace(/\n/g, "")};
+                t = {text: e.textContent.replace(/\n/g, "")};
                 if (styles) computeStyle(t, styles);
                 p.text.push(t);
                 break;
             }
             case "a":
             {
-                var t = {text: e.textContent, link: e.href, color: 'blue'};
+                t = {text: e.textContent, link: e.href, color: 'blue'};
                 if (styles) computeStyle(t, styles.concat(["text-decoration:underline"]));
                 p.text.push(t);
                 break;
@@ -115,7 +117,7 @@ var HtmlToPdfMakeParser = (function(parser) {
             }
             case "h4":
             {
-                var t = {text: e.textContent, fontSize: 12, bold: true, margin: [0,10,0,5]};
+                t = {text: e.textContent, fontSize: 12, bold: true, margin: [0,10,0,5]};
                 if (styles) computeStyle(t, styles.concat(["text-decoration:underline"]));
                 p.text.push(t);
                 break;
@@ -140,7 +142,7 @@ var HtmlToPdfMakeParser = (function(parser) {
             case "table":
             {
                 p = createParagraph();
-                var t = {
+                t = {
                     table: {
                         widths: [],
                         body: []
@@ -155,11 +157,11 @@ var HtmlToPdfMakeParser = (function(parser) {
                 var widths = e.getAttribute("widths");
                 if (!widths) {
                     if (t.table.body.length != 0) {
-                        if (t.table.body[0].length != 0) for (var k = 0; k < t.table.body[0].length; k++) t.table.widths.push("*");
+                        if (t.table.body[0].length != 0) for (k = 0; k < t.table.body[0].length; k++) t.table.widths.push("*");
                     }
                 } else {
                     var w = widths.split(",");
-                    for (var k = 0; k < w.length; k++) t.table.widths.push(w[k]);
+                    for (k = 0; k < w.length; k++) t.table.widths.push(w[k]);
                 }
                 cnt.push(t);
                 cnt.push(p);
@@ -180,7 +182,7 @@ var HtmlToPdfMakeParser = (function(parser) {
             case "td":
             {
                 p = createParagraph();
-                var st = {stack: []};
+                st = {stack: []};
                 st.stack.push(p);
 
                 var rspan = e.getAttribute("rowspan");
@@ -206,7 +208,7 @@ var HtmlToPdfMakeParser = (function(parser) {
             case "li":
             {
                 p = createParagraph();
-                var st = {stack: []};
+                st = {stack: []};
                 st.stack.push(p);
                 parseContainer(st.stack, e, p, styles);
                 cnt.push(st);
@@ -216,7 +218,7 @@ var HtmlToPdfMakeParser = (function(parser) {
             case "p":
             {
                 p = createParagraph();
-                var st = {stack: []};
+                st = {stack: []};
                 st.stack.push(p);
                 computeStyle(st, styles);
                 parseContainer(st.stack, e, p);

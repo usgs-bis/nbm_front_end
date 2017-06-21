@@ -349,7 +349,6 @@ ActionHandlerHelper.prototype.handleActions = function (latLng) {
  * of the layers changing, resend all of the trigger actions with the updated enabledActions
  */
 ActionHandlerHelper.prototype.handleLayerChange = function () {
-    var that = this;
     var currentActions = [];
     var currentParams = [];
 

@@ -39,10 +39,13 @@ BioScapeLayerBase.prototype.fetchAlternateTitle = function () {
             var altTitles = data.alternateTitles;
             if (altTitles) {
                 that.title = altTitles[0];
-              }
+            }
             else {
                 that.title = data.title;
-             }
+            }
+            if (that.legend) {
+                that.legend.layerTitle = that.title;
+            }
             $( "#" + that.id +" > div.layerTitle > span:first-child" ).text(that.title);
         })
         .catch(function (ex) {

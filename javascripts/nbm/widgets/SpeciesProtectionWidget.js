@@ -29,7 +29,6 @@ var SpeciesProtectionWidget = function (chartConfig) {
     };
 
     this.initializeWidget = function() {
-        var taxaType = 'all';
         initializeSpeciesCharts();
         $("input[name='taxaType']").change(function() {
             currentSpeciesTaxaType = this.value;
