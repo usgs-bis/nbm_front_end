@@ -85,7 +85,6 @@ BAP.prototype.initializeWidgets = function () {
     var that = this;
 
     $.each(that.config.charts, function (index, chart) {
-        console.log(chart);
         if (chart.error) {
             actionHandlerHelper.showTempPopup("Error retrieving chart data for BAP, " + that.title);
         } else {

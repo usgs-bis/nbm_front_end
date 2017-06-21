@@ -543,7 +543,15 @@ PDF.prototype.getAppendix = function () {
                     if( Object.prototype.toString.call( info ) === '[object Array]' ) {
                         $.each(info, function (index, obj) {
                             var text = obj.title;
-                            if (!text) text = obj.name;
+                            if (!text) {
+                                text = obj.name;
+
+                                if (text) {
+                                    if (obj.email) {
+                                        text += " (" + obj.email + ")";
+                                    }
+                                }
+                            }
                             if (!text) text = obj;
 
                             if (obj.uri || obj.url) {
