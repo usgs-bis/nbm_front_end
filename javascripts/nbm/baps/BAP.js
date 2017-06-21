@@ -85,7 +85,12 @@ BAP.prototype.initializeWidgets = function () {
     var that = this;
 
     $.each(that.config.charts, function (index, chart) {
-        that.widgets.push(widgetHelper.getWidget(chart))
+        console.log(chart);
+        if (chart.error) {
+            actionHandlerHelper.showTempPopup("Error retrieving chart data for BAP, " + that.title);
+        } else {
+            that.widgets.push(widgetHelper.getWidget(chart))
+        }
     });
 };
 
@@ -95,6 +100,7 @@ BAP.prototype.getWidgetHtml = function () {
     var that = this;
 
     $.each(that.widgets, function (index, widget) {
+        if (!widget) return;
         html += widget.getHtml();
     });
 

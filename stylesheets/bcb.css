@@ -29,7 +29,7 @@ a {
 }
 
 strong {
-    color: orange
+    color: orange;
 }
 
 #map {
@@ -753,6 +753,25 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .tooltip-inner {
     border: 1px solid white;
+}
+
+.matrix-box {
+    height: 140px;
+    text-align: center;
+    display: table;
+    border: 1px solid black;
+}
+.matrix-text {
+    display: table-cell;
+    vertical-align: middle;
+}
+.matrix-axis-title {
+    width: 450px;
+    font-weight: bold;
+    text-align: center;
+}
+.matrix-dark {
+    color:black;
 }
 
 .big-matrix {

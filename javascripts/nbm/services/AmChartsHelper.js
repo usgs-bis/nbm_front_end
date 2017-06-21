@@ -199,9 +199,6 @@ var AmChartsHelper = (function(helper) {
             var percent = data.value;
             // we rely on the chartData being ordered and assume that the largest percentage object will never be below minDisplaySize%
             if( percent < minDisplaySize && percent != 0) {
-                var diff = minDisplaySize - percent;
-                //change the displayValue of the biggest percentage so everything always adds up to 100%
-                //array[0].displayValue -= diff;
                 data.displayValue = "<" + minDisplaySize;
             } else {
                 data.displayValue = percent;

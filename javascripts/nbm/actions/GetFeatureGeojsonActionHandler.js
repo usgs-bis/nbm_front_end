@@ -189,8 +189,8 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
             var box = bbox(triangle.a, triangle.c);
             tree.insert(box);
 
-            var previous = triangle.previous,
-                next = triangle.next;
+            previous = triangle.previous;
+            var next = triangle.next;
 
             if (previous) {
                 previous.bc = box;
