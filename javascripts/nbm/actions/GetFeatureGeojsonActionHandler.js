@@ -20,7 +20,13 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
         .then(function (newGj) {
             var simplified = (newGj != gj);
 
-            $.each(that.baps, function (index, bapId) {
+            var bapsToProcess = that.getAllBapsToProcess();
+
+
+            console.log(that.baps);
+            console.log(bapsToProcess);
+
+            $.each(bapsToProcess, function (index, bapId) {
                 var tempBap = that.getBapValue(bapId);
 
                 if (tempBap) {
@@ -43,6 +49,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
 
                 promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
                     .then(function(data) {
+                        // console.log("Ret data: ", data);
                         var bap = that.getBapValue(data.id);
                         bap.reconstruct(data, true);
 

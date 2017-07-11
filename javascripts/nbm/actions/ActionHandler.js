@@ -19,6 +19,7 @@ var ActionHandler = function (config, layer) {
     this.baps = config.baps;
     this.result = undefined;
     this.additionalParams = config.additionalParams;
+    this.crossoverBaps = config.crossoverBaps;
     this.spinner = $('<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>');
     this.synthesisComposition = config.synthesisComposition;
 
@@ -26,6 +27,24 @@ var ActionHandler = function (config, layer) {
     this.html = "";
     this.trigger = undefined;
     this.noDataValue = config.noDataValue;
+};
+
+ActionHandler.prototype.getAllBapsToProcess = function () {
+    var bapsToProcess = [];
+
+    if (this.baps) {
+        $.each(this.baps, function (index, bap) {
+            bapsToProcess.push(bap);
+        });
+    }
+
+    $.each(actionHandlerHelper.crossoverBaps, function (index, bap) {
+        if (bapsToProcess.indexOf(bap) == -1) {
+            bapsToProcess.push(bap);
+        }
+    });
+
+    return bapsToProcess;
 };
 
 /**
@@ -40,7 +59,9 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
 
     var promises = [];
 
-    $.each(this.baps, function (index, bapId) {
+    var bapsToProcess = this.getAllBapsToProcess();
+
+    $.each(bapsToProcess, function (index, bapId) {
         var tempBap = that.getBapValue(bapId);
 
         if (tempBap) {
@@ -211,9 +232,10 @@ ActionHandler.prototype.cleanUp = function () {
 };
 
 ActionHandler.prototype.cleanUpBaps = function () {
-    if (!this.baps) return;
+    var allBaps = this.getAllBapsToProcess();
+    if (!allBaps) return;
     var that = this;
-    $.each(this.baps, function (index, id) {
+    $.each(allBaps, function (index, id) {
         var bap = that.getBapValue(id);
         if (bap) bap.cleanUp();
     });

@@ -19,5 +19,8 @@ WidgetHelper.prototype.getWidget = function (config) {
         return new CnrMatrixWidget(config);
     } else if (config.type == "boxAndWhisker") {
         return new BoxAndWhiskerWidget(config);
+    } else if (config.type == "rasterQuery") {
+        // console.log(config);
+        return new BarChartWidget(config);
     }
 };

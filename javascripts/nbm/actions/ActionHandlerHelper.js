@@ -16,6 +16,7 @@ var ActionHandlerHelper = function () {
     this.state = {};
     this.canDownloadPdf = false;
     this.headerSent = false;
+    this.crossoverBaps = [];
 };
 
 /**
@@ -260,6 +261,7 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
     var visibleLayers = bioScape.getVisibleLayers();
     this.enabledActions = [];
     this.additionalParams = [];
+    this.crossoverBaps = [];
 
     var that = this;
     $.each(actionHandlers, function (index, actionHandler) {
@@ -273,8 +275,17 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
             that.enabledActions.push(actionHandler)
         }
 
-        if (isVisible && actionHandler.additionalParams) {
-            that.additionalParams.push(actionHandler.additionalParams)
+        if (isVisible) {
+            if (actionHandler.additionalParams) {
+                that.additionalParams.push(actionHandler.additionalParams)
+            }
+            if (actionHandler.crossoverBaps) {
+                $.each(actionHandler.crossoverBaps, function (index, bap) {
+                    if (that.crossoverBaps.indexOf(bap) == -1) {
+                        that.crossoverBaps.push(bap);
+                    }
+                });
+            }
         }
     });
 
@@ -474,8 +485,8 @@ ActionHandlerHelper.prototype.initializeAllBaps = function () {
     var that = this;
     var promises = [];
     $.each(actionHandlers, function (index, handler) {
-        if (handler.baps) {
-            $.each(handler.baps, function (index, bap) {
+        if (handler.getAllBapsToProcess().length) {
+            $.each(handler.getAllBapsToProcess(), function (index, bap) {
                 promises.push(sendJsonAjaxRequest(myServer + "/bap/get", {id: bap})
                     .then(function (myJson) {
                         that.allBaps[myJson.id] = {
@@ -503,7 +514,7 @@ ActionHandlerHelper.prototype.getEnabledBaps = function () {
     var that = this;
 
     $.each(this.enabledActions, function (index, handler) {
-        $.each(handler.baps, function (index, bap) {
+        $.each(handler.getAllBapsToProcess(), function (index, bap) {
             if (bap) {
                 if (retBaps.indexOf(that.allBaps[bap]) == -1) {
                     retBaps.push(that.allBaps[bap]);

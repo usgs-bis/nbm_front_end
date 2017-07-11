@@ -64,7 +64,9 @@ DrawPolygonActionHandler.prototype.processBaps = function () {
 
     var promises = [];
 
-    $.each(this.baps, function (index, bapId) {
+    var bapsToProcess = this.getAllBapsToProcess();
+
+    $.each(bapsToProcess, function (index, bapId) {
         var tempBap = that.getBapValue(bapId);
 
         if (tempBap) {
