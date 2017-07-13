@@ -146,7 +146,10 @@ DrawPolygonActionHandler.prototype.sendTriggerAction = function (isHeader, heade
     }
 
     if (isHeader) {
-        promises.push(this.processHeaderBap({}, headerBapId));
+        if (!actionHandlerHelper.headerSent) {
+            promises.push(this.processHeaderBap({}, headerBapId));
+            actionHandlerHelper.headerSent = true;
+        }
         promises.push(this.processBaps());
         //     .then(function () {
         //         return that.processBaps();

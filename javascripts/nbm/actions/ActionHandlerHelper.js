@@ -134,6 +134,7 @@ ActionHandlerHelper.prototype.initializeSubmitButton = function () {
  */
 ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
     if (!drawnItems) return;
+    this.headerSent = false;
     this.cleanUp(false, true);
 
     this.populateBottomBarWithClick();

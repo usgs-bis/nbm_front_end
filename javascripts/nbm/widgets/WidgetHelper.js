@@ -20,7 +20,8 @@ WidgetHelper.prototype.getWidget = function (config) {
     } else if (config.type == "boxAndWhisker") {
         return new BoxAndWhiskerWidget(config);
     } else if (config.type == "rasterQuery") {
-        // console.log(config);
+        return new BarChartWidget(config);
+    } else if (config.type == "vectorQuery") {
         return new BarChartWidget(config);
     }
 };

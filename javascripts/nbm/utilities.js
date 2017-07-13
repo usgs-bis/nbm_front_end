@@ -3,7 +3,7 @@
 var myServer = location.host;
 
 if (myServer.indexOf("igskbac") != -1) {
-    myServer = "http://localhost:8080/bcb";
+    myServer = "http://" + myServer + ":8080/bcb";
 } else {
     myServer = "https://my-beta.usgs.gov/bcb"
 }
