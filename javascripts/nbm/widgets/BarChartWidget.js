@@ -3,10 +3,14 @@
 var BarChartWidget = function (chartConfig) {
     var config = chartConfig;
 
-    console.log("Here: ", config);
+    var formatter = {precision:2, decimalSeparator:'.', thousandsSeparator:','};
 
     this.getHtml = function() {
-        return getHtmlFromJsRenderTemplate('#barChartWidget', {id: config.id + "BarChart"});
+        var noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
+        return getHtmlFromJsRenderTemplate('#barChartWidget', {
+            id: config.id + "BarChart",
+            noData: noDataArea + " " + config.areaUnit
+        });
     };
 
     this.getPdfLayout = function() {
@@ -28,7 +32,7 @@ var BarChartWidget = function (chartConfig) {
                 size: 18,
                 text: config.title
             }],
-            "numberFormatter": {precision:2, decimalSeparator:'.', thousandsSeparator:','},
+            "numberFormatter": formatter,
             "borderAlpha":0,
             "creditsPosition": "top-right",
             "color": AmChartsHelper.getChartColor(),
@@ -66,7 +70,6 @@ var BarChartWidget = function (chartConfig) {
                 "enabled": true,
                 "menu": []
             }
-
         });
 
         // barChart.addListener("clickGraphItem", function (myObject) {
