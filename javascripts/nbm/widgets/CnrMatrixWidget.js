@@ -8,7 +8,7 @@ var CnrMatrixWidget = function (config) {
             return getHtmlFromJsRenderTemplate('#widgetErrorInfo', {error: "Error retrieving data to create CNR matrix"});
         }
         var helpers = {acresFormat: formatAcres, format: formatPercent};
-        return getHtmlFromJsRenderTemplate('#matrixTemplate', {data: chart.data}, helpers);
+        return getHtmlFromJsRenderTemplate('#matrixTemplate', {data: chart.data, noData: chart.noDataArea}, helpers);
     };
 
     this.initializeWidget = function() {
