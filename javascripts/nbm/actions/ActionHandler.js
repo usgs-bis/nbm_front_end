@@ -180,12 +180,12 @@ ActionHandler.prototype.bestGuessFields = function (bap) {
  * @param additionalParams
  * @param headerBapId
  */
-ActionHandler.prototype.sendTriggerAction = function (latLng, isHeader, additionalParams, headerBapId) {
+ActionHandler.prototype.sendTriggerAction = function (latLng, isHeader, additionalParams, headerBapId, zoomOutFlag) {
     this.cleanUp();
 
     $("#synthesisCompositionBody").append(this.spinner);
 
-    this.trigger = new ActionTrigger(latLng, isHeader, additionalParams, headerBapId, this);
+    this.trigger = new ActionTrigger(latLng, isHeader, additionalParams, headerBapId, this, zoomOutFlag);
     return this.trigger.initialize();
 };
 
@@ -265,9 +265,13 @@ ActionHandler.prototype.createPseudoFeature = function (gj) {
     };
 };
 
-var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, parent) {
+var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, parent, zoomOutFlag) {
     var myself = this;
     var that = parent;
+
+    if (typeof zoomOutFlag == 'undefined') {
+        zoomOutFlag = true;
+    }
 
     this.initialize = function () {
         return that.layer.getIdentifyResults(latLng)
@@ -310,10 +314,12 @@ var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, p
                         if (that.feature) that.feature.remove();
                         that.feature = new Feature(that.result.geojson, latLng, "", that.layer.displayFeatureNegative);
                         that.feature.show();
-                        if (!isVerticalOrientation()) {
-                            centerMapRight(that.feature.getLeafetFeatureBounds());
-                        } else {
-                            centerMapBottom(that.feature.getLeafetFeatureBounds());
+                        if (zoomOutFlag){
+                            if (!isVerticalOrientation()) {
+                                centerMapRight(that.feature.getLeafetFeatureBounds());
+                            } else {
+                                centerMapBottom(that.feature.getLeafetFeatureBounds());
+                            }
                         }
                     } catch(ex) {
                         throw new Error('Error creating a feature from the returned data');

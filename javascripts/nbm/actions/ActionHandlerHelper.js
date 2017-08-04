@@ -225,13 +225,14 @@ ActionHandlerHelper.prototype.cleanUp = function(hideBar, skipPolygonHandler) {
     } else {
         clearSynthComp();
     }
-
     function clearSynthComp() {
         $('#synthesisCompositionDetails').html('');
         $('#synthCompBottomBar').html('');
         $('#synthesisCompositionBody').html('');
     }
 };
+
+
 
 /**
  * If the action was a click, show the lat/lng of the click. Otherwise, the action could have been a polygon submission.
@@ -309,14 +310,16 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
     }
 };
 
-ActionHandlerHelper.prototype.handleEverything = function (latLng) {
+ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFeatureSelected) {
     var that = this;
     this.canDownloadPdf = false;
-    return this.handleActions(latLng)
+    return this.handleActions(latLng, isDifferentFeatureSelected)
         .then(function (data) {
             var hasData = false;
             $.each(data, function (index, obj) {
-                if (!obj.noData) hasData = true;
+                if (obj != null && !obj.noData) {
+                    hasData = true;
+                }
             });
             if (!hasData) {
                 that.loadEmptySynthComp("No data is available for the point clicked.");
@@ -330,7 +333,7 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng) {
  * actions.
  * @param {Object} latLng - L.LatLng
  */
-ActionHandlerHelper.prototype.handleActions = function (latLng) {
+ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatureSelected) {
     this.headerSent = false;
     this.cleanUp(false);
     this.updateClick(latLng);
@@ -343,12 +346,11 @@ ActionHandlerHelper.prototype.handleActions = function (latLng) {
 
     $.each(this.enabledActions, function (index, actionHandler) {
         if (actionHandler.type != "drawPolygon") {
-
             if (!actionHandler.headerBap) {
-                promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams));
+                promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
             } else {
                 $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
-                promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index));
+                promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
             }
         }
     });

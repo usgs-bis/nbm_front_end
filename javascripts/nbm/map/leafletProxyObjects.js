@@ -7,6 +7,7 @@ var EDGE_OF_MAP_THRESHOLD = 35;
 var MAP_ITITIAL_CENTER = [40,-95];
 var MAP_INITIAL_ZOOM = 5;
 
+
 L.LatLng.prototype.getLatForDisplay = function() {
     return getDisplay(this.lat);
 };
@@ -72,7 +73,7 @@ var LeafletMapService = (function (leafletMapService){
                 if(d.originalEvent.shiftKey || d.originalEvent.defaultPrevented || drawing) {
                     return false;
                 }
-                actionHandlerHelper.handleEverything(d.latlng);
+                actionHandlerHelper.handleEverything(d.latlng, true);
                 updateUrlWithState();
             })
             .on('zoomend', function () {
@@ -224,6 +225,13 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
     this.latLng = latLng;
     this.leafletFeature = getLeafletFeature(geojson, latLng, color, displayFeatureNegative);
     this.featureNegative = undefined;
+
+    //added event to handle zooming if a different feature is selected
+    this.leafletFeature.on('click', function(d) {
+        actionHandlerHelper.handleEverything(d.latlng, false);
+        d.originalEvent.preventDefault(d);
+    });
+
     if (displayFeatureNegative) {
         this.featureNegative = getNegativeFeature(geojson);
     }
@@ -298,6 +306,7 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
     this.getLeafetFeatureBounds = function() {
         return this.leafletFeature.getBounds();
     };
+
 
     function getNegativeFeature (geojson) {
         var coordinates = geojson.geometry.coordinates;
