@@ -171,7 +171,7 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
 
             for (var i = 0; i < features.length; i++) {
                 var f = features[i];
-                if (f.id) return f.id;
+                if (f.id) return true;
             }
 
             return false;
