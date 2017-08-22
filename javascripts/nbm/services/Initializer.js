@@ -75,8 +75,29 @@ var Initializer = (function(initializer) {
                 setupPage(bioscapeJson, data, state);
             })
             .catch(function(err) {
+                alert("The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.");
                 console.log('There was an error trying to receive information from ScienceBase: ' + err + '. The default National Biogeographic Map will be loaded.');
-                $.getJSON('https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json')
+                console.log('id = '+ bioScapeId);
+                var bbBioScape;   //Bitbucket bioScape
+                switch(id){
+                    case 'biogeography':
+                    case 'nbm_front_end':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
+                        break;
+                    case 'cnr':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/cnr_config.json' ;
+                        break;
+                    case 'npn':
+                         bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json' ;
+                        break;
+                    case 'nvcs':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
+                        break;
+                    default:    // Probably not needed, but just in case
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
+                }
+
+                $.getJSON(bbBioScape)
                     .done(function(data) {
                         var json = parseConfigFromBitBucket(data.lines);
                         setupPage(bioscapeJson, json, state);
