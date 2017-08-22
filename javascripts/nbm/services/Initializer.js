@@ -75,7 +75,7 @@ var Initializer = (function(initializer) {
                 setupPage(bioscapeJson, data, state);
             })
             .catch(function(err) {
-                alert("The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.");
+                showErrorDialog('The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.', 'Warning');
                 console.log('There was an error trying to receive information from ScienceBase: ' + err + '. The default National Biogeographic Map will be loaded.');
                 console.log('id = '+ bioScapeId);
                 var bbBioScape;   //Bitbucket bioScape
