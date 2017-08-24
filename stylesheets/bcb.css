@@ -449,12 +449,30 @@ div.table {
     z-index: 1000;
 }
 
-.mapControl {
-    padding: 5px;
+.mapControl, .mapControlGroup {
     border-radius: 10px;
     margin: 10px 0 5px 10px;
     position: relative;
     float: left;
+}
+.mapControl {
+    padding: 5px;
+}
+.mapControl i, .mapControlGroup i {
+    font-size:18px;
+    vertical-align:middle;
+}
+div.mapControlGroup > a {
+    float: left;
+    padding: 5px;
+    border-left: 1px solid #f3f3f3;
+}
+div.mapControlGroup > a:first-child {
+    border-left: none;
+    border-radius: 10px 0 0 10px;
+}
+div.mapControlGroup > a:last-child {
+    border-radius: 0 10px 10px 0;
 }
 
 .action {
@@ -795,11 +813,6 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     font-size: 11px;
 }
 
-.leaflet-top.leaflet-left {
-    left: 400px;
-    top: 0;
-}
-
 .grayLink a, a.grayLink, .grayLink a:visited, a.grayLink:visited  {
     color: #f3f3f3;
     cursor: pointer;
@@ -807,6 +820,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 .grayLink a:hover, a.grayLink:hover, .btn:focus {
     color: #cccccc;
+    background-color: rgb(10, 10, 15);
 }
 
 .summary > a {

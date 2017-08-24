@@ -44,38 +44,28 @@ ActionHandlerHelper.prototype.createActionHandler = function (actionConfig, laye
 ActionHandlerHelper.prototype.addDrawCapability = function () {
     var that = this;
     if (!drawnItems) {
+        $("#mapControlContainer").append(getHtmlFromJsRenderTemplate('drawPolygon'));//add the controls
+        var controls = $('#polygonControls');
+        controls.on('hide.bs.dropdown', function(e) {
+            if(drawing) {
+                e.preventDefault();
+            }
+        });
+
         //Create the object to store the drawn polygon and add it to the map
         drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
-        map.addControl(new L.Control.Draw({
-            // edit: {
-            //     featureGroup: drawnItems,
-            //     poly: {
-            //         allowIntersection: false
-            //     }
-            // },
-            draw: {
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true
-                },
-                marker: false,
-                circle: false,
-                rectangle: false,
-                polyline: false
-            }
-        }));
 
         //The 'drawing' boolean is a global variable used to prevent the click from propagating to the map if the user
         //is currently drawing
         map.on(L.Draw.Event.CREATED, function (event) {
             drawing = false;
+            controls.removeClass('open');//closes the dropdown options for drawing
             var layer = event.layer;
 
             drawnItems.addLayer(layer);
 
-            that.showTempPopup("Click the \"Submit Polygon\" button at the top to submit this polygon for analysis.");
-            that.showSubmitButton();
+            that.showTempPopup("Click the \"Submit\" button at the top to submit this polygon for analysis.");
         });
 
         map.on(L.Draw.Event.DRAWSTART, function () {
@@ -88,22 +78,6 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
             drawing = false;
         });
 
-        map.on(L.Draw.Event.DELETESTART, function () {
-            drawing = true;
-        });
-
-        map.on(L.Draw.Event.DELETESTOP, function () {
-            drawing = false;
-        });
-
-        map.on(L.Draw.Event.EDITSTART, function () {
-            drawing = true;
-        });
-
-        map.on(L.Draw.Event.EDITSTOP, function () {
-            drawing = false;
-        });
-
         this.initializeSubmitButton();
     }
 };
@@ -112,15 +86,26 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
  * Create and show the submit button. The button is shown only if there are layers turned on with the "drawPolygon" action
  */
 ActionHandlerHelper.prototype.initializeSubmitButton = function () {
-    this.submitPolygonButton = $("<a id='submitPolygonButton' class='unit_info_poly overMap mapControl grayLink' " +
-        "style='padding: 4px 5px 5px 5px;' data-toggle='tooltip' data-placement='bottom' title='Click on the polygon below the zoom " +
-        "controls to begin drawing a polygon on the map. When the polygon is finished, click this button to submit it " +
-        "for analysis.'>Submit Polygon</a>");
-    $("#mapControlContainer").append(this.submitPolygonButton);
+    var polygonDraw = new L.Draw.Polygon(map, {
+        allowIntersection: false,
+        showArea: true
+    });
+
+    $('#polygonDropdown').click(function() {
+        polygonDraw.enable();
+    });
+    $('#finishPolygon').click(function() {
+        polygonDraw.completeShape();
+    });
+    $('#deletePoint').click(function() {
+        polygonDraw.deleteLastVertex();
+    });
+    $('#cancelPolygonDraw').click(function() {
+        polygonDraw.disable();
+    });
 
     var that = this;
-
-    this.submitPolygonButton.on ("click", function () {
+    $('#submitPolygon').click(function () {
         that.canDownloadPdf = false;
         that.handleDrawPolygonActions()
             .then(function () {
@@ -303,9 +288,9 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
     });
 
     if (canDraw) {
-        $(".leaflet-draw, #submitPolygonButton").show()
+        $(".leaflet-draw, #polygonControls").show()
     } else {
-        $(".leaflet-draw, #submitPolygonButton").hide();
+        $(".leaflet-draw, #polygonControls").hide();
         this.cleanUpDrawnPolygons();
     }
 };
@@ -398,6 +383,8 @@ ActionHandlerHelper.prototype.handleLayerChange = function () {
         } else if (this.marker && !hasClickActions) {
             this.cleanUp(false);
             this.loadEmptySynthComp();
+        } else {
+            this.handleDrawPolygonActions();
         }
     }
 };
@@ -433,22 +420,6 @@ ActionHandlerHelper.prototype.cleanUpDrawnPolygons = function () {
         drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
     }
-};
-
-/**
- * This just adds a little animation effect to the "Submit Polygon" button when the user finishes drawing a polygon.
- */
-ActionHandlerHelper.prototype.showSubmitButton = function () {
-    var that = this;
-    this.submitPolygonButton.animate({
-        "padding": "7px",
-        "color": "white"
-    }, 300, "swing", function () {
-        that.submitPolygonButton.animate({
-            "padding": "4px 5px 5px 5px",
-            "color": "#f3f3f3"
-        }, 300, "swing");
-    });
 };
 
 /**
