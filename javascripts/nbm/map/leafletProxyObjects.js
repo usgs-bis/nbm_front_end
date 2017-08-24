@@ -276,7 +276,6 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
                 .addTo(map);
         }
 
-        //centerMapRight(this.leafletFeature.getBounds());
         if(onClick) {
             this.leafletFeature
                 .on('click', function (newClick) {
@@ -577,7 +576,7 @@ var Scale = function() {
  *  inputs what is needed for the dummy object inputs.
  * @callback objectCallback
  * @param {number} direction - Either 1 for the map beyond 180 degrees or -1 for the map beyond -180
- * @returns {Object) - any object that inherits L.Layer
+ * @returns {Object} - any object that inherits L.Layer
  */
 
 /**

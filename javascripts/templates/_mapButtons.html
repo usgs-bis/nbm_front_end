@@ -10,3 +10,21 @@
         <i class="fa fa-download" aria-hidden="true" style="font-size:18px;vertical-align:middle;"></i>&nbsp;Download
     </a>
 </script>
+
+<script id="drawPolygon" type="text/x-jsrender">
+    <div id="polygonControls" class="overMap unit_info mapControlGroup grayLink" style="overflow-y:visible">
+        <a class="dropdown-toggle" type="button" id="polygonDropdown" data-toggle="dropdown" aria-haspopup="true">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+            Draw Polygon
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="polygonDropdown">
+            <li><a id="finishPolygon">Finish</a></li>
+            <li><a id="deletePoint">Delete last point</a></li>
+            <li><a id="cancelPolygonDraw">Cancel</a></li>
+        </ul>
+        <a type="button" id="submitPolygon">
+            <i class="fa fa-upload" aria-hidden="true"></i>
+            Submit
+        </a>
+    </div>
+</script>
