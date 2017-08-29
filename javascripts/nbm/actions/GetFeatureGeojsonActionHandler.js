@@ -362,7 +362,7 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
         console.log ('ready to send ajax request');
   //      console.log ('params = '+ params);
         var x = params.featureValue;
-        var y = truncatePoints(x);
+        var y = truncatePoints(x,6);
         if (y != null){
              params.featureValue = y;
         }
@@ -381,8 +381,11 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
             }
         });
 
-    function truncatePoints(cs){
+    function truncatePoints(cs, sigdigits){
         console.log('TruncatePoints Input String length = ' + cs.length);
+        if (!sigdigits || typeof sigdigits != 'number'  ){
+            sigdigits = 6;
+        }
         var localString = cs;
         var startIdx = localString.indexOf('coordinates') + 11 ;
         var end = localString.indexOf('crs');
@@ -405,17 +408,34 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
             et = localString.indexOf(",",dpoint);
             eb = localString.indexOf("]", dpoint);
             if (et < eb && eb != -1 && et > startIdx){
-                var t = localString.slice(dpoint+6,et-1);
-                localString = localString.replace(t,'');
+                var t = localString.slice(dpoint+sigdigits,et-1);
+                // should never happen... but jic only replace string if no special char's got mixed in.
+                if (checkExtraSpecials(t)) {
+                    localString = localString.replace(t, '');
+                }
             }
             if (eb < et && et != -1){
-                var t2 = localString.slice(dpoint+6,eb-1);
-                localString = localString.replace(t2,'');
+                var t2 = localString.slice(dpoint+sigdigits,eb-1);
+                if (checkExtraSpecials(t2)) {
+                    localString = localString.replace(t2, '');
+                }
             }
         }
      //   console.log('Numbers shortened = '+ pcounts);
-    //    console.log ('Modified String = ' + localString);
+     //   console.log ('Modified String = ' + localString);
     //    console.log ('Modified String length = '+ localString.length);
         return localString ;
+    }
+    function checkExtraSpecials(instr){
+        var l1 = instr.includes("]");
+        var l2 = instr.includes(",");
+        var l3 = instr.includes("[");
+        var l4 = instr.includes("{");
+        var l5 = instr.includes(":");
+
+        if (!l1 && !l2 && !l3 && !l4 && !l5){
+            return true;
+        }
+        return false;
     }
 };
