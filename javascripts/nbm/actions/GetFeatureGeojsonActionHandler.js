@@ -72,10 +72,10 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
 };
 
 GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson) {
-    var MIN_LIMIT = 50000;
+    var MIN_LIMIT = 17500;
     var gjString = JSON.stringify(geojson.geometry);
-
     if (gjString.length <= MIN_LIMIT) {
+        console.log ('No Simplification Needed resolve the promise gjString size = '+ gjString.length);
         return Promise.resolve(geojson);
     }
 
@@ -90,11 +90,11 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
 
 
     function getSimplifiedGeojsonObject(geojson, p) {
-        var MAX_LIMIT = 875000;
+        var MAX_LIMIT = 875000;  /// Leave for later... reference
+        console.log ('In getSimplifiedGeojsonObject');
         return new Promise(function(resolve, reject) {
             setTimeout(function() {
                 if (geojson.pseudo) {
-                    console.log("Returning unaltered pseudo-feature");
                     resolve(JSON.stringify(geojson.geometry));
                     return;
                 }
@@ -105,9 +105,9 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
                 var quantile = topojson.quantile(topo, p);
                 topojson.simplify(topo, quantile);
                 var simple = topojson.feature(topo, topo.objects.geometry);
-
                 var simpjson = JSON.stringify(simple.geometry);
-                if (simpjson.length > MAX_LIMIT) {
+                if (simpjson.length > 20000) {
+                    console.log('invoking getSimplifiedGeojsonObject simpjson.length = '+ simpjson.length);
                     resolve(getSimplifiedGeojsonObject(geojson, (p * .5)));
                     return;
                 }
@@ -280,6 +280,7 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
         return a.b[2] - b.b[2];
     }
 
+
     function minHeap() {
         var array = [],
             size = 0;
@@ -358,6 +359,13 @@ GetFeatureGeojsonActionHandler.prototype.cleanUp = function () {
 };
 
 GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params) {
+        console.log ('ready to send ajax request');
+  //      console.log ('params = '+ params);
+        var x = params.featureValue;
+        var y = truncatePoints(x,6);
+        if (y != null){
+             params.featureValue = y;
+        }
         return sendAjaxRequest({
             type: 'POST',
             url: url,
@@ -371,5 +379,71 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
                         console.log("Could not set BAP error, BAP does not exist");
                     }
             }
-        })
+        });
+
+    function truncatePoints(cs, sigdigits){
+        console.log('TruncatePoints Input String length = ' + cs.length);
+        if (!sigdigits || typeof sigdigits != 'number'  ){
+            sigdigits = 6;
+        }
+        var localString = cs;
+        var startIdx = localString.indexOf('coordinates') + 11 ;
+        var end = localString.indexOf('crs');
+        var idx = startIdx;
+        var dpoint = startIdx;
+        var pcounts = 1;
+        var e = 0;
+        var et = 0;
+        var eb = 0;
+  //      console.log (' RAW STRING =  CS = '+ cs);
+        while(idx < end ){
+           dpoint = localString.indexOf(".",idx);
+            if (dpoint > 0){
+                idx = dpoint+ 1;
+            }
+            else {
+                idx = end+1;
+            }
+            pcounts++;
+            et = localString.indexOf(",",dpoint);
+            eb = localString.indexOf("]", dpoint);
+            if (et < eb && eb != -1 && et > startIdx){
+                var t = localString.slice(dpoint+sigdigits,et-1);
+                // should never happen... but jic only replace string if no special char's got mixed in.
+                if (checkExtraSpecials(t) && checkDupString(localString, t, dpoint+sigdigits) ) {
+                    localString = localString.replace(t, '');
+                }
+            }
+            if (eb < et && et != -1){
+                var t2 = localString.slice(dpoint+sigdigits,eb-1);
+                if (checkExtraSpecials(t2) && checkDupString(localString, t2, dpoint+sigdigits)) {
+                    localString = localString.replace(t2, '');
+                }
+            }
+        }
+     //   console.log('Numbers shortened = '+ pcounts);
+     //   console.log ('Modified String = ' + localString);
+    //    console.log ('Modified String length = '+ localString.length);
+        return localString ;
+    }
+    function checkExtraSpecials(instr){
+        var l1 = instr.includes("]");
+        var l2 = instr.includes(",");
+        var l3 = instr.includes("[");
+        var l4 = instr.includes("{");
+        var l5 = instr.includes(":");
+        if (!l1 && !l2 && !l3 && !l4 && !l5){
+            return true;
+        }
+        return false;
+    }
+    function checkDupString(s1, s2, idx){
+      //  console.log('checking a dup string');
+        var chk1 = s1.indexOf(s2,idx+2);
+        var chk2 = s1.indexOf(s2);
+        if (chk1 == -1 && chk2 == idx){
+            return true;
+        }
+        return false;
+    }
 };
