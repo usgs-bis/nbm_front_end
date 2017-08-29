@@ -438,7 +438,7 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
         return false;
     }
     function checkDupString(s1, s2, idx){
-        console.log('checking a dup string');
+      //  console.log('checking a dup string');
         var chk1 = s1.indexOf(s2,idx+2);
         var chk2 = s1.indexOf(s2);
         if (chk1 == -1 && chk2 == idx){
