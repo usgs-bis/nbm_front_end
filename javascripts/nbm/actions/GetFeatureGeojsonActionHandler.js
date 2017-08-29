@@ -410,13 +410,13 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
             if (et < eb && eb != -1 && et > startIdx){
                 var t = localString.slice(dpoint+sigdigits,et-1);
                 // should never happen... but jic only replace string if no special char's got mixed in.
-                if (checkExtraSpecials(t)) {
+                if (checkExtraSpecials(t) && checkDupString(localString, t, dpoint+sigdigits) ) {
                     localString = localString.replace(t, '');
                 }
             }
             if (eb < et && et != -1){
                 var t2 = localString.slice(dpoint+sigdigits,eb-1);
-                if (checkExtraSpecials(t2)) {
+                if (checkExtraSpecials(t2) && checkDupString(localString, t2, dpoint+sigdigits)) {
                     localString = localString.replace(t2, '');
                 }
             }
@@ -432,8 +432,16 @@ GetFeatureGeojsonActionHandler.prototype.sendPostRequest = function (url, params
         var l3 = instr.includes("[");
         var l4 = instr.includes("{");
         var l5 = instr.includes(":");
-
         if (!l1 && !l2 && !l3 && !l4 && !l5){
+            return true;
+        }
+        return false;
+    }
+    function checkDupString(s1, s2, idx){
+        console.log('checking a dup string');
+        var chk1 = s1.indexOf(s2,idx+2);
+        var chk2 = s1.indexOf(s2);
+        if (chk1 == -1 && chk2 == idx){
             return true;
         }
         return false;
