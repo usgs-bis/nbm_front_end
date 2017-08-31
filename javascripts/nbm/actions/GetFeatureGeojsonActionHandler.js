@@ -98,6 +98,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                             } else {
                                 showErrorDialog('There was an error sending chunked geometry to the API. ' +
                                     'If the problem continues, please contact site admin', false);
+                                return Promise.resolve();
                             }
                         }));
                 } else {
