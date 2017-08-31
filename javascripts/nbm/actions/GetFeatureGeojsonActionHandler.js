@@ -123,14 +123,12 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
     var MIN_LIMIT = 50000;
     var SIG_FIGS = 6;
     var MAX_LOOPS = 4;
-    var helper = 1;
 
     var geojsonLength = JSON.stringify(geojson.geometry).length;
 
     if (geojsonLength <= MIN_LIMIT) {
         return Promise.resolve(geojson);
     } else if (geojsonLength > 8000000) {
-        helper = 2;
         SIG_FIGS = 4;
     } else if (geojsonLength > 3000000) {
         SIG_FIGS = 5;
@@ -168,7 +166,7 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
 
             while(geojsonLength >= MIN_LIMIT && count < MAX_LOOPS) {
                 count++;
-                p = Math.floor(MIN_LIMIT / geojsonLength * mult) / mult / helper;
+                p = Math.floor(MIN_LIMIT / geojsonLength * mult) / mult;
                 if (DEBUG_MODE) {
                     console.log("Length: ", geojsonLength);
                     console.log("p: ", p);
