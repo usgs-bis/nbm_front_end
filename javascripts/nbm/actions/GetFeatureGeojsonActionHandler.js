@@ -47,6 +47,10 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                     var token = Math.random().toString();
                     var numChunks = Math.floor(myMap.featureValue.length / WAF_LIMIT);
 
+                    if (myMap.featureValue.length % WAF_LIMIT == 0) {
+                        numChunks--;
+                    }
+
                     if (DEBUG_MODE) console.log("Number of early chunks: ", numChunks);
 
                     var tempPromises = [];
@@ -91,10 +95,13 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                                         console.log("Got an error", ex);
                                         return Promise.resolve();
                                     });
+                            } else {
+                                showErrorDialog('There was an error sending chunked geometry to the API. ' +
+                                    'If the problem continues, please contact site admin', false);
                             }
                         }));
                 } else {
-                    console.log("Sending 1 request");
+                    if (DEBUG_MODE) console.log("Sending 1 request");
                     promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
                         .then(function(data) {
                             var bap = that.getBapValue(data.id);
