@@ -43,24 +43,84 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                 myMap.sbId = bapId;
                 myMap.featureValue = JSON.stringify(newGj.geometry);
 
-                promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
-                    .then(function(data) {
-                        // console.log("Ret data: ", data);
-                        var bap = that.getBapValue(data.id);
-                        bap.reconstruct(data, true);
+                if (myMap.featureValue.length > WAF_LIMIT) {
+                    var token = Math.random().toString();
+                    var numChunks = Math.floor(myMap.featureValue.length / WAF_LIMIT);
 
-                        var feature = that.createPseudoFeature(newGj.geometry);
-                        feature.layer = that.layer;
-                        bap.feature = feature;
-                        bap.simplified = simplified;
-                        bap.initializeBAP();
-                        that.setBapValue(data.id, bap);
-                        return Promise.resolve();
-                    })
-                    .catch(function (ex) {
-                        console.log("Got an error", ex);
-                        return Promise.resolve();
-                    }));
+                    if (myMap.featureValue.length % WAF_LIMIT == 0) {
+                        numChunks--;
+                    }
+
+                    if (DEBUG_MODE) console.log("Number of early chunks: ", numChunks);
+
+                    var tempPromises = [];
+                    var ok = true;
+
+                    for (var i = 0; i < numChunks; i++) {
+                        var sentMap = {
+                            chunkToken: token,
+                            numChunks: numChunks,
+                            featureValue: myMap.featureValue.substring(i * WAF_LIMIT, (i + 1) * WAF_LIMIT),
+                            index: i
+                        };
+                        tempPromises.push(that.sendPostRequest(myServer + "/bap/sendChunk", sentMap)
+                            .then(function (chunkReturn) {
+                                if (!chunkReturn.success) {
+                                    console.log("Got an error in a chunk");
+                                    ok = false;
+                                }
+                                Promise.resolve();
+                            }));
+                    }
+
+                    promises.push(Promise.all(tempPromises)
+                        .then(function () {
+                            if (ok) {
+                                myMap.chunkToken = token;
+                                myMap.featureValue = myMap.featureValue.substring(numChunks * WAF_LIMIT, myMap.featureValue.length);
+                                return that.sendPostRequest(myServer + "/bap/get", myMap)
+                                    .then(function (data) {
+                                        var bap = that.getBapValue(data.id);
+                                        bap.reconstruct(data, true);
+
+                                        var feature = that.createPseudoFeature(newGj.geometry);
+                                        feature.layer = that.layer;
+                                        bap.feature = feature;
+                                        bap.simplified = simplified;
+                                        bap.initializeBAP();
+                                        that.setBapValue(data.id, bap);
+                                        return Promise.resolve();
+                                    })
+                                    .catch(function (ex) {
+                                        console.log("Got an error", ex);
+                                        return Promise.resolve();
+                                    });
+                            } else {
+                                showErrorDialog('There was an error sending chunked geometry to the API. ' +
+                                    'If the problem continues, please contact site admin', false);
+                                return Promise.resolve();
+                            }
+                        }));
+                } else {
+                    if (DEBUG_MODE) console.log("Sending 1 request");
+                    promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
+                        .then(function(data) {
+                            var bap = that.getBapValue(data.id);
+                            bap.reconstruct(data, true);
+
+                            var feature = that.createPseudoFeature(newGj.geometry);
+                            feature.layer = that.layer;
+                            bap.feature = feature;
+                            bap.simplified = simplified;
+                            bap.initializeBAP();
+                            that.setBapValue(data.id, bap);
+                            return Promise.resolve();
+                        })
+                        .catch(function (ex) {
+                            console.log("Got an error", ex);
+                            return Promise.resolve();
+                        }));
+                }
             });
 
             return Promise.all(promises);
@@ -68,18 +128,18 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
 };
 
 GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson) {
-    var MIN_LIMIT = 21000;
+    var MIN_LIMIT = 50000;
     var SIG_FIGS = 6;
-    var MAX_LOOPS = 3;
+    var MAX_LOOPS = 4;
 
-    var initialLength = JSON.stringify(geojson.geometry).length;
+    var geojsonLength = JSON.stringify(geojson.geometry).length;
 
-    if (initialLength <= MIN_LIMIT) {
+    if (geojsonLength <= MIN_LIMIT) {
         return Promise.resolve(geojson);
-    } else if (initialLength > 8000000) {
+    } else if (geojsonLength > 8000000) {
         SIG_FIGS = 4;
-    } else if (initialLength > 3000000) {
-        SIG_FIGS = 5
+    } else if (geojsonLength > 3000000) {
+        SIG_FIGS = 5;
     }
 
     actionHandlerHelper.showTempPopup("The returned complex polygon is being simplified for analysis");
@@ -91,7 +151,7 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
             if (G_LOOPS) MAX_LOOPS = G_LOOPS;
 
             if (DEBUG_MODE) {
-                console.log("\nInitial geometry length: ", initialLength.toLocaleString());
+                console.log("\nInitial geometry length: ", geojsonLength.toLocaleString());
                 console.log("String length limit: ", MIN_LIMIT.toLocaleString());
                 console.log("Sig figs: ", SIG_FIGS.toLocaleString());
                 console.log("Max loops: ", MAX_LOOPS.toLocaleString());
@@ -103,15 +163,24 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
                 console.log("Length after rounding points: ", JSON.stringify(geojson.geometry).length.toLocaleString());
             }
 
-            if (JSON.stringify(geojson.geometry).length <= MIN_LIMIT) {
+            geojsonLength = JSON.stringify(geojson.geometry).length;
+            if (geojsonLength <= MIN_LIMIT) {
                 return Promise.resolve(geojson);
             }
 
+            var mult = Math.pow(10, 4);
+            var p;
             var count = 0;
 
-            while(JSON.stringify(geojson.geometry).length >= MIN_LIMIT && count < MAX_LOOPS) {
+            while(geojsonLength >= MIN_LIMIT && count < MAX_LOOPS) {
                 count++;
-                geojson = getSimplifiedGeojsonObject(geojson);
+                p = Math.floor(MIN_LIMIT / geojsonLength * mult) / mult;
+                if (DEBUG_MODE) {
+                    console.log("Length: ", geojsonLength);
+                    console.log("p: ", p);
+                }
+                geojson = getSimplifiedGeojsonObject(geojson, p);
+                geojsonLength = JSON.stringify(geojson.geometry).length;
             }
 
             if (DEBUG_MODE) {

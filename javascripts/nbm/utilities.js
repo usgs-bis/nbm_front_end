@@ -19,6 +19,7 @@ var drawing = false;
 var G_LOOPS;
 var G_FIGS;
 var G_LIMIT;
+var WAF_LIMIT = 9000;
 
 $(document)
     .keyup(function(e) {
