@@ -163,10 +163,10 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
             //     console.log("Length after rounding points: ", JSON.stringify(geojson.geometry).length.toLocaleString());
             // }
 
-            geojsonLength = JSON.stringify(geojson.geometry).length;
-            if (geojsonLength <= MIN_LIMIT) {
-                return Promise.resolve(geojson);
-            }
+            // geojsonLength = JSON.stringify(geojson.geometry).length;
+            // if (geojsonLength <= MIN_LIMIT) {
+            //     return Promise.resolve(geojson);
+            // }
 
             var mult = Math.pow(10, 4);
             var p;
