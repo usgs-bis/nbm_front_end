@@ -128,7 +128,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
 };
 
 GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson) {
-    var MIN_LIMIT = 50000;
+    var MIN_LIMIT = 100000;
     var SIG_FIGS = 6;
     var MAX_LOOPS = 4;
 
@@ -157,16 +157,16 @@ GetFeatureGeojsonActionHandler.prototype.getSimplifiedGeojson = function(geojson
                 console.log("Max loops: ", MAX_LOOPS.toLocaleString());
             }
 
-            geojson = getRoundedGeometry(geojson, SIG_FIGS);
+            // geojson = getRoundedGeometry(geojson, SIG_FIGS);
 
-            if (DEBUG_MODE) {
-                console.log("Length after rounding points: ", JSON.stringify(geojson.geometry).length.toLocaleString());
-            }
+            // if (DEBUG_MODE) {
+            //     console.log("Length after rounding points: ", JSON.stringify(geojson.geometry).length.toLocaleString());
+            // }
 
-            geojsonLength = JSON.stringify(geojson.geometry).length;
-            if (geojsonLength <= MIN_LIMIT) {
-                return Promise.resolve(geojson);
-            }
+            // geojsonLength = JSON.stringify(geojson.geometry).length;
+            // if (geojsonLength <= MIN_LIMIT) {
+            //     return Promise.resolve(geojson);
+            // }
 
             var mult = Math.pow(10, 4);
             var p;
