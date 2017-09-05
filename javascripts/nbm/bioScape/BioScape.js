@@ -35,6 +35,9 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
                 if(data && data.body) {
                     that.definition = data.body;
                 }
+            })
+            .catch(function() {
+                console.log('There was an issue trying to get a definition from ScienceBase.');
             });
     }
 
