@@ -118,7 +118,7 @@ ActionHandlerHelper.prototype.initializeSubmitButton = function () {
  * When a polygon is submitted, trigger the actions for all enabled "drawPolygon" action handlers
  */
 ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
-    if (!drawnItems) return;
+    if (!drawnItems || !drawnItems.getLayers().length) return Promise.resolve();
     this.headerSent = false;
     this.cleanUp(false, true);
 
