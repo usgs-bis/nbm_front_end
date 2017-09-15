@@ -3,7 +3,7 @@
 var BarChartWidget = function (chartConfig) {
     var config = chartConfig;
 
-    var formatter = {precision:2, decimalSeparator:'.', thousandsSeparator:','};
+    var formatter = {precision:0, decimalSeparator:'.', thousandsSeparator:','};
 
     this.getHtml = function() {
         var noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
