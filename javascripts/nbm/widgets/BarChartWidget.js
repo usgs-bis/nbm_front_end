@@ -28,10 +28,10 @@ var BarChartWidget = function (chartConfig) {
     var barChart;
     this.initializeWidget = function () {
         barChart = AmCharts.makeChart(config.id + "BarChart", {
-            "titles": [{
-                size: 18,
-                text: config.title
-            }],
+            //"titles": [{
+            //    size: 18,
+            //    text: config.title
+            //}],
             "numberFormatter": formatter,
             "borderAlpha":0,
             "creditsPosition": "top-right",
