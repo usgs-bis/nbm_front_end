@@ -99,8 +99,21 @@ var Initializer = (function(initializer) {
 
                 $.getJSON(bbBioScape)
                     .done(function(data) {
-                        var json = parseConfigFromBitBucket(data.lines);
-                        setupPage(bioscapeJson, json, state);
+                        if (data.isLastPage) {
+                            var json = parseConfigFromBitBucket(data.lines);
+                            setupPage(bioscapeJson, json, state);
+                        } else {
+                            //Bitbucket only delivers the first 500 lines for calls like this. If we try to get the
+                            //raw file, we get a CORS issue. Here's the solution for now... If we have files over 1000
+                            //lines, we'll have to make this a loop rather than a single check.
+                            $.getJSON(bbBioScape + "?start="+data.size)
+                                .done (function (newData) {
+                                    data.lines = data.lines.concat(newData.lines);
+                                    var json = parseConfigFromBitBucket(data.lines);
+
+                                    setupPage(bioscapeJson, json, state);
+                            });
+                        }
                     });
             });
     }
