@@ -68,15 +68,31 @@ var Initializer = (function(initializer) {
 
                 return configUrl;
             })
-            .then(function(data) {
-                return Promise.resolve($.getJSON(data));
+            .then(function(url) {
+                return new Promise(function (resolve, reject) {
+                    $.getJSON(url)
+                        .done(function(data) {
+                            if (data.isLastPage) {
+                                resolve(parseConfigFromBitBucket(data.lines));
+                            } else {
+                                //Bitbucket only delivers the first 500 lines for calls like this. If we try to get the
+                                //raw file, we get a CORS issue. Here's the solution for now... If we have files over 1000
+                                //lines, we'll have to make this a loop rather than a single check.
+                                $.getJSON(url + "?start="+data.size)
+                                    .done (function (newData) {
+                                        data.lines = data.lines.concat(newData.lines);
+                                        resolve(parseConfigFromBitBucket(data.lines));
+                                    });
+                            }
+                        });
+                });
             })
             .then(function(data) {
                 setupPage(bioscapeJson, data, state);
             })
             .catch(function(err) {
                 showErrorDialog('The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.', 'Warning');
-                console.log('There was an error trying to receive information from ScienceBase: ' + err + '. The default National Biogeographic Map will be loaded.');
+                // console.log('There was an error trying to receive information from ScienceBase: ', err, '. The default National Biogeographic Map will be loaded.');
                 console.log('id = '+ bioScapeId);
                 var bbBioScape;   //Bitbucket bioScape
                 switch(id){
