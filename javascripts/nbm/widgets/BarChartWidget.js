@@ -50,10 +50,11 @@ var BarChartWidget = function (chartConfig) {
             "graphs": [{
                 "balloonText": "<b>[[category]]: [[value]]" + config.areaUnit + "</b>",
                 "fillColorsField": "color",
-                "fillAlphas": 0.9,
-                "lineAlpha": 0.2,
+                "fillAlphas":.9,
+                "lineAlpha":0.3,
                 "type": "column",
-                "valueField": "acres"
+                "valueField":"acres",
+                "alphaField":"opacity"
             }],
             "balloon": AmChartsHelper.getChartBalloonSettings(),
             "chartCursor": {
@@ -71,7 +72,6 @@ var BarChartWidget = function (chartConfig) {
                 "menu": []
             }
         });
-
         // barChart.addListener("clickGraphItem", function (myObject) {
         //     openLmeSpeciesJson(myObject.item.category);
         // });
