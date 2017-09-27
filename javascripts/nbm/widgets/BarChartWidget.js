@@ -50,7 +50,7 @@ var BarChartWidget = function (chartConfig) {
             "graphs": [{
                 "balloonText": "<b>[[category]]: [[value]]" + config.areaUnit + "</b>",
                 "fillColorsField": "color",
-                "fillAlphas":"opacity",
+                "fillAlphas":.9,
                 "lineAlpha":0.3,
                 "type": "column",
                 "valueField":"acres",
