@@ -122,8 +122,9 @@ function hideSpinner() {
  * Display error dialog to the user.
  * @param {string} html
  * @param {boolean} warning - True if it is a warning instead of an error
+ * @param {boolean} options - If this is present, attempt to notify admin of failed service
  */
-function showErrorDialog(html, warning) {
+function showErrorDialog(html, warning, options) {
     createDialog(
         "#myDialog",
         warning ? "Warning" : "Error",
@@ -142,6 +143,15 @@ function showErrorDialog(html, warning) {
             ]
         },
         html);
+
+    if (options) {
+        $.getJSON(myServer + "/main/checkService", options)
+            .done(function (data) {
+                if (DEBUG_MODE) {
+                    console.log("Check service response:", data);
+                }
+            });
+    }
 }
 
 /**
@@ -584,7 +594,12 @@ function sendJsonRequestHandleError(url, timeout, params) {
 }
 
 function sendAjaxRequest(options) {
-    return Promise.resolve($.ajax(options));
+    return Promise.resolve(
+        $.ajax(options)
+            .error(function () {
+                showErrorDialog('Error making request to ' + options.url + '. If the problem continues, please contact site admin.', 'Error', options);
+            })
+    );
 }
 
 function sendPostRequest(url, params) {
