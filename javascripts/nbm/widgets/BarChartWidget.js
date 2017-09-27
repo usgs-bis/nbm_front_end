@@ -72,7 +72,6 @@ var BarChartWidget = function (chartConfig) {
                 "menu": []
             }
         });
-
         // barChart.addListener("clickGraphItem", function (myObject) {
         //     openLmeSpeciesJson(myObject.item.category);
         // });
