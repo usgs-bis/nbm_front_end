@@ -270,7 +270,8 @@ PDF.prototype.getBioScapeSection = function(mapImageDataUrl) {
             style: 'bapContent'
         }
     );
-    info.push({text: 'Summary', bold: true}, {text: this.bioScape.summary, style: 'bapContent'});
+    info.push({text: 'Summary', bold: true});
+    info.push(this.getParsedHtml(this.bioScape.summary,{style:'bapContent'}));
     info.push({text: 'Sections', bold: true});
     this.bioScape.getAllSections().forEach(function(section) {
         info.push({text: section.title, style: ['bapContent', 'subtitle']});
