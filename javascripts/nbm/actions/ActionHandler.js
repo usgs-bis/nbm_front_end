@@ -196,7 +196,7 @@ ActionHandler.prototype.sendTriggerAction = function (latLng, isHeader, addition
 ActionHandler.prototype.addHeaderBaptoSC = function (headerBap) {
     actionHandlerHelper.sc.headerBap = headerBap;
 
-    $('#buildReportPdf').click(function () {
+    $('#buildReportPdf').on('click', function () {
         if (!actionHandlerHelper.canDownloadPdf) {
             actionHandlerHelper.showTempPopup("Please wait for all analysis packages to process before downloading the PDF");
             return;

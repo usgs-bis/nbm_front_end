@@ -142,7 +142,7 @@ BAP.prototype.getFullHtml = function () {
         }
         var containerId = info.divId + "InfoDiv";
         var selector = "#" + containerId;
-        if ($(selector).size() == 0) {
+        if ($(selector).length === 0) {
             addModalContainerDivToBody(containerId);
         }
 
@@ -181,12 +181,12 @@ BAP.prototype.initializeChartLibraries = function () {
 BAP.prototype.bindClicks = function () {
     var that = this;
 
-    $("#" + this.config.id + "BapCase div.layerExpander").click(function() {
+    $("#" + this.config.id + "BapCase div.layerExpander").on('click', function() {
         var id = $(this).data('section');
         toggleContainer(id);
     });
 
-    $("#"+this.config.id).click(function(e) {
+    $("#"+this.config.id).on('click', function(e) {
         $("#"+that.config.id+"Modal").modal('show');
         e.stopPropagation();
     });

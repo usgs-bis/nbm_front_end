@@ -22,7 +22,7 @@ var G_LIMIT;
 var WAF_LIMIT = 9000;
 
 $(document)
-    .keyup(function(e) {
+    .on('keyup', function(e) {
         // Hide things if the <esc> key is pressed
         if (e.keyCode === 27) {
             closeAllUnitInfoBars();
@@ -175,7 +175,7 @@ function createDialog(target, title, additionalSettings, html) {
             //Wait until the dialog is loaded then remove focus on all buttons within the
             // dialog div
             setTimeout(function () {
-                $('.ui-dialog :button').blur();
+                $('.ui-dialog :button').trigger('blur');
             }, 500);
         }
     };
@@ -408,7 +408,7 @@ function toggleContainer(id) {
  */
 function createDivIfDoesNotExist(divId, parentId, innerHtml, cssProperties) {
     var el = $('#' + divId);
-    if(el.size() == 0) {
+    if(el.length === 0) {
         var div = document.createElement('div');
         div.id = divId;
         if(innerHtml) {
@@ -596,7 +596,7 @@ function sendJsonRequestHandleError(url, timeout, params) {
 function sendAjaxRequest(options) {
     return Promise.resolve(
         $.ajax(options)
-            .error(function () {
+            .fail(function () {
                 showErrorDialog('Error making request to ' + options.url + '. If the problem continues, please contact site admin.', 'Error', options);
             })
     );

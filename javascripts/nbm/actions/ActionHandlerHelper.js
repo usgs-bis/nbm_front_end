@@ -91,21 +91,21 @@ ActionHandlerHelper.prototype.initializeSubmitButton = function () {
         showArea: true
     });
 
-    $('#polygonDropdown').click(function() {
+    $('#polygonDropdown').on('click', function() {
         polygonDraw.enable();
     });
-    $('#finishPolygon').click(function() {
+    $('#finishPolygon').on('click', function() {
         polygonDraw.completeShape();
     });
-    $('#deletePoint').click(function() {
+    $('#deletePoint').on('click', function() {
         polygonDraw.deleteLastVertex();
     });
-    $('#cancelPolygonDraw').click(function() {
+    $('#cancelPolygonDraw').on('click', function() {
         polygonDraw.disable();
     });
 
     var that = this;
-    $('#submitPolygon').click(function () {
+    $('#submitPolygon').on('click', function () {
         that.canDownloadPdf = false;
         that.handleDrawPolygonActions()
             .then(function () {
@@ -169,11 +169,11 @@ ActionHandlerHelper.prototype.initializeRightPanel = function () {
     RightPanelBar.open();
     // this.populateBottomBarWithClick();
 
-    $('#rightPanelReset').click(function() {
+    $('#rightPanelReset').on('click', function() {
         that.cleanUp(true);
         updateUrlWithState();
     });
-    $("#closeOverlay").click(function () {
+    $("#closeOverlay").on('click', function () {
         $("#enlargedBAPContainer").fadeOut(300, function () {
             toggleUnitInfoBar();
         });

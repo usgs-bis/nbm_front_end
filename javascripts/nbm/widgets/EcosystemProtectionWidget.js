@@ -19,7 +19,7 @@ var EcosystemProtectionWidget = function (chartData) {
         initializeEcoProtectionChart();
         initializeGapCharts();
         initializeCoverageChart();
-        $("#resetEcosTable").click(function() {
+        $("#resetEcosTable").on('click', function() {
             resetEcosTable();
         });
     };
