@@ -128,7 +128,7 @@ var CnrMatrixWidget = function (config) {
         var html = getHtmlFromJsRenderTemplate('#bigMatrixTemplate', {data: chart.data}, helpers);
 
         $('#enlargedBAPHtmlContainer').html(html);
-        $('#cnrButton').click(function() {
+        $('#cnrButton').on('click', function() {
             showEnlargedBAP();
         });
     }
