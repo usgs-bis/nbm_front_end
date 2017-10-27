@@ -93,7 +93,7 @@ BioScapeLegend.prototype.setupLegendFromServer = function() {
             self.convertImagesToDataURLsForPDF();
             self.showLegend();
         })
-        .error(function () {
+        .fail(function () {
             self.clear();
         });
 };

@@ -333,19 +333,19 @@ var Initializer = (function(initializer) {
      */
     function bindBioScapeEvents() {
         //when a user clicks one of the layer section titles
-        $('div.layerExpander').click(function() {
+        $('div.layerExpander').on('click', function() {
             var id = $(this).data('section');
             toggleContainer(id);
         });
         //when a user clicks any layer control in the pane
-        $('.layer-control').click(function(e) {
+        $('.layer-control').on('click', function(e) {
             if(isDisabled(e.currentTarget)) {
                 return;
             }
             toggleLayer(this.parentElement.id, this.parentElement.parentElement.id);
         });
         //when the user clicks an information icon
-        $('.layerMoreInfo').click(function() {
+        $('.layerMoreInfo').on('click', function() {
             displayInfo($(this).data('layer'));
         });
         //when the user changes the opacity slider
@@ -353,14 +353,14 @@ var Initializer = (function(initializer) {
             updateLayerOpacity(this.parentElement.parentElement.id, this.parentElement.parentElement.parentElement.id, $(this).val());
         });
         //when user clicks the show legend button
-        $('.displayLegendLink').click(function(e) {
+        $('.displayLegendLink').on('click', function(e) {
             if(isDisabled(e.currentTarget)) {
                 return;
             }
             showLegendDialog();
         });
         //when a user selects a bioScape from the bioScape selection modal
-        // $('.bioScapeSelect').click(function(e) {
+        // $('.bioScapeSelect').on('click', function(e) {
         //     //set the hash to the value of the clicked element (the ScienceBase id)
         //     window.location.href = "#" + $(this).val();
         //     //reload the page with the new hash

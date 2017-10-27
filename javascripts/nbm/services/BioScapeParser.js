@@ -82,10 +82,10 @@ var BioScapeParser = (function(bioScapeParser) {
                 var id = '#' + $(e.target).attr('aria-describedby');
                 var popover = $(id);
 
-                popover.find('.close').click(function(){
+                popover.find('.close').on('click', function(){
                     downloadButton.popover('hide');
                 });
-                $('.layerDownload').click(function() {
+                $('.layerDownload').on('click', function() {
                     $(this).tooltip('hide');
                     var layer = bioScape.getLayer(this.id);
 
