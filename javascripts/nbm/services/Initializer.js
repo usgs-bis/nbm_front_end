@@ -27,7 +27,17 @@ var Initializer = (function(initializer) {
         var state = {};
         var bioScapeId = '5667130ee4b06a3ea36c8be8';//Default is set to the National Biogeographic Map
 
-        var path = window.location.pathname.replace(homePath, '');
+        var name = window.location.pathname.replace(homePath, '');
+        var chunks = name.split("/");
+        var path = chunks[chunks.length - 2];
+
+        for (var i = chunks.length - 1; i > -1; i--) {
+            if (chunks[i]) {
+                path = chunks[i];
+                i = -1
+            }
+        }
+
         if (path.length > 1) {
             var id = path.replace(/\//g, '');
             bioScapeId = PRETTY_URL_MAP[id] ? PRETTY_URL_MAP[id] : id;
