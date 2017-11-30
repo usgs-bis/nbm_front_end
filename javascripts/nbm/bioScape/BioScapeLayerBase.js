@@ -31,10 +31,10 @@ var BioScapeLayerBase = function(id, group, layer) {
  * AJAX call to ScienceBase to check if alternate title exists for item.
  * Retrieves the first alternate title, if that doesn't exist it grabs the main title from ScienceBase.
  * notifies user if there is an error retrieving info from ScienceBase
+ * The variable in the bioscape config is "sbAltTitleIndx"
  */
 BioScapeLayerBase.prototype.fetchAlternateTitle = function (idx) {
     var that = this;
-    var sbid = this.metadataSBId;
     that.altTitleIndx = idx;
     sendJsonAjaxRequest("https://www.sciencebase.gov/catalog/item/" + this.metadataSBId)
         .then(function (data) {
