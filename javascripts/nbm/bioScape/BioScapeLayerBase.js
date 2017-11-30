@@ -13,7 +13,7 @@ var BioScapeLayerBase = function(id, group, layer) {
     this.metadataSBId = layer.metadataSBId;
 
     if (this.metadataSBId) {
-        this.fetchAlternateTitle();
+        this.fetchAlternateTitle(layer.sbAltTitleIndx);
     }
     this.parsePropertiesFromServer(function(bslb) {
         bslb.title = layer.title;
@@ -32,13 +32,20 @@ var BioScapeLayerBase = function(id, group, layer) {
  * Retrieves the first alternate title, if that doesn't exist it grabs the main title from ScienceBase.
  * notifies user if there is an error retrieving info from ScienceBase
  */
-BioScapeLayerBase.prototype.fetchAlternateTitle = function () {
+BioScapeLayerBase.prototype.fetchAlternateTitle = function (idx) {
     var that = this;
+    var sbid = this.metadataSBId;
+    that.altTitleIndx = idx;
     sendJsonAjaxRequest("https://www.sciencebase.gov/catalog/item/" + this.metadataSBId)
         .then(function (data) {
             var altTitles = data.alternateTitles;
             if (altTitles) {
-                that.title = altTitles[0];
+                if (that.altTitleIndx && that.altTitleIndx <= altTitles.length){
+                    that.title = altTitles[that.altTitleIndx -1 ];
+                }
+                else {
+                    that.title = altTitles[0];
+                }
             }
             else {
                 that.title = data.title;
