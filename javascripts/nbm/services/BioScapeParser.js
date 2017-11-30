@@ -99,6 +99,13 @@ var BioScapeParser = (function(bioScapeParser) {
                     $(e.target).data("bs.popover").inState.click = false;
                 });
         }
+
+        if (data.placeOfInterestSearch) {
+            var poi = new PlaceOfInterestSearch();
+            poi.initialize();
+
+            $("#unit_info_search").show().prepend(poi.getSearchButton())
+        }
     }
 
     /**
