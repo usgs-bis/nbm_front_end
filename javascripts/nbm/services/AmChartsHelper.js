@@ -281,11 +281,11 @@ var AmChartsHelper = (function(helper) {
             "valueField": "upperHinge",
             "columnWidth": 0.4,
             "balloonFunction": function(item) {
-                return "Maximum: <b>" + formatDate(item.dataContext.maximum) + "</b><br>" +
-                    "3rd Quartile: <b>" + formatDate(item.dataContext.upperHinge) + "</b><br>" +
-                    "Median: <b>" + formatDate(item.dataContext.median) + "</b><br>" +
-                    "1st Quartile: <b>" + formatDate(item.dataContext.lowerHinge) + "</b><br>" +
-                    "Minimum: <b>" + formatDate(item.dataContext.minimum) + "</b><br>";
+                return "Maximum: <b>" + formatDate(item.dataContext.maximum, item.dataContext.date.getFullYear()) + "</b><br>" +
+                    "3rd Quartile: <b>" + formatDate(item.dataContext.upperHinge, item.dataContext.date.getFullYear()) + "</b><br>" +
+                    "Median: <b>" + formatDate(item.dataContext.median, item.dataContext.date.getFullYear()) + "</b><br>" +
+                    "1st Quartile: <b>" + formatDate(item.dataContext.lowerHinge, item.dataContext.date.getFullYear()) + "</b><br>" +
+                    "Minimum: <b>" + formatDate(item.dataContext.minimum, item.dataContext.date.getFullYear()) + "</b><br>";
             },
             "balloon": getChartBalloonSettings(),
             "visibleInLegend": false
@@ -354,8 +354,12 @@ var AmChartsHelper = (function(helper) {
 
         return chart;
 
-        function formatDate(date) {
-            return AmCharts.formatDate(new Date(date), "MMM DD");
+        function formatDate(date, year) {
+            //The year sent in is the end of the prior year. The number here doesn't even really matter that much,
+            //since we just display MMM DD. But we have to add the year because FF browsers don't support parsing
+            //dates from just the month and day we were sending in.
+            year++;
+            return AmCharts.formatDate(new Date(year + "-" + date), "MMM DD");
         }
     }
 
