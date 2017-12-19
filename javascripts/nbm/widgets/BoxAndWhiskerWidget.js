@@ -143,7 +143,9 @@ var BoxAndWhiskerWidget = function(serverAP) {
     }
 
     function getServerIdentifyRequest(id, feature, mapLayer, years, bounds) {
-        var info = mapLayer.getIdentifyRequestInfo(feature.latLng);
+        var latLng = feature.latLng;
+        if (!latLng) latLng = actionHandlerHelper.marker.latLng;
+        var info = mapLayer.getIdentifyRequestInfo(latLng);
         var params = {
             layerName: layer.featureName,
             'years[]': years,
@@ -175,7 +177,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
             east: bounds.ne.lng
         };
 
-        return sendPostRequest(myServer + '/main/sendData', params)
+        return sendPostRequest(myServer + '/main/sendData', params, true)
             .catch(function() {
                 console.log('attempting to send identify request.');
                 return getServerIdentifyRequest(id, feature, mapLayer, years, bounds);
