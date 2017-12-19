@@ -8,7 +8,7 @@ if (myServer.indexOf("igskbac") != -1) {
 } else {
     myServer = "https://my-beta.usgs.gov/bcb"
 }
-
+// myServer = "http://localhost:8080/bcb";
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
 var colorMap = {};
@@ -593,22 +593,25 @@ function sendJsonRequestHandleError(url, timeout, params) {
         });
 }
 
-function sendAjaxRequest(options) {
+function sendAjaxRequest(options, skipErrorMessage) {
     return Promise.resolve(
         $.ajax(options)
             .fail(function () {
-                showErrorDialog('Error making request to ' + options.url + '. If the problem continues, please contact site admin.', 'Error', options);
+                if (!skipErrorMessage) {
+                    showErrorDialog('Error making request to ' + options.url +
+                        '. If the problem continues, please contact site admin.', 'Error', options);
+                }
             })
     );
 }
 
-function sendPostRequest(url, params) {
+function sendPostRequest(url, params, skipErrorMessage) {
     return sendAjaxRequest({
         type: 'POST',
         url: url,
         data: params,
         dataType: 'json'
-    })
+    }, skipErrorMessage)
 }
 
 function sendJsonAjaxRequest(url, params, timeout) {
