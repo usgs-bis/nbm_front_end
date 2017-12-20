@@ -55,7 +55,7 @@ inherit(MapLayerBase, WmsMapLayer);
 //         .catch(function() {
 //             return self.getGenericMapServiceInfo();
 //         });
-// };
+// }; https://beta-gc2.datadistillery.org/ows/jjuszakusgsgov/wms_test/?service=WMS&version=1.3.0&request=GetFeatureInfo&crs=EPSG%3A4326&bbox=-126.65039062500001%2C25.24469595130604%2C-63.36914062500001%2C52.1874047455997&width=1440&height=803&exceptions=xml&format=image%2Fpng&info_format=application%2Fjson&feature_count=50&x=603&y=301&buffer=1&layers=wms_test.us_eco_l3&query_layers=wms_test.us_eco_l3
 WmsMapLayer.prototype.getIdentifyRequestInfo = function(latLng) {
     var bounds = map.getBounds();
     var sw = bounds.getSouthWest();
@@ -107,11 +107,40 @@ WmsMapLayer.prototype.getIdentifyRequestInfo = function(latLng) {
         params: requestParams
     };
 };
+
+WmsMapLayer.prototype.getGc2Query = function (latLng) {
+    var requestParams = {
+        srs: "4326",
+        lifetime: "0",
+        "client_encoding": "UTF8",
+        "key": "7f8710dcf0912e5e1070da1e4b0ade10",
+        "_": "1513797093224",
+        "q": "SELECT * FROM " + this.layers + " WHERE ST_Intersects(ST_Transform(ST_geomfromtext('POINT(" + latLng.lng
+        + " " + latLng.lat + ")',4326)," + this.nativeCrs + "),\"the_geom\") LIMIT 1",
+    };
+
+    if(this.timeControl) {
+        requestParams.time = this.timeControl;
+    }
+
+    return {
+        url: this.queryUrl,
+        params: requestParams
+    };
+};
+
 WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
     if(this.notCompatable) {
         return Promise.reject();
     }
-    var info = this.getIdentifyRequestInfo(latLng);
+    var info;
+
+    if (this.queryUrl) {
+        info = this.getGc2Query(latLng);
+    } else {
+        info = this.getIdentifyRequestInfo(latLng);
+    }
+
     var that = this;
     return sendJsonAjaxRequest(info.url, info.params)
         .then(function(data) {
@@ -127,10 +156,14 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
                         console.log('There was an error attempting a GetFeature request: ' + error.message);
                     })
                     .then(function() {
-                        data.features.map(function(feature) {
-                            return getAdjustedGeojson(feature);
-                        });
-                        return data;
+                        if (that.queryUrl) {
+                            return data;
+                        } else {
+                            data.features.map(function(feature) {
+                                return getAdjustedGeojson(feature);
+                            });
+                            return data;
+                        }
                     });
             } catch(ex) {
                 var message = 'Error message: ' + ex.message + '. Stack trace: ' + ex.stack;
@@ -231,10 +264,10 @@ WmsMapLayer.prototype.verifyService = function() {
     function setDownloader(data) {
         var that = this;
         var url = this.leafletLayer._url;
-        getFileDownloader(url, this.layers, data.crs)
-            .then(function (data) {
-                that.downloader = data;
-            });
+        // getFileDownloader(url, this.layers, data.crs)
+        //     .then(function (data) {
+        //         that.downloader = data;
+        //     });
     }
 };
 /**
@@ -268,6 +301,80 @@ WmsMapLayer.prototype.parseSldMap = function () {
         }
     });
 };
+
+
+WmsMapLayer.prototype.setCapabilitiesFrom13 = function (json) {
+    var layerName = self.layers;
+
+    var layerInfo = {
+        name: layerName,
+        title: 'No title was found for this layer',
+        abstract: 'No abstract was found for this layer',
+        serviceTitle: 'No title was found for this service',
+        serviceAbstract: 'No abstract was found for this service',
+        crs: 'EPSG:4326'
+    };
+
+    console.log("CAPS DATA 1.3:", json);
+    var layers = json['WMS_Capabilities']['Capability']['Layer']['Layer'];
+    for(var i =0; i < layers.length; i++) {
+        var layer = layers[i];
+        if(layer['Name']['#text'] === layerName) {
+            layerInfo.title = getValueOrDefault(layer['Title']['#text'], layerInfo.title);
+            layerInfo.abstract = getValueOrDefault(layer['Abstract']['#text'], layerInfo.abstract);
+            layerInfo.crs = getValueOrDefault(layer['CRS'][0]['#text'], layerInfo.crs);
+        }
+        if (self.timeControl && layer["Dimension"] && layer["Dimension"]["@attributes"] && layer["Dimension"]["@attributes"]["name"] == "time") {
+            var legendUrlObject = layer['Style'].length ? layer['Style'][0]['LegendURL'] : layer['Style']['LegendURL'];
+            var legendUrl = legendUrlObject ? legendUrlObject['OnlineResource']['@attributes']['xlink:href'] : undefined;
+            self.timeMap[layer["Name"]["#text"]] = getTimeMap(layer['Dimension']['#text'], self.timeControl, legendUrl);
+        }
+    }
+    layerInfo.serviceTitle = getValueOrDefault(json['WMS_Capabilities']['Service']['Title']['#text'], layerInfo.serviceTitle);
+    var abstract = json['WMS_Capabilities']['Service']['Abstract'];
+    var absText = abstract ? abstract["#text"] : "";
+    layerInfo.serviceAbstract = getValueOrDefault(absText, layerInfo.serviceAbstract);
+
+    self.wmsCapabilitiesInfo = layerInfo;
+};
+
+WmsMapLayer.prototype.setCapabilitiesFrom111 = function (json) {
+    var layerName = self.layers;
+
+    var layerInfo = {
+        name: layerName,
+        title: 'No title was found for this layer',
+        abstract: 'No abstract was found for this layer',
+        serviceTitle: 'No title was found for this service',
+        serviceAbstract: 'No abstract was found for this service',
+        crs: 'EPSG:4326'
+    };
+
+    console.log("CAPS DATA 1.1.1:", json);
+
+
+    var layers = json['Capability']['Layer']['Layer'];
+    for(var i =0; i < layers.length; i++) {
+        var layer = layers[i];
+        if(layer['Name']['#text'] === layerName) {
+            layerInfo.title = getValueOrDefault(layer['Title']['#text'], layerInfo.title);
+            layerInfo.abstract = getValueOrDefault(layer['Abstract'] ? layer['Abstract']['#text'] : undefined, layerInfo.abstract);
+            layerInfo.crs = getValueOrDefault(layer['SRS'][0]['#text'], layerInfo.crs);
+        }
+        if (self.timeControl && layer["Dimension"] && layer["Dimension"]["@attributes"] && layer["Dimension"]["@attributes"]["name"] == "time") {
+            var legendUrlObject = layer['Style'].length ? layer['Style'][0]['LegendURL'] : layer['Style']['LegendURL'];
+            var legendUrl = legendUrlObject ? legendUrlObject['OnlineResource']['@attributes']['xlink:href'] : undefined;
+            self.timeMap[layer["Name"]["#text"]] = getTimeMap(layer['Dimension']['#text'], self.timeControl, legendUrl);
+        }
+    }
+    layerInfo.serviceTitle = getValueOrDefault(json['Service']['Title']['#text'], layerInfo.serviceTitle);
+    var abstract = json['Service']['Abstract'];
+    var absText = abstract ? abstract["#text"] : "";
+    layerInfo.serviceAbstract = getValueOrDefault(absText, layerInfo.serviceAbstract);
+
+    self.wmsCapabilitiesInfo = layerInfo;
+};
+
 /**
  * Sends a GetCapabilities request to the service and returns data about the service.
  * @promise {*} - data about the service
@@ -277,43 +384,34 @@ WmsMapLayer.prototype.getInfoFromWmsGetCapabilities = function() {
     if(this.notCompatable) {
         return Promise.reject();
     }
-    var layerName = self.layers;
+
     if(this.wmsCapabilitiesInfo) {
         return Promise.resolve(this.wmsCapabilitiesInfo);
     }
 
-    return sendXmlAjaxRequest(this.serviceUrl)
+    return sendXmlAjaxRequest(this.serviceUrl + "&version=1.3.0")
         .then(function(data) {
             if (data.error) {
                 return Promise.reject();
             }
-            var layerInfo = {
-                name: layerName,
-                title: 'No title was found for this layer',
-                abstract: 'No abstract was found for this layer',
-                serviceTitle: 'No title was found for this service',
-                serviceAbstract: 'No abstract was found for this service',
-                crs: 'EPSG:4326'
-            };
+
             var json = xmlToJson(data);
-            var layers = json['WMS_Capabilities']['Capability']['Layer']['Layer'];
-            for(var i =0; i < layers.length; i++) {
-                var layer = layers[i];
-                if(layer['Name']['#text'] === layerName) {
-                    layerInfo.title = getValueOrDefault(layer['Title']['#text'], layerInfo.title);
-                    layerInfo.abstract = getValueOrDefault(layer['Abstract']['#text'], layerInfo.abstract);
-                    layerInfo.crs = getValueOrDefault(layer['CRS'][0]['#text'], layerInfo.crs);
-                }
-                if (self.timeControl && layer["Dimension"] && layer["Dimension"]["@attributes"] && layer["Dimension"]["@attributes"]["name"] == "time") {
-                    var legendUrlObject = layer['Style'].length ? layer['Style'][0]['LegendURL'] : layer['Style']['LegendURL'];
-                    var legendUrl = legendUrlObject ? legendUrlObject['OnlineResource']['@attributes']['xlink:href'] : undefined;
-                    self.timeMap[layer["Name"]["#text"]] = getTimeMap(layer['Dimension']['#text'], self.timeControl, legendUrl);
+
+            if (json["WMS_Capabilities"]) {
+                self.setCapabilitiesFrom13(json);
+            } else if (json["WMT_MS_Capabilities"]) {
+                var neededObject = undefined;
+                $.each(json["WMT_MS_Capabilities"], function (index, obj) {
+                    if (obj) neededObject = obj;
+                });
+                if (neededObject) {
+                    self.setCapabilitiesFrom111(neededObject);
+                } else {
+                    return Promise.reject();
                 }
             }
-            layerInfo.serviceTitle = getValueOrDefault(json['WMS_Capabilities']['Service']['Title']['#text'], layerInfo.serviceTitle);
-            layerInfo.serviceAbstract = getValueOrDefault(json['WMS_Capabilities']['Service']['Abstract']['#text'], layerInfo.serviceAbstract);
-            self.wmsCapabilitiesInfo = layerInfo;
-            return layerInfo;
+
+            return self.wmsCapabilitiesInfo;
         })
         .catch(function(err) {
             console.log(err);
@@ -370,6 +468,8 @@ WmsMapLayer.prototype.getInfoFromWmsGetCapabilities = function() {
  * @extends WmsMapLayer
  */
 var WmsOverlayMapLayer = function(serviceUrl, properties, identifyAttributes) {
+    this.nativeCrs = properties.nativeCrs;
+    this.queryUrl = properties.queryUrl;
     WmsMapLayer.call(this, serviceUrl, L.WMS.overlay(serviceUrl, properties), identifyAttributes);
 };
 inherit(WmsMapLayer, WmsOverlayMapLayer);
