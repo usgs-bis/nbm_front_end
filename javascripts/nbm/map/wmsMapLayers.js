@@ -315,7 +315,6 @@ WmsMapLayer.prototype.setCapabilitiesFrom13 = function (json) {
         crs: 'EPSG:4326'
     };
 
-    console.log("CAPS DATA 1.3:", json);
     var layers = json['WMS_Capabilities']['Capability']['Layer']['Layer'];
     for(var i =0; i < layers.length; i++) {
         var layer = layers[i];
@@ -349,9 +348,6 @@ WmsMapLayer.prototype.setCapabilitiesFrom111 = function (json) {
         serviceAbstract: 'No abstract was found for this service',
         crs: 'EPSG:4326'
     };
-
-    console.log("CAPS DATA 1.1.1:", json);
-
 
     var layers = json['Capability']['Layer']['Layer'];
     for(var i =0; i < layers.length; i++) {

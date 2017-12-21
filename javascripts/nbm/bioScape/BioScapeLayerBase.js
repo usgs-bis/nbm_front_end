@@ -134,12 +134,10 @@ BioScapeLayerBase.prototype.setServiceTypeDependantProperties = function(serverL
             return undefined;
         }
         if (lUrl) {
-            console.log("Legend? ", lUrl);
             return new BioScapeWmsLegend(title, lUrl, url, id, sectionTitle, mapLayer.sld);
         } else {
             var styleParam = properties.styles ? '&style=' + properties.styles : '';
             var legendUrl = url + '?service=wms&request=GetLegendGraphic&format=image%2Fpng&layer=' + mapLayer.layers + styleParam;
-            console.log("Old legend: ", legendUrl);
             return new BioScapeWmsLegend(title, legendUrl, url, id, sectionTitle, mapLayer.sld);
         }
     }

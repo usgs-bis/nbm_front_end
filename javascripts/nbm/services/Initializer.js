@@ -78,7 +78,7 @@ var Initializer = (function(initializer) {
                     configUrl = configUrl.replace("https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/", "https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/")
                 }
 
-                return "https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/test/search_test.json";
+                return configUrl;
             })
             .then(function(url) {
                 return new Promise(function (resolve, reject) {
