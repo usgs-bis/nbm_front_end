@@ -89,6 +89,9 @@ BioScapeLayerBase.prototype.setServiceTypeDependantProperties = function(serverL
 
     var sectionTitle = this.section.title;
     var properties = serverLayer.leafletProperties;
+    properties.nativeCrs = serverLayer.nativeCrs;
+    properties.queryUrl = serverLayer.queryUrl;
+    properties.elasticUrl = serverLayer.elasticUrl;
     var identifyAttributes = serverLayer.identifyAttributes;
     var addLegend = !serverLayer.noLegend;
     var title = serverLayer.title;
@@ -115,7 +118,7 @@ BioScapeLayerBase.prototype.setServiceTypeDependantProperties = function(serverL
             break;
         case "WMS.overlay":
             mapLayer = new WmsOverlayMapLayer(url, properties, identifyAttributes);
-            legend = getWmsLegend(this.id, mapLayer);
+            legend = getWmsLegend(this.id, mapLayer, serverLayer.legendUrl);
             break;
     }
 
@@ -126,13 +129,18 @@ BioScapeLayerBase.prototype.setServiceTypeDependantProperties = function(serverL
     this.mapLayer = mapLayer;
     this.legend = legend;
 
-    function getWmsLegend(id, mapLayer) {
+    function getWmsLegend(id, mapLayer, lUrl) {
+        //https://beta-gc2.datadistillery.org/api/v1/legend/html/jjuszakusgsgov/wms_test?l=wms_test.us_eco_l3
         if(!addLegend) {
             return undefined;
         }
-        var styleParam = properties.styles ? '&style=' + properties.styles : '';
-        var legendUrl = url + '?service=wms&request=GetLegendGraphic&format=image%2Fpng&layer=' + mapLayer.layers + styleParam;
-        return new BioScapeWmsLegend(title, legendUrl, url, id, sectionTitle, mapLayer.sld);
+        if (lUrl) {
+            return new BioScapeWmsLegend(title, lUrl, url, id, sectionTitle, mapLayer.sld);
+        } else {
+            var styleParam = properties.styles ? '&style=' + properties.styles : '';
+            var legendUrl = url + '?service=wms&request=GetLegendGraphic&format=image%2Fpng&layer=' + mapLayer.layers + styleParam;
+            return new BioScapeWmsLegend(title, legendUrl, url, id, sectionTitle, mapLayer.sld);
+        }
     }
 
     function getEsriLegend(id) {

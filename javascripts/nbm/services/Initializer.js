@@ -55,7 +55,7 @@ var Initializer = (function(initializer) {
 
         var bioscapeJson = {};
 
-        // bioScapeId = "591c7160e4b0a7fdb43dea93";
+        // bioScapeId = "59a07950e4b0d7af54bb3ea6";
 
         //request information from the bioScape ScienceBase item
         sendScienceBaseItemRequest(bioScapeId, 5000)
