@@ -108,6 +108,36 @@ WmsMapLayer.prototype.getIdentifyRequestInfo = function(latLng) {
     };
 };
 
+WmsMapLayer.prototype.getElasticGeoQuery = function (latLng) {
+    var qJson = {
+        "query":{
+            "bool": {
+                "must": {
+                    "match_all": {}
+                },
+                "filter": {
+                    "geo_shape": {
+                        "geometry": {
+                            "shape": {
+                                "type": "point",
+                                "coordinates" : [latLng.lng, latLng.lat]
+                            },
+                            "relation": "intersects"
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    return {
+        url: this.elasticUrl,
+        params: {
+            q: JSON.stringify(qJson)
+        }
+    }
+};
+
 WmsMapLayer.prototype.getGc2Query = function (latLng) {
     var requestParams = {
         srs: "4326",
@@ -135,16 +165,23 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
     }
     var info;
 
-    if (this.queryUrl) {
-        info = this.getGc2Query(latLng);
+    if (this.elasticUrl) {
+        info = this.getElasticGeoQuery(latLng);
+        // info = this.getGc2Query(latLng);
+        // console.log(info.url + "?q=" + info.params.q);
     } else {
         info = this.getIdentifyRequestInfo(latLng);
     }
 
     var that = this;
+
     return sendJsonAjaxRequest(info.url, info.params)
         .then(function(data) {
             try {
+                if (that.elasticUrl) {
+                    // console.log("Elastic data: ", data);
+                    data.features = getFeatureListFromElastic(data)
+                }
                 if(!data.features.length) {
                     return data;
                 }
@@ -156,7 +193,7 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
                         console.log('There was an error attempting a GetFeature request: ' + error.message);
                     })
                     .then(function() {
-                        if (that.queryUrl) {
+                        if (that.elasticUrl) {
                             return data;
                         } else {
                             data.features.map(function(feature) {
@@ -174,6 +211,15 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
         .then(function(data) {
             return that.getFilteredAttributes(data);
         });
+
+    function getFeatureListFromElastic(obj) {
+        var features = [];
+        $.each(obj.hits.hits, function (index, hit) {
+            features.push(hit["_source"]);
+        });
+
+        return features;
+    }
 
     function attemptGetFeatureRequest(features) {
         if(!hasId(features)) {
@@ -466,6 +512,7 @@ WmsMapLayer.prototype.getInfoFromWmsGetCapabilities = function() {
 var WmsOverlayMapLayer = function(serviceUrl, properties, identifyAttributes) {
     this.nativeCrs = properties.nativeCrs;
     this.queryUrl = properties.queryUrl;
+    this.elasticUrl = properties.elasticUrl;
     WmsMapLayer.call(this, serviceUrl, L.WMS.overlay(serviceUrl, properties), identifyAttributes);
 };
 inherit(WmsMapLayer, WmsOverlayMapLayer);

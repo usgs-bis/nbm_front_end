@@ -91,6 +91,7 @@ BioScapeLayerBase.prototype.setServiceTypeDependantProperties = function(serverL
     var properties = serverLayer.leafletProperties;
     properties.nativeCrs = serverLayer.nativeCrs;
     properties.queryUrl = serverLayer.queryUrl;
+    properties.elasticUrl = serverLayer.elasticUrl;
     var identifyAttributes = serverLayer.identifyAttributes;
     var addLegend = !serverLayer.noLegend;
     var title = serverLayer.title;
