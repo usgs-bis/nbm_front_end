@@ -350,6 +350,7 @@ WmsMapLayer.prototype.parseSldMap = function () {
 
 
 WmsMapLayer.prototype.setCapabilitiesFrom13 = function (json) {
+    var self = this;
     var layerName = self.layers;
 
     var layerInfo = {
@@ -384,6 +385,7 @@ WmsMapLayer.prototype.setCapabilitiesFrom13 = function (json) {
 };
 
 WmsMapLayer.prototype.setCapabilitiesFrom111 = function (json) {
+    var self = this;
     var layerName = self.layers;
 
     var layerInfo = {
@@ -416,6 +418,46 @@ WmsMapLayer.prototype.setCapabilitiesFrom111 = function (json) {
 
     self.wmsCapabilitiesInfo = layerInfo;
 };
+
+function getTimeMap(dimensionText, defaultDate, legendUrl) {
+    var dateRange = dimensionText.split("/");
+    var dates = [];
+    var format = Date.prototype.getUTCFullYear;
+    var label = 'Year';
+    if (dateRange.length > 1) {
+        dates = getDateList(dateRange[0], dateRange[1], format);
+    } else {
+        format = function() {return this.toISOString().substring(0, 10)};
+        dates = getDisplayDates(dimensionText.split(','), format);
+        label = 'Date';
+    }
+    var defaultIndex = dates.indexOf(format.call(new Date(defaultDate)));
+    return {
+        dates: dates,
+        defaultDateIndex: defaultIndex,
+        label: label,
+        legendUrl: legendUrl
+    };
+}
+
+function getDateList(startDate, endDate, compareFunction) {
+    var dates = [];
+    var start = new Date(startDate);
+    var end = new Date(endDate);
+
+    var numDates = compareFunction.call(end) - compareFunction.call(start);
+    for(var i = 0;i <= numDates;i++) {
+        dates.push(compareFunction.call(start) + i);
+    }
+
+    return dates;
+}
+
+function getDisplayDates(dates, format) {
+    return dates.map(function(date) {
+        return format.call(new Date(date));
+    });
+}
 
 /**
  * Sends a GetCapabilities request to the service and returns data about the service.
@@ -460,45 +502,6 @@ WmsMapLayer.prototype.getInfoFromWmsGetCapabilities = function() {
             return Promise.reject();
         });
 
-    function getTimeMap(dimensionText, defaultDate, legendUrl) {
-        var dateRange = dimensionText.split("/");
-        var dates = [];
-        var format = Date.prototype.getUTCFullYear;
-        var label = 'Year';
-        if (dateRange.length > 1) {
-            dates = getDateList(dateRange[0], dateRange[1], format);
-        } else {
-            format = function() {return this.toISOString().substring(0, 10)};
-            dates = getDisplayDates(dimensionText.split(','), format);
-            label = 'Date';
-        }
-        var defaultIndex = dates.indexOf(format.call(new Date(defaultDate)));
-        return {
-            dates: dates,
-            defaultDateIndex: defaultIndex,
-            label: label,
-            legendUrl: legendUrl
-        };
-    }
-
-    function getDateList(startDate, endDate, compareFunction) {
-        var dates = [];
-        var start = new Date(startDate);
-        var end = new Date(endDate);
-
-        var numDates = compareFunction.call(end) - compareFunction.call(start);
-        for(var i = 0;i <= numDates;i++) {
-            dates.push(compareFunction.call(start) + i);
-        }
-
-        return dates;
-    }
-
-    function getDisplayDates(dates, format) {
-        return dates.map(function(date) {
-            return format.call(new Date(date));
-        });
-    }
 };
 
 /**
