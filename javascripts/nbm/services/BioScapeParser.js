@@ -100,8 +100,10 @@ var BioScapeParser = (function(bioScapeParser) {
                 });
         }
 
+        console.log("Here?", data);
+
         if (data.placeOfInterestSearch) {
-            var poi = new PlaceOfInterestSearch();
+            var poi = new PlaceOfInterestSearch(data.placeOfInterestSearch);
             poi.initialize();
 
             $("#unit_info_search").show().prepend(poi.getSearchButton())

@@ -1,11 +1,16 @@
 'use strict';
 
-var PlaceOfInterestSearch = function () {
+var PlaceOfInterestSearch = function (config) {
     this.searchButton = $('<input type="text" style="position: relative; top: 0;" class="form-control" placeholder="Search for Place of Interest" />');
     this.resultsElement = $('#searchResults');
     this.clearSearchButton = $('<a style="display: none;" href="#" class="list-group-item">Clear Search</a>');
     this.noResults = $('<a href="#" class="list-group-item list-group-item-danger googleResults">No Results</a>');
     this.searching = false;
+    this.elasticEndpoint = config.elasticEndpoint;
+    this.sqlEndpoint = config.sqlEndpoint;
+    // this.elasticEndpoint = "http://34.229.92.5/api/v1/elasticsearch/search/jjuszakusgsgov/public/colorado_padus2_dissolve/_search?q=";
+    this.featureGroup = undefined;
+    this.actionHandler = new GetFeatureGeojsonActionHandler(config)
 };
 
 PlaceOfInterestSearch.prototype.initialize = function () {
@@ -66,29 +71,40 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
 
 // This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
+    var elasticQuery = {
+        "query" : {
+            "multi_match" : {
+                "fields" : ["properties.place_name"],
+                "query" : text,
+                "type" : "phrase_prefix"
+            }
+        }
+    };
+
     var that = this;
     this.clearSearchButton.show();
     $(".googleResults").remove();
-    var testtext = "https://beta-gc2.datadistillery.org/api/v1/sql/dawsons2?q=SELECT%20gid,fullname%20from%20public.nps_boundaries%20where%20fullname%20ilike(%27%"+ text+"%%27)%20Limit%2010";
-    var testElastic = "https://beta-gc2.datadistillery.org/api/v1/elasticsearch/search/dawsons/dawsons3/export_output/_search?q={%22query%22:{%22match_phrase_prefix%22:{%22properties.fullname%22:%22"+text+"%22}}}";
+    var testElastic = this.elasticEndpoint + JSON.stringify(elasticQuery);
     $.getJSON(testElastic, function (data) {
         that.searching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
         if (data.hits ) {
+            var added = [];
+            data.hits.hits.sort(function (a, b) {return b._score-a._score});
             $.each (data.hits.hits, function (index, obj) {
-                console.log("obj = "+obj);
-                var result = new SearchResult(obj);
-                that.resultsElement.append(result.htmlElement);
-                //if (data.features.length === 1) {
-                //    result.htmlElement.click();
-                //}
+                // if (added.indexOf(obj._source.properties.unit_nm) === -1) {
+                    var result = new SearchResult(obj, that);
+                    that.resultsElement.append(result.htmlElement);
+                    // added.push(obj._source.properties.unit_nm);
+                // }
             });
         } else {
             that.resultsElement.append(that.noResults);
         }
     });
 };
+
 //PlaceOfInterestSearch.prototype.lookup = function (text) {
 //    var that = this;
 //    this.clearSearchButton.show();
@@ -121,10 +137,11 @@ PlaceOfInterestSearch.prototype.getClearButton = function () {
 };
 
 
-var SearchResult = function (result) {
-    var id_choice = result._source.properties.gid;
+var SearchResult = function (result, searchParent) {
+    this.id = result._source.properties.gid;
+    this.searchParent = searchParent;
     this.htmlElement = $('<a href="#" class="list-group-item googleResults">\n' +
-        '    <h4 class="list-group-item-heading" gid=' + id_choice +'>' + result._source.properties.fullname + '</h4>\n'
+        '    <h4 class="list-group-item-heading">' + result._source.properties.place_name + '</h4>\n'
         +
         '  </a>');
     this.initialize();
@@ -134,43 +151,63 @@ SearchResult.prototype.initialize = function () {
     var that = this;
     this.htmlElement.on("click", function (event) {
         var elem = that.htmlElement[0];
-        var gid = elem.firstElementChild.getAttribute("gid");
+        var query = elem.firstElementChild.innerText;
         event.preventDefault();
         $(".list-group-item").removeClass("active");
         that.htmlElement.addClass("active");
-        that.getSelectedUnit(gid);
+        that.getSelectedUnit(query);
         //    that.panTo();
     });
 };
-SearchResult.prototype.getSelectedUnit = function(gid){
-    console.log('in getselected unit gid =  '+ gid);
-    var sqlquery = "https://beta-gc2.datadistillery.org/api/v1/sql/dawsons?SELECT * from dawsons3.export_output where gid = 301";
-    var selectShape = "https://beta-gc2.datadistillery.org/api/v1/elasticsearch/search/dawsons/dawsons3/export_output/_search?q={%22query%22:{%22match_phrase_prefix%22:{%22properties.gid%22:"+gid+"}}}";
+SearchResult.prototype.getSelectedUnit = function (query){
+    // var elasticQuery = {
+    //     "query" : {
+    //         "multi_match" : {
+    //             "fields" : ["properties.gid"],
+    //             "query" : this.id,
+    //             "type": "phrase"
+    //         }
+    //     }
+    // };
+
+    var that = this;
+    // var selectShape = this.searchParent.elasticEndpoint + JSON.stringify(elasticQuery) + "&SRS=4326";
+    var selectShape = "" + this.searchParent.sqlEndpoint + this.id;
+    console.log("What: ", selectShape);
     $.getJSON(selectShape, function (data) {
-        if (data.hits.hits ) {
-            $.each (data.hits.hits, function (index, obj) {
-                // var result = new SearchResult(obj);
-                console.log('result object = ' + obj);
-                var p = obj._source.geometry.coordinates;
-                var x = p[0][0];
-                // Could build polygon, get center and do fly to..
-                //              console.log('P = '+ p);
-
-
-                var xx = reverseLonLat(x);
-                var pb = L.polygon(xx);
-                var gj = pb.toGeoJSON();
-                L.geoJSON(gj).addTo(map);
-                console.log ('is it there?');
-
-            });
+        console.log(data);
+        that.searchParent.actionHandler.result = {geojson: data.features[0]};
+        if (that.searchParent.actionHandler.feature) that.searchParent.actionHandler.feature.remove();
+        that.searchParent.actionHandler.feature = new Feature(that.searchParent.actionHandler.result.geojson, undefined, "", false);
+        that.searchParent.actionHandler.feature.show();
+        if (!isVerticalOrientation()) {
+            centerMapRight(that.searchParent.actionHandler.feature.getLeafetFeatureBounds());
+        } else {
+            centerMapBottom(that.searchParent.actionHandler.feature.getLeafetFeatureBounds());
         }
+        // if (data.hits.hits ) {
+        //     if (that.searchParent.featureGroup) {
+        //         that.searchParent.featureGroup.removeFrom(map);
+        //     }
+        //     var features = [];
+        //     $.each (data.hits.hits, function (index, obj) {
+        //         console.log(obj);
+        //         features.push(L.geoJSON(obj._source));
+        //         // L.geoJSON(obj._source).addTo(map);
+        //     });
+        //     that.searchParent.featureGroup = L.featureGroup(features).addTo(map);
+        //     that.panTo()
+        // }
     });
 
 };
 SearchResult.prototype.panTo = function () {
-
-    map.flyToBounds(this.bounds);
+    if (!isVerticalOrientation()) {
+        centerMapLeft(this.searchParent.featureGroup.getBounds());
+    } else {
+        centerMapBottom(this.searchParent.featureGroup.getBounds());
+    }
+    // map.flyToBounds(this.searchParent.featureGroup);
 };
 function reverseLonLat (coordArray){
     var retArray = [];
