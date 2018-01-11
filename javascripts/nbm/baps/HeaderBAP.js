@@ -21,6 +21,8 @@ HeaderBAP.prototype.getHtml = function () {
     if (details.error) {
         html = getHtmlFromJsRenderTemplate('#synthesisCompositionDetailsError', details);
     } else if (details) {
+        if (!details.description) details.description = "";
+        if (!details.webLinks) details.webLinks = [];
         var shortSummary;
         if (details.description.length > 175) {
             shortSummary = details.description.substring(0, 175) + "...";

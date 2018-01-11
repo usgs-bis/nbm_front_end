@@ -7,7 +7,6 @@
  * @constructor
  */
 var BAP = function(serverAP, leaveOutJson) {
-    // console.log(serverAP);
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
@@ -33,7 +32,6 @@ var BAP = function(serverAP, leaveOutJson) {
 };
 
 BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
-    //console.dir(serverAP)
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
@@ -88,7 +86,9 @@ BAP.prototype.initializeWidgets = function () {
         if (chart.error) {
             actionHandlerHelper.showTempPopup("Error retrieving chart data for BAP, " + that.title);
         } else {
-            that.widgets.push(widgetHelper.getWidget(chart))
+            var w = widgetHelper.getWidget(chart);
+            w.bap = that;
+            that.widgets.push(w)
         }
     });
 };
@@ -237,7 +237,6 @@ BAP.prototype.cleanUp = function () {
 
 BAP.prototype.toggleSimplifiedFeature = function () {
     if (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry) {
-        console.log("No feature to show");
         return;
     }
 

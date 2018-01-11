@@ -142,6 +142,32 @@ ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
 };
 
 /**
+ * When a Search is submitted, trigger the actions for all enabled "searchPoi" action handlers
+ */
+ActionHandlerHelper.prototype.handleSearchActions = function (geojson) {
+    this.headerSent = false;
+    this.cleanUp(false, false);
+
+    this.populateBottomBarWithClick();
+    this.initializeRightPanel();
+
+    var promises = [];
+
+    $.each(actionHandlers, function (index, actionHandler) {
+        if (actionHandler.type == "searchPoi") {
+            if (!actionHandler.headerBap) {
+                promises.push(actionHandler.sendTriggerAction(false, undefined, geojson));
+            } else {
+                $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
+                promises.push(actionHandler.sendTriggerAction(true, "HeaderBap" + index, geojson));
+            }
+        }
+    });
+
+    return Promise.all(promises);
+};
+
+/**
  * Updates the marker on the map and initializes a few things in the synthesis composition
  * @param {Object} latLng - L.LatLng
  */
@@ -532,7 +558,6 @@ ActionHandlerHelper.prototype.loadEmptySynthComp = function(message) {
     //actions and lists them in the context report.
     getBapHtmlFromEnabledActions(this.getEnabledBaps())
         .then(function(html) {
-            // console.log("Got here: ", html);
             if(html) {
                 $('.bapList').html(getHtmlFromJsRenderTemplate('#emptySynthCompBapListTemplate', {html: html}));
             }

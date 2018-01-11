@@ -7,6 +7,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
     var minIdx = undefined;
     var maxIdx = undefined;
     var chart = undefined;
+    var that = this;
     if(layer) {
         time = layer.getTimeInfo();
         maxIdx = time.end;
@@ -161,12 +162,25 @@ var BoxAndWhiskerWidget = function(serverAP) {
                 params[prop] = info.params[prop];
             }
         }
-        console.log('identify');
         return sendPostRequest(myServer + '/main/identifyAndSendData', params);
     }
 
+    function getGc2Request(years, bounds) {
+        var params = {
+            layerName: layer.featureName,
+            'years[]': years,
+            url: that.bap.gc2,
+            id: that.bap.gid,
+            south: bounds.sw.lng,
+            west: bounds.sw.lat,
+            north: bounds.ne.lat,
+            east: bounds.ne.lng
+        };
+
+        return sendPostRequest(myServer + '/main/getGc2AndSendData', params);
+    }
+
     function getSendGeojsonRequest(id, feature, mapLayer, years, geojson, bounds) {
-        console.log('normal');
         var params = {
             layerName: layer.featureName,
             'years[]': years,
@@ -179,8 +193,11 @@ var BoxAndWhiskerWidget = function(serverAP) {
 
         return sendPostRequest(myServer + '/main/sendData', params, true)
             .catch(function() {
-                console.log('attempting to send identify request.');
-                return getServerIdentifyRequest(id, feature, mapLayer, years, bounds);
+                if (that.bap.gc2) {
+                    return getGc2Request(years, bounds);
+                } else {
+                    return getServerIdentifyRequest(id, feature, mapLayer, years, bounds);
+                }
             });
     }
 
