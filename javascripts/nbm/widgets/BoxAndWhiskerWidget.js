@@ -169,7 +169,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
         var params = {
             layerName: layer.featureName,
             'years[]': years,
-            url: that.bap.gc2,
+            env: "beta",
             id: that.bap.gid,
             south: bounds.sw.lng,
             west: bounds.sw.lat,
