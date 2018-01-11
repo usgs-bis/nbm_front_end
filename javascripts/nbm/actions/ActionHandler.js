@@ -335,3 +335,89 @@ var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, p
             });
     }
 };
+
+ActionHandler.prototype.sendPostRequest = function (url, params) {
+    return sendAjaxRequest({
+        type: 'POST',
+        url: url,
+        data: params,
+        dataType: 'json',
+        error: function (xhr, options, thrownError) {
+            var message = "Error sending request to the BCB API, ";
+            message += "the dynamic polygon may be too complex.";
+
+            if (!actionHandlerHelper.handleBapError(params.sbId, message)) {
+                console.log("Could not set BAP error, BAP does not exist");
+            }
+        }
+    })
+};
+
+ActionHandler.prototype.getSimplifiedGeojson = function(geojson) {
+    var MIN_LIMIT = 100000;
+    var SIG_FIGS = 6;
+    var MAX_LOOPS = 4;
+
+    var geojsonLength = JSON.stringify(geojson.geometry).length;
+
+    if (geojsonLength <= MIN_LIMIT) {
+        return Promise.resolve(geojson);
+    } else if (geojsonLength > 8000000) {
+        SIG_FIGS = 4;
+    } else if (geojsonLength > 3000000) {
+        SIG_FIGS = 5;
+    }
+
+    actionHandlerHelper.showTempPopup("The returned complex polygon is being simplified for analysis");
+
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            if (G_LIMIT) MIN_LIMIT = G_LIMIT;
+            if (G_FIGS) SIG_FIGS = G_FIGS;
+            if (G_LOOPS) MAX_LOOPS = G_LOOPS;
+
+            if (DEBUG_MODE) {
+                console.log("\nInitial geometry length: ", geojsonLength.toLocaleString());
+                console.log("String length limit: ", MIN_LIMIT.toLocaleString());
+                console.log("Sig figs: ", SIG_FIGS.toLocaleString());
+                console.log("Max loops: ", MAX_LOOPS.toLocaleString());
+            }
+
+            // geojson = getRoundedGeometry(geojson, SIG_FIGS);
+
+            // if (DEBUG_MODE) {
+            //     console.log("Length after rounding points: ", JSON.stringify(geojson.geometry).length.toLocaleString());
+            // }
+
+            // geojsonLength = JSON.stringify(geojson.geometry).length;
+            // if (geojsonLength <= MIN_LIMIT) {
+            //     return Promise.resolve(geojson);
+            // }
+
+            var mult = Math.pow(10, 4);
+            var p;
+            var count = 0;
+
+            while(geojsonLength >= MIN_LIMIT && count < MAX_LOOPS) {
+                count++;
+                p = Math.floor(MIN_LIMIT / geojsonLength * mult) / mult;
+                if (DEBUG_MODE) {
+                    console.log("Length: ", geojsonLength);
+                    console.log("p: ", p);
+                }
+                geojson = getSimplifiedGeojsonObject(geojson, p);
+                geojsonLength = JSON.stringify(geojson.geometry).length;
+            }
+
+            if (DEBUG_MODE) {
+                console.log("Number of simplification iterations: ", count.toLocaleString());
+                console.log("Final geometry length: ", JSON.stringify(geojson.geometry).length.toLocaleString(), "\n");
+            }
+
+            geojson.geometry.crs = {"type":"name","properties":{"name":"EPSG:4326"}};
+
+            resolve(geojson);
+        }, 0);
+    });
+
+};

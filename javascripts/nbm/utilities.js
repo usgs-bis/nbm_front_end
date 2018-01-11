@@ -229,6 +229,17 @@ function centerMapRight(bounds) {
 }
 
 /**
+ * Center the map when the summarization container is displayed on the left.
+ * @param {Object} bounds - L.Bounds
+ */
+function centerMapLeft(bounds) {
+    var padding = [$("#unit_info_left").width(), 0];
+    console.log("Padding:", padding);
+    map.fitBounds(bounds, {paddingTopLeft: padding});
+    // centerPolygonInViewWindow(bounds, padding);
+}
+
+/**
  * Center the map when the summarization container is displayed on the bottom.
  * @param {Object} bounds - L.Bounds
  */

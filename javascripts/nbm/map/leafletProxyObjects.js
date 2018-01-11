@@ -221,6 +221,7 @@ var Marker = function(latLng, overrideTranslationToMainMap) {
  */
 var Feature = function(geojson, latLng, color, displayFeatureNegative) {
     color = getValueOrDefault(color, '#FF0000');
+    if (!latLng) latLng = L.geoJSON(geojson).getBounds().getCenter();
     this.geojson = geojson;
     this.latLng = latLng;
     this.leafletFeature = getLeafletFeature(geojson, latLng, color, displayFeatureNegative);
