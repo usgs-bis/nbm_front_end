@@ -133,7 +133,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
             years.push(year);
             ++j;
             if(j === yearsPerRequest || i === length) {
-                var request = getSendGeojsonRequest(id, feature, mapLayer, years, geojsonString, bounds);
+                var request = getSendGeojsonRequest(years, geojsonString, bounds);
                 requests.push({years: years, promise: request});
                 years = [];
                 j = 0;
@@ -143,62 +143,39 @@ var BoxAndWhiskerWidget = function(serverAP) {
         return requests;
     }
 
-    function getServerIdentifyRequest(id, feature, mapLayer, years, bounds) {
-        var latLng = feature.latLng;
-        if (!latLng) latLng = actionHandlerHelper.marker.latLng;
-        var info = mapLayer.getIdentifyRequestInfo(latLng);
-        var params = {
-            layerName: layer.featureName,
-            'years[]': years,
-            url: info.url,
-            id: id,
-            south: bounds.sw.lng,
-            west: bounds.sw.lat,
-            north: bounds.ne.lat,
-            east: bounds.ne.lng
-        };
-        for(var prop in info.params) {
-            if(info.params.hasOwnProperty(prop)) {
-                params[prop] = info.params[prop];
-            }
+    function getSendGeojsonRequest(years, geojson, bounds) {
+        if (geojson.length > WAF_LIMIT) {
+            var token = Math.random().toString();
+            var numChunks = Math.floor(geojson.length / WAF_LIMIT);
+            return sendGeojsonChunks(geojson, token)
+                .then(function () {
+                    geojson = geojson.substring(numChunks * WAF_LIMIT, geojson.length);
+                    var params = {
+                        chunkToken: token,
+                        layerName: layer.featureName,
+                        'years[]': years,
+                        geojson: geojson,
+                        south: bounds.sw.lng,
+                        west: bounds.sw.lat,
+                        north: bounds.ne.lat,
+                        east: bounds.ne.lng
+                    };
+
+                    return sendPostRequest(myServer + '/main/sendData', params, true);
+                });
+        } else {
+            var params = {
+                layerName: layer.featureName,
+                'years[]': years,
+                geojson: geojson,
+                south: bounds.sw.lng,
+                west: bounds.sw.lat,
+                north: bounds.ne.lat,
+                east: bounds.ne.lng
+            };
+
+            return sendPostRequest(myServer + '/main/sendData', params, true);
         }
-        return sendPostRequest(myServer + '/main/identifyAndSendData', params);
-    }
-
-    function getGc2Request(years, bounds) {
-        var params = {
-            layerName: layer.featureName,
-            'years[]': years,
-            env: "beta",
-            id: that.bap.gid,
-            south: bounds.sw.lng,
-            west: bounds.sw.lat,
-            north: bounds.ne.lat,
-            east: bounds.ne.lng
-        };
-
-        return sendPostRequest(myServer + '/main/getGc2AndSendData', params);
-    }
-
-    function getSendGeojsonRequest(id, feature, mapLayer, years, geojson, bounds) {
-        var params = {
-            layerName: layer.featureName,
-            'years[]': years,
-            geojson: geojson,
-            south: bounds.sw.lng,
-            west: bounds.sw.lat,
-            north: bounds.ne.lat,
-            east: bounds.ne.lng
-        };
-
-        return sendPostRequest(myServer + '/main/sendData', params, true)
-            .catch(function() {
-                if (that.bap.gc2) {
-                    return getGc2Request(years, bounds);
-                } else {
-                    return getServerIdentifyRequest(id, feature, mapLayer, years, bounds);
-                }
-            });
     }
 
     function toggleSpinner() {
