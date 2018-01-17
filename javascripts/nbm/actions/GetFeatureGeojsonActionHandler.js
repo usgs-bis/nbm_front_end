@@ -47,59 +47,27 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                     var token = Math.random().toString();
                     var numChunks = Math.floor(myMap.featureValue.length / WAF_LIMIT);
 
-                    if (myMap.featureValue.length % WAF_LIMIT == 0) {
-                        numChunks--;
-                    }
-
-                    if (DEBUG_MODE) console.log("Number of early chunks: ", numChunks);
-
-                    var tempPromises = [];
-                    var ok = true;
-
-                    for (var i = 0; i < numChunks; i++) {
-                        var sentMap = {
-                            chunkToken: token,
-                            numChunks: numChunks,
-                            featureValue: myMap.featureValue.substring(i * WAF_LIMIT, (i + 1) * WAF_LIMIT),
-                            index: i
-                        };
-                        tempPromises.push(that.sendPostRequest(myServer + "/bap/sendChunk", sentMap)
-                            .then(function (chunkReturn) {
-                                if (!chunkReturn.success) {
-                                    console.log("Got an error in a chunk");
-                                    ok = false;
-                                }
-                                Promise.resolve();
-                            }));
-                    }
-
-                    promises.push(Promise.all(tempPromises)
+                    promises.push(sendGeojsonChunks(myMap.featureValue, token)
                         .then(function () {
-                            if (ok) {
-                                myMap.chunkToken = token;
-                                myMap.featureValue = myMap.featureValue.substring(numChunks * WAF_LIMIT, myMap.featureValue.length);
-                                return that.sendPostRequest(myServer + "/bap/get", myMap)
-                                    .then(function (data) {
-                                        var bap = that.getBapValue(data.id);
-                                        bap.reconstruct(data, true);
+                            myMap.chunkToken = token;
+                            myMap.featureValue = myMap.featureValue.substring(numChunks * WAF_LIMIT, myMap.featureValue.length);
+                            return that.sendPostRequest(myServer + "/bap/get", myMap)
+                                .then(function (data) {
+                                    var bap = that.getBapValue(data.id);
+                                    bap.reconstruct(data, true);
 
-                                        var feature = that.createPseudoFeature(newGj.geometry);
-                                        feature.layer = that.layer;
-                                        bap.feature = feature;
-                                        bap.simplified = simplified;
-                                        bap.initializeBAP();
-                                        that.setBapValue(data.id, bap);
-                                        return Promise.resolve();
-                                    })
-                                    .catch(function (ex) {
-                                        console.log("Got an error", ex);
-                                        return Promise.resolve();
-                                    });
-                            } else {
-                                showErrorDialog('There was an error sending chunked geometry to the API. ' +
-                                    'If the problem continues, please contact site admin', false);
-                                return Promise.resolve();
-                            }
+                                    var feature = that.createPseudoFeature(newGj.geometry);
+                                    feature.layer = that.layer;
+                                    bap.feature = feature;
+                                    bap.simplified = simplified;
+                                    bap.initializeBAP();
+                                    that.setBapValue(data.id, bap);
+                                    return Promise.resolve();
+                                })
+                                .catch(function (ex) {
+                                    console.log("Got an error", ex);
+                                    return Promise.resolve();
+                                });
                         }));
                 } else {
                     if (DEBUG_MODE) console.log("Sending 1 request");

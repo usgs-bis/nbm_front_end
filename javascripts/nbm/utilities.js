@@ -1063,3 +1063,35 @@ function down(array, i) {
         array[object.index = i = down] = object;
     }
 }
+
+function sendGeojsonChunks(featureValue, token) {
+    var numChunks = Math.floor(featureValue.length / WAF_LIMIT);
+
+    if (featureValue.length % WAF_LIMIT === 0) {
+        numChunks--;
+    }
+
+    if (DEBUG_MODE) console.log("Number of early chunks: ", numChunks);
+
+    var tempPromises = [];
+    var ok = true;
+
+    for (var i = 0; i < numChunks; i++) {
+        var sentMap = {
+            chunkToken: token,
+            numChunks: numChunks,
+            featureValue: featureValue.substring(i * WAF_LIMIT, (i + 1) * WAF_LIMIT),
+            index: i
+        };
+        tempPromises.push(sendPostRequest(myServer + "/bap/sendChunk", sentMap)
+            .then(function (chunkReturn) {
+                if (!chunkReturn.success) {
+                    console.log("Got an error in a chunk");
+                    ok = false;
+                }
+                Promise.resolve();
+            }));
+    }
+
+    return Promise.all(tempPromises);
+}
