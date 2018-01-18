@@ -6,8 +6,9 @@ var myServer = location.host;
 if (myServer.indexOf("igskbac") != -1) {
     myServer = "http://" + myServer + ":8080/bcb";
 } else {
-    myServer = "https://my-beta.usgs.gov/bcb"
+    myServer = "https://www.sciencebase.gov/bcb"
 }
+// console.log(myServer);
 // myServer = "http://localhost:8080/bcb";
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
