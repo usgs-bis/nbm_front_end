@@ -189,26 +189,36 @@ var BoxAndWhiskerWidget = function(serverAP) {
                 return request.promise;
             }).then(function(datas) {
                 datas.forEach(function(data, index) {
-                    var bWData = getBoxPlotData(request.years[index], data);
-                    if(!chart) {
-                        chart = AmChartsHelper.getBoxAndWhiskerChart(bWData);
-                        // chart.addLegend(AmChartsHelper.getAmLegend());
-                        chart.write('boxAndWhisker');
+                    if (!data || !data.length) {
+                        $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
+                            'An error occurred retrieving data from the NPN dataset. The input polygon may be too small ' +
+                            'for the Geoserver Web Processing Service to analyze' +
+                            '</div>');
                     } else {
-                        var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length-1].valueField);
-                        chart.dataProvider.push(graphsAndData.data);
-                        chart.graphs = chart.graphs.concat(graphsAndData.graphs);
-                        chart.validateData();
+                        var bWData = getBoxPlotData(request.years[index], data);
+                        console.log(data);
+                        if(!chart) {
+                            chart = AmChartsHelper.getBoxAndWhiskerChart(bWData);
+                            // chart.addLegend(AmChartsHelper.getAmLegend());
+                            chart.write('boxAndWhisker');
+                        } else {
+                            var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length-1].valueField);
+                            chart.dataProvider.push(graphsAndData.data);
+                            chart.graphs = chart.graphs.concat(graphsAndData.graphs);
+                            chart.validateData();
+                        }
                     }
                 });
             }).catch(function(e) {
                 console.log('there was an error processing the box and whisker plot requests: ', e);
-                $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">There was an error processing one or more of the box plots, they will not be displayed in the chart</div>');
+                $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
+                    'There was an error processing one or more of the box plots, they will not be displayed in the chart' +
+                    '</div>');
             });
         }, Promise.resolve())
             .catch(function() {
                 console.log('there was an error process the box and whisker plot requests');
-                $('#boxAndWhisker').html('<div style="font-size: 16px;" class="myNpnInfo">Error processing NPN data :(</div>');
+                $('#boxAndWhisker').html('<div style="font-size: 16px;" class="myNpnInfo">Error processing NPN data</div>');
             });
     }
 
