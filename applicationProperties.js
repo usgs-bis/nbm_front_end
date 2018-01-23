@@ -1,1 +1,1 @@
-var appVersion = "1.2.11";
+var appVersion = "1.2.12";
