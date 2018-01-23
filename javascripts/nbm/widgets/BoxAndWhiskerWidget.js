@@ -7,11 +7,12 @@ var BoxAndWhiskerWidget = function(serverAP) {
     var minIdx = undefined;
     var maxIdx = undefined;
     var chart = undefined;
-    var that = this;
+    var hourMinutes;
     if(layer) {
         time = layer.getTimeInfo();
         maxIdx = time.end;
         minIdx = maxIdx - 5;
+        hourMinutes = time.hourMinutes;
     }
     Widget.call(this, serverAP);
 
@@ -128,8 +129,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
         var j = 0;
         for(var i = 0; i <= length; i++) {
             var year = time.dates[minIdx + i].toString();
-            if (year.indexOf("-01-01") == -1) year += "-01-01";
-            year += "T00:00:00.000Z";
+            if (year.indexOf("-01-01") === -1) year += "-01-01";
+            if (hourMinutes) year += hourMinutes;
             years.push(year);
             ++j;
             if(j === yearsPerRequest || i === length) {
@@ -183,20 +184,29 @@ var BoxAndWhiskerWidget = function(serverAP) {
         toggleVisibility(el);
     }
 
+    function setError(message) {
+        $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
+            message +
+            '</div>');
+    }
+
     function handleRequests(requests) {
+        var noDatas = [];
+        var gotAnyData = false;
         return requests.reduce(function(sequence, request) {
             return sequence.then(function() {
                 return request.promise;
             }).then(function(datas) {
                 datas.forEach(function(data, index) {
                     if (!data || !data.length) {
+                        noDatas.push(request.years[index].substr(0, 4));
                         $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
-                            'An error occurred retrieving data from the NPN dataset. The input polygon may be too small ' +
+                            'An error occurred retrieving data from the NPN dataset for one or more years. ' +
+                            'Those years will not be displayed. The input polygon may be too small ' +
                             'for the Geoserver Web Processing Service to analyze' +
                             '</div>');
                     } else {
                         var bWData = getBoxPlotData(request.years[index], data);
-                        console.log(data);
                         if(!chart) {
                             chart = AmChartsHelper.getBoxAndWhiskerChart(bWData);
                             // chart.addLegend(AmChartsHelper.getAmLegend());
@@ -207,17 +217,23 @@ var BoxAndWhiskerWidget = function(serverAP) {
                             chart.graphs = chart.graphs.concat(graphsAndData.graphs);
                             chart.validateData();
                         }
+                        gotAnyData= true;
                     }
                 });
+            }).then(function () {
+                if (!gotAnyData) {
+                    setError('An error occurred retrieving data from the NPN dataset. ' +
+                        'The input polygon may be too small for the Geoserver Web Processing Service to analyze');
+                } else if (noDatas.length) {
+                    var years = noDatas.join(", ");
+                    setError('There was an error analyzing data for the following years: ' + years + '. ' +
+                        'They will not be displayed in the chart. If the problem continues, please contact site admin');
+                }
             }).catch(function(e) {
-                console.log('there was an error processing the box and whisker plot requests: ', e);
-                $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
-                    'There was an error processing one or more of the box plots, they will not be displayed in the chart' +
-                    '</div>');
+                setError('There was an error processing one or more of the box plots, they will not be displayed in the chart')
             });
         }, Promise.resolve())
             .catch(function() {
-                console.log('there was an error process the box and whisker plot requests');
                 $('#boxAndWhisker').html('<div style="font-size: 16px;" class="myNpnInfo">Error processing NPN data</div>');
             });
     }

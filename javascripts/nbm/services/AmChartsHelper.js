@@ -281,7 +281,8 @@ var AmChartsHelper = (function(helper) {
             "valueField": "upperHinge",
             "columnWidth": 0.4,
             "balloonFunction": function(item) {
-                return "Maximum: <b>" + formatDate(item.dataContext.maximum, item.dataContext.date.getFullYear()) + "</b><br>" +
+                return "Year: <b>" + item.dataContext.date.getFullYear() + "</b><br>" +
+                    "Maximum: <b>" + formatDate(item.dataContext.maximum, item.dataContext.date.getFullYear()) + "</b><br>" +
                     "3rd Quartile: <b>" + formatDate(item.dataContext.upperHinge, item.dataContext.date.getFullYear()) + "</b><br>" +
                     "Median: <b>" + formatDate(item.dataContext.median, item.dataContext.date.getFullYear()) + "</b><br>" +
                     "1st Quartile: <b>" + formatDate(item.dataContext.lowerHinge, item.dataContext.date.getFullYear()) + "</b><br>" +
