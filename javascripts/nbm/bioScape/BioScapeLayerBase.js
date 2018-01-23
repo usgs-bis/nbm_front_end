@@ -395,6 +395,7 @@ BioScapeLayerBase.prototype.getTimeInfo = function() {
         stepLabel: time.label,
         defaultDate: time.dates[time.defaultDateIndex],
         dates: time.dates,
+        hourMinutes: time.hourMinutes,
         currentValue: this.timeIndex,
         currentYear: this.mapLayer.timeControl//,
         // layers: layerOptions

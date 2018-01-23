@@ -424,11 +424,16 @@ function getTimeMap(dimensionText, defaultDate, legendUrl) {
     var dates = [];
     var format = Date.prototype.getUTCFullYear;
     var label = 'Year';
+    var hourMinutes;
+
     if (dateRange.length > 1) {
+        hourMinutes = dateRange[0].substr(10);
         dates = getDateList(dateRange[0], dateRange[1], format);
     } else {
+        dateRange = dimensionText.split(",");
+        hourMinutes = dateRange[0].substr(10);
         format = function() {return this.toISOString().substring(0, 10)};
-        dates = getDisplayDates(dimensionText.split(','), format);
+        dates = getDisplayDates(dateRange, format);
         label = 'Date';
     }
     var defaultIndex = dates.indexOf(format.call(new Date(defaultDate)));
@@ -436,7 +441,8 @@ function getTimeMap(dimensionText, defaultDate, legendUrl) {
         dates: dates,
         defaultDateIndex: defaultIndex,
         label: label,
-        legendUrl: legendUrl
+        legendUrl: legendUrl,
+        hourMinutes: hourMinutes
     };
 }
 
