@@ -8,6 +8,13 @@ var BoxAndWhiskerWidget = function(serverAP) {
     var maxIdx = undefined;
     var chart = undefined;
     var hourMinutes;
+    var that = this;
+    var feature;
+    var timeSlider;
+    var button;
+    var alreadySentBuffer = false;
+    var noDatas = [];
+    var gotAnyData = false;
     if(layer) {
         time = layer.getTimeInfo();
         maxIdx = time.end;
@@ -29,12 +36,13 @@ var BoxAndWhiskerWidget = function(serverAP) {
         return getHtmlFromJsRenderTemplate('#boxAndWhiskerTemplate', viewData);
     };
 
-    this.initializeWidget = function(feature) {
+    this.initializeWidget = function(originalFeature) {
+        feature = originalFeature;
         if(!layer) {
             return;
         }
-        var button = $('#getBWData');
-        var timeSlider = $('#rangeSlider');
+        button = $('#getBWData');
+        timeSlider = $('#rangeSlider');
         timeSlider.slider({
             range: true,
             min: time.start,
@@ -63,22 +71,50 @@ var BoxAndWhiskerWidget = function(serverAP) {
         });
 
         button.on('click', function() {
-            actionHandlerHelper.showTempPopup("Larger or more complex polygons will take longer to process");
-            if(chart) {
-                chart.clear();
-            }
-            var values = timeSlider.slider('values');
-            chart = undefined;
-            button.hide();
-            $('#boxAndWhiskerError').html('');
-            toggleSpinner();
-            timeSlider.slider('disable');
-            handleRequests(getDataRequests(feature.serverId, feature, feature.layer, values[0], values[1]))
-                .then(function () {
-                    timeSlider.slider('enable');
-                    toggleSpinner();
-                });
+            that.submitData("Larger or more complex polygons will take longer to process", feature);
         });
+    };
+
+    this.submitData = function(message, inputFeature) {
+        noDatas = [];
+        gotAnyData = false;
+        actionHandlerHelper.showTempPopup(message);
+        if(chart) {
+            chart.clear();
+        }
+        var values = timeSlider.slider('values');
+        chart = undefined;
+        button.hide();
+        $('#boxAndWhiskerError').html('');
+        toggleSpinner();
+        timeSlider.slider('disable');
+        handleRequests(getDataRequests(inputFeature, values[0], values[1]))
+            .then(function () {
+                if (!gotAnyData) {
+                    if (alreadySentBuffer) {
+                        setError('An error occurred retrieving data from the NPN dataset. ' +
+                            'The input polygon may be too small for the Geoserver Web Processing Service to analyze');
+                        alreadySentBuffer = false;
+                    } else {
+                        alreadySentBuffer = true;
+                        that.sendBufferedFeature();
+                    }
+                } else if (noDatas.length) {
+                    alreadySentBuffer = false;
+                    var years = noDatas.join(", ");
+                    setError('There was an error analyzing data for the following years: ' + years + '. ' +
+                        'They will not be displayed in the chart. If the problem continues, please contact site admin');
+                } else {
+                    if (alreadySentBuffer) {
+                        setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +
+                            'We\'ve added a buffer to the polygon and resumbitted for analysis. To view the buffered ' +
+                            'polygon, click the button to the top right of the chart.');
+                    }
+                    // alreadySentBuffer = false;
+                }
+                timeSlider.slider('enable');
+                toggleSpinner();
+            });
     };
 
     this.getPdfLayout = function() {
@@ -104,6 +140,29 @@ var BoxAndWhiskerWidget = function(serverAP) {
 
     };
 
+    this.sendBufferedFeature = function () {
+        var geojson = JSON.stringify(feature.geojson.geometry);
+        var token = Math.random().toString();
+        var numChunks = Math.floor(geojson.length / WAF_LIMIT);
+        sendGeojsonChunks(geojson, token)
+            .then(function () {
+                geojson = geojson.substring(numChunks * WAF_LIMIT, geojson.length);
+                var params = {
+                    geojson: geojson
+                };
+
+                sendPostRequest(myServer + '/main/getBufferedShape', params, true).then(function (something) {
+                    something.geometry.crs = {"type":"name","properties":{"name":"EPSG:4326"}};
+                    something.type = "Feature";
+                    that.bap.feature = ActionHandler.prototype.createPseudoFeature(something.geometry);
+                    that.bap.simplified = true;
+                    that.bap.showSimplifiedDiv();
+                    feature = that.bap.feature;
+                    that.submitData("No data received, resending polygon with buffer", that.bap.feature);
+                });
+            });
+    };
+
     function getLayer() {
         var visibleLayers = bioScape.getVisibleLayers();
         for(var i = 0; i < visibleLayers.length; i++) {
@@ -115,11 +174,11 @@ var BoxAndWhiskerWidget = function(serverAP) {
         return undefined;
     }
 
-    function getDataRequests(id, feature, mapLayer, minIdx, maxIdx) {
-        var geojsonString = JSON.stringify(feature.geojson.geometry);
+    function getDataRequests(inputFeature, minIdx, maxIdx) {
+        var geojsonString = JSON.stringify(inputFeature.geojson.geometry);
         var requests =[];
         var length = maxIdx - minIdx;
-        var featureBounds = feature.getLeafetFeatureBounds();
+        var featureBounds = inputFeature.getLeafetFeatureBounds();
         var bounds = {
             sw: featureBounds.getSouthWest(),
             ne: featureBounds.getNorthEast()
@@ -156,8 +215,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         layerName: layer.featureName,
                         'years[]': years,
                         geojson: geojson,
-                        south: bounds.sw.lng,
-                        west: bounds.sw.lat,
+                        south: bounds.sw.lat,
+                        west: bounds.sw.lng,
                         north: bounds.ne.lat,
                         east: bounds.ne.lng
                     };
@@ -169,8 +228,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
                 layerName: layer.featureName,
                 'years[]': years,
                 geojson: geojson,
-                south: bounds.sw.lng,
-                west: bounds.sw.lat,
+                south: bounds.sw.lat,
+                west: bounds.sw.lng,
                 north: bounds.ne.lat,
                 east: bounds.ne.lng
             };
@@ -191,8 +250,6 @@ var BoxAndWhiskerWidget = function(serverAP) {
     }
 
     function handleRequests(requests) {
-        var noDatas = [];
-        var gotAnyData = false;
         return requests.reduce(function(sequence, request) {
             return sequence.then(function() {
                 return request.promise;
@@ -200,16 +257,10 @@ var BoxAndWhiskerWidget = function(serverAP) {
                 datas.forEach(function(data, index) {
                     if (!data || !data.length) {
                         noDatas.push(request.years[index].substr(0, 4));
-                        $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
-                            'An error occurred retrieving data from the NPN dataset for one or more years. ' +
-                            'Those years will not be displayed. The input polygon may be too small ' +
-                            'for the Geoserver Web Processing Service to analyze' +
-                            '</div>');
                     } else {
                         var bWData = getBoxPlotData(request.years[index], data);
                         if(!chart) {
                             chart = AmChartsHelper.getBoxAndWhiskerChart(bWData);
-                            // chart.addLegend(AmChartsHelper.getAmLegend());
                             chart.write('boxAndWhisker');
                         } else {
                             var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length-1].valueField);
@@ -220,15 +271,6 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         gotAnyData= true;
                     }
                 });
-            }).then(function () {
-                if (!gotAnyData) {
-                    setError('An error occurred retrieving data from the NPN dataset. ' +
-                        'The input polygon may be too small for the Geoserver Web Processing Service to analyze');
-                } else if (noDatas.length) {
-                    var years = noDatas.join(", ");
-                    setError('There was an error analyzing data for the following years: ' + years + '. ' +
-                        'They will not be displayed in the chart. If the problem continues, please contact site admin');
-                }
             }).catch(function(e) {
                 setError('There was an error processing one or more of the box plots, they will not be displayed in the chart')
             });
