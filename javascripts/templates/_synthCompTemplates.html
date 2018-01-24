@@ -152,14 +152,12 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
             </button>
 </div>
 {{/if}}
-{{if simplified}}
-<div style='width: 100%;'>
+<div id="{{:id}}SimplifiedDiv" style='width: 100%; display: none;'>
             <button onclick="actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: -25px; left: calc(100% - 45px);'
-class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the simplified polygon used for analysis.">
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the modified polygon used for analysis.">
                 <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
             </button>
 </div>
-{{/if}}
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
         {{:sectionHtml}}
     </div>

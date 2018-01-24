@@ -25,6 +25,7 @@ var BAP = function(serverAP, leaveOutJson) {
     this.htmlElement = undefined;
     this.simplified = false;
     this.simplifiedFeature = undefined;
+    this.hasZoomed = false;
 
     $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
 
@@ -192,6 +193,10 @@ BAP.prototype.bindClicks = function () {
     });
 };
 
+BAP.prototype.showSimplifiedDiv = function () {
+    $("#" + this.id + "SimplifiedDiv").show();
+};
+
 BAP.prototype.setHtml = function (html) {
 
 };
@@ -207,6 +212,9 @@ BAP.prototype.initializeBAP = function () {
     this.initializeChartLibraries();
 
     this.bindClicks();
+    if (this.simplified) {
+        this.showSimplifiedDiv();
+    }
 
     // this.htmlElement = $("#"+this.id+"BapCase");
 };
@@ -258,6 +266,14 @@ BAP.prototype.toggleSimplifiedFeature = function () {
         this.simplifiedFeature.remove();
     } else {
         this.simplifiedFeature.addTo(map);
+        if (!this.hasZoomed) {
+            this.hasZoomed = true;
+            if (!isVerticalOrientation()) {
+                centerMapRight(this.simplifiedFeature.getBounds());
+            } else {
+                centerMapBottom(this.simplifiedFeature.getBounds());
+            }
+        }
     }
 };
 
