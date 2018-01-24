@@ -3,8 +3,10 @@
 var DEBUG_MODE = false;
 var myServer = location.host;
 
-if (myServer.indexOf("igskbac") != -1) {
+if (myServer.indexOf("igskbac") !== -1) {
     myServer = "http://" + myServer + ":8080/bcb";
+} else if (myServer.indexOf("my-beta.usgs.gov") !== -1){
+    myServer = "https://my-beta.usgs.gov/bcb"
 } else {
     myServer = "https://www.sciencebase.gov/bcb"
 }
