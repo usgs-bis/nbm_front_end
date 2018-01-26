@@ -205,6 +205,11 @@ BAP.prototype.showRawJson = function () {
     $("#uglyText").html(JSON.stringify(this.rawJson, undefined, 4));
     this.togglePretty();
     $("#prettyCheckbox").on("change", this.togglePretty);
+
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.rawJson));
+    var dlAnchorElem = document.getElementById('downloadMe');
+    dlAnchorElem.setAttribute("href",     dataStr     );
+    dlAnchorElem.setAttribute("download", "npn-json.json");
 };
 
 BAP.prototype.togglePretty = function () {
