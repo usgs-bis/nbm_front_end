@@ -26,6 +26,7 @@ var BAP = function(serverAP, leaveOutJson) {
     this.simplified = false;
     this.simplifiedFeature = undefined;
     this.hasZoomed = false;
+    this.rawJson = {};
 
     $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
 
@@ -195,6 +196,29 @@ BAP.prototype.bindClicks = function () {
 
 BAP.prototype.showSimplifiedDiv = function () {
     $("#" + this.id + "SimplifiedDiv").show();
+};
+
+BAP.prototype.showRawJson = function () {
+    var jsonModal = $("#jsonModal");
+    jsonModal.modal("show");
+    $("#prettyText").html(JSON.stringify(this.rawJson, undefined, 4));
+    $("#uglyText").html(JSON.stringify(this.rawJson, undefined, 4));
+    this.togglePretty();
+    $("#prettyCheckbox").on("change", this.togglePretty);
+};
+
+BAP.prototype.togglePretty = function () {
+    var pretty = $("#prettyCheckbox").is(":checked");
+    var prettyText = $("#prettyText");
+    var uglyText = $("#uglyText");
+
+    if (pretty) {
+        prettyText.show();
+        uglyText.hide();
+    } else {
+        prettyText.hide();
+        uglyText.show();
+    }
 };
 
 BAP.prototype.setHtml = function (html) {

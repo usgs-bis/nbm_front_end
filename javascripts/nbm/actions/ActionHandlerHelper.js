@@ -437,6 +437,11 @@ ActionHandlerHelper.prototype.showSimplifiedJson = function (id) {
     bap.toggleSimplifiedFeature();
 };
 
+ActionHandlerHelper.prototype.showRawJson = function (id) {
+    var bap = this.sc.baps[id];
+    bap.showRawJson();
+};
+
 /**
  * Remove the drawn polygons from the map
  */
