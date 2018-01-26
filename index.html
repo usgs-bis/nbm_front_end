@@ -185,6 +185,30 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="modal fade" id="jsonModal" tabindex="-1" role="dialog" aria-labelledby="jsonModalLabel">
+    <div class="modal-dialog">
+        <div id="jsonContent" class="modal-content" style="">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="jsonModalLabel">BAP JSON</h4>
+            </div>
+            <div class="modal-body">
+                <label for="prettyCheckbox">Pretty JSON</label><input type="checkbox" id="prettyCheckbox" name="prettyCheckbox" />
+
+                <div id="jsonBody" style="margin-top: 15px;">
+                    <pre id="prettyText" style="display: none;">
+
+                    </pre>
+                    <div id="uglyText">
+
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <div class="modal fade" id="attrModal" tabindex="-1" role="dialog" aria-labelledby="attrModalLabel">
     <div class="modal-dialog">
         <div id="attrContent" class="modal-content" style="overflow-y: auto;">

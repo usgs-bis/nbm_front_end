@@ -15,6 +15,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
     var alreadySentBuffer = false;
     var noDatas = [];
     var gotAnyData = false;
+    var jsonData = {};
     if(layer) {
         time = layer.getTimeInfo();
         maxIdx = time.end;
@@ -28,6 +29,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
             return 'A time enabled layer must be turned on for this Analysis Package to work.';
         }
         var viewData = {
+            id: that.bap.id,
             startDate: time.startDate,
             min: time.dates[minIdx],
             max: time.dates[maxIdx],
@@ -88,23 +90,30 @@ var BoxAndWhiskerWidget = function(serverAP) {
         $('#boxAndWhiskerError').html('');
         toggleSpinner();
         timeSlider.slider('disable');
+        $("#"+that.bap.id+"JsonDiv").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
+                that.bap.rawJson = jsonData;
+
+                // that.bap.showJsonDiv();
                 if (!gotAnyData) {
                     if (alreadySentBuffer) {
                         setError('An error occurred retrieving data from the NPN dataset. ' +
                             'The input polygon may be too small for the Geoserver Web Processing Service to analyze');
                         alreadySentBuffer = false;
+                        $("#"+that.bap.id+"JsonDiv").show();
                     } else {
                         alreadySentBuffer = true;
                         that.sendBufferedFeature();
                     }
                 } else if (noDatas.length) {
+                    $("#"+that.bap.id+"JsonDiv").show();
                     alreadySentBuffer = false;
                     var years = noDatas.join(", ");
                     setError('There was an error analyzing data for the following years: ' + years + '. ' +
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
+                    $("#"+that.bap.id+"JsonDiv").show();
                     if (alreadySentBuffer) {
                         setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +
                             'We\'ve added a buffer to the polygon and resumbitted for analysis. To view the buffered ' +
@@ -250,11 +259,13 @@ var BoxAndWhiskerWidget = function(serverAP) {
     }
 
     function handleRequests(requests) {
+        jsonData = {};
         return requests.reduce(function(sequence, request) {
             return sequence.then(function() {
                 return request.promise;
             }).then(function(datas) {
                 datas.forEach(function(data, index) {
+                    jsonData[request.years[index].substr(0, 4)] = data;
                     if (!data || !data.length) {
                         noDatas.push(request.years[index].substr(0, 4));
                     } else {
