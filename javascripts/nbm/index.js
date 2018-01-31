@@ -7,6 +7,7 @@ var MenuPanel;
 var actionHandlers = [];
 var actionHandlerHelper = new ActionHandlerHelper();
 var widgetHelper = new WidgetHelper();
+var NPNTOKEN = "";
 
 window.onload = function() {
     loadHtmlTemplates()
@@ -14,19 +15,23 @@ window.onload = function() {
             LeafletMapService.initializeMap();
             setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
             if (window.location.pathname.indexOf("phenology") !== -1) {
-                var p = "";
-                var c = 0;
-                var flag = false;
-                while (!flag && c < 3) {
-                    p = window.prompt("Password: ", "");
-                    c++;
-                    if (p === "npn4us") flag = true;
-                }
-                if (flag) {
-                    Initializer.initialize();
-                } else {
-                    $("html, body").html("Wrong password");
-                }
+                console.log("Got here...");
+                $("#npnPwModal").modal("show").on ("hidden.bs.modal", function () {
+                    sendPostRequest(myServer + "/main/getNpnToken", {p:$("#pwInput").val()})
+                        .then(function (data) {
+                            if (data.success) {
+                                NPNTOKEN = data.success;
+                                Initializer.initialize();
+                            } else {
+                                $("html, body").html("Wrong password");
+                            }
+                        });
+                });
+                $("#pwInput").on("keyup", function (event) {
+                    if (event.keyCode === 13) {
+                        $("#npnPwModal").modal("hide");
+                    }
+                });
             } else {
                 Initializer.initialize();
             }

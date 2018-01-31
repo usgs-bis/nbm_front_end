@@ -227,7 +227,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         south: bounds.sw.lat,
                         west: bounds.sw.lng,
                         north: bounds.ne.lat,
-                        east: bounds.ne.lng
+                        east: bounds.ne.lng,
+                        npnToken: NPNTOKEN
                     };
 
                     return sendPostRequest(myServer + '/main/sendData', params, true);
@@ -240,7 +241,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
                 south: bounds.sw.lat,
                 west: bounds.sw.lng,
                 north: bounds.ne.lat,
-                east: bounds.ne.lng
+                east: bounds.ne.lng,
+                npnToken: NPNTOKEN
             };
 
             return sendPostRequest(myServer + '/main/sendData', params, true);
