@@ -252,9 +252,15 @@ var Initializer = (function(initializer) {
                 if(!preventMultipleOpenPanels()) {
                     RightPanelBar.open();
                 }
-            })
-            .modal('show');
+            });
+
         updateBioscapeJson(bioscapeJson, configJson);
+
+        if (!bioscapeJson.hideHowToUse) {
+            disclaimerModal.element.modal('show');
+            $("#userHelpLink").attr("data-target", "#disclaimerModal").show();
+        }
+
         loadBioScape(bioscapeJson, state);
     }
 
