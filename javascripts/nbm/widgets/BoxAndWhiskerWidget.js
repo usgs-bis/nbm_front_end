@@ -92,6 +92,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
         toggleSpinner();
         timeSlider.slider('disable');
         $("#"+that.bap.id+"JsonDiv").hide();
+        $("#"+that.bap.id+"BwTitle").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
                 that.bap.rawJson = jsonData;
@@ -276,6 +277,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         if(!chart) {
                             chart = AmChartsHelper.getBoxAndWhiskerChart(bWData);
                             chart.write('boxAndWhisker');
+                            $("#"+that.bap.id+"BwTitle").show();
                         } else {
                             var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length-1].valueField);
                             chart.dataProvider.push(graphsAndData.data);

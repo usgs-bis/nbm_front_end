@@ -15,7 +15,6 @@ window.onload = function() {
             LeafletMapService.initializeMap();
             setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
             if (window.location.pathname.indexOf("phenology") !== -1) {
-                console.log("Got here...");
                 $("#npnPwModal").modal("show").on ("hidden.bs.modal", function () {
                     sendPostRequest(myServer + "/main/getNpnToken", {p:$("#pwInput").val()})
                         .then(function (data) {
@@ -27,7 +26,7 @@ window.onload = function() {
                             }
                         });
                 });
-                $("#pwInput").on("keyup", function (event) {
+                $("#pwInput").focus().on("keyup", function (event) {
                     if (event.keyCode === 13) {
                         $("#npnPwModal").modal("hide");
                     }
