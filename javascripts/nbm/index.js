@@ -13,6 +13,22 @@ window.onload = function() {
         .then(function () {
             LeafletMapService.initializeMap();
             setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
-            Initializer.initialize();
+            if (window.location.pathname.indexOf("phenology") !== -1) {
+                var p = "";
+                var c = 0;
+                var flag = false;
+                while (!flag && c < 3) {
+                    p = window.prompt("Password: ", "");
+                    c++;
+                    if (p === "npn4us") flag = true;
+                }
+                if (flag) {
+                    Initializer.initialize();
+                } else {
+                    $("html, body").html("Wrong password");
+                }
+            } else {
+                Initializer.initialize();
+            }
         });
 };
