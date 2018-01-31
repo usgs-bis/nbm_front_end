@@ -33,7 +33,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
             startDate: time.startDate,
             min: time.dates[minIdx],
             max: time.dates[maxIdx],
-            endDate: time.endDate
+            endDate: time.endDate,
+            title: "Spring Index by Year"
         };
         return getHtmlFromJsRenderTemplate('#boxAndWhiskerTemplate', viewData);
     };
