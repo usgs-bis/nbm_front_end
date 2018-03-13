@@ -246,3 +246,14 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div style="float:right">Area with no data: {{:noData}}</div>
     <div style="clear:both;"></div>
 </script>
+
+<script id="NFHPTestWidget" type="text/x-jsrender">
+    <div {{:JsonDiv}} style='width: 100%;'>
+        <button onclick="actionHandlerHelper.showRawJson('{{:jsonID}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+            <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+        </button>
+</div>
+    <div id="{{: id}}" style="width: 100%; height: 400px;"></div>
+    <div style="clear:both;"></div>
+</script>

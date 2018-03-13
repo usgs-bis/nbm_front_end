@@ -23,5 +23,7 @@ WidgetHelper.prototype.getWidget = function (config) {
         return new BarChartWidget(config);
     } else if (config.type == "vectorQuery") {
         return new BarChartWidget(config);
+    } else if (config.type == "NFHPTest") {
+        return new NFHPTestWidget(config);
     }
 };
