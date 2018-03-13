@@ -11,8 +11,8 @@ var NFHPTestWidget = function (chartConfig) {
         var noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
         return getHtmlFromJsRenderTemplate('#NFHPTestWidget', {
             id: config.id + "NFHPChart",
-            jsonID: config.id
-            
+            json: config.id + "json",
+            bapID: config.id
         });
     };
 
@@ -29,12 +29,21 @@ var NFHPTestWidget = function (chartConfig) {
     var NFHPChart;
     var chartData = []
     this.initializeWidget = function () {
+        $("#"+config.id+"json").hide();
+        $("#"+config.id + "NFHPChart").hide();
+
         let stateName = that.bap.actionRef.result.geojson.properties.state_name
         let url = `https://beta-gc2.datadistillery.org/api/v1/sql/bcb/nfhp
                 ?q=SELECT place_name, scored_km, not_scored_km, verylow_km, low_km, moderate_km, high_km, veryhigh_km
                  FROM nfhp.hci2015_summaries_mp WHERE place_name = '${stateName}'`
         $.getJSON(url)
             .done(function (data) {
+                if(data.features.length){
+                    $("#"+config.id+"json").show();
+                    $("#"+config.id + "NFHPChart").show();
+                    $("#"+config.id + "noData").hide();
+                }
+                
                 that.bap.rawJson = data;
                 data = data.features[0].properties
                 let scored_km = data.scored_km
