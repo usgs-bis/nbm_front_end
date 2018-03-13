@@ -11,7 +11,6 @@ var NFHPTestWidget = function (chartConfig) {
         var noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
         return getHtmlFromJsRenderTemplate('#NFHPTestWidget', {
             id: config.id + "NFHPChart",
-            JsonDiv: "this is a test",
             jsonID: config.id
             
         });
@@ -26,10 +25,6 @@ var NFHPTestWidget = function (chartConfig) {
         };
     };
 
-    // this.showRawJson = function(){
-    //     console.log("here", that)
-    //     return this.bap.rawJson
-    // }
 
     var NFHPChart;
     var chartData = []
