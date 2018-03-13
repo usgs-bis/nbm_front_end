@@ -67,7 +67,7 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
         if (tempBap) {
             tempBap.setEmptyBap();
         } else {
-            tempBap = new BAP({id: bapId});
+            tempBap = new BAP({id: bapId}, undefined, that);
             that.setBapValue(bapId, tempBap);
         }
 
@@ -121,6 +121,7 @@ ActionHandler.prototype.processHeaderBap = function (additionalParams, headerBap
     var myMap = {};
     myMap.id = this.headerBap;
     myMap.featureValue = this.result.geojson.properties[this.lookupProperty];
+    console.log(this.result.geojson)
 
     if (this.synthesisComposition) {
         actionHandlerHelper.sc.featureValue = that.result.geojson.properties[that.lookupProperty];

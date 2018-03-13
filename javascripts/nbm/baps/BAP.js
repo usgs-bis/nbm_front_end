@@ -6,7 +6,7 @@
  * @param {*} leaveOutJson - if this is set, don't show the "View BAP JSON" button
  * @constructor
  */
-var BAP = function(serverAP, leaveOutJson) {
+var BAP = function(serverAP, leaveOutJson, actionRef) {
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
@@ -27,6 +27,7 @@ var BAP = function(serverAP, leaveOutJson) {
     this.simplifiedFeature = undefined;
     this.hasZoomed = false;
     this.rawJson = {};
+    this.actionRef = actionRef;
 
     $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
 
@@ -80,6 +81,10 @@ BAP.prototype.getInfoDivInfo = function () {
 };
 
 BAP.prototype.initializeWidgets = function () {
+
+    if(this.config.title == "NFHP State Test"){
+        this.config.charts.push({type:"NFHPTest"})
+    }
     if (!this.config.charts) return;
 
     var that = this;
