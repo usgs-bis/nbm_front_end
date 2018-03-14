@@ -82,7 +82,7 @@ BAP.prototype.getInfoDivInfo = function () {
 
 BAP.prototype.initializeWidgets = function () {
 
-    if(this.config.title == "NFHP State Test"){
+    if(this.config.title == "NFHP 2015 Data Summary Visualizations"){
         this.config.charts.push({type:"NFHPTest"})
     }
     if (!this.config.charts) return;
