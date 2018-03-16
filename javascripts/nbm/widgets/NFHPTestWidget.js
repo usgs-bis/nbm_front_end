@@ -12,7 +12,8 @@ var NFHPTestWidget = function (chartConfig) {
         return getHtmlFromJsRenderTemplate('#NFHPTestWidget', {
             id: config.id + "NFHPChart",
             json: config.id + "json",
-            bapID: config.id
+            bapID: config.id,
+            noData: config.id + "noData"
         });
     };
 
