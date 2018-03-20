@@ -207,6 +207,16 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div id="boxAndWhiskerError"></div>
     <div id="{{:id}}BwTitle" class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal; display: none; margin-top: 10px;">{{:title}}</div>
     <div id="boxAndWhisker" class="myNpnInfo" style="width:100%;height:500px;"></div>
+    <div id="smoothplot" style="display:none;">
+        <div class="ridgeLinePlotNumberPicker slidecontainer" id="ridgeLinePlotNumberPickerDiv" >
+            Bucket Size: <span id="ridgeLinePlotRangeValue"></span>
+            <input type="range" min="1" max="8" value="3" class="slider" id="ridgeLinePlotRange"
+            data-toggle="tooltip" data-placement="left" title="Bucket data for smotther plots. The number of datapoints = 365/{Bucket Size} ">
+        </div>
+        <div id="ridgeLinePlot" style="width: 100%"></div>
+        <br></br>
+    </div>
+
 </script>
 
 <script id="unknownBapTemplate" type="text/x-jsrender">

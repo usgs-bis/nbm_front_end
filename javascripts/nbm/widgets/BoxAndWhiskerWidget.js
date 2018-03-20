@@ -93,10 +93,11 @@ var BoxAndWhiskerWidget = function(serverAP) {
         timeSlider.slider('disable');
         $("#"+that.bap.id+"JsonDiv").hide();
         $("#"+that.bap.id+"BwTitle").hide();
+        $("#smoothplot").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
                 that.bap.rawJson = jsonData;
-
+               
                 // that.bap.showJsonDiv();
                 if (!gotAnyData) {
                     if (alreadySentBuffer) {
@@ -115,6 +116,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
                     setError('There was an error analyzing data for the following years: ' + years + '. ' +
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
+                    smoothLinePlotWidget(jsonData)
                     $("#"+that.bap.id+"JsonDiv").show();
                     if (alreadySentBuffer) {
                         setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +
@@ -268,6 +270,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
             return sequence.then(function() {
                 return request.promise;
             }).then(function(datas) {
+                //console.log(datas)
+
                 datas.forEach(function(data, index) {
                     jsonData[request.years[index].substr(0, 4)] = data;
                     if (!data || !data.length) {

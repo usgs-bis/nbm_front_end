@@ -1,0 +1,165 @@
+'use strict';
+
+function smoothLinePlotWidget(chartData, bucketSize = 3) {
+    $("#smoothplot").show()
+    d3.select("#ridgeLinePlot").selectAll("svg").remove()
+    $("#ridgeLinePlotRangeValue").html(3);
+    $("#ridgeLinePlotRange").val(3);
+    //$("#ridgeLinePlotNumberPickerDiv").show();
+  
+
+    let margin = { top: 8, right: 10, bottom: 2, left: 10 },
+        width = $("#ridgeLinePlot").width() - margin.left - margin.right,
+        height = 69 - margin.top - margin.bottom;
+
+    let x = d3.scaleLinear().range([0, width]);
+    let y = d3.scaleLinear().rangeRound([height, 0]);
+
+
+    let data = processData(chartData, bucketSize)
+
+    let dataNest = d3.nest()
+        .key(function (d) { return d.year; })
+        .entries(data);
+
+    let minMax = getMinMax(dataNest)
+
+    x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);
+
+    function updateChart(dta, buk) {
+
+        data = processData(dta, buk)
+
+        dataNest = d3.nest()
+            .key(function (d) { return d.year; })
+            .entries(data);
+
+        minMax = getMinMax(dataNest)
+
+        x = d3.scaleLinear().range([0, width]);
+        y = d3.scaleLinear().rangeRound([height, 0]);
+
+        x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);
+
+
+        d3.select("#ridgeLinePlot").transition()
+
+        d3.select("#ridgeLinePlot").selectAll("svg").remove()
+
+        let svg = d3.select("#ridgeLinePlot").selectAll("svg")
+            .data(dataNest)
+            .enter()
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .each(function (year) {
+                year.y = d3.scaleLinear()
+                    .domain([0, d3.max(year.values, function (d) { return d.value; })])
+                    .range([height, 0])
+            })
+
+        // area fill
+        svg.append("path")
+            .attr("class", "area")
+            .attr("d", function (year) {
+                return d3.area()
+                    .curve(d3.curveBasis)
+                    .x(function (d) { return x(d.DOY); })
+                    .y1(function (d) { return year.y(d.value); })
+                    .y0(height)
+                    (year.values)
+            });
+
+        // year label
+        svg.append("g")
+            .append("text")
+            .attr("fill", "#FFFFFF")
+            .attr("x", 10)
+            .attr("y", height - 12)
+            .attr("dy", "0.71em")
+            .attr("text-anchor", "start")
+            .text(function (year) { return year.key; });
+
+        // X-axis 
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+
+    }
+
+
+    function type(d) {
+        d.value = +d.value;
+        d.DOY = d.DOY
+        return d;
+    }
+
+    function emptyYear() {
+        let year = new Array(365)
+        for (let i = 0; i < year.length; i++) {
+            year[i] = 0
+        }
+        return year
+    };
+
+
+    function processData(rawData, factor) {
+        let processedData = []
+        for (let currentYear in rawData) {
+            let days_of_year = emptyYear()
+            for (let i = 0; i < rawData[currentYear].length; i++) {
+                days_of_year[rawData[currentYear][i]] += 1
+            }
+            let bucket_days_of_year = transformData(days_of_year, factor)
+            for (let i = 0; i < bucket_days_of_year.length; i++) {
+                let v = bucket_days_of_year[i]
+                processedData.push({ year: currentYear, DOY: i + 1, value: v })
+            }
+
+        }
+        return processedData
+    };
+
+    function transformData(rawData, factor) {
+        let transformedData = []
+        for (let i = 0; i < rawData.length - factor; i += factor) {
+            let sum = 0
+            for (let j = 0; j < factor; j++) {
+                sum += rawData[i + j]
+            }
+            transformedData.push(sum / factor)
+        }
+        return transformedData
+    };
+
+    function getMinMax(rawData) {
+        let min = 365;
+        let max = 0;
+        for (let i = 0; i < rawData.length; i++) {
+            for (let j = 0; j < rawData[i].values.length; j++) {
+                let v = rawData[i].values[j].value
+                if (v > 0 && j < min) {
+                    min = j
+                }
+                else if (v > 0 && j > max) {
+                    max = j
+                }
+            }
+
+        }
+        return { dayMin: min, dayMax: max }
+    }
+
+    updateChart(chartData, bucketSize)
+
+    $("#ridgeLinePlotRange").change(function () {
+        bucketSize = parseInt($("#ridgeLinePlotRange").val());
+        $("#ridgeLinePlotRangeValue").html(bucketSize);
+        updateChart(chartData, bucketSize)
+
+    });
+
+}
+
