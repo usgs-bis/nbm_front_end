@@ -15,6 +15,7 @@ var ActionHandler = function (config, layer) {
     this.type = config.actionType;
     this.displayCriteria = config.displayCriteria;
     this.lookupProperty = config.lookupProperty;
+    this.placeNameProperty = config.placeNameProperty;
     this.headerBap = config.headerBap ? config.headerBap : undefined;
     this.baps = config.baps;
     this.result = undefined;

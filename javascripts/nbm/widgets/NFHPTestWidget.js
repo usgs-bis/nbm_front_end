@@ -33,10 +33,11 @@ var NFHPTestWidget = function (chartConfig) {
         $("#"+config.id+"json").hide();
         $("#"+config.id + "NFHPChart").hide();
 
-        let stateName = that.bap.actionRef.result.geojson.properties.state_name
+        
+        let placeName = that.bap.actionRef.result.geojson.properties[that.bap.actionRef.placeNameProperty]
         let url = `https://beta-gc2.datadistillery.org/api/v1/sql/bcb/nfhp
                 ?q=SELECT place_name, scored_km, not_scored_km, verylow_km, low_km, moderate_km, high_km, veryhigh_km
-                 FROM nfhp.hci2015_summaries_mp WHERE place_name = '${stateName}'`
+                 FROM nfhp.hci2015_summaries_mp WHERE place_name = '${placeName}'`
         $.getJSON(url)
             .done(function (data) {
                 if(data.features.length){
@@ -98,7 +99,7 @@ var NFHPTestWidget = function (chartConfig) {
                     ],
                     "titles": [
                         {
-                            "text": `Risk To Fish Habitat Degradation in ${stateName} Streams`,
+                            "text": `Risk To Fish Habitat Degradation\n ${placeName}`,
                             "size": 15
                         }
                     ]
