@@ -89,7 +89,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                 if (tempBap) {
                     tempBap.setEmptyBap();
                 } else {
-                    tempBap = new BAP({id: bapId});
+                    tempBap = new BAP({id: bapId}, undefined, that);
                     that.setBapValue(bapId, tempBap);
                 }
 
