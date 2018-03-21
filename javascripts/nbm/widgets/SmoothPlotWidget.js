@@ -63,7 +63,7 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
         // year label
         svg.append("g")
             .append("text")
-            .attr("fill", "#FFFFFF")
+            .attr("fill", "rgb(204, 204, 204)")
             .attr("x", 0)
             .attr("y", height - 20)
             .attr("dy", "0.71em")

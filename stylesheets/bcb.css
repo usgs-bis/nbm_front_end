@@ -1045,9 +1045,16 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .ridgeLinePlotNumberPicker{
     width: 75%;
     margin: auto;
+    fill: rgb(204, 204, 204);
+    color: rgb(204, 204, 204);
+    font-family: Verdana;
+    margin-bottom: 15px;
 
 }
 
 .axis-label text{
-    fill: #FFFFFF;
+    fill: rgb(204, 204, 204);
+    font-family: Verdana;
+    font-size: 11px;
+    opacity: 1;
 }
