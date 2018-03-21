@@ -5,42 +5,30 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
     d3.select("#ridgeLinePlot").selectAll("svg").remove()
     $("#ridgeLinePlotRangeValue").html(3);
     $("#ridgeLinePlotRange").val(3);
-    //$("#ridgeLinePlotNumberPickerDiv").show();
   
-
-    let margin = { top: 8, right: 10, bottom: 2, left: 10 },
+    let margin = { top: 2, right: 10, bottom: 25, left: 16 },
         width = $("#ridgeLinePlot").width() - margin.left - margin.right,
-        height = 69 - margin.top - margin.bottom;
+        height = 80 - margin.top - margin.bottom;
 
     let x = d3.scaleLinear().range([0, width]);
     let y = d3.scaleLinear().rangeRound([height, 0]);
+    
+    let formatTime = d3.timeFormat("%b %d");
 
-
-    let data = processData(chartData, bucketSize)
-
-    let dataNest = d3.nest()
-        .key(function (d) { return d.year; })
-        .entries(data);
-
-    let minMax = getMinMax(dataNest)
-
-    x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);
-
+    
     function updateChart(dta, buk) {
 
-        data = processData(dta, buk)
+        let data = processData(dta, buk)
 
-        dataNest = d3.nest()
+
+        let dataNest = d3.nest()
             .key(function (d) { return d.year; })
             .entries(data);
 
-        minMax = getMinMax(dataNest)
 
-        x = d3.scaleLinear().range([0, width]);
-        y = d3.scaleLinear().rangeRound([height, 0]);
+        let minMax = getMinMax(dataNest)
 
-        x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);
-
+        x.domain([minMax.dayMin -1, minMax.dayMax +1]);
 
         d3.select("#ridgeLinePlot").transition()
 
@@ -76,23 +64,28 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
         svg.append("g")
             .append("text")
             .attr("fill", "#FFFFFF")
-            .attr("x", 10)
-            .attr("y", height - 12)
+            .attr("x", 0)
+            .attr("y", height - 20)
             .attr("dy", "0.71em")
             .attr("text-anchor", "start")
             .text(function (year) { return year.key; });
 
         // X-axis 
+        let xAxis = d3.axisBottom(x)
+            .ticks(((minMax.dayMax - minMax.dayMin) * buk )/30.5)
+            .tickFormat(x => {return dateFromDay(2018,x*buk)})
+            
         svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x))
+            .attr("transform", "translate(0," + (height) + ")")
+            .attr("class", "axis-label")
+            .call(xAxis)
 
     }
 
 
     function type(d) {
         d.value = +d.value;
-        d.DOY = d.DOY
+        d.DOY = d.DOY;
         return d;
     }
 
@@ -115,9 +108,9 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
             let bucket_days_of_year = transformData(days_of_year, factor)
             for (let i = 0; i < bucket_days_of_year.length; i++) {
                 let v = bucket_days_of_year[i]
-                processedData.push({ year: currentYear, DOY: i + 1, value: v })
+                let d = i+1;
+                processedData.push({ year: currentYear, DOY: d, value: v})
             }
-
         }
         return processedData
     };
@@ -152,13 +145,17 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
         return { dayMin: min, dayMax: max }
     }
 
+    function dateFromDay(year, day){
+        var date = new Date(year, 0);
+        return formatTime(new Date(date.setDate(day)));
+      }
+
     updateChart(chartData, bucketSize)
 
     $("#ridgeLinePlotRange").change(function () {
         bucketSize = parseInt($("#ridgeLinePlotRange").val());
         $("#ridgeLinePlotRangeValue").html(bucketSize);
         updateChart(chartData, bucketSize)
-
     });
 
 }

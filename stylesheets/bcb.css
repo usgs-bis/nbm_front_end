@@ -1037,3 +1037,17 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .myNpnInfo {
     margin-top: 15px;
 }
+
+.ridgeLinePlot {
+    fill: rgb(56, 155, 198);
+    width: 100%
+}
+.ridgeLinePlotNumberPicker{
+    width: 75%;
+    margin: auto;
+
+}
+
+.axis-label text{
+    fill: #FFFFFF;
+}
