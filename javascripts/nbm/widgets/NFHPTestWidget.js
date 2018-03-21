@@ -34,9 +34,7 @@ var NFHPTestWidget = function (chartConfig) {
         $("#"+config.id + "NFHPChart").hide();
 
         
-        console.log(that.bap)
         let placeName = that.bap.actionRef.result.geojson.properties[that.bap.actionRef.placeNameProperty]
-        //let placeName = that.bap.actionRef.result.geojson.properties.state_name
         let url = `https://beta-gc2.datadistillery.org/api/v1/sql/bcb/nfhp
                 ?q=SELECT place_name, scored_km, not_scored_km, verylow_km, low_km, moderate_km, high_km, veryhigh_km
                  FROM nfhp.hci2015_summaries_mp WHERE place_name = '${placeName}'`
