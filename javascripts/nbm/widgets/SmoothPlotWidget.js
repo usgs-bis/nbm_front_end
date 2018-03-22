@@ -6,7 +6,7 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
     $("#ridgeLinePlotRangeValue").html(3);
     $("#ridgeLinePlotRange").val(3);
   
-    let margin = { top: 2, right: 15, bottom: 25, left: 20 },
+    let margin = { top: 2, right: 20, bottom: 25, left: 20 },
         width = $("#ridgeLinePlot").width() - margin.left - margin.right,
         height = 80 - margin.top - margin.bottom;
 
