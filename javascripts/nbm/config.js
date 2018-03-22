@@ -5,11 +5,14 @@ if (myServer.indexOf("igskbac") !== -1) {
     myServer = "http://" + myServer + ":8080/bcb";
 } else if (myServer.indexOf("my-beta.usgs.gov") !== -1){
     myServer = "https://my-beta.usgs.gov/bcb"
+} else if (myServer.indexOf("dev-") !== -1){
+    myServer = "https://dev-api.sciencebase.gov/bcb"
 } else {
     myServer = "https://www.sciencebase.gov/bcb"
 }
 // console.log(myServer);
-// myServer = "http://localhost:8080/bcb";
+// myServer = "http://logocalhost:8080/bcb";
+// myServer = "https://dev-api.sciencebase.gov/bcb";
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
 var colorMap = {};
