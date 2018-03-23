@@ -1,162 +1,192 @@
 'use strict';
 
-function HistogramWidget(chartData, bucketSize = 3) {
-    // $("#" + id + "smoothplot").show()
-    // d3.select("#" + id + "ridgeLinePlot").selectAll("svg").remove()
-    // $("#" + id + "ridgeLinePlotRangeValue").html(3);
-    // $("#" + id + "ridgeLinePlotRange").val(3);
-  
-    // let margin = { top: 2, right: 20, bottom: 25, left: 20 },
-    //     width = $("#" + id + "ridgeLinePlot").width() - margin.left - margin.right,
-    //     height = 80 - margin.top - margin.bottom;
+function HistogramWidget(chartData) {
+    $("#histogramPlot").show()
+    d3.select("#histogramPlot").select("svg").remove()
 
-    // let x = d3.scaleLinear().range([0, width]);
-    // let y = d3.scaleLinear().rangeRound([height, 0]);
+
+    let margin = { top: 75, right: 20, bottom: 25, left: 35 },
+        width = $("#histogramPlot").width() - margin.left - margin.right,
+        height = 550 - margin.top - margin.bottom;
+
+    let pos = $("#histogramPlot").position()
     
-    // let formatTime = d3.timeFormat("%b %d");
+    let x = d3.scaleLinear()
+        .rangeRound([0, width]);
 
-    
-    // function updateChart(dta, buk) {
+    let y = d3.scaleLinear()
+        .range([height, 0]);
 
-    //     let data = processData(dta, buk)
-
-
-    //     let dataNest = d3.nest()
-    //         .key(function (d) { return d.year; })
-    //         .entries(data);
+    let formatTime = d3.timeFormat("%b %d");
 
 
-    //     let minMax = getMinMax(dataNest)
+    function updateChart(dta, buk) {
 
-    //     x.domain([minMax.dayMin -1, minMax.dayMax +1]);
+        let data = processData(dta, buk)
 
-    //     d3.select("#" + id + "ridgeLinePlot").transition()
+        let domain = getDomain(data)
 
-    //     d3.select("#" + id + "ridgeLinePlot").selectAll("svg").remove()
+        x.domain([domain.xMin - 1, domain.xMax + 1]);
+        y.domain([0, domain.yMax]);
 
-    //     let svg = d3.select("#" + id + "ridgeLinePlot").selectAll("svg")
-    //         .data(dataNest)
-    //         .enter()
-    //         .append("svg")
-    //         .attr("width", width + margin.left + margin.right)
-    //         .attr("height", height + margin.top + margin.bottom)
-    //         .append("g")
-    //         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    //         .each(function (year) {
-    //             year.y = d3.scaleLinear()
-    //                 .domain([0, d3.max(year.values, function (d) { return d.value; })])
-    //                 .range([height, 0])
-    //         })
+        let xAxis = d3.axisBottom(x)
+            .ticks(((domain.xMax - domain.xMin) * buk) / 30.5)
+            .tickFormat(x => { return dateFromDay(2018, x * buk) })
 
-    //     // area fill
-    //     svg.append("path")
-    //         .attr("class", "area")
-    //         .attr("d", function (year) {
-    //             return d3.area()
-    //                 .curve(d3.curveBasis)
-    //                 .x(function (d) { return x(d.DOY); })
-    //                 .y1(function (d) { return year.y(d.value); })
-    //                 .y0(height)
-    //                 (year.values)
-    //         });
-
-    //     // year label
-    //     svg.append("g")
-    //         .append("text")
-    //         .attr("fill", "rgb(204, 204, 204)")
-    //         .attr("x", 0)
-    //         .attr("y", height - 20)
-    //         .attr("dy", "0.71em")
-    //         .attr("text-anchor", "start")
-    //         .text(function (year) { return year.key; });
-
-    //     // X-axis 
-    //     let xAxis = d3.axisBottom(x)
-    //         .ticks(((minMax.dayMax - minMax.dayMin) * buk )/30.5)
-    //         .tickFormat(x => {return dateFromDay(2018,x*buk)})
-            
-    //     svg.append("g")
-    //         .attr("transform", "translate(0," + (height) + ")")
-    //         .attr("class", "axis-label")
-    //         .call(xAxis)
-
-    // }
+        let yAxis = d3.axisLeft(y)
 
 
-    // function type(d) {
-    //     d.value = +d.value;
-    //     d.DOY = d.DOY;
-    //     return d;
-    // }
 
-    // function emptyYear() {
-    //     let year = new Array(365)
-    //     for (let i = 0; i < year.length; i++) {
-    //         year[i] = 0
-    //     }
-    //     return year
-    // };
+        d3.select("#histogramPlot").transition()
+
+        d3.select("#histogramPlot").select("svg").remove()
 
 
-    // function processData(rawData, factor) {
-    //     let processedData = []
-    //     for (let currentYear in rawData) {
-    //         let days_of_year = emptyYear()
-    //         for (let i = 0; i < rawData[currentYear].length; i++) {
-    //             days_of_year[rawData[currentYear][i]] += 1
-    //         }
-    //         let bucket_days_of_year = transformData(days_of_year, factor)
-    //         for (let i = 0; i < bucket_days_of_year.length; i++) {
-    //             let v = bucket_days_of_year[i]
-    //             let d = i+1;
-    //             processedData.push({ year: currentYear, DOY: d, value: v})
-    //         }
-    //     }
-    //     return processedData
-    // };
 
-    // function transformData(rawData, factor) {
-    //     let transformedData = []
-    //     for (let i = 0; i < rawData.length - factor; i += factor) {
-    //         let sum = 0
-    //         for (let j = 0; j < factor; j++) {
-    //             sum += rawData[i + j]
-    //         }
-    //         transformedData.push(sum / factor)
-    //     }
-    //     return transformedData
-    // };
+        var svg = d3.select("#histogramPlot").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // function getMinMax(rawData) {
-    //     let min = 365;
-    //     let max = 0;
-    //     for (let i = 0; i < rawData.length; i++) {
-    //         for (let j = 0; j < rawData[i].values.length; j++) {
-    //             let v = rawData[i].values[j].value
-    //             if (v > 0 && j < min) {
-    //                 min = j
-    //             }
-    //             else if (v > 0 && j > max) {
-    //                 max = j
-    //             }
-    //         }
 
-    //     }
-    //     return { dayMin: min, dayMax: max }
-    // }
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
 
-    // function dateFromDay(year, day){
-    //     var date = new Date(year, 0);
-    //     return formatTime(new Date(date.setDate(day)));
-    //   }
+        svg.append("g")
+            .attr("class","y axis")
+            .call(yAxis)
 
-    // updateChart(chartData, bucketSize)
 
-    // $("#" + id + "ridgeLinePlotRange").change(function () {
-    //     bucketSize = parseInt($("#" + id + "ridgeLinePlotRange").val());
-    //     $("#" + id + "ridgeLinePlotRangeValue").html(bucketSize);
-    //     updateChart(chartData, bucketSize)
-    // });
+
+        svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function (d) { return x(d.day); })
+            .attr("width", 2 * buk)
+            .attr("y", function (d) { return y(d.count); })
+            .attr("height", function (d) { return height - y(d.count); })
+            .on('mouseover', function (d) {
+                var xPos, yPos;
+                //Get this bar's x/y values, then augment for the tooltip
+                xPos = parseFloat(d3.select(this).attr("x")) + 2 * buk;
+                yPos = (height / 2) + pos.top;
+
+                d3.select('#tooltip')
+                    .style('left', xPos + 'px')
+                    .style('top', yPos + 'px')
+                    .select('#value')
+                    .html(toolTipLabel(d,buk));
+
+                //Show the tooltip
+                d3.select('#tooltip').classed('hidden', false);
+            })
+            .on('mouseout', function () {
+                //Remove the tooltip
+                d3.select('#tooltip').classed('hidden', true);
+            });
+
+
+        svg.append("text")
+            .attr("x", (width / 2))             
+            .attr("y", 0 - (margin.top * .33))
+            .attr("fill", "rgb(204, 204, 204)")
+            .attr("text-anchor", "middle")  
+            .style("font-size", "16px") 
+            .text("Histogram of Spring Leaf Index");
+
+
+    }
+
+
+    function type(d) {
+        d.count = d.count;
+        d.day = +d.day;
+        return d;
+    }
+
+    function emptyYear() {
+        let year = new Array(366)
+        for (let i = 0; i < year.length; i++) {
+            year[i] = 0
+        }
+        return year
+    };
+
+
+    function processData(rawData, factor) {
+        let days_of_year = emptyYear()
+        let processedData = []
+        for (let currentYear in rawData) {
+            for (let i = 0; i < rawData[currentYear].length; i++) {
+                days_of_year[rawData[currentYear][i]] += 1
+            }
+        }
+        let bucket_days_of_year = transformData(days_of_year, factor)
+        for (let i = 0; i < bucket_days_of_year.length; i++) {
+            let c = bucket_days_of_year[i]
+            processedData.push({ day: i + 1, count: c })
+        }
+        return processedData
+    };
+
+
+    function transformData(rawData, factor) {
+        let transformedData = []
+        for (let i = 0; i < rawData.length - factor; i += factor) {
+            let sum = 0
+            for (let j = 0; j < factor; j++) {
+                sum += rawData[i + j]
+            }
+            transformedData.push(sum / factor)
+        }
+        return transformedData
+    };
+
+    function getDomain(rawData) {
+        let xMin = 365;
+        let xMax = 0;
+        let yMax = 0;
+        for (let i = 0; i < rawData.length; i++) {
+            let c = rawData[i].count
+            if (c > yMax) {
+                yMax = c;
+            }
+            if (c > 0 && i < xMin) {
+                xMin = i;
+            }
+            else if (c > 0 && i > xMax) {
+                xMax = i;
+            }
+
+        }
+        return { xMin: xMin, xMax: xMax, yMax: yMax };
+    };
+
+    function dateFromDay(year, day) {
+        var date = new Date(year, 0);
+        return formatTime(new Date(date.setDate(day)));
+    }
+    function toolTipLabel(d,buk) {
+        let count = `Count: <label>${parseInt(d.count)} </label> <br /> `
+        if (buk == 1) {
+            return `${count}  Day: <label> ${d.day} </label>`
+        }
+        else {
+            return `${count}  Day Range: <label> ${d.day * buk - buk} - ${d.day * buk - 1} </label>`
+        }
+    }
+
+    let bucketSize = parseInt($("#ridgeLinePlotRange").val());
+    updateChart(chartData, bucketSize)
+    $("#ridgeLinePlotRange").change(function () {
+        bucketSize = parseInt($("#ridgeLinePlotRange").val());
+        updateChart(chartData, bucketSize)
+    });
+
 
 }
 

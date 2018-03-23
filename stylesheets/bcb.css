@@ -1058,3 +1058,43 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     font-size: 11px;
     opacity: 1;
 }
+
+.bar rect {
+    shape-rendering: crispEdges;
+}
+  
+.bar text {
+    fill: #999999;
+}
+  
+.axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.histogramPlot {
+    fill: rgb(56, 155, 198);
+    width: 100%;
+}
+
+#histogramPlot .axis text{
+    color:rgb(204, 204, 204);
+    fill:rgb(204, 204, 204);
+}
+#tooltip {
+
+    background: rgb(204, 204, 204);
+    color: black;
+    border-radius: 4px;
+    padding: .25em;
+    pointer-events: none;
+    position: absolute;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+}
+#tooltip p{
+    margin: 0 1em;
+}
+.hidden {
+    display: none;
+}
