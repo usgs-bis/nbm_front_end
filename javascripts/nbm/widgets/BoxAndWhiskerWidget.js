@@ -94,6 +94,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
         $("#"+that.bap.id+"JsonDiv").hide();
         $("#"+that.bap.id+"BwTitle").hide();
         $("#smoothplot").hide();
+        $("#HistogramPlot").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
                 that.bap.rawJson = jsonData;
@@ -117,6 +118,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
                     smoothLinePlotWidget(jsonData)
+                    HistogramWidget(jsonData)
                     $("#"+that.bap.id+"JsonDiv").show();
                     if (alreadySentBuffer) {
                         setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +

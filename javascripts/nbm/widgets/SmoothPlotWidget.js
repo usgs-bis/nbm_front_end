@@ -14,12 +14,11 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
     let y = d3.scaleLinear().rangeRound([height, 0]);
     
     let formatTime = d3.timeFormat("%b %d");
-
+    let pos = $("#ridgeLinePlot").position()
     
     function updateChart(dta, buk) {
 
         let data = processData(dta, buk)
-
 
         let dataNest = d3.nest()
             .key(function (d) { return d.year; })
@@ -34,7 +33,10 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
 
         d3.select("#ridgeLinePlot").selectAll("svg").remove()
 
-        let svg = d3.select("#ridgeLinePlot").selectAll("svg")
+        let ridgelineplot = d3.select("#ridgeLinePlot")
+
+
+        let svg = ridgelineplot.selectAll("svg")
             .data(dataNest)
             .enter()
             .append("svg")
@@ -58,7 +60,26 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
                     .y1(function (d) { return year.y(d.value); })
                     .y0(height)
                     (year.values)
-            });
+            })
+            .on('mouseover', function (d) {
+                var xPos, yPos;
+                //Get this bar's x/y values, then augment for the tooltip
+                xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
+                yPos =  pos.top + hoverYPostionFactor(d,dataNest) * ( height + margin.top + margin.bottom);
+
+                d3.select('#tooltip')
+                    .style('left', xPos + 'px')
+                    .style('top', yPos + 'px')
+                    .select('#value')
+                    .html(d.key);
+
+                //Show the tooltip
+                d3.select('#tooltip').classed('hidden', false);
+            })
+            .on('mouseout', function () {
+                //Remove the tooltip
+                d3.select('#tooltip').classed('hidden', true);
+            });;
 
         // year label
         svg.append("g")
@@ -80,6 +101,8 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
             .attr("class", "axis-label")
             .call(xAxis)
 
+       
+
     }
 
 
@@ -90,7 +113,7 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
     }
 
     function emptyYear() {
-        let year = new Array(365)
+        let year = new Array(366)
         for (let i = 0; i < year.length; i++) {
             year[i] = 0
         }
@@ -149,6 +172,15 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
         var date = new Date(year, 0);
         return formatTime(new Date(date.setDate(day)));
       }
+
+    function hoverYPostionFactor(d,data){
+        for(let i =0; i <data.length; i++){
+            if(data[i].key == d.key){
+                return i
+            }
+        }
+        return 1
+    }
 
     updateChart(chartData, bucketSize)
 
