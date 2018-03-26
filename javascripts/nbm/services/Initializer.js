@@ -17,8 +17,8 @@ var Initializer = (function(initializer) {
         phenology: '591c7160e4b0a7fdb43dea93'
     };
     var CONFIG_URL_MAP = {
-        biogeography: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json',
-        nbm_front_end: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json',
+        biogeography: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v3/nbm_config.json',
+        nbm_front_end: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v3/nbm_config.json',
         nvcs: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json',
         npn: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json',
         phenology: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json'
