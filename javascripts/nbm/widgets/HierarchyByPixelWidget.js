@@ -12,6 +12,10 @@ var HierarchyByPixelWidget = function(chartData) {
     console.log("Chartdata: ", chartData);
     console.log(chartData.hierarchy);
 
+    this.getHtml = function () {
+
+    };
+
     this.getHtml = function() {
         var html = '';
         hierarchy = chartData.hierarchy;
