@@ -7,6 +7,11 @@
  */
 var HierarchyByPixelWidget = function(chartData) {
     var hierarchy;
+    var newHierarchy;
+    this.chartData = chartData;
+    console.log("Chartdata: ", chartData);
+    console.log(chartData.hierarchy);
+
     this.getHtml = function() {
         var html = '';
         hierarchy = chartData.hierarchy;
@@ -77,6 +82,21 @@ var HierarchyByPixelWidget = function(chartData) {
     };
 
     this.initializeWidget = function() {
+        var that = this;
+        // console.log(chartData);
+        console.log(that.bap.actionRef.result.geojson.properties[that.bap.actionRef.lookupProperty]);
 
+        var elasticQuery = {
+            "query" : {
+                "term" : {
+                    "properties.gid": that.bap.actionRef.result.geojson.properties[that.bap.actionRef.lookupProperty]
+                }
+            }
+        };
+
+        var testElastic = "http://localhost:8080/elastic/search?index=bcbapi&type=nvcs_hierarchy&q=" + encodeURI(JSON.stringify(elasticQuery));
+        $.getJSON(testElastic, function (data) {
+            console.log("DATA:", data);
+        });
     };
 };
