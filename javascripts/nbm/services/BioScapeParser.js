@@ -26,8 +26,10 @@ var BioScapeParser = (function(bioScapeParser) {
             groups.push(group);
             summarizationLayers = summarizationLayers.concat(group.getSummarizationLayers());
         }
+
         return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape);
-    }
+
+}
 
     /**
      * Display meta data about the BioScape.
@@ -102,6 +104,9 @@ var BioScapeParser = (function(bioScapeParser) {
 
         if (data.placeOfInterestSearch) {
             actionHandlers.push(new SearchActionHandler(data.placeOfInterestSearch, {}));
+        }
+        if (data.globalTimeSlider) {
+            actionHandlers.push(new TimeSliderActionHandler(data.globalTimeSlider, {}));
         }
     }
 

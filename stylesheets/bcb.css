@@ -536,6 +536,12 @@ div.inline {
     transition-duration: .5s;
     transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
     cursor: default;
+    width: 53%
+}
+
+#GlobalTimeControl{
+    width:60%;
+    overflow-y: visible;
 }
 #mapBottomLeft.open {
     left: 400px;
@@ -932,8 +938,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .sliderLabelLeft {
     float:left;
-    width:25%;
-    text-align:left;
+    margin-right:10px;
 }
 .sliderLabelCenter {
     float:left;
@@ -942,8 +947,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 .sliderLabelRight {
     float:right;
-    width:25%;
-    text-align:right;
+    margin-left:10px;
 }
 
 .spinnerContainer {
@@ -1097,4 +1101,111 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 .hidden {
     display: none;
+}
+
+
+.timeSliderToolTip { 
+    position: absolute;
+    background-image: linear-gradient(#444444, #999999);
+    width: 60px; 
+    height: 30px; 
+    text-align: center; 
+    color: white; 
+    border-radius: 10px; 
+    display: inline-block; 
+    font: bold 15px/30px Georgia;
+    bottom: 140%;
+    left: 0;
+    margin-left: -1%;
+    padding-top: 0px;
+  }
+  output:after { 
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 10px solid #999999;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    margin-top: -1px;
+  }
+
+#GlobalTimeSlider{
+    width: 85%;
+    margin: auto;
+    vertical-align:middle;
+  }
+ 
+
+.tooltip {
+    position: absolute;
+    z-index: 1020;
+    display: block;
+    padding: 5px;
+    font-size: 11px;
+    visibility: visible;
+    margin-top: -2px;
+    bottom:120%;
+    margin-left: -2em;
+    opacity: unset;
+}
+
+.tooltip .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-top: 5px solid #000000;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 3px 8px;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    background-color: #000000;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+}
+
+.ui-slider {
+    background: black repeat-x bottom left;
+    border-bottom: 1px solid #EBEAE5;
+    height: 15px;
+    margin: 0;
+    padding: 0px;
+}
+
+.ui-slider-handle {
+    border-bottom: 1px solid #a8a79f;
+    border-right: 1px solid #a8a79f;
+    height: 20px;
+    width: 10px;
+    margin: 0;
+    padding: 0px;
+    display: inline-block;
+}
+
+.ui-slider-range {
+    height: 10px;
+    border-bottom: 3px solid red;
+    position: relative;
+}
+
+.out-of-range {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    opacity: 0.5;
 }

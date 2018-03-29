@@ -256,6 +256,7 @@ BioScapeLayerBase.prototype.initializeLayer = function() {
         return Promise.resolve(true);
     }
     var that = this;
+   
     return this.mixedContentCheck()
         .then(function(success) {
             if(!success) {
@@ -264,6 +265,7 @@ BioScapeLayerBase.prototype.initializeLayer = function() {
             return that.verifyService()
                 .then(function(data) {
                     that.addAdditionalHtml();
+                    that.checkGlobalSlider();
                     if (that.selected) {
                         return that.turnOnLayer();
                     } else {
@@ -284,6 +286,7 @@ BioScapeLayerBase.prototype.initializeLayer = function() {
         return false;
     }
 };
+
 /**
  * Add any additional html that may be needed after the rest of the bioscape has loaded.
  */
@@ -291,7 +294,6 @@ BioScapeLayerBase.prototype.addAdditionalHtml = function() {
     if (this.mapLayer.timeControl) {
         var layerId = this.id;
         var that = this;
-
         var time = this.getTimeInfo();
         this.timeIndex = time.default;
         var html = getHtmlFromJsRenderTemplate('#timeSliderTemplate', time);
@@ -360,6 +362,26 @@ BioScapeLayerBase.prototype.addAdditionalHtml = function() {
         // }
     }
 };
+
+
+
+/**
+ * Determine if the layer should be controlled by the global time slider
+ * If so, subscribe to the slider so updates can be pushed on change
+ */
+BioScapeLayerBase.prototype.checkGlobalSlider = function() {
+
+    if (this.mapLayer.timeControl ) {
+        let step = this.getTimeInfo().stepLabel
+        if(step == "Year"){
+            let timeControl = actionHandlerHelper.globalTimeSlider()
+            if(timeControl.ts){
+                timeControl.subscribe(this);
+            }
+        }
+    }
+};
+
 
 BioScapeLayerBase.prototype.getTimeInfo = function() {
     if (!this.mapLayer.timeControl) {

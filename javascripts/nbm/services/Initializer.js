@@ -84,9 +84,7 @@ var Initializer = (function(initializer) {
                     var configUrl = getConfigUrl(data);
 
                     if(configUrl === '') {
-                        alert('This collection doesn\'t seem to have a config file. Please add one otherwise the site may not work correctly. SB Item #: ' + bioScapeId);
-                    } else if (configUrl.indexOf("/v2/") == -1) {
-                        configUrl = configUrl.replace("https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/", "https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/")
+                        alert('This collection doesn\'t seem to have a config file. Please add one, otherwise the site may not work correctly. SB Item #: ' + bioScapeId);
                     }
 
                     return configUrl;
