@@ -80,7 +80,17 @@ var Initializer = (function(initializer) {
 
                 document.title = data.title;
 
-                return thisConfig;
+                if (state.customBioscape) {
+                    var configUrl = getConfigUrl(data);
+
+                    if(configUrl === '') {
+                        alert('This collection doesn\'t seem to have a config file. Please add one, otherwise the site may not work correctly. SB Item #: ' + bioScapeId);
+                    }
+
+                    return configUrl;
+                } else {
+                    return thisConfig;
+                }
             })
             .then(function(url) {
                 return new Promise(function (resolve, reject) {
