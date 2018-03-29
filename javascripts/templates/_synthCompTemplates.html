@@ -164,12 +164,21 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the mod
 </div>
 </script>
 
+<script id="rawJsonButtonTemplate" type="text/x-jsrender">
+    <div style='width: 100%;'>
+        <button onclick="window.open('{{:url}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 0; left: 0;'
+class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+            <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+        </button>
+</div>
+</script>
+
 <script id="pixelHierarchyPlaceholder" type="text/x-jsrender">
     <div id="hierarchyChart{{:id}}"></div>
 </script>
 
 <script id="identifyUnitTemplate" type="text/x-jsrender">
-    <div class="layerExpander contextHeader" data-section="identify{{:id}}"
+    <div class="layerExpander contextHeader hierarchyExpanders" data-section="identify{{:id}}"
     {{if isOn}}style="color:orange; font-weight: bold; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"
     {{else}}style="color:#f3f3f3; font-weight: normal; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"{{/if}}>
         <span id="identify{{:id}}Control">&#9658;</span>
