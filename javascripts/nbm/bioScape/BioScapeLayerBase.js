@@ -371,10 +371,13 @@ BioScapeLayerBase.prototype.addAdditionalHtml = function() {
  */
 BioScapeLayerBase.prototype.checkGlobalSlider = function() {
 
-    if (this.mapLayer.timeControl) {
-        let timeControl = actionHandlerHelper.globalTimeSlider()
-        if(timeControl.ts){
-            timeControl.subscribe(this);
+    if (this.mapLayer.timeControl ) {
+        let step = this.getTimeInfo().stepLabel
+        if(step == "Year"){
+            let timeControl = actionHandlerHelper.globalTimeSlider()
+            if(timeControl.ts){
+                timeControl.subscribe(this);
+            }
         }
     }
 };
