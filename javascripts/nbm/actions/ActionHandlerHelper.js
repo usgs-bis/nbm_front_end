@@ -590,3 +590,16 @@ ActionHandlerHelper.prototype.handleBapError = function (id, message) {
 
     return true;
 };
+
+ActionHandlerHelper.prototype.globalTimeSlider = function () {
+
+    let found = {};
+
+    $.each(actionHandlers, function (index, actionHandler) {
+        if(actionHandler.gts){
+            found = actionHandler.gts;
+        }
+    })
+    return found;
+
+}

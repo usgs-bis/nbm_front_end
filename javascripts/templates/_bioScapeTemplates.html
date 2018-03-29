@@ -210,6 +210,7 @@
     </div>
 </script>
 
+
 <script id="timeSliderTemplate" type="text/x-jsrender">
     <div style="width:100%;text-align:center;line-height:initial;" id="{{:layerId}}YearVal">
         Current {{:stepLabel}}: {{:defaultDate}}
@@ -225,4 +226,11 @@
         </div>
         <div style="clear:both;"></div>
     {{/if}}
+</script>
+
+<script id="GlobalTimeSliderTemplate" type="text/x-jsrender">
+         <span id ="timeSliderLabelLeft" class="sliderLabelLeft">{{:startDate}}</span>
+         <span id ="timeSliderLabelRight" class="sliderLabelRight">{{:endDate}}</span>
+         <div id="GlobalTimeSlider"></div>
+
 </script>
