@@ -4,7 +4,7 @@ var WidgetHelper = function () {
     this.marker = undefined;
 };
 
-WidgetHelper.prototype.getWidget = function (config) {
+WidgetHelper.prototype.getWidget = function (config,bap) {
     if (config.type == "hierarchyByPixel") {
         return new HierarchyByPixelWidget(config);
     } else if (config.type == "hierarchyTable") {
@@ -18,7 +18,7 @@ WidgetHelper.prototype.getWidget = function (config) {
     } else if (config.type == "dynamicMatrix") {
         return new CnrMatrixWidget(config);
     } else if (config.type == "boxAndWhisker") {
-        return new BoxAndWhiskerWidget(config);
+        return new BoxAndWhiskerWidget(config,bap);
     } else if (config.type == "rasterQuery") {
         return new BarChartWidget(config);
     } else if (config.type == "vectorQuery") {

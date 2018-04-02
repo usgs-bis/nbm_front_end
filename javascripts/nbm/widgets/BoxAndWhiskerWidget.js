@@ -1,8 +1,8 @@
 'use strict';
 
-var BoxAndWhiskerWidget = function(serverAP) {
+var BoxAndWhiskerWidget = function(serverAP,bap) {
     var REQUEST_LIMIT = 50;
-    var layer = getLayer();
+    var layer = getLayer(bap);
     var time = undefined;
     var minIdx = undefined;
     var maxIdx = undefined;
@@ -44,8 +44,8 @@ var BoxAndWhiskerWidget = function(serverAP) {
         if(!layer) {
             return;
         }
-        button = $('#getBWData');
-        timeSlider = $('#rangeSlider');
+        button = $("#" + that.bap.id + "BAP").find('#getBWData');
+        timeSlider = $("#" + that.bap.id + "BAP").find('#rangeSlider');
         timeSlider.slider({
             range: true,
             min: time.start,
@@ -66,7 +66,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
                     }
                     timeSlider.slider("values", [min, max]);
                 }
-                $('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
+                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
             },
             change: function() {
                 button.show();
@@ -88,13 +88,13 @@ var BoxAndWhiskerWidget = function(serverAP) {
         var values = timeSlider.slider('values');
         chart = undefined;
         button.hide();
-        $('#boxAndWhiskerError').html('');
+        $("#" + that.bap.id + "BAP").find('#boxAndWhiskerError').html('');
         toggleSpinner();
         timeSlider.slider('disable');
-        $("#"+that.bap.id+"JsonDiv").hide();
-        $("#"+that.bap.id+"BwTitle").hide();
-        $("#smoothplot").hide();
-        $("#HistogramPlot").hide();
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").hide();
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").hide();
+        $("#" + that.bap.id + "BAP").find("#smoothplot").hide();
+        $("#" + that.bap.id + "BAP").find("#HistogramPlot").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
                 that.bap.rawJson = jsonData;
@@ -105,21 +105,21 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         setError('An error occurred retrieving data from the NPN dataset. ' +
                             'The input polygon may be too small for the Geoserver Web Processing Service to analyze');
                         alreadySentBuffer = false;
-                        $("#"+that.bap.id+"JsonDiv").show();
+                        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     } else {
                         alreadySentBuffer = true;
                         that.sendBufferedFeature();
                     }
                 } else if (noDatas.length) {
-                    $("#"+that.bap.id+"JsonDiv").show();
+                    $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     alreadySentBuffer = false;
                     var years = noDatas.join(", ");
                     setError('There was an error analyzing data for the following years: ' + years + '. ' +
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
-                    smoothLinePlotWidget(jsonData)
-                    HistogramWidget(jsonData)
-                    $("#"+that.bap.id+"JsonDiv").show();
+                    smoothLinePlotWidget(jsonData,that.bap.id)
+                    HistogramWidget(jsonData,that.bap.id)
+                    $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     if (alreadySentBuffer) {
                         setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +
                             'We\'ve added a buffer to the polygon and resumbitted for analysis. To view the buffered ' +
@@ -144,7 +144,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
         return {
 
             content: [
-                {text: $('#bapRangeSlider').text(), style: ['bapContent', 'subtitle']},
+                {text: $("#" + that.bap.id + "BAP").find('#bapRangeSlider').text(), style: ['bapContent', 'subtitle']},
                 {image: chart.div.id, alignment: 'center', width: 400}
             ],
             charts: [chart]
@@ -178,13 +178,20 @@ var BoxAndWhiskerWidget = function(serverAP) {
             });
     };
 
-    function getLayer() {
+  
+    function getLayer(bap) {
         var visibleLayers = bioScape.getVisibleLayers();
-        for(var i = 0; i < visibleLayers.length; i++) {
-            if(visibleLayers[i].mapLayer.timeControl) {
-                return visibleLayers[i];
-            }
+        
+        let thisLayer = visibleLayers.filter(layer =>{
+            if(layer.actionConfig){
+                return layer.actionConfig.baps[0] == bap.config.id && layer.mapLayer.timeControl
+            } return false
+        })[0]
+
+        if(thisLayer){
+            return thisLayer
         }
+
 
         return undefined;
     }
@@ -256,12 +263,12 @@ var BoxAndWhiskerWidget = function(serverAP) {
     }
 
     function toggleSpinner() {
-        var el = $('#bapSpinner');
+        var el = $("#" + that.bap.id + "BAP").find('#bapSpinner');
         toggleVisibility(el);
     }
 
     function setError(message) {
-        $('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
+        $("#" + that.bap.id + "BAP").find('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
             message +
             '</div>');
     }
@@ -272,7 +279,6 @@ var BoxAndWhiskerWidget = function(serverAP) {
             return sequence.then(function() {
                 return request.promise;
             }).then(function(datas) {
-                //console.log(datas)
 
                 datas.forEach(function(data, index) {
                     jsonData[request.years[index].substr(0, 4)] = data;
@@ -282,8 +288,9 @@ var BoxAndWhiskerWidget = function(serverAP) {
                         var bWData = getBoxPlotData(request.years[index], data);
                         if(!chart) {
                             chart = AmChartsHelper.getBoxAndWhiskerChart(bWData);
-                            chart.write('boxAndWhisker');
-                            $("#"+that.bap.id+"BwTitle").show();
+                            let chartdiv = that.bap.id + 'boxAndWhisker'
+                            chart.write(chartdiv);
+                            $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").show();
                         } else {
                             var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length-1].valueField);
                             chart.dataProvider.push(graphsAndData.data);
@@ -298,7 +305,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
             });
         }, Promise.resolve())
             .catch(function() {
-                $('#boxAndWhisker').html('<div style="font-size: 16px;" class="myNpnInfo">Error processing NPN data</div>');
+                $("#" + that.bap.id + "BAP").find('#boxAndWhisker').html('<div style="font-size: 16px;" class="myNpnInfo">Error processing NPN data</div>');
             });
     }
 

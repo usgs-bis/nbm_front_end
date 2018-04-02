@@ -14,7 +14,8 @@ var BAP = function(serverAP, leaveOutJson, actionRef) {
     this.contacts = serverAP.contacts;
     this.webLinks = serverAP.webLinks;
 
-    this.id = serverAP.id;
+    this.id = serverAP.id
+    this.unique = this.guidGenerator();
     if (!this.config.data) this.config.data = {};
     this.description = this.config.data.description;
     this.bapReference = this.config.url;
@@ -32,7 +33,17 @@ var BAP = function(serverAP, leaveOutJson, actionRef) {
     $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
 
     this.htmlElement = $("#" + this.id + "BapCase");
+
+
+
 };
+
+BAP.prototype.guidGenerator = function() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
 
 BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
     this.featureValue = serverAP.featureValue;
@@ -42,7 +53,8 @@ BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
     this.contacts = serverAP.contacts;
     this.webLinks = serverAP.webLinks;
 
-    this.id = serverAP.id;
+    this.id = serverAP.id
+    this.unique = this.guidGenerator();
     if (!this.config.data) this.config.data = {};
     this.description = this.config.data.description;
     this.bapReference = this.config.url;
@@ -90,7 +102,7 @@ BAP.prototype.initializeWidgets = function () {
         if (chart.error) {
             actionHandlerHelper.showTempPopup("Error retrieving chart data for BAP, " + that.title);
         } else {
-            var w = widgetHelper.getWidget(chart);
+            var w = widgetHelper.getWidget(chart,that);
             w.bap = that;
             that.widgets.push(w)
         }

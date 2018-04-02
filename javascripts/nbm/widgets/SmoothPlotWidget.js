@@ -1,21 +1,29 @@
 'use strict';
 
-function smoothLinePlotWidget(chartData, bucketSize = 3) {
-    $("#smoothplot").show()
-    d3.select("#ridgeLinePlot").selectAll("svg").remove()
-    $("#ridgeLinePlotRangeValue").html(3);
-    $("#ridgeLinePlotRange").val(3);
-  
+// this plot tags along with the box and whisker 
+// it can be made to stand alone 
+// smoothLinePlotWidget(jsonData,that.bap.id)
+
+function smoothLinePlotWidget(chartData, id) {
+
+    let selector = "#" + id + "BAP";
+    $(selector).find("#smoothplot").show()
+
+    d3.select(`#ridgeLinePlot${id}`).selectAll("svg").remove()
+    $(selector).find("#ridgeLinePlotRangeValue").html(3);
+    $(selector).find("#ridgeLinePlotRange").val(3);
+    let bucketSize = 3
+
     let margin = { top: 2, right: 20, bottom: 25, left: 20 },
-        width = $("#ridgeLinePlot").width() - margin.left - margin.right,
+        width = $(`#ridgeLinePlot${id}`).width() - margin.left - margin.right,
         height = 80 - margin.top - margin.bottom;
 
     let x = d3.scaleLinear().range([0, width]);
     let y = d3.scaleLinear().rangeRound([height, 0]);
-    
+
     let formatTime = d3.timeFormat("%b %d");
-    let pos = $("#ridgeLinePlot").position()
-    
+    let pos = $(`#ridgeLinePlot${id}`).position()
+
     function updateChart(dta, buk) {
 
         let data = processData(dta, buk)
@@ -27,13 +35,13 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
 
         let minMax = getMinMax(dataNest)
 
-        x.domain([minMax.dayMin -1, minMax.dayMax +1]);
+        x.domain([minMax.dayMin - 1, minMax.dayMax + 1]);
 
-        d3.select("#ridgeLinePlot").transition()
+        d3.select(`#ridgeLinePlot${id}`).transition()
 
-        d3.select("#ridgeLinePlot").selectAll("svg").remove()
+        d3.select(`#ridgeLinePlot${id}`).selectAll("svg").remove()
 
-        let ridgelineplot = d3.select("#ridgeLinePlot")
+        let ridgelineplot = d3.select(`#ridgeLinePlot${id}`)
 
 
         let svg = ridgelineplot.selectAll("svg")
@@ -65,7 +73,7 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
                 var xPos, yPos;
                 //Get this bar's x/y values, then augment for the tooltip
                 xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                yPos =  pos.top + hoverYPostionFactor(d,dataNest) * ( height + margin.top + margin.bottom);
+                yPos = pos.top + hoverYPostionFactor(d, dataNest) * (height + margin.top + margin.bottom);
 
                 d3.select('#tooltip')
                     .style('left', xPos + 'px')
@@ -93,15 +101,15 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
 
         // X-axis 
         let xAxis = d3.axisBottom(x)
-            .ticks(((minMax.dayMax - minMax.dayMin) * buk )/30.5)
-            .tickFormat(x => {return dateFromDay(2018,x*buk)})
-            
+            .ticks(((minMax.dayMax - minMax.dayMin) * buk) / 30.5)
+            .tickFormat(x => { return dateFromDay(2018, x * buk) })
+
         svg.append("g")
             .attr("transform", "translate(0," + (height) + ")")
             .attr("class", "axis-label")
             .call(xAxis)
 
-       
+
 
     }
 
@@ -131,8 +139,8 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
             let bucket_days_of_year = transformData(days_of_year, factor)
             for (let i = 0; i < bucket_days_of_year.length; i++) {
                 let v = bucket_days_of_year[i]
-                let d = i+1;
-                processedData.push({ year: currentYear, DOY: d, value: v})
+                let d = i + 1;
+                processedData.push({ year: currentYear, DOY: d, value: v })
             }
         }
         return processedData
@@ -168,14 +176,14 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
         return { dayMin: min, dayMax: max }
     }
 
-    function dateFromDay(year, day){
+    function dateFromDay(year, day) {
         var date = new Date(year, 0);
         return formatTime(new Date(date.setDate(day)));
-      }
+    }
 
-    function hoverYPostionFactor(d,data){
-        for(let i =0; i <data.length; i++){
-            if(data[i].key == d.key){
+    function hoverYPostionFactor(d, data) {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].key == d.key) {
                 return i
             }
         }
@@ -184,9 +192,9 @@ function smoothLinePlotWidget(chartData, bucketSize = 3) {
 
     updateChart(chartData, bucketSize)
 
-    $("#ridgeLinePlotRange").change(function () {
-        bucketSize = parseInt($("#ridgeLinePlotRange").val());
-        $("#ridgeLinePlotRangeValue").html(bucketSize);
+    $(selector).find("#ridgeLinePlotRange").change(function () {
+        bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
+        $(selector).find("#ridgeLinePlotRangeValue").html(bucketSize);
         updateChart(chartData, bucketSize)
     });
 

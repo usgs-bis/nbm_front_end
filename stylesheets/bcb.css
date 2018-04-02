@@ -1081,7 +1081,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     width: 100%;
 }
 
-#histogramPlot .axis text{
+.histogramPlot .axis text{
     color:rgb(204, 204, 204);
     fill:rgb(204, 204, 204);
 }
