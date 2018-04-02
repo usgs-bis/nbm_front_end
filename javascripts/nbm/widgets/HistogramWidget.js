@@ -1,16 +1,23 @@
 'use strict';
 
-function HistogramWidget(chartData) {
-    $("#histogramPlot").show()
-    d3.select("#histogramPlot").select("svg").remove()
+
+// this plot tags along with the box and whisker 
+// it can be made to stand alone 
+// HistogramWidget(jsonData,that.bap.id)
+function HistogramWidget(chartData, id) {
+
+    let selector = "#" + id + "BAP";
+    $(selector).find(`#histogramPlot${id}`).show()
+
+    d3.select(`#histogramPlot${id}`).select("svg").remove()
 
 
     let margin = { top: 75, right: 20, bottom: 25, left: 35 },
-        width = $("#histogramPlot").width() - margin.left - margin.right,
+        width = $(`#histogramPlot${id}`).width() - margin.left - margin.right,
         height = 550 - margin.top - margin.bottom;
 
-    let pos = $("#histogramPlot").position()
-    
+    let pos = $(`#histogramPlot${id}`).position()
+
     let x = d3.scaleLinear()
         .rangeRound([0, width]);
 
@@ -37,13 +44,13 @@ function HistogramWidget(chartData) {
 
 
 
-        d3.select("#histogramPlot").transition()
+        d3.select(`#histogramPlot${id}`).transition()
 
-        d3.select("#histogramPlot").select("svg").remove()
+        d3.select(`#histogramPlot${id}`).select("svg").remove()
 
 
 
-        var svg = d3.select("#histogramPlot").append("svg")
+        var svg = d3.select(`#histogramPlot${id}`).append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -56,7 +63,7 @@ function HistogramWidget(chartData) {
             .call(xAxis);
 
         svg.append("g")
-            .attr("class","y axis")
+            .attr("class", "y axis")
             .call(yAxis)
 
 
@@ -79,7 +86,7 @@ function HistogramWidget(chartData) {
                     .style('left', xPos + 'px')
                     .style('top', yPos + 'px')
                     .select('#value')
-                    .html(toolTipLabel(d,buk));
+                    .html(toolTipLabel(d, buk));
 
                 //Show the tooltip
                 d3.select('#tooltip').classed('hidden', false);
@@ -91,11 +98,11 @@ function HistogramWidget(chartData) {
 
 
         svg.append("text")
-            .attr("x", (width / 2))             
+            .attr("x", (width / 2))
             .attr("y", 0 - (margin.top * .33))
             .attr("fill", "rgb(204, 204, 204)")
-            .attr("text-anchor", "middle")  
-            .style("font-size", "16px") 
+            .attr("text-anchor", "middle")
+            .style("font-size", "16px")
             .text("Histogram of Spring Leaf Index");
 
 
@@ -170,7 +177,7 @@ function HistogramWidget(chartData) {
         var date = new Date(year, 0);
         return formatTime(new Date(date.setDate(day)));
     }
-    function toolTipLabel(d,buk) {
+    function toolTipLabel(d, buk) {
         let count = `Count: <label>${parseInt(d.count)} </label> <br /> `
         if (buk == 1) {
             return `${count}  Day: <label> ${d.day} </label>`
@@ -180,10 +187,10 @@ function HistogramWidget(chartData) {
         }
     }
 
-    let bucketSize = parseInt($("#ridgeLinePlotRange").val());
+    let bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
     updateChart(chartData, bucketSize)
-    $("#ridgeLinePlotRange").change(function () {
-        bucketSize = parseInt($("#ridgeLinePlotRange").val());
+    $(selector).find("#ridgeLinePlotRange").change(function () {
+        bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
         updateChart(chartData, bucketSize)
     });
 
