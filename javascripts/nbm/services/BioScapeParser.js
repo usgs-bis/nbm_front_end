@@ -26,8 +26,9 @@ var BioScapeParser = (function(bioScapeParser) {
             groups.push(group);
             summarizationLayers = summarizationLayers.concat(group.getSummarizationLayers());
         }
+        let additionalParams = {"defaultBapMessage": data.defaultBapMessage};
 
-        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape);
+        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape, additionalParams);
 
 }
 

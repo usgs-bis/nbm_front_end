@@ -554,6 +554,9 @@ ActionHandlerHelper.prototype.getState = function() {
  * Display the default empty right panel.
  */
 ActionHandlerHelper.prototype.loadEmptySynthComp = function(message) {
+    if(!message){
+        message = bioScape.additionalParams.defaultBapMessage
+    }
     $('#synthesisCompositionDetails').html('');
     $('#synthCompBottomBar').html('');
     var synthCompBody = $('#synthesisCompositionBody');
