@@ -23,6 +23,7 @@ var ActionHandler = function (config, layer) {
     this.crossoverBaps = config.crossoverBaps;
     this.spinner = $('<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>');
     this.synthesisComposition = config.synthesisComposition;
+    this.updatedParams = config.additionalParams;
 
     this.layer = layer;
     this.html = "";
@@ -80,6 +81,7 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
                 myMap[key] = value;
             });
         });
+        that.updatedParams = myMap;
 
         // that.setBapValue(bapId, undefined);
 
@@ -122,7 +124,7 @@ ActionHandler.prototype.processHeaderBap = function (additionalParams, headerBap
     var myMap = {};
     myMap.id = this.headerBap;
     myMap.featureValue = this.result.geojson.properties[this.lookupProperty];
-    
+
     if (this.synthesisComposition) {
         actionHandlerHelper.sc.featureValue = that.result.geojson.properties[that.lookupProperty];
     }
