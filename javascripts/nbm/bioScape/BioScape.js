@@ -11,7 +11,7 @@
  *  summarization layers to use for this bioScape
  * @constructor
  */
-var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape) {
+var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams) {
     this.id = id;
     this.title = title;
     this.summary = summary;
@@ -23,6 +23,7 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
     this.customBioscape = customBioscape;
     setDefinition(this);
     this.state = {};
+    this.additionalParams = additionalParams;
 
     /**
      * Send a json request to ScienceBase for the definition of 'Bioscape'. Set the definition if there is a
