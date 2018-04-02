@@ -83,7 +83,7 @@ var HBPElasticWidget = function(chartData) {
         }
     };
 
-    this.massageData = function (obj) {
+    this.reformatData = function (obj) {
         var prefixes = [
             "ecosystem_",
             "group_",
@@ -125,7 +125,7 @@ var HBPElasticWidget = function(chartData) {
         that.elasticUrl = this.config.elasticUrl + encodeURI(JSON.stringify(elasticQuery));
         $.getJSON(that.elasticUrl, function (data) {
             var hit = data["success"]["hits"]["hits"][0]["_source"]["properties"];
-            that.massageData(hit);
+            that.reformatData(hit);
 
             var jsonButton = getHtmlFromJsRenderTemplate('#rawJsonButtonTemplate', {url: that.elasticUrl});
             var initializedPackage = that.getInitializedHtml();
