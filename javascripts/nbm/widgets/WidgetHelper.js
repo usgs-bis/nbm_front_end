@@ -5,7 +5,7 @@ var WidgetHelper = function () {
 };
 
 WidgetHelper.prototype.getWidget = function (config,bap) {
-    if (config.type == "hierarchyByPixel") {
+    if (config.type === "hierarchyByPixel") {
         return new HierarchyByPixelWidget(config);
     } else if (config.type === "hierarchyTable") {
         return new HierarchyTableWidget(config);
@@ -17,9 +17,9 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
         return new SpeciesRichnessWidget(config);
     } else if (config.type === "dynamicMatrix") {
         return new CnrMatrixWidget(config);
-    } else if (config.type == "boxAndWhisker") {
+    } else if (config.type === "boxAndWhisker") {
         return new BoxAndWhiskerWidget(config,bap);
-    } else if (config.type == "rasterQuery") {
+    } else if (config.type === "rasterQuery") {
         return new BarChartWidget(config);
     } else if (config.type === "vectorQuery") {
         return new BarChartWidget(config);
