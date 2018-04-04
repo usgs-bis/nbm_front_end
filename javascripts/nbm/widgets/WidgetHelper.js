@@ -27,5 +27,7 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
         return new NFHPTestWidget(config);
     } else if (config.type === "hierarchyByPixelElastic") {
         return new HBPElasticWidget(config);
+    } else if (config.type === "hierarchyTableElastic") {
+        return new HierarchyTableWidgetElastic(config);
     }
 };
