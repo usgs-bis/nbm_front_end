@@ -1044,8 +1044,37 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .ridgeLinePlot {
     fill: rgb(56, 155, 198);
-    width: 100%
+    width: 100%;
+    margin-bottom: 100px;
 }
+.ridgeLinePlot svg {
+    margin-bottom: -50px;
+    overflow: visible
+}
+.ridgeLinePlot path {
+    stroke: rgb(10,10,15,.2);
+    stroke-width: 1;
+}
+
+
+/* .ridgeLinePlot .domain,  */
+.ridgeLinePlot .domain, .ridgeLinePlot .tick line{
+    stroke: rgb(204, 204, 204);
+}
+
+.ridgeLinePlotSubTitle{
+    font-weight: normal;
+    font-size: 14px;
+    margin-bottom: 10px;
+    margin-top: -5px;
+}
+
+.ridgeLinePlotTitle{
+    font-weight: normal;
+    font-size: 18px;
+    margin-top: 30px;
+}
+
 .ridgeLinePlotNumberPicker{
     width: 75%;
     margin: auto;
@@ -1081,13 +1110,28 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     width: 100%;
 }
 
-.histogramPlot .axis text{
+.histogramPlot svg{
+    overflow: visible;
+}
+
+.histogramPlot .axis text {
     color:rgb(204, 204, 204);
     fill:rgb(204, 204, 204);
+
+}
+
+.histogramPlot .axis path, .histogramPlot .axis line{
+    stroke: rgb(204, 204, 204);
+}
+
+.histogramPlot rect {
+    stroke: rgb(10,10,15,.2);
+    stroke-width: 1;
 }
 #tooltip {
 
     background: rgb(204, 204, 204);
+    font-size: 11px;
     color: black;
     border-radius: 4px;
     padding: .25em;
@@ -1140,7 +1184,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
   }
  
 
-.tooltip {
+#GlobalTimeSlider .tooltip {
     position: absolute;
     z-index: 1020;
     display: block;
@@ -1153,7 +1197,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     opacity: unset;
 }
 
-.tooltip .tooltip-arrow {
+#GlobalTimeSlider .tooltip .tooltip-arrow {
     bottom: 0;
     left: 50%;
     margin-left: -5px;
@@ -1165,7 +1209,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     height: 0;
 }
 
-.tooltip-inner {
+#GlobalTimeSlider .tooltip-inner {
     max-width: 200px;
     padding: 3px 8px;
     color: #ffffff;

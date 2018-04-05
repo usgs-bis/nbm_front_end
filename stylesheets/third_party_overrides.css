@@ -20,6 +20,16 @@
 
 .amcharts-balloon-div {
     z-index: 1;
+
+    background: rgb(204, 204, 204);
+    font-size: 11px;
+    color: black;
+    border-radius: 4px;
+    padding: .25em;
+    pointer-events: none;
+    position: absolute;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
 }
 
 .leaflet-zoom-box {
