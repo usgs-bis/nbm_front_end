@@ -190,7 +190,7 @@ function HistogramWidget(chartData, id) {
             for (let j = 0; j < factor; j++) {
                 sum += rawData[i + j]
             }
-            transformedData.push(sum / factor)
+            transformedData.push(sum)
         }
         return transformedData
     };
