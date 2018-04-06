@@ -1144,7 +1144,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
 }
 #tooltip p{
-    margin: 0 1em;
+    margin: 5px;
 }
 .hidden {
     display: none;
