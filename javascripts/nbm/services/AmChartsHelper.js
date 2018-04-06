@@ -338,7 +338,9 @@ var AmChartsHelper = (function(helper) {
         chart.categoryField = 'date';
         chart.categoryAxis = {
             "tickLength": 0,
-            "axisAlpha": 0,
+            "axisAlpha": 1,
+            "axisColor": getChartColor(),
+            "tickLength": 5,
             "labelFunction": function(valueText) {
                 return new Date(valueText).getUTCFullYear().toString();
             },

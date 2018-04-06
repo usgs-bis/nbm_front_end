@@ -6,6 +6,7 @@
 
 function smoothLinePlotWidget(chartData, id) {
 
+    let that = this
     let selector = "#" + id + "BAP";
     $(selector).find("#smoothplot").show()
 
@@ -14,7 +15,7 @@ function smoothLinePlotWidget(chartData, id) {
     $(selector).find("#ridgeLinePlotRange").val(3);
     let bucketSize = 3
 
-    let margin = { top: 2, right: 20, bottom: 25, left: 20 },
+    let margin = { top: 2, right: 20, bottom: 25, left: 40 },
         width = $(`#ridgeLinePlot${id}`).width() - margin.left - margin.right,
         height = 80 - margin.top - margin.bottom;
 
@@ -24,6 +25,13 @@ function smoothLinePlotWidget(chartData, id) {
     let formatTime = d3.timeFormat("%b %d");
     let pos = $(`#ridgeLinePlot${id}`).position()
 
+    // defining custom selectors to ge the last element
+    // in a slect all.
+    d3.selection.prototype.last = function() {
+        var last = this["_groups"][0].length - 1;
+        return d3.select(this["_groups"][0][last]);
+    };
+
     function updateChart(dta, buk) {
 
         let data = processData(dta, buk)
@@ -32,10 +40,11 @@ function smoothLinePlotWidget(chartData, id) {
             .key(function (d) { return d.year; })
             .entries(data);
 
+        dataNest.reverse()
 
         let minMax = getMinMax(dataNest)
 
-        x.domain([minMax.dayMin - 1, minMax.dayMax + 1]);
+        x.domain([minMax.dayMin -1, minMax.dayMax + 2]);
 
         d3.select(`#ridgeLinePlot${id}`).transition()
 
@@ -43,6 +52,18 @@ function smoothLinePlotWidget(chartData, id) {
 
         let ridgelineplot = d3.select(`#ridgeLinePlot${id}`)
 
+
+        // Remove old titles on change
+        ridgelineplot.selectAll("text").remove()
+
+        // Title
+        let location = actionHandlerHelper.sc.headerBap.config.title
+        ridgelineplot.select("#ridgeLinePlotTitle").append("text")
+            .text(`Spring Index ${location ? location : ""}`);
+            
+        // Subtitle    
+        ridgelineplot.select("#ridgeLinePlotSubTitle").append("text")
+            .text(`Annual Spring Index by Year for the Period ${dataNest[dataNest.length-1].key} to ${dataNest[0].key}`);
 
         let svg = ridgelineplot.selectAll("svg")
             .data(dataNest)
@@ -58,9 +79,20 @@ function smoothLinePlotWidget(chartData, id) {
                     .range([height, 0])
             })
 
+
+        // clip rectangle
+        svg.append("defs")
+            .append("clipPath")
+            .attr("id","cut-off-path")
+            .append("rect")
+            .attr("width", width)
+            .attr("height", height);
+
+
         // area fill
         svg.append("path")
             .attr("class", "area")
+            .attr("clip-path","url(#cut-off-path)")
             .attr("d", function (year) {
                 return d3.area()
                     .curve(d3.curveBasis)
@@ -73,7 +105,7 @@ function smoothLinePlotWidget(chartData, id) {
                 var xPos, yPos;
                 //Get this bar's x/y values, then augment for the tooltip
                 xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                yPos = pos.top + hoverYPostionFactor(d, dataNest) * (height + margin.top + margin.bottom);
+                yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
 
                 d3.select('#tooltip')
                     .style('left', xPos + 'px')
@@ -89,25 +121,64 @@ function smoothLinePlotWidget(chartData, id) {
                 d3.select('#tooltip').classed('hidden', true);
             });;
 
+
+
         // year label
         svg.append("g")
             .append("text")
             .attr("fill", "rgb(204, 204, 204)")
-            .attr("x", 0)
+            .attr("x", -15)
             .attr("y", height - 20)
             .attr("dy", "0.71em")
             .attr("text-anchor", "start")
+            .attr("font-size", "11px")
             .text(function (year) { return year.key; });
 
-        // X-axis 
+         // y-axis 
+         let yAxis = d3.axisLeft(y)
+         .tickSize(0)
+         .tickFormat("");
+
+        svg.append("g")
+            .attr("transform", "translate(20,0)")
+            .call(yAxis)
+        
+        
+            // X-axis 
         let xAxis = d3.axisBottom(x)
             .ticks(((minMax.dayMax - minMax.dayMin) * buk) / 30.5)
             .tickFormat(x => { return dateFromDay(2018, x * buk) })
 
-        svg.append("g")
+        let last = svg.last()
+        last.append("g")
             .attr("transform", "translate(0," + (height) + ")")
             .attr("class", "axis-label")
+            .attr("font-size", "11px")
             .call(xAxis)
+
+        last.append("g")
+            .append("text")
+            .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                        (height + margin.top + 40) + ")")
+            .attr("fill", "rgb(204, 204, 204)")
+            .attr("font-size", "14px")
+            .style("text-anchor", "middle")
+            .text("Spring Index (Day of Year)");
+
+        // text label for the y axis
+         last.append("g")
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x",( 15 * dataNest.length - 45))
+            .attr("dy", "1em")
+            .attr("fill", "rgb(204, 204, 204)")
+            .attr("font-size", "14px")
+            .style("text-anchor", "middle")
+            .text("Year");      
+
+     
 
 
 

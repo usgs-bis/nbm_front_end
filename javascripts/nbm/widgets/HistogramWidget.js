@@ -12,7 +12,7 @@ function HistogramWidget(chartData, id) {
     d3.select(`#histogramPlot${id}`).select("svg").remove()
 
 
-    let margin = { top: 75, right: 20, bottom: 25, left: 35 },
+    let margin = { top: 20, right: 20, bottom: 25, left: 60 },
         width = $(`#histogramPlot${id}`).width() - margin.left - margin.right,
         height = 550 - margin.top - margin.bottom;
 
@@ -26,14 +26,18 @@ function HistogramWidget(chartData, id) {
 
     let formatTime = d3.timeFormat("%b %d");
 
+    let totalCount = 0;
+
 
     function updateChart(dta, buk) {
+
+        let years = Object.getOwnPropertyNames(dta)
 
         let data = processData(dta, buk)
 
         let domain = getDomain(data)
 
-        x.domain([domain.xMin - 1, domain.xMax + 1]);
+        x.domain([domain.xMin +1, domain.xMax +2]);
         y.domain([0, domain.yMax]);
 
         let xAxis = d3.axisBottom(x)
@@ -43,14 +47,29 @@ function HistogramWidget(chartData, id) {
         let yAxis = d3.axisLeft(y)
 
 
-
-        d3.select(`#histogramPlot${id}`).transition()
-
-        d3.select(`#histogramPlot${id}`).select("svg").remove()
+        let histogram = d3.select(`#histogramPlot${id}`)
 
 
+        // Remove old titles on change
+        histogram.selectAll("text").remove()
 
-        var svg = d3.select(`#histogramPlot${id}`).append("svg")
+        // Title
+        let location = actionHandlerHelper.sc.headerBap.config.title
+        histogram.select("#histogramTitle").append("text")
+            .text(`Spring Index ${location ? location : ""}`);
+            
+        // Subtitle    
+        histogram.select("#histogramSubTitle").append("text")
+            .text(`Annual Spring Index for the Period ${years[0]} to ${years[years.length-1]}`);
+
+
+        histogram.transition()
+
+        histogram.select("svg").remove()
+
+
+
+        var svg = histogram.append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
             .append("g")
@@ -60,10 +79,12 @@ function HistogramWidget(chartData, id) {
         svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
+            .attr("font-size", "11px")
             .call(xAxis);
 
         svg.append("g")
             .attr("class", "y axis")
+            .attr("font-size", "11px")
             .call(yAxis)
 
 
@@ -73,7 +94,9 @@ function HistogramWidget(chartData, id) {
             .enter().append("rect")
             .attr("class", "bar")
             .attr("x", function (d) { return x(d.day); })
-            .attr("width", 2 * buk)
+            .attr("width", width/ (domain.xMax - domain.xMin))
+            //.attr("width", 5 * buk)
+           // .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
             .attr("y", function (d) { return y(d.count); })
             .attr("height", function (d) { return height - y(d.count); })
             .on('mouseover', function (d) {
@@ -97,13 +120,29 @@ function HistogramWidget(chartData, id) {
             });
 
 
-        svg.append("text")
-            .attr("x", (width / 2))
-            .attr("y", 0 - (margin.top * .33))
+        // text label for the x axis
+        svg.append("text")             
+            .attr("transform",
+                    "translate(" + (width/2) + " ," + 
+                                (height + 35) + ")")
             .attr("fill", "rgb(204, 204, 204)")
-            .attr("text-anchor", "middle")
-            .style("font-size", "16px")
-            .text("Histogram of Spring Leaf Index");
+            .attr("font-size", "14px")
+            .style("text-anchor", "middle")
+            .text("Day of Year");
+
+
+        // text label for the y axis
+        svg.append("g")
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - margin.left)
+            .attr("x",0 - (height / 2))
+            .attr("dy", "1em")
+            .attr("fill", "rgb(204, 204, 204)")
+            .attr("font-size", "14px")
+            .style("text-anchor", "middle")
+            .text("Year");      
+
 
 
     }
@@ -127,9 +166,11 @@ function HistogramWidget(chartData, id) {
     function processData(rawData, factor) {
         let days_of_year = emptyYear()
         let processedData = []
+        totalCount = 0;
         for (let currentYear in rawData) {
             for (let i = 0; i < rawData[currentYear].length; i++) {
                 days_of_year[rawData[currentYear][i]] += 1
+                totalCount ++;
             }
         }
         let bucket_days_of_year = transformData(days_of_year, factor)
@@ -143,12 +184,13 @@ function HistogramWidget(chartData, id) {
 
     function transformData(rawData, factor) {
         let transformedData = []
+
         for (let i = 0; i < rawData.length - factor; i += factor) {
             let sum = 0
             for (let j = 0; j < factor; j++) {
                 sum += rawData[i + j]
             }
-            transformedData.push(sum / factor)
+            transformedData.push(sum)
         }
         return transformedData
     };
@@ -178,12 +220,12 @@ function HistogramWidget(chartData, id) {
         return formatTime(new Date(date.setDate(day)));
     }
     function toolTipLabel(d, buk) {
-        let count = `Count: <label>${parseInt(d.count)} </label> <br /> `
+        let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label>  <br /> `
         if (buk == 1) {
-            return `${count}  Day: <label> ${d.day} </label>`
+            return `${count}  Day: <label> ${dateFromDay(2018,d.day)} </label>`
         }
         else {
-            return `${count}  Day Range: <label> ${d.day * buk - buk} - ${d.day * buk - 1} </label>`
+            return `${count}  Days: <label> ${dateFromDay(2018,d.day * buk - buk)} </label> to <label> ${dateFromDay(2018,d.day * buk - 1)} </label>`
         }
     }
 
