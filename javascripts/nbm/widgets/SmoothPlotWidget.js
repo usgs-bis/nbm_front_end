@@ -25,12 +25,13 @@ function smoothLinePlotWidget(chartData, id) {
     let formatTime = d3.timeFormat("%b %d");
     let pos = $(`#ridgeLinePlot${id}`).position()
 
-    // defining custom selectors to ge the last element
+    // defining a custom selectors to ge the last element
     // in a slect all.
-    d3.selection.prototype.last = function() {
+    d3.selection.prototype.last = function () {
         var last = this["_groups"][0].length - 1;
         return d3.select(this["_groups"][0][last]);
     };
+
 
     function updateChart(dta, buk) {
 
@@ -44,7 +45,7 @@ function smoothLinePlotWidget(chartData, id) {
 
         let minMax = getMinMax(dataNest)
 
-        x.domain([minMax.dayMin -1, minMax.dayMax + 1]);
+        x.domain([minMax.dayMin - 1, minMax.dayMax + 1]);
 
         d3.select(`#ridgeLinePlot${id}`).transition()
 
@@ -60,10 +61,10 @@ function smoothLinePlotWidget(chartData, id) {
         let location = actionHandlerHelper.sc.headerBap.config.title
         ridgelineplot.select("#ridgeLinePlotTitle").append("text")
             .text(`Spring Index ${location ? location : ""}`);
-            
+
         // Subtitle    
         ridgelineplot.select("#ridgeLinePlotSubTitle").append("text")
-            .text(`Annual Spring Index by Year for the Period ${dataNest[dataNest.length-1].key} to ${dataNest[0].key}`);
+            .text(`Annual Spring Index by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
         let svg = ridgelineplot.selectAll("svg")
             .data(dataNest)
@@ -83,17 +84,16 @@ function smoothLinePlotWidget(chartData, id) {
         // clip rectangle
         svg.append("defs")
             .append("clipPath")
-            .attr("id","cut-off-path")
+            .attr("id", "cut-off-path")
             .append("rect")
             .attr("width", width)
             .attr("height", height);
 
 
-
         // area fill
         svg.append("path")
             .attr("class", "area")
-            .attr("clip-path","url(#cut-off-path)")
+            .attr("clip-path", "url(#cut-off-path)")
             .attr("d", function (year) {
                 return d3.area()
                     .curve(d3.curveBasis)
@@ -104,7 +104,7 @@ function smoothLinePlotWidget(chartData, id) {
             })
             .on('mouseover', function (d) {
                 var xPos, yPos;
-                //Get this bar's x/y values, then augment for the tooltip
+                //Get this bar's x/y values, the augment for the tooltip
                 xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
                 yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
 
@@ -123,46 +123,36 @@ function smoothLinePlotWidget(chartData, id) {
             });;
 
 
-        
-                // set the gradient
-                svg.append("linearGradient")				
-                .attr("id", "area-gradient")			
-                .attr("gradientUnits", "userSpaceOnUse")	
-                .attr("x1", x(0)).attr("y1", 0)			
-                .attr("x2", x(365/buk)).attr("y2", 0)				
-                .selectAll("stop")						
-                .data([
-                    {offset: "0.0%", color: "#cc4c03"},
-                    {offset: "4.1666667%", color: "#ec6f14"},
-                    {offset: "8.3333334%", color: "#f8982b"},
-                    {offset: "12.500000100000001%", color: "#fac450"},
-                    {offset: "16.6666668%", color: "#fce490"},
-                    {offset: "20.833333500000002%", color: "#fdf7bc"},
-                    {offset: "25.000000200000002%", color: "#edf8b2"},
-                    {offset: "29.166666900000003%", color: "#d9f0a3"},
-                    {offset: "33.3333336%", color: "#addd8e"},
-                    {offset: "37.5000003%", color: "#78c678"},  // 10 may 15
-                    {offset: "41.666667000000004%", color: "#41ab5d"},
-                    {offset: "45.833333700000004%", color: "#7accc4"}, // 12 jun 15
-                    {offset: "50.000000400000005%", color: "#41b6c5"},
-                    {offset: "54.166667100000005%", color: "#3090c0"}, //14 july 15
-                    {offset: "58.333333800000005%", color: "#225ea8"},
-                    {offset: "62.500000500000006%", color: "#253494"}, // aug 15
-                    {offset: "66.6666672%", color: "#091e58"}
-                    // {offset: "70.83333390000001%", color: "lightblue"},
-                    // {offset: "75.0000006%", color: "lightblue"},
-                    // {offset: "79.1666673%", color: "lightblue"},
-                    // {offset: "83.33333400000001%", color: "lightblue"},
-                    // {offset: "87.50000070000002%", color: "lightblue"},
-                    // {offset: "91.66666740000001%", color: "lightblue"},
-                    // {offset: "95.8333341%", color: "lightblue"}
-                ])					
-                .enter().append("stop")			
-                .attr("offset", function(d) { return d.offset; })	
-                .attr("stop-color", function(d) { return d.color; });
-        
-        
-        
+        // set the gradient
+        svg.append("linearGradient")
+            .attr("id", "area-gradient")
+            .attr("gradientUnits", "userSpaceOnUse")
+            .attr("x1", x(0)).attr("y1", 0)
+            .attr("x2", x(365 / buk)).attr("y2", 0)
+            .selectAll("stop")
+            .data([
+                { offset: "0.000000000%", color: "#cc4c03" }, // Jan 1
+                { offset: "4.166666700%", color: "#ec6f14" },
+                { offset: "8.333333400%", color: "#f8982b" }, // Feb 1
+                { offset: "12.50000010%", color: "#fac450" },
+                { offset: "16.66666680%", color: "#fce490" }, // Mar 1
+                { offset: "20.83333350%", color: "#fdf7bc" },
+                { offset: "25.00000020%", color: "#edf8b2" }, // Apr 1
+                { offset: "29.16666690%", color: "#d9f0a3" },
+                { offset: "33.33333360%", color: "#addd8e" }, // May 1
+                { offset: "37.50000030%", color: "#78c678" },
+                { offset: "41.66666700%", color: "#41ab5d" }, // Jun 1
+                { offset: "45.83333370%", color: "#7accc4" },
+                { offset: "50.00000040%", color: "#41b6c5" }, // Jly 1
+                { offset: "54.16666710%", color: "#3090c0" },
+                { offset: "58.33333380%", color: "#225ea8" }, // Aug 1
+                { offset: "62.50000050%", color: "#253494" },
+                { offset: "66.66666720%", color: "#091e58" }  // Sep 1
+            ])
+            .enter().append("stop")
+            .attr("offset", function (d) { return d.offset; })
+            .attr("stop-color", function (d) { return d.color; });
+
 
         // year label
         svg.append("g")
@@ -175,17 +165,16 @@ function smoothLinePlotWidget(chartData, id) {
             .attr("font-size", "11px")
             .text(function (year) { return year.key; });
 
-         // y-axis 
-         let yAxis = d3.axisLeft(y)
-         .tickSize(0)
-         .tickFormat("");
+        // y-axis 
+        let yAxis = d3.axisLeft(y)
+            .tickSize(0)
+            .tickFormat("");
 
         svg.append("g")
             .attr("transform", "translate(0,0)")
             .call(yAxis)
-        
-        
-            // X-axis 
+
+        // X-axis 
         let xAxis = d3.axisBottom(x)
             .ticks(((minMax.dayMax - minMax.dayMin) * buk) / 30.5)
             .tickFormat(x => { return dateFromDay(2018, x * buk) })
@@ -199,29 +188,23 @@ function smoothLinePlotWidget(chartData, id) {
 
         last.append("g")
             .append("text")
-            .attr("transform",
-            "translate(" + (width/2) + " ," + 
-                        (height + margin.top + 40) + ")")
+            .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 40) + ")")
             .attr("fill", "rgb(204, 204, 204)")
             .attr("font-size", "14px")
             .style("text-anchor", "middle")
             .text("Day of Year");
 
         // text label for the y axis
-         last.append("g")
+        last.append("g")
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 0 - margin.left)
-            .attr("x",( 15 * dataNest.length - 45))
+            .attr("x", (15 * dataNest.length - 45))
             .attr("dy", "1em")
             .attr("fill", "rgb(204, 204, 204)")
             .attr("font-size", "14px")
             .style("text-anchor", "middle")
-            .text("Year");      
-
-     
-
-
+            .text("Year");
 
     }
 
@@ -311,4 +294,3 @@ function smoothLinePlotWidget(chartData, id) {
     });
 
 }
-

@@ -37,7 +37,7 @@ function HistogramWidget(chartData, id) {
 
         let domain = getDomain(data)
 
-        x.domain([domain.xMin +1, domain.xMax +2]);
+        x.domain([domain.xMin + 1, domain.xMax + 2]);
         y.domain([0, domain.yMax]);
 
         let xAxis = d3.axisBottom(x)
@@ -46,9 +46,7 @@ function HistogramWidget(chartData, id) {
 
         let yAxis = d3.axisLeft(y)
 
-
         let histogram = d3.select(`#histogramPlot${id}`)
-
 
         // Remove old titles on change
         histogram.selectAll("text").remove()
@@ -57,17 +55,14 @@ function HistogramWidget(chartData, id) {
         let location = actionHandlerHelper.sc.headerBap.config.title
         histogram.select("#histogramTitle").append("text")
             .text(`Spring Index ${location ? location : ""}`);
-            
+
         // Subtitle    
         histogram.select("#histogramSubTitle").append("text")
-            .text(`Annual Spring Index for the Period ${years[0]} to ${years[years.length-1]}`);
-
+            .text(`Annual Spring Index for the Period ${years[0]} to ${years[years.length - 1]}`);
 
         histogram.transition()
 
         histogram.select("svg").remove()
-
-
 
         var svg = histogram.append("svg")
             .attr("width", width + margin.left + margin.right)
@@ -87,16 +82,12 @@ function HistogramWidget(chartData, id) {
             .attr("font-size", "11px")
             .call(yAxis)
 
-
-
         svg.selectAll(".bar")
             .data(data)
             .enter().append("rect")
             .attr("class", "bar")
             .attr("x", function (d) { return x(d.day); })
-            .attr("width", width/ (domain.xMax - domain.xMin))
-            //.attr("width", 5 * buk)
-           // .attr("width", x(bins[0].x1) - x(bins[0].x0) - 1)
+            .attr("width", width / (domain.xMax - domain.xMin))
             .attr("y", function (d) { return y(d.count); })
             .attr("height", function (d) { return height - y(d.count); })
             .on('mouseover', function (d) {
@@ -120,11 +111,41 @@ function HistogramWidget(chartData, id) {
             });
 
 
+        // // set the gradient
+        // svg.append("linearGradient")				
+        //     .attr("id", "area-gradient")			
+        //     .attr("gradientUnits", "userSpaceOnUse")	
+        //     .attr("x1", x(0)).attr("y1", 0)			
+        //     .attr("x2", x(365/buk)).attr("y2", 0)				
+        //     .selectAll("stop")						
+        //     .data([
+        //         {offset: "0.000000000%", color: "#cc4c03"}, // Jan 1
+        //         {offset: "4.166666700%", color: "#ec6f14"},
+        //         {offset: "8.333333400%", color: "#f8982b"}, // Feb 1
+        //         {offset: "12.50000010%", color: "#fac450"},
+        //         {offset: "16.66666680%", color: "#fce490"}, // Mar 1
+        //         {offset: "20.83333350%", color: "#fdf7bc"},
+        //         {offset: "25.00000020%", color: "#edf8b2"}, // Apr 1
+        //         {offset: "29.16666690%", color: "#d9f0a3"},
+        //         {offset: "33.33333360%", color: "#addd8e"}, // May 1
+        //         {offset: "37.50000030%", color: "#78c678"},
+        //         {offset: "41.66666700%", color: "#41ab5d"}, // Jun 1
+        //         {offset: "45.83333370%", color: "#7accc4"},
+        //         {offset: "50.00000040%", color: "#41b6c5"}, // Jly 1
+        //         {offset: "54.16666710%", color: "#3090c0"},
+        //         {offset: "58.33333380%", color: "#225ea8"}, // Aug 1
+        //         {offset: "62.50000050%", color: "#253494"},
+        //         {offset: "66.66666720%", color: "#091e58"}  // Sep 1
+
+        //     ])					
+        //     .enter().append("stop")			
+        //     .attr("offset", function(d) { return d.offset; })	
+        //     .attr("stop-color", function(d) { return d.color; });
+
+
         // text label for the x axis
-        svg.append("text")             
-            .attr("transform",
-                    "translate(" + (width/2) + " ," + 
-                                (height + 35) + ")")
+        svg.append("text")
+            .attr("transform", "translate(" + (width / 2) + " ," + (height + 35) + ")")
             .attr("fill", "rgb(204, 204, 204)")
             .attr("font-size", "14px")
             .style("text-anchor", "middle")
@@ -136,14 +157,12 @@ function HistogramWidget(chartData, id) {
             .append("text")
             .attr("transform", "rotate(-90)")
             .attr("y", 0 - margin.left)
-            .attr("x",0 - (height / 2))
+            .attr("x", 0 - (height / 2))
             .attr("dy", "1em")
             .attr("fill", "rgb(204, 204, 204)")
             .attr("font-size", "14px")
             .style("text-anchor", "middle")
-            .text("Count");      
-
-
+            .text("Count");
 
     }
 
@@ -170,7 +189,7 @@ function HistogramWidget(chartData, id) {
         for (let currentYear in rawData) {
             for (let i = 0; i < rawData[currentYear].length; i++) {
                 days_of_year[rawData[currentYear][i]] += 1
-                totalCount ++;
+                totalCount++;
             }
         }
         let bucket_days_of_year = transformData(days_of_year, factor)
@@ -222,10 +241,10 @@ function HistogramWidget(chartData, id) {
     function toolTipLabel(d, buk) {
         let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label>  <br /> `
         if (buk == 1) {
-            return `${count}  Day: <label> ${dateFromDay(2018,d.day)} </label>`
+            return `${count}  Day: <label> ${dateFromDay(2018, d.day)} </label>`
         }
         else {
-            return `${count}  Days: <label> ${dateFromDay(2018,d.day * buk - buk)} </label> to <label> ${dateFromDay(2018,d.day * buk - 1)} </label>`
+            return `${count}  Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label>`
         }
     }
 

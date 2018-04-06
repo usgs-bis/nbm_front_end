@@ -1109,6 +1109,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 .histogramPlot {
     fill: rgb(56, 155, 198);
+    /* fill: url(#area-gradient); */
     width: 100%;
 }
 
