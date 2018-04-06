@@ -15,7 +15,7 @@ function smoothLinePlotWidget(chartData, id) {
     $(selector).find("#ridgeLinePlotRange").val(3);
     let bucketSize = 3
 
-    let margin = { top: 2, right: 20, bottom: 25, left: 40 },
+    let margin = { top: 2, right: 20, bottom: 25, left: 55 },
         width = $(`#ridgeLinePlot${id}`).width() - margin.left - margin.right,
         height = 80 - margin.top - margin.bottom;
 
@@ -44,7 +44,7 @@ function smoothLinePlotWidget(chartData, id) {
 
         let minMax = getMinMax(dataNest)
 
-        x.domain([minMax.dayMin -1, minMax.dayMax + 2]);
+        x.domain([minMax.dayMin -1, minMax.dayMax + 1]);
 
         d3.select(`#ridgeLinePlot${id}`).transition()
 
@@ -168,7 +168,7 @@ function smoothLinePlotWidget(chartData, id) {
         svg.append("g")
             .append("text")
             .attr("fill", "rgb(204, 204, 204)")
-            .attr("x", -15)
+            .attr("x", -30)
             .attr("y", height - 20)
             .attr("dy", "0.71em")
             .attr("text-anchor", "start")
@@ -181,7 +181,7 @@ function smoothLinePlotWidget(chartData, id) {
          .tickFormat("");
 
         svg.append("g")
-            .attr("transform", "translate(20,0)")
+            .attr("transform", "translate(0,0)")
             .call(yAxis)
         
         
