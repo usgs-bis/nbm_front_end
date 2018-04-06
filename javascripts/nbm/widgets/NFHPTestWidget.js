@@ -86,16 +86,17 @@ var NFHPTestWidget = function (chartConfig) {
             return ((value / scored_km) * 100).toFixed(6)
         }
         chartData = [
-            { "Risk": "veryhigh", "Precent": getPercent(data.veryhigh_km), "color": "#FF0000" },
-            { "Risk": "high", "Precent": getPercent(data.high_km), "color": "#FFAA00" },
-            { "Risk": "moderate", "Precent": getPercent(data.moderate_km), "color": "#A3FF73" },
-            { "Risk": "low", "Precent": getPercent(data.low_km), "color": "#00C5FF" },
-            { "Risk": "verylow", "Precent": getPercent(data.verylow_km), "color": "#C500FF" }
+            { "Risk": "Very high", "Precent": getPercent(data.veryhigh_km), "color": "#FF0000" },
+            { "Risk": "High", "Precent": getPercent(data.high_km), "color": "#FFAA00" },
+            { "Risk": "Moderate", "Precent": getPercent(data.moderate_km), "color": "#A3FF73" },
+            { "Risk": "Low", "Precent": getPercent(data.low_km), "color": "#00C5FF" },
+            { "Risk": "Very low", "Precent": getPercent(data.verylow_km), "color": "#C500FF" }
 
         ]
 
         NFHPChart = AmCharts.makeChart(config.id + "NFHPChart", {
             "numberFormatter": formatter,
+            "theme": 'light',
             "borderAlpha": 0,
             "creditsPosition": "top-right",
             "color": AmChartsHelper.getChartColor(),
@@ -117,6 +118,8 @@ var NFHPTestWidget = function (chartConfig) {
 
             }],
             "categoryAxis": {
+                "axisAlpha": 1,
+                "axisColor": AmChartsHelper.getChartColor(),
                 "autoGridCount": false,
                 "gridCount": chartData.length,
                 "gridPosition": "start",
@@ -124,13 +127,16 @@ var NFHPTestWidget = function (chartConfig) {
             },
             "valueAxes": [
                 {
-                    "title": "NFHP Scored Stream Kms [%]"
+                    "title": "NFHP Scored Stream Kms [%]",
+                    "axisColor": AmChartsHelper.getChartColor(),
+                    "axisAlpha": 1,
                 }
             ],
             "titles": [
                 {
                     "text": `Risk To Fish Habitat Degradation\n ${placeName}`,
-                    "size": 15
+                    "size": 15,
+                    "axisColor": AmChartsHelper.getChartColor()
                 }
             ]
         });

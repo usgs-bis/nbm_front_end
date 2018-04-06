@@ -28,13 +28,15 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         if(!layer) {
             return 'A time enabled layer must be turned on for this Analysis Package to work.';
         }
+        let location = actionHandlerHelper.sc.headerBap.config.title
         var viewData = {
             id: that.bap.id,
             startDate: time.startDate,
             min: time.dates[minIdx],
             max: time.dates[maxIdx],
             endDate: time.endDate,
-            title: "Spring Index by Year"
+            title: `Spring Index ${location ? location : ""}`,
+            subTitle: `Annual Spring Index for the Period ${time.dates[minIdx]} to ${time.dates[maxIdx]}`
         };
         return getHtmlFromJsRenderTemplate('#boxAndWhiskerTemplate', viewData);
     };
@@ -93,6 +95,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         timeSlider.slider('disable');
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").hide();
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").hide();
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").hide();
         $("#" + that.bap.id + "BAP").find("#smoothplot").hide();
         $("#" + that.bap.id + "BAP").find("#HistogramPlot").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
@@ -117,6 +120,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                     setError('There was an error analyzing data for the following years: ' + years + '. ' +
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
+                    that.updateTitle(jsonData)
                     smoothLinePlotWidget(jsonData,that.bap.id)
                     HistogramWidget(jsonData,that.bap.id)
                     $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
@@ -131,6 +135,12 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 toggleSpinner();
             });
     };
+
+    this.updateTitle = function(data){
+        let years = Object.getOwnPropertyNames(data)
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").html(`Annual Spring Index for the Period ${years[0]} to ${years[years.length-1]}`)
+    
+    }
 
     this.getPdfLayout = function() {
         if(!chart) {
@@ -291,6 +301,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                             let chartdiv = that.bap.id + 'boxAndWhisker'
                             chart.write(chartdiv);
                             $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").show();
+                            $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").show();
                         } else {
                             var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length-1].valueField);
                             chart.dataProvider.push(graphsAndData.data);

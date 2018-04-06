@@ -261,7 +261,7 @@ var AmChartsHelper = (function(helper) {
             type: 'date',
             position: 'left',
             axisColor: getChartColor(),
-            title: 'Day of the year',
+            title: 'Day of Year',
             boldPeriodBeginning: false,
             // minimumDate: "01-01",
             minPeriod: 'DD',
