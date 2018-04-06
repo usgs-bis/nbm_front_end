@@ -1043,7 +1043,9 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .ridgeLinePlot {
-    fill: rgb(56, 155, 198);
+
+    /* fill: rgb(56, 155, 198); */
+    fill: url(#area-gradient);
     width: 100%;
     margin-bottom: 100px;
 }

@@ -14,7 +14,8 @@ window.onload = function() {
         .then(function () {
             LeafletMapService.initializeMap();
             setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
-            if (window.location.pathname.indexOf("phenology") !== -1) {
+            if(true){
+            //if (window.location.pathname.indexOf("phenology") !== -1 || window.location.pathname.indexOf("biogeography") !== -1) {
                 $("#npnPwModal").modal("show").on ("hidden.bs.modal", function () {
                     sendPostRequest(myServer + "/main/getNpnToken", {p:$("#pwInput").val()})
                         .then(function (data) {

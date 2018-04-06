@@ -89,6 +89,7 @@ function smoothLinePlotWidget(chartData, id) {
             .attr("height", height);
 
 
+
         // area fill
         svg.append("path")
             .attr("class", "area")
@@ -122,6 +123,46 @@ function smoothLinePlotWidget(chartData, id) {
             });;
 
 
+        
+                // set the gradient
+                svg.append("linearGradient")				
+                .attr("id", "area-gradient")			
+                .attr("gradientUnits", "userSpaceOnUse")	
+                .attr("x1", x(0)).attr("y1", 0)			
+                .attr("x2", x(365/buk)).attr("y2", 0)				
+                .selectAll("stop")						
+                .data([
+                    {offset: "0.0%", color: "#cc4c03"},
+                    {offset: "4.1666667%", color: "#ec6f14"},
+                    {offset: "8.3333334%", color: "#f8982b"},
+                    {offset: "12.500000100000001%", color: "#fac450"},
+                    {offset: "16.6666668%", color: "#fce490"},
+                    {offset: "20.833333500000002%", color: "#fdf7bc"},
+                    {offset: "25.000000200000002%", color: "#edf8b2"},
+                    {offset: "29.166666900000003%", color: "#d9f0a3"},
+                    {offset: "33.3333336%", color: "#addd8e"},
+                    {offset: "37.5000003%", color: "#78c678"},  // 10 may 15
+                    {offset: "41.666667000000004%", color: "#41ab5d"},
+                    {offset: "45.833333700000004%", color: "#7accc4"}, // 12 jun 15
+                    {offset: "50.000000400000005%", color: "#41b6c5"},
+                    {offset: "54.166667100000005%", color: "#3090c0"}, //14 july 15
+                    {offset: "58.333333800000005%", color: "#225ea8"},
+                    {offset: "62.500000500000006%", color: "#253494"}, // aug 15
+                    {offset: "66.6666672%", color: "#091e58"}
+                    // {offset: "70.83333390000001%", color: "lightblue"},
+                    // {offset: "75.0000006%", color: "lightblue"},
+                    // {offset: "79.1666673%", color: "lightblue"},
+                    // {offset: "83.33333400000001%", color: "lightblue"},
+                    // {offset: "87.50000070000002%", color: "lightblue"},
+                    // {offset: "91.66666740000001%", color: "lightblue"},
+                    // {offset: "95.8333341%", color: "lightblue"}
+                ])					
+                .enter().append("stop")			
+                .attr("offset", function(d) { return d.offset; })	
+                .attr("stop-color", function(d) { return d.color; });
+        
+        
+        
 
         // year label
         svg.append("g")
@@ -164,7 +205,7 @@ function smoothLinePlotWidget(chartData, id) {
             .attr("fill", "rgb(204, 204, 204)")
             .attr("font-size", "14px")
             .style("text-anchor", "middle")
-            .text("Spring Index (Day of Year)");
+            .text("Day of Year");
 
         // text label for the y axis
          last.append("g")

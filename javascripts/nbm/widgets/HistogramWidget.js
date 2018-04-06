@@ -141,7 +141,7 @@ function HistogramWidget(chartData, id) {
             .attr("fill", "rgb(204, 204, 204)")
             .attr("font-size", "14px")
             .style("text-anchor", "middle")
-            .text("Year");      
+            .text("Count");      
 
 
 
