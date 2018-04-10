@@ -168,6 +168,7 @@ ActionHandler.prototype.processHeaderBap = function (additionalParams, headerBap
                     .then(function (data) {
                         return Promise.resolve(data["success"]["hits"]["hits"][0]["_source"]["properties"]);
                     }).then(function(data) {
+
                         myJson.returnedFields.map(x =>{
                             myJson[x.returnMapping] = data[x.column] 
                         })
@@ -182,6 +183,11 @@ ActionHandler.prototype.processHeaderBap = function (additionalParams, headerBap
                         return Promise.resolve();
 
                     })
+                    .fail(function () {
+                        console.log("An Header Bap Elastic Search Error Has Occured")
+                        actionHandlerHelper.showTempPopup("An Elastic Search Error Has Occured");
+                        bap.initializeBAP(headerBapId);
+                    });
 
                 }
                 else{                    
