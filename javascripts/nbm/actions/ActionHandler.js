@@ -138,7 +138,6 @@ ActionHandler.prototype.processHeaderBap = function (additionalParams, headerBap
     var bap = new HeaderBAP({},headerBapId);
     bap.requestOptions = myMap;
     bap.showSpinner();
-
     return sendJsonAjaxRequest(myServer + "/bap/get", myMap)
         .then(function (myJson) {
             that.spinner.remove();
@@ -146,13 +145,61 @@ ActionHandler.prototype.processHeaderBap = function (additionalParams, headerBap
             bap.sbId = myJson.id;
             bap.featureValue = myJson.featureValue;
 
-            if(myJson.featureInfoBap) {
-                that.bestGuessFields(bap);
-            }
+            // Header bap is elastic 
+            if(myJson.elastic){
+         
+                let elasticQuery = {
+                    "from" : 0, "size" : 1,
+                    "query" : {
+                        "bool" : {
+                            "must" : [
+                            ]
+                        }
+                    }
+                };
 
-            bap.initializeBAP(headerBapId);
-            that.addHeaderBaptoSC(bap);
-            return Promise.resolve();
+                let match = {match:{}}
+                let lc = myJson.lookupColumnElastic
+                match["match"][lc] = myMap.featureValue
+                elasticQuery["query"]["bool"]["must"].push(match);
+                let elasticUrl = myJson.elasticUrl + encodeURI(JSON.stringify(elasticQuery));
+
+                let data =  $.getJSON(elasticUrl)
+                    .then(function (data) {
+                        return Promise.resolve(data["success"]["hits"]["hits"][0]["_source"]["properties"]);
+                    }).then(function(data) {
+
+                        myJson.returnedFields.map(x =>{
+                            myJson[x.returnMapping] = data[x.column] 
+                        })
+
+                        myJson.description = myJson.description ?  myJson.description :  `Summarized data for ${myJson.title}`
+                        myJson.type = myJson.bapType
+                        if(myJson.featureInfoBap) {
+                            that.bestGuessFields(bap);
+                        }
+                        bap.initializeBAP(headerBapId);
+                        that.addHeaderBaptoSC(bap);
+                        return Promise.resolve();
+
+                    })
+                    .fail(function () {
+                        console.log("An Header Bap Elastic Search Error Has Occured")
+                        actionHandlerHelper.showTempPopup("An Elastic Search Error Has Occured");
+                        bap.initializeBAP(headerBapId);
+                    });
+
+                }
+                else{                    
+                    if(myJson.featureInfoBap) {
+                        that.bestGuessFields(bap);
+                    }
+                    bap.initializeBAP(headerBapId);
+                    that.addHeaderBaptoSC(bap);
+                    return Promise.resolve();
+
+                }
+           
         });
 };
 
