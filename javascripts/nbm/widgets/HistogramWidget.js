@@ -7,7 +7,10 @@
 function HistogramWidget(chartData, id) {
 
     let selector = "#" + id + "BAP";
+    
     $(selector).find(`#histogramPlot${id}`).show()
+    $(selector).find("#ridgeLinePlotRangeValue").html(3);
+    $(selector).find("#ridgeLinePlotRange").val(3);
 
     d3.select(`#histogramPlot${id}`).select("svg").remove()
 

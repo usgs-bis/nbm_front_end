@@ -97,7 +97,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").hide();
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").hide();
         $("#" + that.bap.id + "BAP").find("#smoothplot").hide();
-        $("#" + that.bap.id + "BAP").find("#HistogramPlot").hide();
+        $("#" + that.bap.id + "BAP").find(".histogramPlot").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
                 that.bap.rawJson = jsonData;
