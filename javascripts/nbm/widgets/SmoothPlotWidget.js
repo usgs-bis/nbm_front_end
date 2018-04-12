@@ -11,8 +11,7 @@ function smoothLinePlotWidget(chartData, id) {
     $(selector).find("#smoothplot").show()
 
     d3.select(`#ridgeLinePlot${id}`).selectAll("svg").remove()
-    $(selector).find("#ridgeLinePlotRangeValue").html(3);
-    $(selector).find("#ridgeLinePlotRange").val(3);
+  
     let bucketSize = 3
 
     let margin = { top: 2, right: 20, bottom: 25, left: 55 },

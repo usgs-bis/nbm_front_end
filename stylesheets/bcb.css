@@ -1048,6 +1048,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     fill: url(#area-gradient);
     width: 100%;
     margin-bottom: 100px;
+    margin-top: 50px;
 }
 .ridgeLinePlot svg {
     margin-bottom: -50px;
@@ -1111,6 +1112,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     fill: rgb(56, 155, 198);
     /* fill: url(#area-gradient); */
     width: 100%;
+    margin-top: 30px;
 }
 
 .histogramPlot svg{
