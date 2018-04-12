@@ -1,15 +1,16 @@
 'use strict';
 
-var NFHPTestWidget = function (chartConfig) {
-    var that = this;
-    var config = chartConfig;
-    var jsonData = {}
-    var formatter = { precision: 0, decimalSeparator: '.', thousandsSeparator: ',' };
+let NFHPWidget = function (chartConfig) {
+   
+    let that = this;
+    let config = chartConfig;
+    let jsonData = {}
+    let formatter = { precision: 0, decimalSeparator: '.', thousandsSeparator: ',' };
 
     this.getHtml = function () {
         config = that.bap.config
-        var noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
-        return getHtmlFromJsRenderTemplate('#NFHPTestWidget', {
+        let noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
+        return getHtmlFromJsRenderTemplate('#NFHPWidget', {
             id: config.id + "NFHPChart",
             json: config.id + "json",
             bapID: config.id,
@@ -27,8 +28,8 @@ var NFHPTestWidget = function (chartConfig) {
     };
 
 
-    var NFHPChart;
-    var chartData = []
+    let NFHPChart;
+    let chartData = []
     this.initializeWidget = function () {
         $("#" + config.id + "json").hide();
         $("#" + config.id + "NFHPChart").hide();
@@ -39,7 +40,7 @@ var NFHPTestWidget = function (chartConfig) {
         let placeName = that.bap.actionRef.result.geojson.properties[lookUpProp];
         let lookupColumn = `properties.${config.charts[0].lookupColumn}`;
 
-        var q = {
+        let q = {
             "query": {
                 "match_phrase": {}
             }
@@ -76,6 +77,7 @@ var NFHPTestWidget = function (chartConfig) {
 
     }
 
+     
     function buildChart(data) {
 
         that.bap.rawJson = data;
@@ -136,9 +138,13 @@ var NFHPTestWidget = function (chartConfig) {
                 {
                     "text": `Risk To Fish Habitat Degradation\n ${placeName}`,
                     "size": 15,
-                    "axisColor": AmChartsHelper.getChartColor()
+                    "color": "#f3f3f3"
                 }
-            ]
+            ],
+            "export": {
+                "enabled": true,
+                "menu": []
+            }
         });
 
     }

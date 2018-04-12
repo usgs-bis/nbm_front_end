@@ -24,7 +24,9 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
     } else if (config.type === "vectorQuery") {
         return new BarChartWidget(config);
     } else if (config.type === "nfhp") {
-        return new NFHPTestWidget(config);
+        return new NFHPWidget(config);
+    } else if (config.type === "nfhp_disturbance") {
+        return new NFHPDisturbanceWidget(config);
     } else if (config.type === "hierarchyByPixelElastic") {
         return new HBPElasticWidget(config);
     } else if (config.type === "hierarchyTableElastic") {

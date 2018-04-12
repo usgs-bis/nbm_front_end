@@ -276,15 +276,55 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     </div>
 </script>
 
+<script id="NFHPTableTemplate" type="text/x-jsrender">
+    <!-- <div id="{{:json}}" style='width: 100%; text-align: center; margin-top: 30px;'>
+            <button onclick="actionHandlerHelper.showRawJson('{{:bapID}}')" style=' float: left; font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
+    class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+                <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+            </button>
+            <span class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal; line-height: 20px; font-size: 17px;">{{:title}}</span>
+    </div> -->
+
+    <div class="contextSubHeader subHeaderTitle" style=" color: #f3f3f3; line-height: 20px; font-size: 17px; margin-top: 30px; margin-left: 20px; margin-right: 20px; ">{{:title}}</div>
+    <div style='font-size: 14px; color: white;'>{{:description}}</div>
+  
+    <table class='hierarchyTable NFHPTable' style='margin-top: 15px;'>
+          <tr>  
+            <th style='font-size: 12px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px; border: 1px solid rgb(243, 243, 243, .5);'>{{:col0}}</th>
+            <th style='font-size: 12px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px; border: 1px solid rgb(243, 243, 243, .5);'>{{:col1}}</th>
+            <th style='font-size: 12px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px; border: 1px solid rgb(243, 243, 243, .5);'>{{:col2}}</th>
+            <th style='font-size: 12px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px; border: 1px solid rgb(243, 243, 243, .5);'>{{:col3}}</th>
+            <th style='font-size: 12px; color: lightblue; font-weight: bold; padding: 0 4px 0 4px; border: 1px solid rgb(243, 243, 243, .5);'>{{:col4}}</th>
+        </tr>
+     
+        {{for rows}}
+            <tr>
+                <!-- <td style='width:32%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);';>{{:disturbance}}</th>
+                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:local_catchment}}</th>
+                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:network_catchment}}</th>
+                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:local_buffer}}</th>
+                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:network_buffer}}</th> -->
+                
+                <td class='NFHPChartRowFirst'>{{:disturbance}}</th>
+                <td class='NFHPChartRow'>{{:local_catchment}}</th>
+                <td class='NFHPChartRow'>{{:network_catchment}}</th>
+                <td class='NFHPChartRow'>{{:local_buffer}}</th>
+                <td class='NFHPChartRow'>{{:network_buffer}}</th>
+                    
+                </tr>
+        {{/for}}
+    </table>
+</script>
+
 <script id="barChartWidget" type="text/x-jsrender">
     <div id="{{: id}}" style="width: 100%; height: 400px;"></div>
     <div style="float:right">Area with no data: {{:noData}}</div>
     <div style="clear:both;"></div>
 </script>
 
-<script id="NFHPTestWidget" type="text/x-jsrender">
+<script id="NFHPWidget" type="text/x-jsrender">
     <div id="{{:json}}" style='width: 100%;'>
-        <button onclick="actionHandlerHelper.showRawJson('{{:bapID}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
+        <button onclick="actionHandlerHelper.showRawJson('{{:bapID}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 40px; left: 5px; z-index: 1000;'
 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
             <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
         </button>
