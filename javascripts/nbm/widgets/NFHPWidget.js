@@ -48,13 +48,21 @@ let NFHPWidget = function (chartConfig) {
         q['query']['match_phrase'][lookupColumn] = placeName
 
         let url = config.charts[0].elasticEndpoint + JSON.stringify(q);
-
+        let e = {
+            error: "An Error has occred. Unable to retrieve data for this widget.",
+            title: "Risk To Fish Habitat Degradation",
+            id: that.bap.id,
+            bap: "NFHP"
+        }
+        let html = getHtmlFromJsRenderTemplate('#widgetErrorInfoTitle', e)
 
         $.getJSON(url)
             .done(function (data) {
 
+               
+
                 if (data.error) {
-                    $("#" + config.id + "noData").replaceWith('An Error has occured.');
+                    $("#" + config.id + "noData").replaceWith(html);
                     $("#" + config.id + "noData").show();
                 }
                 else if (data.hits.hits.length) {
@@ -63,14 +71,14 @@ let NFHPWidget = function (chartConfig) {
                     $("#" + config.id + "NFHPChart").show();
                 }
                 else {
-                    $("#" + config.id + "noData").replaceWith('No Data found for this Area.');
+                    $("#" + config.id + "noData").replaceWith(html);
                     $("#" + config.id + "noData").show();
                 }
 
 
             })
             .fail(function () {
-                $("#" + config.id + "noData").replaceWith('An Error has occured.');
+                $("#" + config.id + "noData").replaceWith(html);
                 $("#" + config.id + "noData").show();
             });
 

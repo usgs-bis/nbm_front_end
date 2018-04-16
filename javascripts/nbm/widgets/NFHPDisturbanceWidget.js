@@ -4,7 +4,7 @@ var NFHPDisturbanceWidget = function (chart) {
     let that = this
     let config = chart;
     let rows = [];
-  
+   
 
     this.initializeWidget = function () {
         
@@ -15,7 +15,7 @@ var NFHPDisturbanceWidget = function (chart) {
             ],
             "query": { "match_all": {} }
         };
-        let url = config.elasticEndpointDistVariables + JSON.stringify(elasticQuery);
+        let url = config.elasticEndpointDistVariables  + JSON.stringify(elasticQuery);
         $.getJSON(url)
             .done(function (data) {
                 if (data.error) {
@@ -79,8 +79,14 @@ var NFHPDisturbanceWidget = function (chart) {
 
 
      this.getHtml = function () {
-        $("#" + that.bap.id + "BAP").find("#NFHPTableTemplate").html("")
-        return ""
+        let e = {
+            error: "An Error has occred. Unable to retrieve data for this widget.",
+            title: "Disturbances Influencing Risk to Fish Habitat Condition",
+            id: that.bap.id,
+            bap: "NFHPD"
+        }
+        let html = getHtmlFromJsRenderTemplate('#widgetErrorInfoTitle', e)
+        return html
     }
 
 
@@ -187,7 +193,6 @@ var NFHPDisturbanceWidget = function (chart) {
     function buildChart(chart) {
         that.bap.rawJson["NFHPDisturbance"] = rows;
         that.viewModel = {
-            //json: that.bap.id + "json1",
             bapID: that.bap.id,
             title: `Disturbances Influencing Risk to Fish Habitat Condition in ${that.placeName}`,
             //description: config.description,
@@ -199,6 +204,7 @@ var NFHPDisturbanceWidget = function (chart) {
             rows: rows
         };
         let html = getHtmlFromJsRenderTemplate('#NFHPTableTemplate', that.viewModel)
+        $("#" + that.bap.id + "NFHPDerror").remove()
         $("#" + that.bap.id + "BAP").append(html)
         var tableRows =  $("#" + that.bap.id + "BAP").find('.NFHPTable > tbody > tr > td')
         for (let tRow of tableRows){
@@ -206,7 +212,7 @@ var NFHPDisturbanceWidget = function (chart) {
                 tRow.style.color = 'rgb(243, 243, 243)'; 
             }
         }
-       
+        
     }
 
 
