@@ -49,7 +49,7 @@ let NFHPWidget = function (chartConfig) {
 
         let url = config.charts[0].elasticEndpoint + JSON.stringify(q);
         let e = {
-            error: "An Error has occred. Unable to retrieve data for this widget.",
+            error: "An Error has occurred. Unable to retrieve data for this widget.",
             title: "Risk To Fish Habitat Degradation",
             id: that.bap.id,
             bap: "NFHP"
