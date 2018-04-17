@@ -206,51 +206,58 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     {{/if}}
 </script>
 
+
+
 <script id="boxAndWhiskerTemplate" type="text/x-jsrender">
-    <div>
-    <div id="{{:id}}JsonDiv" style='width: 100%; display: none;'>
-            <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
-class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
-                <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
-            </button>
-</div>
-        <div style="text-align:center;margin-bottom:5px;">Select Time Period for Analysis:</div>
-        <div id="rangeSlider" style="margin-bottom:5px;"></div>
-        <div class="sliderLabelLeft">{{: startDate}}</div>
-        <div id="bapRangeSlider" class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
-        <div class="sliderLabelRight">{{: endDate}}</div>
-    </div>
-    <div style="clear:both;"></div>
-    <div style="text-align:center;width:100%;">
-        <button id="getBWData" class="btn-xs">Submit</button>
-    </div>
-    <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
-    <div id="boxAndWhiskerError"></div>
-    
-    <div id="histogramPlot{{:id}}" class="histogramPlot" style="display:none;">
-        <div class="ridgeLinePlotNumberPicker slidecontainer" id="ridgeLinePlotNumberPickerDiv" >
-            <div style="margin-bottom: 10px;">Bucket Size: <span id="ridgeLinePlotRangeValue"></span> </div>
-            <input type="range" min="1" max="8" value="3" class="slider" id="ridgeLinePlotRange"
-            data-toggle="tooltip" data-placement="left" title="Bucket data for smotther plots. The number of datapoints = 365/{Bucket Size} ">
+    <div id="{{:id}}BapHeader"> 
+        <div id="{{:id}}JsonDiv" style='width: 100%; display: none;'>
+                <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
+                class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+                    <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+                </button>
         </div>
-        <div id="histogramTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
-        <div id="histogramSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
-        <div id="tooltip" class="hidden">
-            <p><span id="value">100</span></p>
-          </div>
-    </div>
-    <div id="smoothplot" style="display:none;">
-        <div id="ridgeLinePlot{{:id}}" class="ridgeLinePlot">
-            <div id="ridgeLinePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
-            <div id="ridgeLinePlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+        <div>
+            <div style="text-align:center;margin-bottom:5px;">Select Time Period for Analysis:</div>
+            <div id="rangeSlider" style="margin-bottom:5px;"></div>
+            <div class="sliderLabelLeft">{{: startDate}}</div>
+            <div id="bapRangeSlider" class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
+            <div class="sliderLabelRight">{{: endDate}}</div>
         </div>
-    </div style="margin-top 20px;">
+        <div style="clear:both;"></div>
+        <div style="text-align:center;width:100%;">
+            <button id="getBWData" class="btn-xs">Submit</button>
+        </div>
+        <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+        <div id="boxAndWhiskerError"></div>
+    </div>
     <div>
         <div id="{{:id}}BwTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" style="display: none;">{{:title}}</div>
         <div id="{{:id}}BwSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" style="display: none;">{{:subTitle}}</div>
         <div id="{{:id}}boxAndWhisker" class="myNpnInfo" style="width:100%;height:500px;"></div>
-    <div>
+    </div>
    
+</script>
+
+<script id="histogramTemplate" type="text/x-jsrender">
+    <div id="histogramPlot{{:id}}" class="histogramPlot" style="display:none;">
+            <div class="ridgeLinePlotNumberPicker slidecontainer" id="ridgeLinePlotNumberPickerDiv" >
+                <div style="margin-bottom: 10px;">Bucket Size: <span id="ridgeLinePlotRangeValue"></span> </div>
+                <input type="range" min="1" max="8" value="3" class="slider" id="ridgeLinePlotRange"
+                data-toggle="tooltip" data-placement="left" title="Bucket data for smotther plots. The number of datapoints = 365/{Bucket Size} ">
+            </div>
+            <div id="histogramTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+            <div id="histogramSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+            <div id="tooltip" class="hidden">
+                <p><span id="value">100</span></p>
+              </div>
+        </div>
+</script>
+
+<script id="smoothPlotTemplate" type="text/x-jsrender">
+    <div id="ridgeLinePlot{{:id}}" class="ridgeLinePlot" style="display:none;">
+        <div id="ridgeLinePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+        <div id="ridgeLinePlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+    </div>
 </script>
 
 <script id="unknownBapTemplate" type="text/x-jsrender">

@@ -31,5 +31,9 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
         return new HBPElasticWidget(config);
     } else if (config.type === "hierarchyTableElastic") {
         return new HierarchyTableWidgetElastic(config);
+    } else if (config.type === "histogram") {
+        return new HistogramWidget(config,bap);
+    } else if (config.type === "smoothPlot") {
+        return new SmoothPlotWidget(config,bap);
     }
 };
