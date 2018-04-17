@@ -24,6 +24,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
     }
     Widget.call(this, serverAP);
 
+    this.buildChart = function(chartData, id){}
+
     this.getHtml = function() {
         if(!layer) {
             return 'A time enabled layer must be turned on for this Analysis Package to work.';
@@ -42,6 +44,11 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
     };
 
     this.initializeWidget = function(originalFeature) {
+
+        let movehtml = $("#" + that.bap.id + "BapHeader").html()
+        $("#" + that.bap.id + "BapHeader").html("")
+        $("#" + that.bap.id + "BAP").prepend(movehtml)
+        
         feature = originalFeature;
         if(!layer) {
             return;
@@ -96,7 +103,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").hide();
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").hide();
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").hide();
-        $("#" + that.bap.id + "BAP").find("#smoothplot").hide();
+        $("#" + that.bap.id + "BAP").find(".ridgeLinePlot").hide();
         $("#" + that.bap.id + "BAP").find(".histogramPlot").hide();
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
@@ -121,8 +128,13 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
                     that.updateTitle(jsonData)
-                    smoothLinePlotWidget(jsonData,that.bap.id)
-                    HistogramWidget(jsonData,that.bap.id)
+                    
+
+                    $.each(that.bap.widgets, function (index, widget) {
+                        widget.buildChart(jsonData,that.bap.id);
+                    });
+                  
+
                     $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     if (alreadySentBuffer) {
                         setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +
@@ -188,7 +200,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
             });
     };
 
-  
+    function buildChart(chartData, id){return}
+
     function getLayer(bap) {
         var visibleLayers = bioScape.getVisibleLayers();
         
