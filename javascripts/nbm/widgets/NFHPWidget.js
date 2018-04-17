@@ -14,7 +14,8 @@ let NFHPWidget = function (chartConfig) {
             id: config.id + "NFHPChart",
             json: config.id + "json",
             bapID: config.id,
-            noData: config.id + "noData"
+            noData: config.id + "noData",
+            title: ""
         });
     };
 
@@ -34,6 +35,7 @@ let NFHPWidget = function (chartConfig) {
         $("#" + config.id + "json").hide();
         $("#" + config.id + "NFHPChart").hide();
         $("#" + config.id + "noData").hide();
+        $("#" + config.id + "BapTitle").hide();
 
 
         let lookUpProp = that.bap.actionRef.placeNameProperty;
@@ -69,6 +71,9 @@ let NFHPWidget = function (chartConfig) {
                     buildChart(data.hits.hits[0])
                     $("#" + config.id + "json").show();
                     $("#" + config.id + "NFHPChart").show();
+                    $("#" + config.id + "BapTitle").show();
+                    let d = data.hits.hits[0]._source.properties
+                    $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${(d.scored_km).toFixed(0)} of ${(d.scored_km + d.not_scored_km).toFixed(0)} NHDPlusV1 stream kms within ${d.place_name}.`)
                 }
                 else {
                     $("#" + config.id + "noData").replaceWith(html);
@@ -93,7 +98,7 @@ let NFHPWidget = function (chartConfig) {
         let placeName = data.place_name
         let scored_km = data.scored_km
         function getPercent(value) {
-            return ((value / scored_km) * 100).toFixed(6)
+            return ((value / scored_km) * 100).toFixed(1)
         }
         chartData = [
             { "Risk": "Very high", "Precent": getPercent(data.veryhigh_km), "color": "#FF0000" },
