@@ -7,6 +7,11 @@ let NFHPWidget = function (chartConfig) {
     let jsonData = {}
     let formatter = { precision: 0, decimalSeparator: '.', thousandsSeparator: ',' };
 
+    const numberWithCommas = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+      
+
     this.getHtml = function () {
         config = that.bap.config
         let noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
@@ -73,7 +78,9 @@ let NFHPWidget = function (chartConfig) {
                     $("#" + config.id + "NFHPChart").show();
                     $("#" + config.id + "BapTitle").show();
                     let d = data.hits.hits[0]._source.properties
-                    $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${(d.scored_km).toFixed(0)} of ${(d.scored_km + d.not_scored_km).toFixed(0)} NHDPlusV1 stream kms within ${d.place_name}.`)
+                    let val1 = numberWithCommas((d.scored_km).toFixed(0))
+                    let val2 = numberWithCommas((d.scored_km + d.not_scored_km).toFixed(0))
+                    $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${val1} of ${val2} NHDPlusV1 stream kms within ${d.place_name}.`)
                 }
                 else {
                     $("#" + config.id + "noData").replaceWith(html);
