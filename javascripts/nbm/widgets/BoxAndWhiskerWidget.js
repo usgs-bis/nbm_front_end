@@ -166,7 +166,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         return {
 
             content: [
-                {text: $("#" + that.bap.id + "BAP").find('#bapRangeSlider').text(), style: ['bapContent', 'subtitle']},
+                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").text(), style: ['bapContent', 'subtitle']},
+                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").text(), style: ['bapContent', 'subtitle']},
                 {image: chart.div.id, alignment: 'center', width: 400}
             ],
             charts: [chart]
