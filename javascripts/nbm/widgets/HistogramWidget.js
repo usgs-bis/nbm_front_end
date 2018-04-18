@@ -4,14 +4,26 @@
 // this plot tags along with the box and whisker 
 function HistogramWidget(config, bap) {
     let id = bap.id
+    let selector = "#" + id + "BAP";
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
     this.initializeWidget = function () { }
 
+    this.getPdfLayout = function() {
+        let chart = $(selector).find(`#histogramPlot${id}`)[0]
+        
+        return {
+            content: [
+                {text: $(selector).find("#histogramTitle").text()}
+            ],
+            charts: []
+        }
+    };
+
     this.buildChart = function (chartData, id) {
 
-        let selector = "#" + id + "BAP";
+        
 
         $(selector).find(`#histogramPlot${id}`).show()
         $(selector).find("#ridgeLinePlotRangeValue").html(3);
