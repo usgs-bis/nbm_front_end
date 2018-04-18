@@ -4,15 +4,28 @@
 
 function SmoothPlotWidget(config, bap) {
     let id = bap.id
+    let selector = "#" + id + "BAP";
+
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#smoothPlotTemplate', { id: id });
     }
+
     this.initializeWidget = function () { }
+    
+    this.getPdfLayout = function() {
+        let chart = $(selector).find(`#ridgeLinePlot${id}`)
+        return {
+            content: [
+                {text: $(selector).find("#ridgeLinePlotTitle").text()},
+            ],
+            charts: []
+        }
+    }
 
     this.buildChart = function (chartData, id) {
 
         let that = this
-        let selector = "#" + id + "BAP";
+        
 
 
         $(selector).find("#ridgeLinePlot" + id).show()
