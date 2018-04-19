@@ -54,3 +54,10 @@ button.close {
     left: 97%;
     top: 0;
 }
+
+.layer {
+    font-size: 14px;
+    line-height: 30px;
+    border-bottom: 1px solid rgba(245, 245, 245, .2);
+    margin-left: 10px;
+}

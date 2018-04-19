@@ -120,9 +120,10 @@ var BioScapeParser = (function(bioScapeParser) {
      */
     function parseGroupFromServer(index, serverGroup, layers) {
         var id = 'section' + index;
-        if(serverGroup.title.toLowerCase() === 'basemaps' || serverGroup.title.toLowerCase() === 'basemap') {
-            return new BioScapeBaseMapGroup('basemaps', serverGroup, layers);
-        }
+        // if(serverGroup.title.toLowerCase() === 'basemaps' || serverGroup.title.toLowerCase() === 'basemap') {
+        //     return new BioScapeBaseMapGroup('basemaps', serverGroup, layers);
+        // }
+        // base maps should be treated as normal layer
         return new BioScapeGroup(id, serverGroup, layers);
     }
 
