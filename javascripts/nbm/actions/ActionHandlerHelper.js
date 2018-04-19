@@ -141,6 +141,14 @@ ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
     return Promise.all(promises);
 };
 
+
+ActionHandlerHelper.prototype.initPOISearch = function (search){
+    let searchHandler = actionHandlers.filter(h =>{
+        return h.type == "searchPoi"
+    })[0]
+    searchHandler.poi.init(search)
+}
+
 /**
  * When a Search is submitted, trigger the actions for all enabled "searchPoi" action handlers
  */
@@ -150,7 +158,6 @@ ActionHandlerHelper.prototype.handleSearchActions = function (geojson) {
 
     this.populateBottomBarWithClick();
     this.initializeRightPanel();
-
     var promises = [];
 
     $.each(actionHandlers, function (index, actionHandler) {
@@ -541,14 +548,22 @@ ActionHandlerHelper.prototype.emptyBapMap = function () {
 };
 
 ActionHandlerHelper.prototype.getState = function() {
+    let result = {}
+    let searchHandler = actionHandlers.filter(h =>{
+        return h.type == "searchPoi"
+    })[0]
+
+    try {
+        result.search = searchHandler.result.geojson.properties.gid
+    }
+    catch(error) {}
     var marker = this.marker;
     if(marker) {
-        return {
-            lat: marker.latLng.getLatForDisplay(),
-            lng: marker.latLng.getLngForDisplay()
-        }
+        result.let = marker.latLng.getLatForDisplay()
+        result.lng = marker.latLng.getLngForDisplay()
     }
-    return {};
+    
+    return result;
 };
 /**
  * Display the default empty right panel.

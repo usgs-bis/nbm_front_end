@@ -328,6 +328,22 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
     this.clearSearchButton.hide();
 };
 
+
+
+PlaceOfInterestSearch.prototype.init = function (id) {
+    //https://beta-gc2.datadistillery.org/api/v1/sql/bcb?srs=4326&q=select gid, place_name, ST_MakeValid(the_geom) from sfr.placenamelookup_poly where gid = 4266"
+    var selectShape = "" + this.sqlEndpoint + id
+    let that = this;
+    $.getJSON(selectShape, function (data) {
+        console.log(data)
+        that.selectedId = id;
+        that.selectedName = data.features[0].properties.place_name;
+        that.polygon = data.features[0];
+        actionHandlerHelper.handleSearchActions();
+        //updateUrlWithState((`/search=${id}`));
+
+    })
+}
 // This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
     var elasticQuery = {
