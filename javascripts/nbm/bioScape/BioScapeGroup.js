@@ -76,7 +76,13 @@ BioScapeGroup.prototype.addHtmlToPage = function() {
     }
 
     var html = getHtmlFromJsRenderTemplate('#bioScapeGroupTemplate', viewData);
-    $("#bioScape").append(html);
+    if(this.title.toLowerCase() === 'basemaps' || this.title.toLowerCase() === 'basemap') {
+        $("#baseMapSelector").append(html);
+    }
+    else{
+        $("#Overlays").append(html);
+    }
+    
 };
 BioScapeGroup.prototype.updateLayerOpacity = function(layerId, newOpacity) {
     var layer = this.layers[layerId];
