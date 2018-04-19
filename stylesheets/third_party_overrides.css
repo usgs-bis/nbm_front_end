@@ -50,6 +50,7 @@ button.close {
 }
 
 .leaflet-top.leaflet-left {
-    left: 400px;
+    /* left: 500px; */
+    left: 97%;
     top: 0;
 }

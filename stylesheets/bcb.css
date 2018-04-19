@@ -292,6 +292,17 @@ select option {
     padding: 10px;
 }
 
+.layerControlRight {
+    float: left;
+    padding: 8px 8px 0 0;
+    cursor: pointer;
+}
+.baseMap{
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px;
+}
+
 .summaryHeader {
     color: lightblue;
     font-weight: bold;
@@ -436,7 +447,7 @@ div.table {
 }
 
 #header, #unit_info_left {
-    width:400px;
+    width:500px;
 }
 
 .metadataTitle {
@@ -544,7 +555,7 @@ div.inline {
     overflow-y: visible;
 }
 #mapBottomLeft.open {
-    left: 400px;
+    left: 500px;
 }
 
 #mapScale {
@@ -1278,4 +1289,17 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     font-size: 12px;
     vertical-align: middle;
     border: 1px solid rgb(243, 243, 243, .5);
+}
+
+.searchRessultsBox {
+    position: absolute;
+    margin-top: 25px;
+    margin-left: calc(20% - 4px);
+    padding: 10px;
+    width: calc(80% - 16px);
+    z-index: 1000;
+}
+
+#HeaderBap1 {
+    padding: 10px;
 }
