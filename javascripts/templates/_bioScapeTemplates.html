@@ -30,20 +30,16 @@
 </script>
 
 <script id="bioScapeBaseMapTemplate" type="text/x-jsrender">
-    <form id="bioScapeBaseMapForm">
-        {{for layers}}
-            <div class="baseMap">
-        
-                <input type="radio" id="{{:id}}" name ="bioScapeBaseMapChoice" class="baseMapSelect btn btn-default {{:active}}" href="#" style="font-size:18px;">
-                    {{if thumbnailImage}}
-                        <img src="{{:thumbnailImage}}" alt="{{:id}}-preview" height="35">
-                    {{/if}}
-                    {{:title}}
-                </input>
-            
-            </div>
-        {{/for}}
-    </form>
+    {{for layers}}
+        <div class="contextHeader">
+            <button type="button" id="{{:id}}" class="baseMapSelect btn btn-default {{:active}}" href="#" style="font-size:18px;">
+                {{if thumbnailImage}}
+                    <img src="{{:thumbnailImage}}" alt="{{:id}}-preview" height="35">
+                {{/if}}
+                {{:title}}
+            </button>
+        </div>
+    {{/for}}
 </script>
 
 <script id="bioScapeLayerTemplate" type="text/x-jsrender">

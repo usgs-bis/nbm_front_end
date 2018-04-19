@@ -13,7 +13,6 @@ var BioScapeBaseMapGroup = function(id, serverGroup, layers){
     BioScapeGroupBase.call(this, id, serverGroup, layers, layerHtmlControl);
 
     var that = this;
-
     this.getDisplayPopoverHtml = function() {
         var layersInfo = [];
         var layers = that.getLayers();
@@ -25,14 +24,8 @@ var BioScapeBaseMapGroup = function(id, serverGroup, layers){
             layers: layersInfo
         };
 
-       
         return getHtmlFromJsRenderTemplate('#bioScapeBaseMapTemplate', viewData);
     };
-    $("#baseMapSelector").append(this.getDisplayPopoverHtml())
-     
-    $('#bioScapeBaseMapForm input').on('change', function() {
-        that.toggleLayer(this.id);
-     });
 };
 inherit(BioScapeGroupBase, BioScapeBaseMapGroup);
 
