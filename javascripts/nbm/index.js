@@ -16,8 +16,12 @@ window.onload = function() {
             setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
             //if(true){
             if (window.location.pathname.indexOf("phenology") !== -1 || window.location.pathname.indexOf("biogeography") !== -1) {
+                let env = "nbm"
+                if (window.location.pathname.indexOf("phenology") !== -1) {
+                    env = "npn"
+                }
                 $("#npnPwModal").modal("show").on ("hidden.bs.modal", function () {
-                    sendPostRequest(myServer + "/main/getNpnToken", {p:$("#pwInput").val()})
+                    sendPostRequest(myServer + "/main/getNpnToken",{p:$("#pwInput").val(),e:env})
                         .then(function (data) {
                             if (data.success) {
                                 NPNTOKEN = data.success;
