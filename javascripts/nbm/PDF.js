@@ -472,22 +472,7 @@ PDF.prototype.getAnalysisPackageContent = function() {
     
         if(ap.isVisible()) {
             content.push(getGeneralAnalysisPackageContent(ap, that.getParsedHtml));
-
-            // if (ap.widgets !== undefined) {
-            //     let p = [] 
-            //     $.each(ap.widgets, function (index, widget) {
-            //         p.push(Promise.resolve(widget.getPdfLayout()))
-            //     });
-            
-
-            //     Promise.all(p).then(function(value){
-            //         $.each(value, function (index, widget) {
-            //             content.push(widget.content);
-            //             widget.charts.forEach(function(data) {
-            //                 charts.push(data);
-            //             });
-            //         });
-            //     });
+         
             if (ap.widgets !== undefined) {
                 $.each(ap.widgets, function (index, widget) {
                     var pdfComponents = widget.getPdfLayout();
