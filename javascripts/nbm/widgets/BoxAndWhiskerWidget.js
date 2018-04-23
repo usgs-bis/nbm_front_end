@@ -163,11 +163,10 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 charts: []
             }
         }
-        return {
-
+        return  { 
             content: [
-                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").text(), style: ['bapContent', 'subtitle']},
-                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").text(), style: ['bapContent', 'subtitle']},
+                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").text(), style: ['titleChart']},
+                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").text(), style: ['subTitleChart']},
                 {image: chart.div.id, alignment: 'center', width: 400}
             ],
             charts: [chart]

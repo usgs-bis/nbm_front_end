@@ -89,11 +89,15 @@
         <div class="buttonBar" style="margin-bottom:10px;">
             <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip" title="Share this map by copying the URL to your clipboard.">
                 <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
-                Share Map
+                Share
             </button>
             <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
                 <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
-                Download Report as PDF
+                Report
+            </button>
+            <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" title="Something will happen whent his button is clicked">
+                <span class="glyphicon glyphicon-eye-open bootstrapGlyph" aria-hidden="true"></span>
+                Explore
             </button>
             <a class="grayLink" target="_blank" href="{{:reportJsonUrl}}">
                 <button class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
@@ -110,11 +114,15 @@
         <div class="buttonBar" style="margin-bottom:10px;">
             <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip"  data-placement="bottom" title="Share this map by copying the URL to your clipboard.">
                 <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
-                Share Map
+                Share
             </button>
             <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip"  data-placement="bottom" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
                 <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
-                Download Report as PDF
+                Report
+            </button>
+            <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="Something will happen whent his button is clicked">
+                <span class="glyphicon glyphicon-eye-open bootstrapGlyph" aria-hidden="true"></span>
+                Explore
             </button>
             {{if viewJson}}
             <button onclick='actionHandlerHelper.viewSynthCompJson()' class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
@@ -247,6 +255,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
             </div>
             <div id="histogramTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
             <div id="histogramSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+            <div id = "histogramChart"></div>
             <div id="tooltip" class="hidden">
                 <p><span id="value">100</span></p>
               </div>
@@ -257,6 +266,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div id="ridgeLinePlot{{:id}}" class="ridgeLinePlot" style="display:none;">
         <div id="ridgeLinePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
         <div id="ridgeLinePlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+        <div id ="ridgeLinePlotChart"></div>
     </div>
 </script>
 

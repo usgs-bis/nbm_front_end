@@ -15,7 +15,7 @@
 }
 
 #unit_info_left {
-    left: -400px;
+    left: -500px;
     top: 72px;
     height: calc(100% - 72px);
     transition-property: all;

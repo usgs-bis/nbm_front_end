@@ -328,6 +328,19 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
     this.clearSearchButton.hide();
 };
 
+
+// Handels initilizing the poi search when we reload a url
+PlaceOfInterestSearch.prototype.init = function (id) {
+    var selectShape = "" + this.sqlEndpoint + id
+    let that = this;
+    $.getJSON(selectShape, function (data) {
+        that.selectedId = id;
+        that.selectedName = data.features[0].properties.place_name;
+        that.polygon = data.features[0];
+        actionHandlerHelper.handleSearchActions();
+        updateUrlWithState();
+    })
+}
 // This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
     var elasticQuery = {

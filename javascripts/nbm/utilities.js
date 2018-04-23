@@ -18,7 +18,7 @@ $(document)
             var el = $(e.trigger);
             el.html('<span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>Copied');
             window.setTimeout(function() {
-                el.html('<span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>Share Map');
+                el.html('<span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>Share');
                 //$("#dropdownButtonGroup").removeClass("open").addClass("closed");
             }, 2000);
             window.setTimeout(function() {

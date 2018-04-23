@@ -5,6 +5,7 @@
 function SmoothPlotWidget(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
+    let dataURI = ""
 
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#smoothPlotTemplate', { id: id });
@@ -13,10 +14,11 @@ function SmoothPlotWidget(config, bap) {
     this.initializeWidget = function () { }
     
     this.getPdfLayout = function() {
-        let chart = $(selector).find(`#ridgeLinePlot${id}`)
         return {
             content: [
-                {text: $(selector).find("#ridgeLinePlotTitle").text()},
+                {text: $(selector).find("#ridgeLinePlotTitle").text(),style: ['titleChart']},
+                {text: $(selector).find("#ridgeLinePlotSubTitle").text(),style: ['subTitleChart']},
+                {image: dataURI},
             ],
             charts: []
         }
@@ -85,7 +87,9 @@ function SmoothPlotWidget(config, bap) {
             ridgelineplot.select("#ridgeLinePlotSubTitle").append("text")
                 .text(`Annual Spring Index by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
-            let svg = ridgelineplot.selectAll("svg")
+            $(selector).find("#ridgeLinePlotChart").height( 80 + (35 * dataNest.length))
+
+            let svg = ridgelineplot.select("#ridgeLinePlotChart").selectAll("svg")
                 .data(dataNest)
                 .enter()
                 .append("svg")
@@ -111,6 +115,8 @@ function SmoothPlotWidget(config, bap) {
 
             // area fill
             svg.append("path")
+                .attr("fill", "rgb(56, 155, 198)")
+                .attr("stroke", "rgb(0, 0, 0)")
                 .attr("class", "area")
                 .attr("clip-path", "url(#cut-off-path)")
                 .attr("d", function (year) {
@@ -176,7 +182,7 @@ function SmoothPlotWidget(config, bap) {
             // year label
             svg.append("g")
                 .append("text")
-                .attr("fill", "rgb(204, 204, 204)")
+                .attr("fill", "rgb(0, 0, 0)")
                 .attr("x", -30)
                 .attr("y", height - 20)
                 .attr("dy", "0.71em")
@@ -203,12 +209,13 @@ function SmoothPlotWidget(config, bap) {
                 .attr("transform", "translate(0," + (height) + ")")
                 .attr("class", "axis-label")
                 .attr("font-size", "11px")
+                .attr("fill", "rgb(0, 0, 0)")
                 .call(xAxis)
 
             last.append("g")
                 .append("text")
                 .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 40) + ")")
-                .attr("fill", "rgb(204, 204, 204)")
+                .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Day of Year");
@@ -220,11 +227,19 @@ function SmoothPlotWidget(config, bap) {
                 .attr("y", 0 - margin.left)
                 .attr("x", (15 * dataNest.length - 45))
                 .attr("dy", "1em")
-                .attr("fill", "rgb(204, 204, 204)")
+                .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Year");
 
+            getDataURI()
+        }
+      
+        async function getDataURI(){
+            let elm = $(selector).find(`#ridgeLinePlot${id}`).find("#ridgeLinePlotChart")
+            html2canvas(elm.get(0),{width: elm.width() , height: elm.height()}).then( function (canvas) {
+                dataURI = canvas.toDataURL() 
+                });
         }
 
 
@@ -305,7 +320,7 @@ function SmoothPlotWidget(config, bap) {
         }
 
         updateChart(chartData, bucketSize)
-
+        
         $(selector).find("#ridgeLinePlotRange").change(function () {
             bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
             $(selector).find("#ridgeLinePlotRangeValue").html(bucketSize);
