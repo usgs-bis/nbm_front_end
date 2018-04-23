@@ -155,7 +155,7 @@ ActionHandlerHelper.prototype.initPOISearch = function (search){
 ActionHandlerHelper.prototype.handleSearchActions = function (geojson) {
     this.headerSent = false;
     this.cleanUp(false, false);
-
+    this.canDownloadPdf = false;
     this.populateBottomBarWithClick();
     this.initializeRightPanel();
     var promises = [];
@@ -170,7 +170,7 @@ ActionHandlerHelper.prototype.handleSearchActions = function (geojson) {
             }
         }
     });
-
+    this.canDownloadPdf = true;
     return Promise.all(promises);
 };
 

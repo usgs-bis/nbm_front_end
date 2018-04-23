@@ -5,20 +5,24 @@
 function HistogramWidget(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
+    let dataURI = ""
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
-    this.initializeWidget = function () { }
+    this.initializeWidget = function () {}
 
     this.getPdfLayout = function() {
-        let chart = $(selector).find(`#histogramPlot${id}`)[0]
-        
+   
         return {
             content: [
-                {text: $(selector).find("#histogramTitle").text()}
+           
+                {text: $(selector).find("#histogramTitle").text(), style: ['titleChart']},
+                {text: $(selector).find("#histogramSubTitle").text(), style: ['subTitleChart']},
+                {image: dataURI}
+        
             ],
             charts: []
-        }
+        }  
     };
 
     this.buildChart = function (chartData, id) {
@@ -84,13 +88,13 @@ function HistogramWidget(config, bap) {
 
             histogram.select("svg").remove()
 
-            var svg = histogram.append("svg")
+            var svg = histogram.select("#histogramChart").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+          
             svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -106,6 +110,8 @@ function HistogramWidget(config, bap) {
                 .data(data)
                 .enter().append("rect")
                 .attr("class", "bar")
+                .attr("fill", "rgb(56, 155, 198)")
+                .attr("stroke", "rgb(0, 0, 0)")
                 .attr("x", function (d) { return x(d.day); })
                 .attr("width", width / (domain.xMax - domain.xMin))
                 .attr("y", function (d) { return y(d.count); })
@@ -166,7 +172,7 @@ function HistogramWidget(config, bap) {
             // text label for the x axis
             svg.append("text")
                 .attr("transform", "translate(" + (width / 2) + " ," + (height + 35) + ")")
-                .attr("fill", "rgb(204, 204, 204)")
+                .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Day of Year");
@@ -179,11 +185,20 @@ function HistogramWidget(config, bap) {
                 .attr("y", 0 - margin.left)
                 .attr("x", 0 - (height / 2))
                 .attr("dy", "1em")
-                .attr("fill", "rgb(204, 204, 204)")
+                .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Count");
 
+            getDataURI()
+
+        }
+
+        async function getDataURI(){
+            let elm = $(selector).find(`#histogramPlot${id}`).find("#histogramChart")
+            html2canvas(elm.get(0),{width: elm.width() , height: elm.height()}).then( function (canvas) {
+                dataURI = canvas.toDataURL() 
+                });
         }
 
 

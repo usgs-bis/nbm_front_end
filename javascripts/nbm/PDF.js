@@ -161,6 +161,16 @@ PDF.prototype.createLayoutAndGetCharts = function(mapImageDataUrl) {
                 fontSize: 14,
                 bold: true
             },
+            subTitleChart: {
+                fontSize: 12,
+                bold: true,
+                margin: [10,5,0,5]
+            },
+            titleChart: {
+                fontSize: 14,
+                bold: true,
+                margin: [10,5,0,5]
+            },
             tableHeader: {
                 bold: true,
                 fontSize: 10,
@@ -459,9 +469,25 @@ PDF.prototype.getAnalysisPackageContent = function() {
     var charts = [];
     var that = this;
     this.analysisPackages.forEach(function(ap) {
+    
         if(ap.isVisible()) {
             content.push(getGeneralAnalysisPackageContent(ap, that.getParsedHtml));
 
+            // if (ap.widgets !== undefined) {
+            //     let p = [] 
+            //     $.each(ap.widgets, function (index, widget) {
+            //         p.push(Promise.resolve(widget.getPdfLayout()))
+            //     });
+            
+
+            //     Promise.all(p).then(function(value){
+            //         $.each(value, function (index, widget) {
+            //             content.push(widget.content);
+            //             widget.charts.forEach(function(data) {
+            //                 charts.push(data);
+            //             });
+            //         });
+            //     });
             if (ap.widgets !== undefined) {
                 $.each(ap.widgets, function (index, widget) {
                     var pdfComponents = widget.getPdfLayout();
