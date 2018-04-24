@@ -344,6 +344,7 @@ PlaceOfInterestSearch.prototype.init = function (id) {
 // This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
     var elasticQuery = {
+        "from": 0, "size": 15,
         "query" : {
             "multi_match" : {
                 "fields" : ["properties." + this.lookupProperty],
@@ -392,7 +393,7 @@ var SearchResult = function (result, searchParent) {
     this.name = result._source.properties[searchParent.lookupProperty];
     this.searchParent = searchParent;
     this.htmlElement = $('<a href="#" class="list-group-item googleResults">\n' +
-        '    <h4 class="list-group-item-heading">' + this.name + '</h4>\n'
+        '    <h6 class="list-group-item-heading">' + this.name + '</h6>\n'
         +
         '  </a>');
     this.initialize();
