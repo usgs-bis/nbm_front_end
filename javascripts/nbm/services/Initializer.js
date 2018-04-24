@@ -65,7 +65,7 @@ var Initializer = (function(initializer) {
         var bioscapeJson = {};
 
         // bioScapeId = "591c7160e4b0a7fdb43dea93";
-        // thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json';
+        // thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json';
 
         //request information from the bioScape ScienceBase item
         sendScienceBaseItemRequest(bioScapeId, 5000)
@@ -341,6 +341,11 @@ var Initializer = (function(initializer) {
                 return actionHandlerHelper.initializeAllBaps()
             })
             .then(function() {
+                if(state.search) {
+                    actionHandlerHelper.initPOISearch(state.search)
+                }
+            })
+            .then(function() {
                 //hide the current bioScape from the bioScape selection list
                 $('#' + bioScape.id).hide();
                 var latLng = state.latLng;
@@ -349,14 +354,14 @@ var Initializer = (function(initializer) {
                     //start as if the user clicked on the latLng coordinates
                     return actionHandlerHelper.handleEverything(latLng);
                 }
-            })
+            })    
             .then(function() {
                 if(state.center && state.zoom) {
                     map.setView(L.latLng(state.center.split(',')), state.zoom);
                 }
                 updateUrlWithState();
             });
-
+            
         //bind all of the click events for the bioScape
         bindBioScapeEvents();
     }
