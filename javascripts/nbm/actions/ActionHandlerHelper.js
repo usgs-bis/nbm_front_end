@@ -192,6 +192,7 @@ ActionHandlerHelper.prototype.updateClick = function (latLng) {
         this.populateBottomBarWithClick();
         this.initializeRightPanel();
     }
+    updateUrlWithState()
 };
 
 /**
@@ -559,7 +560,8 @@ ActionHandlerHelper.prototype.getState = function() {
     catch(error) {}
     var marker = this.marker;
     if(marker) {
-        result.let = marker.latLng.getLatForDisplay()
+        result = {}
+        result.lat = marker.latLng.getLatForDisplay()
         result.lng = marker.latLng.getLngForDisplay()
     }
     
