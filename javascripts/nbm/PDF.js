@@ -35,7 +35,7 @@ PDF.prototype.buildAndDownload = function(marker) {
 //Get an image the same way Terria (v1.0.50) does: terriajs/lib/Models/Leaflet.js
 PDF.prototype.getMapImage = function(marker) {
     // Temporarily remove the map credits and zoom control so they aren't displayed in the PDF.
-    this.map.attributionControl.remove();
+    //this.map.attributionControl.remove();
 
     var controls = $('.leaflet-control-container');
     controls.hide();
@@ -83,7 +83,7 @@ PDF.prototype.getMapImage = function(marker) {
         });
 
     //Put the zoom control and map credits back on the map
-    self.map.attributionControl.addTo(map);
+    //self.map.attributionControl.addTo(map);
 
     controls.show();
 

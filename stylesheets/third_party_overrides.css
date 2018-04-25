@@ -50,9 +50,10 @@ button.close {
 }
 
 .leaflet-top.leaflet-left {
-    left: 95%;
-    top: 71px;
+    top: 95px;
     padding: 20px;
+    position: relative;
+    float: right;
 }
 
 .layer {
