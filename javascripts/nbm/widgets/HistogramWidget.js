@@ -9,7 +9,9 @@ function HistogramWidget(config, bap) {
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
-    this.initializeWidget = function () {}
+    this.initializeWidget = function () {
+     
+    }
 
     this.getPdfLayout = function() {
    
@@ -24,6 +26,9 @@ function HistogramWidget(config, bap) {
             charts: []
         }  
     };
+
+    let ts = widgetHelper.addTimeSlider()
+
 
     this.buildChart = function (chartData, id) {
 

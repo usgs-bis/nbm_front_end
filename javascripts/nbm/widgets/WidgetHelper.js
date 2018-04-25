@@ -2,6 +2,7 @@
 
 var WidgetHelper = function () {
     this.marker = undefined;
+    this.timeSlider = false;
 };
 
 WidgetHelper.prototype.getWidget = function (config,bap) {
@@ -37,3 +38,51 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
         return new SmoothPlotWidget(config,bap);
     }
 };
+
+WidgetHelper.prototype.addTimeSlider = function(){
+    if (this.timeSlider){
+        let t = $("#GlobalTimeSliderRange")
+        t.trigger('slidechange');
+        return (t)
+    } 
+
+    $("#GlobalTimeControl").append('<div id="GlobalTimeSliderRange" class=" GlobalTimeSliderRange"></div>')
+    let globalTs = $("#GlobalTimeSlider").slider( "widget" );
+    let ts = $("#GlobalTimeSliderRange")
+
+    let min = globalTs.slider("option", "min");
+    let max = globalTs.slider("option", "max");
+
+    var sliderTooltip = function (event, ui) {
+        
+        let t1Value = min + .25*(max-min)
+        let t2Value = min + .5*(max-min)
+
+        if(ui.values){
+            t1Value = ui.values[0]
+            t2Value = ui.values[1]
+        }
+
+        var tooltip1 = '<div class="tooltip"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip2 = '<div class="tooltip"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
+        ts.find('span:eq( 0 )').html(tooltip1);
+        ts.find('span:eq( 1 )').html(tooltip2);
+    };
+
+  
+
+    ts.slider({
+        range: true,
+        min: min,
+        max: max,
+        step: 1,
+        values: [ min + .25*(max-min), min + .5*(max-min)],
+        create: sliderTooltip,
+        slide: sliderTooltip
+    });
+
+    this.timeSlider = true;
+    return ts
+
+
+}
