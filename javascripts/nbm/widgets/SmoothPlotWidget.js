@@ -24,6 +24,8 @@ function SmoothPlotWidget(config, bap) {
         }
     }
 
+    let ts = widgetHelper.addTimeSlider()
+
     this.buildChart = function (chartData, id) {
 
         let that = this

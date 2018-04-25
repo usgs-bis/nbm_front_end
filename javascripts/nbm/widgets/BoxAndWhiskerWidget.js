@@ -10,7 +10,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
     var hourMinutes;
     var that = this;
     var feature;
-    var timeSlider;
+    var timeSlider = widgetHelper.addTimeSlider();
     var button;
     var alreadySentBuffer = false;
     var noDatas = [];
@@ -23,6 +23,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         hourMinutes = time.hourMinutes;
     }
     Widget.call(this, serverAP);
+    
 
     this.buildChart = function(chartData, id){}
 
@@ -30,12 +31,13 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         if(!layer) {
             return 'A time enabled layer must be turned on for this Analysis Package to work.';
         }
+        let values = timeSlider.slider( "values" )
         let location = actionHandlerHelper.sc.headerBap.config.title
         var viewData = {
             id: that.bap.id,
             startDate: time.startDate,
-            min: time.dates[minIdx],
-            max: time.dates[maxIdx],
+            min: values[0],
+            max: values[1],
             endDate: time.endDate,
             title: `Spring Index ${location ? location : ""}`,
             subTitle: `Annual Spring Index for the Period ${time.dates[minIdx]} to ${time.dates[maxIdx]}`
@@ -48,39 +50,89 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         let movehtml = $("#" + that.bap.id + "BapHeader").html()
         $("#" + that.bap.id + "BapHeader").html("")
         $("#" + that.bap.id + "BAP").prepend(movehtml)
-        
+
         feature = originalFeature;
         if(!layer) {
             return;
         }
         button = $("#" + that.bap.id + "BAP").find('#getBWData');
-        timeSlider = $("#" + that.bap.id + "BAP").find('#rangeSlider');
-        timeSlider.slider({
-            range: true,
-            min: time.start,
-            max: time.end,
-            values: [minIdx, maxIdx],
-            slide: function(event, ui) {
-                var min = ui.values[0];
-                var max = ui.values[1];
-                var diff = max - min;
-                if(diff < 0) {
-                    return false;
-                }
-                if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
-                    if(ui.handle.nextSibling) {
-                        max = min + REQUEST_LIMIT;
-                    } else {
-                        min = max - REQUEST_LIMIT;
-                    }
-                    timeSlider.slider("values", [min, max]);
-                }
-                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
-            },
-            change: function() {
-                button.show();
-            }
-        });
+        
+
+        timeSlider.on( "slidechange", function( event, ui ) {
+            var min = ui.values[0];
+            var max = ui.values[1];
+            // var diff = max - min;
+            // if(diff < 0) {
+            //     return false;
+            // }
+            // if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
+            //     if(ui.handle.nextSibling) {
+            //         max = min + REQUEST_LIMIT;
+            //     } else {
+            //         min = max - REQUEST_LIMIT;
+            //     }
+            //     timeSlider.slider("values", [min, max]);
+            // }
+            $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + min + '-' + max);
+            button.show();
+
+        } );
+
+        // ts.slider({
+        //     slide: function( event, ui ) {
+        //         var min = ui.values[0];
+        //         var max = ui.values[1];
+        //         var diff = max - min;
+        //         if(diff < 0) {
+        //             return false;
+        //         }
+        //         if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
+        //             if(ui.handle.nextSibling) {
+        //                 max = min + REQUEST_LIMIT;
+        //             } else {
+        //                 min = max - REQUEST_LIMIT;
+        //             }
+        //             timeSlider.slider("values", [min, max]);
+        //         }
+        //         $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
+        //     }
+        //   });
+        
+
+        // ts.slider({
+        //     change: function( event, ui ) {
+        //         button.show();
+        //     }
+        //   });
+        
+   
+        // timeSlider = $("#" + that.bap.id + "BAP").find('#rangeSlider');
+        // timeSlider.slider({
+        //     range: true,
+        //     min: time.start,
+        //     max: time.end,
+        //     values: [minIdx, maxIdx],
+        //     slide: function(event, ui) {
+        //         var min = ui.values[0];
+        //         var max = ui.values[1];
+        //         var diff = max - min;
+        //         if(diff < 0) {
+        //             return false;
+        //         }
+        //         if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
+        //             if(ui.handle.nextSibling) {
+        //                 max = min + REQUEST_LIMIT;
+        //             } else {
+        //                 min = max - REQUEST_LIMIT;
+        //             }
+        //             timeSlider.slider("values", [min, max]);
+        //         }
+        //         $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
+        //     },
+        //     change: function() {
+        //         button.show();
+        //     }
+        // });
 
         button.on('click', function() {
             that.submitData("Larger or more complex polygons will take longer to process", feature);
@@ -232,7 +284,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         var years = [];
         var j = 0;
         for(var i = 0; i <= length; i++) {
-            var year = time.dates[minIdx + i].toString();
+            var year = (+minIdx + i).toString();
             if (year.indexOf("-01-01") === -1) year += "-01-01";
             if (hourMinutes) year += hourMinutes;
             years.push(year);

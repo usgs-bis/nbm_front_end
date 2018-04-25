@@ -556,6 +556,11 @@ div.inline {
 #GlobalTimeControl{
     width: -webkit-fill-available;
     overflow-y: visible;
+    height: 28px;
+}
+
+#GlobalTimeSliderRange {
+    bottom: 15px;
 }
 #mapBottomLeft.open {
     left: 500px;
@@ -1208,14 +1213,24 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     margin-top: -1px;
   }
 
-#GlobalTimeSlider{
+.GlobalTimeSlider{
     width: calc(100% - 75px);
-    margin: auto;
+    margin: auto !important;
     vertical-align:middle;
   }
- 
 
-#GlobalTimeSlider .tooltip {
+.GlobalTimeSliderRange {
+    background-color: rgba(173, 216, 230, 0.8);
+    width: calc(100% - 75px);
+    margin: auto !important;
+    vertical-align: middle;
+}
+
+.GlobalTimeSlider span{
+    background-color: #505050 !important;
+}
+
+.GlobalTimeSlider .tooltip, .GlobalTimeSliderRange .tooltip {
     position: absolute;
     z-index: 1020;
     display: block;
@@ -1228,7 +1243,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     opacity: unset;
 }
 
-#GlobalTimeSlider .tooltip .tooltip-arrow {
+.GlobalTimeSlider .tooltip .tooltip-arrow, .GlobalTimeSliderRange .tooltip .tooltip-arrow {
     bottom: 0;
     left: 50%;
     margin-left: -5px;
@@ -1240,7 +1255,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     height: 0;
 }
 
-#GlobalTimeSlider .tooltip-inner {
+.GlobalTimeSlider .tooltip-inner, .GlobalTimeSliderRange .tooltip-inner {
     max-width: 200px;
     padding: 3px 8px;
     color: #ffffff;
