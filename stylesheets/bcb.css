@@ -1331,7 +1331,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .solidOverMapBG {
-    background-color: RGB(80,80,80,1);
+    background-color: RGB(80,80,80);
     z-index: 1000;
 } 
 
