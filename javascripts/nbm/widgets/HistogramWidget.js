@@ -38,7 +38,7 @@ function HistogramWidget(config, bap) {
 
         let margin = { top: 20, right: 20, bottom: 25, left: 60 },
             width = $(`#histogramPlot${id}`).width() - margin.left - margin.right,
-            height = 550 - margin.top - margin.bottom;
+            height = 450 - margin.top - margin.bottom;
 
         let pos = $(`#histogramPlot${id}`).position()
 
