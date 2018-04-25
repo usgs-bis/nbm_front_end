@@ -357,7 +357,7 @@ select option {
 .menu-vis-id {
     width: 100%;
     background: black !important;
-    height: 72px;
+    height: 71px;
 }
 
 .info-image {
@@ -547,11 +547,13 @@ div.inline {
     transition-duration: .5s;
     transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
     cursor: default;
-    width: 53%
+    width: calc(100% - 575px);
+    margin-left: 25px;
+    margin-right: 50px;
 }
 
 #GlobalTimeControl{
-    width:60%;
+    width: -webkit-fill-available;
     overflow-y: visible;
 }
 #mapBottomLeft.open {
@@ -1138,7 +1140,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .histogramPlot svg{
     overflow: visible;
     margin-bottom: 20px;
-    height: 575px;
+    height: 475px;
 }
 
 .histogramPlot text {
@@ -1206,7 +1208,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
   }
 
 #GlobalTimeSlider{
-    width: 85%;
+    width: calc(100% - 75px);
     margin: auto;
     vertical-align:middle;
   }
@@ -1304,14 +1306,46 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .searchRessultsBox {
-    position: absolute;
-    margin-top: 25px;
-    margin-left: calc(20% - 4px);
-    padding: 10px;
-    width: calc(80% - 16px);
     z-index: 1000;
+    position: absolute;
+    width: 100%;
+    padding-right: 30px;
 }
 
 #HeaderBap1 {
     padding: 10px;
+}
+
+.mapTopCenter {
+    z-index: 1000;
+    top: 0;
+    background-color: black !important;
+    color: white;
+    position: absolute;
+    /* left: calc((100% - 500px )/4 + 500px);
+    width: calc((100% - 500px )/2); */
+    left: 500px;
+    width: calc(100% - 500px);
+    padding: 10px;
+
+}
+
+.solidOverMapBG {
+    background-color: RGB(80,80,80,1);
+    z-index: 1000;
+} 
+
+.UIhead {
+    /* position: fixed;
+    z-index: 3000;
+    background-color: RGB(100,100,100,1);
+    width: 500px; */
+}
+
+.UIbody {
+    /* margin-top: 100px; */
+}
+
+.unit_info_search{
+    width: 100%;
 }

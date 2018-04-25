@@ -1,12 +1,12 @@
 <script id="summaryTemplate" type="text/x-jsrender">
-    {{if shortSummary}}
+    <!-- {{if shortSummary}}
         <div class="{{:toggleId}}ShortVersion inline">
             <span style="line-height: 18px;">{{:shortSummary}}</span>
             <br>
             <div onclick="$('.{{:toggleId}}ShortVersion').hide();$('.{{:toggleId}}LongVersion').show();" class="descriptionToggle">more...</div>
         </div>
-    {{/if}}
-    <div class="{{:toggleId}}LongVersion inline" style="display:{{:longDisplayCss}};">
+    {{/if}} -->
+    <div class="{{:toggleId}}LongVersion inline" >
         <span class="summary" style="line-height: 18px;">{{:summary}}</span>
         {{if webLinks}}
             <div class="generalInfo">
@@ -22,8 +22,8 @@
                 </span>
             </div>
         {{/if}}
-        {{if shortSummary}}
+        <!-- {{if shortSummary}}
             <div onclick="$('.{{:toggleId}}LongVersion').hide();$('.{{:toggleId}}ShortVersion').show();" class="descriptionToggle">less...</div>
-        {{/if}}
+        {{/if}} -->
     </div>
 </script>

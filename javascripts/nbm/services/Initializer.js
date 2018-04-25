@@ -333,6 +333,7 @@ var Initializer = (function(initializer) {
      * @param {Object} state - state of the application
      */
     function loadBioScape(data, state) {
+        map.attributionControl.remove();
         bioScape = BioScapeParser.parse(data, state);
         bioScape.initializeBioScape()
             .then(function() {
