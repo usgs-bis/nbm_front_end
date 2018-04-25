@@ -19,6 +19,7 @@
         transform: rotateX(-25deg);
         -webkit-transform: rotateX(-25deg);
         -ms-transform: rotateX(-25deg);
+        display: block !important;
     }
 
     .unit_info_control {
@@ -104,4 +105,8 @@
     .helpBox, .left_arrow, .right_arrow {
         display: none;
     }
+    #unit_info_left_control {
+        display: block !important;
+    }
 }
+

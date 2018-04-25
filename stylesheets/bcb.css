@@ -307,6 +307,7 @@ select option {
     color: lightblue;
     font-weight: bold;
     font-size: 18px;
+    padding: 10px;
 }
 
 .panelTitle {
@@ -1348,4 +1349,10 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .unit_info_search{
     width: 100%;
+}
+
+.mapControlContainer {
+    right: 10px;
+    top: 75px;
+    position: absolute;
 }
