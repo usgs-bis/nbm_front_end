@@ -113,14 +113,14 @@ function HistogramWidget(config, bap) {
                 .attr("fill", "rgb(56, 155, 198)")
                 .attr("stroke", "rgb(0, 0, 0)")
                 .attr("x", function (d) { return x(d.day); })
-                .attr("width", width / (domain.xMax - domain.xMin))
+                .attr("width", width / (1 + (domain.xMax - domain.xMin)))
                 .attr("y", function (d) { return y(d.count); })
                 .attr("height", function (d) { return height - y(d.count); })
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, then augment for the tooltip
                     xPos = parseFloat(d3.select(this).attr("x")) + 2 * buk;
-                    yPos = (height / 2) + pos.top;
+                    yPos = (height / 3) + pos.top;
 
                     d3.select('#tooltip')
                         .style('left', xPos + 'px')
