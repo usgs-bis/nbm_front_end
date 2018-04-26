@@ -964,9 +964,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     margin-right:10px;
 }
 .sliderLabelCenter {
-    float:left;
-    width:50%;
-    text-align:center;
+    margin-top: 5px;
 }
 .sliderLabelRight {
     float:right;
