@@ -56,83 +56,39 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
             return;
         }
         button = $("#" + that.bap.id + "BAP").find('#getBWData');
-        
 
-        timeSlider.on( "slidechange", function( event, ui ) {
+        let checkRange = function(min,max){
+            if(time.startDate > min || time.endDate < max){
+                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + '-' + time.endDate);
+                button.hide()
+            }
+            else{
+                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + min + '-' + max);
+                button.show();
+            }    
+        }
+        checkRange(timeSlider.slider( "values", 0 ),timeSlider.slider( "values", 1 ))
+       
+
+        timeSlider.on("slide", function (event, ui) {
             var min = ui.values[0];
             var max = ui.values[1];
-            // var diff = max - min;
-            // if(diff < 0) {
-            //     return false;
-            // }
-            // if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
-            //     if(ui.handle.nextSibling) {
-            //         max = min + REQUEST_LIMIT;
-            //     } else {
-            //         min = max - REQUEST_LIMIT;
-            //     }
-            //     timeSlider.slider("values", [min, max]);
-            // }
-            $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + min + '-' + max);
-            button.show();
 
-        } );
+            var diff = max - min;
+            if (diff < 0) {
+                return false;
+            }
+            if (diff > REQUEST_LIMIT) { //limit the range to a maximum
+                if (ui.handleIndex == 0) {
+                    max = min + REQUEST_LIMIT;
+                } else {
+                    min = max - REQUEST_LIMIT;
+                }
+                timeSlider.slider("values", [min, max]);
+            }
+            checkRange(min, max)
 
-        // ts.slider({
-        //     slide: function( event, ui ) {
-        //         var min = ui.values[0];
-        //         var max = ui.values[1];
-        //         var diff = max - min;
-        //         if(diff < 0) {
-        //             return false;
-        //         }
-        //         if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
-        //             if(ui.handle.nextSibling) {
-        //                 max = min + REQUEST_LIMIT;
-        //             } else {
-        //                 min = max - REQUEST_LIMIT;
-        //             }
-        //             timeSlider.slider("values", [min, max]);
-        //         }
-        //         $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
-        //     }
-        //   });
-        
-
-        // ts.slider({
-        //     change: function( event, ui ) {
-        //         button.show();
-        //     }
-        //   });
-        
-   
-        // timeSlider = $("#" + that.bap.id + "BAP").find('#rangeSlider');
-        // timeSlider.slider({
-        //     range: true,
-        //     min: time.start,
-        //     max: time.end,
-        //     values: [minIdx, maxIdx],
-        //     slide: function(event, ui) {
-        //         var min = ui.values[0];
-        //         var max = ui.values[1];
-        //         var diff = max - min;
-        //         if(diff < 0) {
-        //             return false;
-        //         }
-        //         if(diff > REQUEST_LIMIT) {//limit the range to a maximum 3 date span
-        //             if(ui.handle.nextSibling) {
-        //                 max = min + REQUEST_LIMIT;
-        //             } else {
-        //                 min = max - REQUEST_LIMIT;
-        //             }
-        //             timeSlider.slider("values", [min, max]);
-        //         }
-        //         $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + time.dates[min] + '-' + time.dates[max]);
-        //     },
-        //     change: function() {
-        //         button.show();
-        //     }
-        // });
+        });
 
         button.on('click', function() {
             that.submitData("Larger or more complex polygons will take longer to process", feature);

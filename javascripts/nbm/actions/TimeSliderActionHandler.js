@@ -55,9 +55,13 @@ GlobalTimeSlider.prototype.initialize = function () {
         min: that.startDate,
         max: that.endDate,
         step: 1,
-        create: sliderTooltip,
         slide: sliderTooltip
     });
+
+
+    var curValue = time.defaultDate;
+    var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+    that.ts.find('.ui-slider-handle').html(tooltip);
 
 
     this.ts.slider({
