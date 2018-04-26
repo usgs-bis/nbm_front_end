@@ -52,12 +52,11 @@ WidgetHelper.prototype.addTimeSlider = function(){
 
     let min = globalTs.slider("option", "min");
     let max = globalTs.slider("option", "max");
+    let t1Value = (min + .25*(max-min)).toFixed(0)
+    let t2Value = (min + .5*(max-min)).toFixed(0)
 
     var sliderTooltip = function (event, ui) {
         
-        let t1Value = min + .25*(max-min)
-        let t2Value = min + .5*(max-min)
-
         if(ui.values){
             t1Value = ui.values[0]
             t2Value = ui.values[1]
@@ -76,7 +75,7 @@ WidgetHelper.prototype.addTimeSlider = function(){
         min: min,
         max: max,
         step: 1,
-        values: [ min + .25*(max-min), min + .5*(max-min)],
+        values: [ t1Value,t2Value],
         create: sliderTooltip,
         slide: sliderTooltip
     });
