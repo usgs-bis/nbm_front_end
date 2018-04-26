@@ -75,7 +75,7 @@
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NLJG27" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
     <div class="container">
-        <div id="map"></div>
+        <div id="map" class="mapHalfScreen"></div>
         <div class="not-map">
             <div id="mapTopLeft" style="position:absolute;left:0;top:0;">
                 <div id="header" class="overMap menu-vis-id unit_info" style="float:left;position:relative;z-index:1001;overflow:hidden;">
@@ -85,8 +85,6 @@
                         <i class="fa fa-question-circle fa-second" aria-hidden="true"></i>
                     </span>
                 </div>
-                <!-- <div id="mapControlContainer" style="display:inline-block;margin-left:44px;"> -->
-                <!-- </div> -->
             </div>
             <div id="mapControlContainer" class="mapControlContainer"> </div>
 
@@ -182,19 +180,19 @@
             <div id="mapBottomLeft">
                 <div class="row">
                     <div class="col col-md-auto">
-                        <div id="mapScaleContainer" class="unit_info overMap mapControl">
+                        <div id="mapScaleContainer" class="unit_info overMap mapControl" style="margin-bottom: 10px;">
                             <div id="mapScale"></div>
                         </div>
                     </div>
                     <div class="col col-md-auto">
-                        <div id="mouseCoordinates" class="unit_info overMap mapControl">
+                        <div id="mouseCoordinates" class="unit_info overMap mapControl" style="margin-bottom: 10px;">
                             <span style="font-weight:bold;">Lat</span>:
                             <span id="latCoordinates"></span>,
                             <span style="font-weight:bold;">Lng</span>:
                             <span id="lngCoordinates"></span>
                         </div>
                     </div>
-                    <div class="col col-md-8">
+                    <div class="col col-md-auto">
                         <div id="GlobalTimeControl" class="unit_info overMap mapControl " style="display:none;">
                         </div>
                     </div>
