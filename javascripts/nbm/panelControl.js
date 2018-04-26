@@ -78,10 +78,10 @@ PanelBar.prototype.close = function() {
     $('#' + this.controlSpan).html(this.closedSymbol);
 };
 PanelBar.prototype.toggle = function() {
-    if(this.isOpen()) {
-        this.close();
-    } else {
-        this.open();
+    if(this.isOpen()) {    
+        this.close();    
+    } else {     
+        this.open();    
     }
 };
 
@@ -93,9 +93,11 @@ inherit(PanelBar, MenuPanelBar);
 
 MenuPanelBar.prototype.open = function() {
     PanelBar.prototype.open.call(this);
+    $("#map").removeClass("mapFullScreen");
     $('#mapBottomLeft').addClass(this.openClass);
 };
 MenuPanelBar.prototype.close = function() {
     PanelBar.prototype.close.call(this);
+    $("#map").addClass("mapFullScreen");
     $('#mapBottomLeft').removeClass(this.openClass);
 };

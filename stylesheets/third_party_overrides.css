@@ -53,7 +53,7 @@ button.close {
     top: 95px;
     padding: 20px;
     position: relative;
-    float: right;
+    width: -webkit-fill-available;
 }
 
 .layer {
@@ -61,4 +61,9 @@ button.close {
     line-height: 30px;
     border-bottom: 1px solid rgba(245, 245, 245, .2);
     margin-left: 10px;
+}
+
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+    right: 20px;
+    position: fixed;
 }
