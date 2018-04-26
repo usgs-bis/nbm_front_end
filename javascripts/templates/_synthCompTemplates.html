@@ -218,26 +218,28 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 
 <script id="boxAndWhiskerTemplate" type="text/x-jsrender">
     <div id="{{:id}}BapHeader"> 
-        <div id="{{:id}}JsonDiv" style='width: 100%; display: none;'>
-                <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
-                class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
-                    <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
-                </button>
+        <div class="row" style="margin-top: 15px;">
+            <div class="col col-md-2">
+                <div id="{{:id}}JsonDiv" style='width: 100%; display: none;'>
+                        <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
+                        class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+                            <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+                        </button>
+                </div>
+            </div>
+            <div class="col col-md-1"></div>
+            <div class="col col-md-6">
+                <div id="bapRangeSlider"  class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
+            </div>
+            <div class="col col-md-1"></div>
+            <div class="col col-md-2">
+                <div style="clear:both;"></div>
+                <div style="text-align:center;width:100%;">
+                    <button id="getBWData" class="btn-xs">Submit</button>
+                </div>
+            </div>
+        </div>
 
-        </div>
-        <div id="bapRangeSlider" style="text-align:center;margin-bottom:5px; float: right;" class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
-
-        <div>
-            <!-- <div style="text-align:center;margin-bottom:5px;">Select Time Period for Analysis:</div> -->
-            <!-- <div id="rangeSlider" style="margin-bottom:5px;"></div> -->
-            <!-- <div class="sliderLabelLeft">{{: startDate}}</div> -->
-            <!-- <div id="bapRangeSlider" class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div> -->
-            <!-- <div class="sliderLabelRight">{{: endDate}}</div> -->
-        </div>
-        <div style="clear:both;"></div>
-        <div style="text-align:center;width:100%;">
-            <button id="getBWData" class="btn-xs">Submit</button>
-        </div>
         <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
         <div id="boxAndWhiskerError"></div>
     </div>
