@@ -80,7 +80,7 @@ let NFHPWidget = function (chartConfig) {
                     let d = data.hits.hits[0]._source.properties
                     let val1 = numberWithCommas((d.scored_km).toFixed(0))
                     let val2 = numberWithCommas((d.scored_km + d.not_scored_km).toFixed(0))
-                    $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${val1} of ${val2} NHDPlusV1 stream kms within ${d.place_name}.`)
+                    $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${val1} of ${val2} NHDPlusV1 stream kilometers within ${d.place_name}.`)
                 }
                 else {
                     $("#" + config.id + "noData").replaceWith(html);
@@ -149,7 +149,7 @@ let NFHPWidget = function (chartConfig) {
             },
             "valueAxes": [
                 {
-                    "title": "NFHP Scored Stream Kms [%]",
+                    "title": "NFHP Scored Stream Kilometers [%]",
                     "axisColor": AmChartsHelper.getChartColor(),
                     "axisAlpha": 1,
                 }

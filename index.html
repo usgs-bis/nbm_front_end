@@ -75,7 +75,7 @@
         <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NLJG27" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
     <div class="container">
-        <div id="map" class="mapHalfScreen"></div>
+        <div id="map" class="mapHalfScreen" style="top: 70px;position: absolute;height: calc(100% - 70px);"></div>
         <div class="not-map">
             <div id="mapTopLeft" style="position:absolute;left:0;top:0;">
                 <div id="header" class="overMap menu-vis-id unit_info" style="float:left;position:relative;z-index:1001;overflow:hidden;">
@@ -87,6 +87,16 @@
                 </div>
             </div>
             <div id="mapControlContainer" class="mapControlContainer"> </div>
+            <div id="bioScapeSelector" class="unit_info bottomBar" style="height:30px;">
+                    <div class=" buttonBar">
+                        <div id="bioScapeLegend" style="display:none;">
+                            <button type="button" class="btn displayLegendLink disabled" data-toggle="tooltip" data-placement="top" title="Show the legend">
+                                <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
+                                <span style="font-weight: bold;">Legend</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
             <div class="mapTopCenter">
                 <div class="">
@@ -102,7 +112,7 @@
             </div>
 
 
-            <div id="unit_info_left" style="position:absolute;top: 71px;">
+            <div id="unit_info_left" style="position:absolute;top: 71px; height: calc(100% - 71px);">
                 <div class="solidOverMapBG unit_info unit_info_main" style="overflow-x: hidden !important;">
                     <div id="synthesisCompositionHead" class="unit_info_content_main "></div>
                     <div class="unit_info_content_main UIhead">
@@ -156,16 +166,6 @@
                     <div id="unit_info_right" class="">
                         <div id="synthesisCompositionBody" class="unit_info_content_main UIbody"></div>
                         
-                    </div>
-                </div>
-                <div id="bioScapeSelector" class="unit_info bottomBar" style="height:30px;">
-                    <div class="solidOverMapBG buttonBar">
-                        <div id="bioScapeLegend" style="display:none;">
-                            <button type="button" class="btn displayLegendLink disabled" data-toggle="tooltip" data-placement="top" title="Show the legend">
-                                <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
-                                <span style="font-weight: bold;">Legend</span>
-                            </button>
-                        </div>
                     </div>
                 </div>
                 <div class="unit_info unit_info_control left">

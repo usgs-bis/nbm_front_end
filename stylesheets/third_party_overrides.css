@@ -66,4 +66,5 @@ button.close {
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
     right: 20px;
     position: fixed;
+    top: 70px;
 }

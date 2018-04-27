@@ -386,6 +386,7 @@ select option {
     background-color: rgba(10, 10, 15, .2);
     padding: 3px 10px;
     border-radius: 6px;
+    padding-bottom: 10px;
 }
 
 .divider {
@@ -419,10 +420,14 @@ div.table {
 }
 
 .bottomBar {
-    text-align:center;
+    /* text-align:center;
     bottom: 0;
     overflow: hidden !important;
-    width: 100%;
+    width: 100%; */
+    right: 60px;
+    width: 100px;
+    top: 80px;
+    background: none;
 }
 
 .bootstrapGlyph {
@@ -1356,14 +1361,18 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 } 
 
 .UIhead {
-    /* position: fixed;
+    position: fixed;
     z-index: 3000;
-    background-color: RGB(100,100,100,1);
-    width: 500px; */
+    width: 500px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom: 2px solid #424243;
+    background-color: #505050;
 }
 
 .UIbody {
-    /* margin-top: 100px; */
+    margin-top: 100px;
+    margin-bottom: 40px;
 }
 
 .unit_info_search{
@@ -1371,12 +1380,23 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .mapControlContainer {
-    right: 10px;
-    top: 75px;
+    right: 80px;
+    top: 105px;
     position: absolute;
 }
 
 .mapFullScreen {
     width: 100% !important;
     left: 0 !important;
+}
+
+.nfhpBapHeader{
+    width: 80%;
+    font-size: 15px;
+    color: rgb(243, 243, 243);
+    font-weight: bold;
+    line-height: 20px;
+    margin-top: -20px;
+    margin-left: 15%;
+    margin-bottom: 25px;
 }
