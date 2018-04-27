@@ -28,7 +28,7 @@
 }
 
 .unit_info_control {
-    z-index: 1001;
+    z-index: 999;
     width: 25px;
     overflow-y: visible;
     line-height: 100px;

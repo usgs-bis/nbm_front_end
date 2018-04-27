@@ -1355,7 +1355,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .mapTopCenter {
-    z-index: 1000;
+    z-index: 2000;
     top: 0;
     background-color: black !important;
     color: white;
@@ -1367,6 +1367,13 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     padding: 10px;
     height: 71px;
 
+
+}
+.mapTopCenter .drop {
+    background-color: black;
+    width: calc(75%);
+    margin: auto;
+    border-radius: 20px;
 }
 
 .solidOverMapBG {

@@ -96,6 +96,10 @@
 
     #mobileBioScapeLegendContainer {
         display: block;
+        top: 200px;
+        right: 60px;
+        position: fixed;
+        background-color: black;
     }
 
     .expand-chart {
@@ -112,7 +116,7 @@
         display: block !important;
     }
     .panelTitle {
-        font-size: 18px
+        font-size: 1em;
     }
 }
 
