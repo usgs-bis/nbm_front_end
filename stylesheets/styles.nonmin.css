@@ -71,7 +71,7 @@
 
 #unit_info_left .unit_info_main {
     overflow-y: auto;
-    height: calc(100% - 30px);
+    height: calc(100%);
 }
 
 #unit_info_right {
