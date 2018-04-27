@@ -308,13 +308,6 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 </script>
 
 <script id="NFHPTableTemplate" type="text/x-jsrender">
-    <!-- <div id="{{:json}}" style='width: 100%; text-align: center; margin-top: 30px;'>
-            <button onclick="actionHandlerHelper.showRawJson('{{:bapID}}')" style=' float: left; font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px'
-    class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
-                <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
-            </button>
-            <span class="contextSubHeader subHeaderTitle" style="color: #f3f3f3; font-weight: normal; line-height: 20px; font-size: 17px;">{{:title}}</span>
-    </div> -->
 
     <div class="contextSubHeader subHeaderTitle" style=" color: #f3f3f3; line-height: 20px; font-size: 17px; margin-top: 30px; margin-left: 20px; margin-right: 20px; ">{{:title}}</div>
     <div style='font-size: 14px; color: white;'>{{:description}}</div>
@@ -330,19 +323,20 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
      
         {{for rows}}
             <tr>
-                <!-- <td style='width:32%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);';>{{:disturbance}}</th>
-                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:local_catchment}}</th>
-                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:network_catchment}}</th>
-                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:local_buffer}}</th>
-                <td style='width:16%; margin-left: .5em; margin-right: .5em; font-size: 12px; vertical-align: middle; border: 1px solid rgb(243, 243, 243, .5);'>{{:network_buffer}}</th> -->
+                    <td class='NFHPChartRowHeader' colspan="5">{{:category}}</td>
+            </tr>
+            {{for row}}
                 
-                <td class='NFHPChartRowFirst'>{{:disturbance}}</th>
-                <td class='NFHPChartRow'>{{:local_catchment}}</th>
-                <td class='NFHPChartRow'>{{:network_catchment}}</th>
-                <td class='NFHPChartRow'>{{:local_buffer}}</th>
-                <td class='NFHPChartRow'>{{:network_buffer}}</th>
-                    
+                <tr>
+                
+                    <td class='NFHPChartRowFirst'>{{:disturbance}}</td>
+                    <td class='NFHPChartRow'>{{:local_catchment}}</td>
+                    <td class='NFHPChartRow'>{{:network_catchment}}</td>
+                    <td class='NFHPChartRow'>{{:local_buffer}}</td>
+                    <td class='NFHPChartRow'>{{:network_buffer}}</td>
+                        
                 </tr>
+            {{/for}}
         {{/for}}
     </table>
 </script>

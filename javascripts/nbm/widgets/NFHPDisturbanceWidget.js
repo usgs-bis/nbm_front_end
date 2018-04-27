@@ -25,6 +25,10 @@ var NFHPDisturbanceWidget = function (chart) {
                     data = data.success.hits.hits
                     let allRows = {}
                     data.map(d => {
+                        allRows[d._source.properties.super_category] = {tempRow:[],row:[]}
+                    })
+
+                    data.map(d => {
                         let r = {
                             disturbance: d._source.properties.disturbance,
                             local_catchment: "",
@@ -32,7 +36,9 @@ var NFHPDisturbanceWidget = function (chart) {
                             local_buffer: "",
                             network_buffer: "",
                         }
-                        allRows[d._source.properties.disturbance] = r
+                        allRows[d._source.properties.super_category]["category"] = titleCase(d._source.properties.super_category)
+                        allRows[d._source.properties.super_category].tempRow[d._source.properties.disturbance] = r
+
                     })
 
                     let locationData = getLocation()
@@ -42,25 +48,34 @@ var NFHPDisturbanceWidget = function (chart) {
                         data.map(d => {
                             let scale = d._source.properties.scale.replace(/ /g, "_");
                             let dist = d._source.properties.disturbance
-                            allRows[dist][scale] = d._source.properties.tested ? "" : "NT"
+                            let cat = d._source.properties.super_category
+                             allRows[cat].tempRow[dist][scale] = d._source.properties.tested ? "" : "NT"
                             if (scale == 'local_catchment') {
-                                allRows[dist][scale] = cleanData(loc.lc_list_dist).includes(dist) ? 'Significant' : allRows[dist][scale]
+                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.lc_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
                             }
                             else if (scale == 'network_catchment') {
-                                allRows[dist][scale] = cleanData(loc.nc_list_dist).includes(dist) ? 'Significant' : allRows[dist][scale]
+                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.nc_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
                             }
                             else if (scale == 'local_buffer') {
-                                allRows[dist][scale] = cleanData(loc.lb_list_dist).includes(dist) ? 'Significant' : allRows[dist][scale]
+                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.lb_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
                             }
                             else if (scale == 'network_buffer') {
-                                allRows[dist][scale] = cleanData(loc.nb_list_dist).includes(dist) ? 'Significant' : allRows[dist][scale]
+                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.nb_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
                             }
 
                         })
 
                         Object.getOwnPropertyNames(allRows).map(r => {
+                            Object.getOwnPropertyNames(allRows[r].tempRow).map(tr => {
+                                if(tr != "length") allRows[r].row.push(allRows[r].tempRow[tr])
+                            })
                             rows.push(allRows[r])
                         })
+                        rows.sort(function(a, b) {
+                            if(a.category < b.category) return -1;
+                            if(a.category > b.category) return 1;
+                            return 0;
+                        });
                         buildChart(chart)
                     })
 
@@ -191,7 +206,7 @@ var NFHPDisturbanceWidget = function (chart) {
 
 
     function buildChart(chart) {
-        that.bap.rawJson["NFHPDisturbance"] = rows;
+        that.bap.rawJson["Disturbance"] = rows;
         that.viewModel = {
             bapID: that.bap.id,
             title: `Disturbances Influencing Risk to Fish Habitat Condition in ${that.placeName}`,
@@ -297,5 +312,17 @@ var NFHPDisturbanceWidget = function (chart) {
         }
         return set_data
     }
+
+    function titleCase(str) {
+        var splitStr = str.toLowerCase().split(' ');
+        for (var i = 0; i < splitStr.length; i++) {
+            // You do not need to check if i is larger than splitStr length, as your for does that for you
+            // Assign it back to the array
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+        }
+        // Directly return the joined string
+        return splitStr.join(' '); 
+     }
+     
 
 };

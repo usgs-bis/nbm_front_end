@@ -100,7 +100,7 @@ let NFHPWidget = function (chartConfig) {
      
     function buildChart(data) {
 
-        that.bap.rawJson = data;
+        that.bap.rawJson["Location"] = data;
         data = data._source.properties
         let placeName = data.place_name
         let scored_km = data.scored_km
