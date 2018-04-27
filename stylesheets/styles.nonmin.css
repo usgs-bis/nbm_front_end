@@ -80,13 +80,14 @@
     transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
     top:0;
     width: 500px;
-    height: 100%;
+    height: fit-content;
     right: -500px;
 }
 
 #unit_info_right.open {
     right: 0;
     left: auto;
+    height: fit-content;
 }
 
 .unit_info_content, .unit_info_content_main {

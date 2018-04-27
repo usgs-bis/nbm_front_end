@@ -89,6 +89,9 @@
 
     #mobileBioScapeLegend {
         display: block;
+        top: 80px;
+        right: 60px;
+        position: fixed;
     }
 
     #mobileBioScapeLegendContainer {
@@ -107,6 +110,9 @@
     }
     #unit_info_left_control {
         display: block !important;
+    }
+    .panelTitle {
+        font-size: 18px
     }
 }
 

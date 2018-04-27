@@ -292,6 +292,7 @@ select option {
     font-size: 18px;
     /*padding: 10px 0;*/
     padding: 10px;
+    line-height: 20px;
 }
 
 .layerControlRight {
@@ -1352,6 +1353,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     left: 500px;
     width: calc(100% - 500px);
     padding: 10px;
+    height: 71px;
 
 }
 
@@ -1373,6 +1375,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .UIbody {
     margin-top: 100px;
     margin-bottom: 40px;
+    height: calc(100% - 150px) !important;
 }
 
 .unit_info_search{
