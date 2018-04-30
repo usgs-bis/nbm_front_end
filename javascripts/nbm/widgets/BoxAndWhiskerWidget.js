@@ -211,7 +211,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
     function buildChart(chartData, id){return}
 
     function getLayer(bap) {
-        var visibleLayers = bioScape.getVisibleLayers();
+        var visibleLayers = bioScape.getAllLayers();
         
         let thisLayer = visibleLayers.filter(layer =>{
             if(layer.actionConfig){

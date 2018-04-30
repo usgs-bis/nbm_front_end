@@ -79,12 +79,10 @@ BioScapeGroupBase.prototype.handleOtherLayers = function(secondPass) {
  */
 BioScapeGroupBase.prototype.toggleLayer = function(layerId, secondPass) {
 
-    var slider = $('#' + layerId + ' .sliderContainer').first();
     var layer = this.layers[layerId];
 
     var timeControl = $("#" + layerId+ "TimeControl");
     if (layer.selected) {
-        slider.hide();
         timeControl.hide();
         layer.turnOffLayer();
         this.layerHtmlControl.handleTurnOff(layerId);
@@ -101,7 +99,6 @@ BioScapeGroupBase.prototype.toggleLayer = function(layerId, secondPass) {
                 layer.turnOnLayer()
                     .then(function(data) {
                         if(data) {
-                            slider.show();
                             timeControl.show();
                             that.layerHtmlControl.handleTurnOn(layerId);
 
