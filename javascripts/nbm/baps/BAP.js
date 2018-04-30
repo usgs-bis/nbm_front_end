@@ -199,7 +199,8 @@ BAP.prototype.bindClicks = function () {
 
     $("#" + this.config.id + "BapCase div.layerExpander").on('click', function() {
         var id = $(this).data('section');
-        toggleContainer(id);
+        let toggle = toggleContainer(id);
+        that.switchPriorityBap(toggle)
     });
 
     $("#"+this.config.id).on('click', function(e) {
@@ -258,6 +259,7 @@ BAP.prototype.initializeBAP = function () {
     if (this.simplified) {
         this.showSimplifiedDiv();
     }
+    this.switchPriorityBap(true)
 
     // this.htmlElement = $("#"+this.id+"BapCase");
 };
@@ -324,3 +326,34 @@ BAP.prototype.setErrorMessage = function (message) {
     var that = this;
     this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', {error: message, id: that.id}));
 };
+
+
+BAP.prototype.switchPriorityBap = function (toggle) {
+    //console.log(id)
+    var allLayers = bioScape.getAllLayers();
+    var visibleLayers = bioScape.getVisibleLayers();
+    let thisLayer = allLayers.filter(layer =>{
+        if(layer.actionConfig){
+            return layer.actionConfig.baps[0] == this.id
+        } return false
+    })[0]
+    
+    $.each(visibleLayers, function (index, layer) {
+        if(!layer.baseMap){
+            layer.turnOffLayer(true)
+            layer.section.layerHtmlControl.handleTurnOff(layer.id)
+            if(layer.id != thisLayer.id){
+                try { toggleContainer(layer.actionConfig.baps[0] + "BAP")}
+                catch(error){}
+            }
+        }
+    })
+
+    if(toggle && thisLayer){
+        thisLayer.turnOnLayer()
+        thisLayer.section.layerHtmlControl.handleTurnOn(thisLayer.id)
+    }
+    
+};
+
+

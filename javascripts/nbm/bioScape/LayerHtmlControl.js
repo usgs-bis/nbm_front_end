@@ -45,6 +45,8 @@ var LayerHtmlControl = function(section, selectionType, jQueryControlSelectorCal
      * @param {string} layerId - id of the layer to turn off
      */
     this.handleTurnOff = function(layerId) {
+        var slider = $('#' + layerId + ' .sliderContainer').first();
+        slider.hide();
         jQueryControlSelectorCallback(layerId)
             .removeClass(this.layerOnCss)
             .addClass(this.layerOffCss);
@@ -54,6 +56,8 @@ var LayerHtmlControl = function(section, selectionType, jQueryControlSelectorCal
      * @param {string} layerId - id of the layer to turn on
      */
     this.handleTurnOn = function(layerId) {
+        var slider = $('#' + layerId + ' .sliderContainer').first();
+        slider.show();
         jQueryControlSelectorCallback(layerId)
             .removeClass(this.layerOffCss)
             .addClass(this.layerOnCss);

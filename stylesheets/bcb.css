@@ -1076,6 +1076,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     margin-bottom: -50px;
     overflow: visible
 }
+
 .ridgeLinePlot .domain {
     fill: none !important;
 }
@@ -1084,7 +1085,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .ridgeLinePlot path {
     stroke: rgb(10,10,15,.2);
     stroke-width: 1;
-    fill: url(#area-gradient) !important;
+    /* fill: url(#area-gradient) !important; */
 }
 .ridgeLinePlot text {
     color:rgb(204, 204, 204);
@@ -1100,7 +1101,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .ridgeLinePlotSubTitle{
     font-weight: normal;
     font-size: 14px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     margin-top: -5px;
     color: rgb(204, 204, 204) !important;
     fill: rgb(204, 204, 204) !important;

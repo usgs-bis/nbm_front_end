@@ -25,6 +25,7 @@ var BioScapeLayer = function(id, section, layer) {
         //bsl.actionHandler = ActionHandler.createActionHandler(layer.actionConfig);
     }, this);
     this.layerMetadata = undefined;
+    this.baseMap = section.title == "Basemaps" ? true : false;
 };
 inherit(BioScapeLayerBase, BioScapeLayer);
 

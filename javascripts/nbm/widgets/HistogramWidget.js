@@ -97,7 +97,7 @@ function HistogramWidget(config, bap) {
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
           
             svg.append("g")
@@ -175,8 +175,10 @@ function HistogramWidget(config, bap) {
 
 
             // text label for the x axis
-            svg.append("text")
-                .attr("transform", "translate(" + (width / 2) + " ," + (height + 35) + ")")
+            svg.append("g")
+                .append("text")
+                .attr("y",  height + margin.bottom + margin.top - 5)
+                .attr("x", width/2)
                 .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")

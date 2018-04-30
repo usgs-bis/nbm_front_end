@@ -55,6 +55,12 @@ function SmoothPlotWidget(config, bap) {
             return d3.select(this["_groups"][0][last]);
         };
 
+        d3.selection.prototype.middle = function () {
+            var mid = parseInt(this["_groups"][0].length/2);
+
+            return d3.select(this["_groups"][0][mid]);
+        };
+
 
         function updateChart(dta, buk) {
 
@@ -115,9 +121,41 @@ function SmoothPlotWidget(config, bap) {
                 .attr("height", height);
 
 
+            // set the gradient
+            svg.append("linearGradient")
+            .attr("id", `area-gradient${id}`)
+            .attr("gradientUnits", "userSpaceOnUse")
+            .attr("x1", x(0)).attr("y1", 0)
+            .attr("x2", x(365 / buk)).attr("y2", 0)
+            .selectAll("stop")
+            .data([
+                { offset: "0.000000000%", color: "#cc4c03" }, // Jan 1
+                { offset: "4.166666700%", color: "#ec6f14" },
+                { offset: "8.333333400%", color: "#f8982b" }, // Feb 1
+                { offset: "12.50000010%", color: "#fac450" },
+                { offset: "16.66666680%", color: "#fce490" }, // Mar 1
+                { offset: "20.83333350%", color: "#fdf7bc" },
+                { offset: "25.00000020%", color: "#edf8b2" }, // Apr 1
+                { offset: "29.16666690%", color: "#d9f0a3" },
+                { offset: "33.33333360%", color: "#addd8e" }, // May 1
+                { offset: "37.50000030%", color: "#78c678" },
+                { offset: "41.66666700%", color: "#41ab5d" }, // Jun 1
+                { offset: "45.83333370%", color: "#7accc4" },
+                { offset: "50.00000040%", color: "#41b6c5" }, // Jly 1
+                { offset: "54.16666710%", color: "#3090c0" },
+                { offset: "58.33333380%", color: "#225ea8" }, // Aug 1
+                { offset: "62.50000050%", color: "#253494" },
+                { offset: "66.66666720%", color: "#091e58" }  // Sep 1
+            ])
+            .enter().append("stop")
+            .attr("offset", function (d) { return d.offset; })
+            .attr("stop-color", function (d) { return d.color; });
+
+
             // area fill
             svg.append("path")
-                .attr("fill", "rgb(56, 155, 198)")
+                //.attr("fill", "rgb(56, 155, 198)")
+                .attr("fill",`url(#area-gradient${id})`)
                 .attr("stroke", "rgb(0, 0, 0)")
                 .attr("class", "area")
                 .attr("clip-path", "url(#cut-off-path)")
@@ -150,37 +188,6 @@ function SmoothPlotWidget(config, bap) {
                 });;
 
 
-            // set the gradient
-            svg.append("linearGradient")
-                .attr("id", "area-gradient")
-                .attr("gradientUnits", "userSpaceOnUse")
-                .attr("x1", x(0)).attr("y1", 0)
-                .attr("x2", x(365 / buk)).attr("y2", 0)
-                .selectAll("stop")
-                .data([
-                    { offset: "0.000000000%", color: "#cc4c03" }, // Jan 1
-                    { offset: "4.166666700%", color: "#ec6f14" },
-                    { offset: "8.333333400%", color: "#f8982b" }, // Feb 1
-                    { offset: "12.50000010%", color: "#fac450" },
-                    { offset: "16.66666680%", color: "#fce490" }, // Mar 1
-                    { offset: "20.83333350%", color: "#fdf7bc" },
-                    { offset: "25.00000020%", color: "#edf8b2" }, // Apr 1
-                    { offset: "29.16666690%", color: "#d9f0a3" },
-                    { offset: "33.33333360%", color: "#addd8e" }, // May 1
-                    { offset: "37.50000030%", color: "#78c678" },
-                    { offset: "41.66666700%", color: "#41ab5d" }, // Jun 1
-                    { offset: "45.83333370%", color: "#7accc4" },
-                    { offset: "50.00000040%", color: "#41b6c5" }, // Jly 1
-                    { offset: "54.16666710%", color: "#3090c0" },
-                    { offset: "58.33333380%", color: "#225ea8" }, // Aug 1
-                    { offset: "62.50000050%", color: "#253494" },
-                    { offset: "66.66666720%", color: "#091e58" }  // Sep 1
-                ])
-                .enter().append("stop")
-                .attr("offset", function (d) { return d.offset; })
-                .attr("stop-color", function (d) { return d.color; });
-
-
             // year label
             svg.append("g")
                 .append("text")
@@ -207,6 +214,7 @@ function SmoothPlotWidget(config, bap) {
                 .tickFormat(x => { return dateFromDay(2018, x * buk) })
 
             let last = svg.last()
+             
             last.append("g")
                 .attr("transform", "translate(0," + (height) + ")")
                 .attr("class", "axis-label")
@@ -214,25 +222,32 @@ function SmoothPlotWidget(config, bap) {
                 .attr("fill", "rgb(0, 0, 0)")
                 .call(xAxis)
 
-            last.append("g")
-                .append("text")
-                .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 40) + ")")
-                .attr("fill", "rgb(0, 0, 0)")
-                .attr("font-size", "14px")
-                .style("text-anchor", "middle")
-                .text("Day of Year");
+            
+            let mid = svg.middle()
 
-            // text label for the y axis
-            last.append("g")
+            mid.append("g")
                 .append("text")
                 .attr("transform", "rotate(-90)")
-                .attr("y", 0 - margin.left)
-                .attr("x", (15 * dataNest.length - 45))
+                .attr("y", -55)
+                .attr("x", -25)
                 .attr("dy", "1em")
                 .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Year");
+
+             let lables = ridgelineplot.select("#ridgeLinePlotChart").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .append("text")
+                .attr("y",  60)
+                .attr("x", 210)
+                .attr("fill", "rgb(0, 0, 0)")
+                .attr("font-size", "14px")
+                .style("text-anchor", "middle")
+                .text("Day of Year");
 
             getDataURI()
         }
