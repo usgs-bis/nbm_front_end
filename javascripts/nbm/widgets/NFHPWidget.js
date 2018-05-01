@@ -43,7 +43,7 @@ let NFHPWidget = function (chartConfig) {
         $("#" + config.id + "BapTitle").hide();
 
 
-        let lookUpProp = that.bap.actionRef.placeNameProperty;
+        let lookUpProp = that.bap.actionRef.placeNameProperty ? that.bap.actionRef.placeNameProperty : that.bap.actionRef.lookupProperty;
         let placeName = that.bap.actionRef.result.geojson.properties[lookUpProp];
         let lookupColumn = `properties.${config.charts[0].lookupColumn}`;
 

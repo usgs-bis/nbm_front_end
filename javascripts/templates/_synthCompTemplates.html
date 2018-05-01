@@ -20,7 +20,7 @@
 </script>
 
 <script id="emptySynthCompBapListTemplate" type="text/x-jsrender">
-    <div style="margin-bottom:20px;">Available Analysis Packages:</div>
+    <div style="margin-bottom:20px;">Available Analysis Packages</div>
     {{:html}}
 </script>
 
@@ -88,17 +88,17 @@
     {{if reportJsonUrl}}
         <div class="buttonBar" style="margin-bottom:10px;">
             <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip" title="Share this map by copying the URL to your clipboard.">
-                <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
+                <!-- <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span> -->
                 Share
             </button>
             <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
-                <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
+                <!-- <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span> -->
                 Report
             </button>
-            <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" title="Something will happen whent his button is clicked">
+            <!-- <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" title="Something will happen whent his button is clicked">
                 <span class="glyphicon glyphicon-eye-open bootstrapGlyph" aria-hidden="true"></span>
                 Explore
-            </button>
+            </button> -->
             <a class="grayLink" target="_blank" href="{{:reportJsonUrl}}">
                 <button class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
                     <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
@@ -113,17 +113,17 @@
 <script id="buttonBar" type="text/x-jsrender">
         <div class="buttonBar" style="margin:10px;">
             <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip"  data-placement="bottom" title="Share this map by copying the URL to your clipboard.">
-                <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>
+                <!-- <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span> -->
                 Share
             </button>
             <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip"  data-placement="bottom" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
-                <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span>
+                <!-- <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span> -->
                 Report
             </button>
-            <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="Something will happen when this button is clicked">
+            <!-- <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="Something will happen when this button is clicked">
                 <span class="glyphicon glyphicon-eye-open bootstrapGlyph" aria-hidden="true"></span>
                 Explore
-            </button>
+            </button> -->
             {{if viewJson}}
             <button onclick='actionHandlerHelper.viewSynthCompJson()' class="btn-xs" data-toggle="tooltip" title="View this report as JSON.">
                 <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>

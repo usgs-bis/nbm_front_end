@@ -151,5 +151,5 @@ MapLayerBase.prototype.updateOpacity = function(newOpacity) {
  * @returns {number} - opacity of the layer between 1 and 0
  */
 MapLayerBase.prototype.getOpacity = function() {
-    return getValueOrDefault(this.leafletLayer.options.opacity, 1);
+    return getValueOrDefault(this.leafletLayer.options.opacity, .25);
 };
