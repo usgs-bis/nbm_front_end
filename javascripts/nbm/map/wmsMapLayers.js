@@ -143,8 +143,6 @@ WmsMapLayer.prototype.getGc2Query = function (latLng) {
         srs: "4326",
         lifetime: "0",
         "client_encoding": "UTF8",
-        "key": "7f8710dcf0912e5e1070da1e4b0ade10",
-        "_": "1513797093224",
         "q": "SELECT * FROM " + this.layers + " WHERE ST_Intersects(ST_Transform(ST_geomfromtext('POINT(" + latLng.lng
         + " " + latLng.lat + ")',4326)," + this.nativeCrs + "),\"the_geom\") LIMIT 1",
     };
