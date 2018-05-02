@@ -30,8 +30,10 @@ window.onload = function() {
                                 $("html, body").html("Wrong password");
                             }
                         });
+                }).on ("shown.bs.modal", function () {
+                    $("#pwInput").focus();
                 });
-                $("#pwInput").focus().on("keyup", function (event) {
+                $("#pwInput").on("keyup", function (event) {
                     if (event.keyCode === 13) {
                         $("#npnPwModal").modal("hide");
                     }
