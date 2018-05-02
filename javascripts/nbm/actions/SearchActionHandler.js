@@ -28,10 +28,6 @@ var SearchActionHandler = function (config, layer) {
     ActionHandler.call(this, config.actionConfig, layer);
 };
 
-SearchActionHandler.prototype.bestGuessFields = function (bap) {
-    if (!this.feature || !this.feature.geojson || !this.feature.geojson.properties) return;
-    bap.config.title = this.poi.selectedName;
-};
 
 inherit(ActionHandler, SearchActionHandler);
 
@@ -70,7 +66,10 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
             bap.featureValue = myJson.featureValue;
 
             if(myJson.featureInfoBap) {
-                that.bestGuessFields(bap);
+                //that.bestGuessFields(bap);
+                bap.config.title = that.poi.selectedName;
+                bap.config.acres = that.poi.selectedArea;
+                bap.config.type = that.poi.selectedType;
             }
 
             bap.initializeBAP(headerBapId);
@@ -280,7 +279,7 @@ var PlaceOfInterestClick = function (latlng, that) {
     that.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
     that.clearSearchButton.show();
 
-    $.getJSON(that.elasticEndpointGeom + query, function (data) {
+    $.getJSON(that.elasticEndpoint + query, function (data) {
         that.clearSearchButton.show();
         that.poisearching = false;
         that.clearSearchButton.text("Clear Search");
@@ -300,6 +299,7 @@ var PlaceOfInterestClick = function (latlng, that) {
     function  getElasticGeoQuery(latLng) {
         var qJson = {
             "from": 0, "size": 15,
+            "_source": "properties.*",
             "query":{
                 "bool": {
                     "must": {
@@ -333,7 +333,6 @@ var PlaceOfInterestSearch = function (config, parent) {
     this.noResults = $('<a href="#" class="list-group-item list-group-item-danger googleResults">No Results</a>');
     this.searching = false;
     this.elasticEndpoint = config.elasticEndpoint;
-    this.elasticEndpointGeom = config.elasticEndpointGeom;
     this.sqlEndpoint = config.sqlEndpoint;
     this.polygon = undefined;
     this.selectedId = undefined;
@@ -404,22 +403,26 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
 };
 
 
-// Handels initilizing the poi search when we reload a url
-PlaceOfInterestSearch.prototype.init = function (id) {
+// hit sql endpoint
+PlaceOfInterestSearch.prototype.getSelectedUnit = function (id) {
     var selectShape = "" + this.sqlEndpoint + id
     let that = this;
     $.getJSON(selectShape, function (data) {
         that.selectedId = id;
         that.selectedName = data.features[0].properties.place_name;
+        that.selectedType = data.features[0].properties.ftype.replace("_", " ");;
+        that.selectedArea = parseInt(data.features[0].properties.st_area) * 0.000247105;
         that.polygon = data.features[0];
         actionHandlerHelper.handleSearchActions();
         updateUrlWithState();
     })
+
 }
 // This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
     var elasticQuery = {
         "from": 0, "size": 15,
+        "_source": "properties.*",
         "query" : {
             "multi_match" : {
                 "fields" : ["properties." + this.lookupProperty],
@@ -477,34 +480,13 @@ var SearchResult = function (result, searchParent) {
 SearchResult.prototype.initialize = function () {
     var that = this;
     this.htmlElement.on("click", function (event) {
-        var elem = that.htmlElement[0];
-        var query = elem.firstElementChild.innerText;
+        //var elem = that.htmlElement[0];
+        //var query = elem.firstElementChild.innerText;
         event.preventDefault();
         $(".list-group-item").removeClass("active");
         that.htmlElement.addClass("active");
-        that.getSelectedUnit(query);
+        that.searchParent.getSelectedUnit(that.id);
         //    that.panTo();
     });
-};
-SearchResult.prototype.getSelectedUnit = function (query){
-    // var elasticQuery = {
-    //     "query" : {
-    //         "multi_match" : {
-    //             "fields" : ["properties.gid"],
-    //             "query" : this.id,
-    //             "type": "phrase"
-    //         }
-    //     }
-    // };
-
-    var that = this;
-    var selectShape = "" + this.searchParent.sqlEndpoint + this.id;
-    $.getJSON(selectShape, function (data) {
-        that.searchParent.selectedId = that.id;
-        that.searchParent.selectedName = that.name;
-        that.searchParent.polygon = data.features[0];
-        actionHandlerHelper.handleSearchActions();
-    });
-
 };
 

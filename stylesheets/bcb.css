@@ -316,9 +316,10 @@ select option {
 .panelTitle {
     font-weight: bold;
     padding: 10px 0;
-    font-size: 22px;
+    font-size: 1.3vw;
     text-align: center;
     margin: 0;
+    color: white;
 }
 
 .generalInfo {
@@ -1440,4 +1441,16 @@ input[type='checkbox'].clickSearch + span.clickSearch-target:after {
 }
 input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     content: "\f046"; 
+}
+
+#bioScapeDetailsLink{
+    cursor: pointer;
+    white-space: nowrap;
+    top: 18px;
+    position: absolute;
+    margin-left: 5px;
+}
+
+#bioScapeDetailsLink .fa-circle {
+    margin-right:-18px;
 }
