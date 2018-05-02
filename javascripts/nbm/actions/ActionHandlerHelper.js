@@ -294,6 +294,8 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
             that.enabledActions.push(actionHandler);
         } else if (actionHandler.displayCriteria == "conditional" && isVisible) {
             that.enabledActions.push(actionHandler)
+        } else if (actionHandler.displayCriteria == "search") {
+            that.enabledActions.push(actionHandler)
         }
 
         if (isVisible) {
@@ -341,9 +343,15 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFe
                 }
             });
             if (!hasData) {
-                if(that.enabledActions.filter(action => {return action.type != "drawPolygon"}).length > 0){
-                    that.loadEmptySynthComp("No data is available for the point clicked.");
+                if(that.enabledActions.filter(action => {return action.type != "drawPolygon" }).length > 0){
+                    if(that.enabledActions.filter(action => {return action.type != "drawPolygon" || action.type != "searchPoi"  }).length > 0){
+                        that.loadEmptySynthComp("");
+                    }
+                    else{
+                        that.loadEmptySynthComp("No data is available for the point clicked.");
+                    }
                 }
+                
             }
             that.canDownloadPdf = true;
         });
@@ -357,6 +365,7 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFe
 ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatureSelected) {
     var that = this;
     var promises = [];
+
 
     if(this.enabledActions.filter(action => {return action.type != "drawPolygon"}).length > 0){
 

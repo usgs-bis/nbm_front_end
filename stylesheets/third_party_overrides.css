@@ -54,6 +54,7 @@ button.close {
     padding: 20px;
     position: relative;
     width: -webkit-fill-available;
+    width: -moz-available; 
 }
 
 .layer {

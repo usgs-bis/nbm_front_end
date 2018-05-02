@@ -557,12 +557,14 @@ div.inline {
     transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
     cursor: default;
     width:  -webkit-fill-available;
+    width: -moz-available; 
     margin-left: 25px;
     margin-right: 50px;
 }
 
 #GlobalTimeControl{
     width: -webkit-fill-available;
+    width: -moz-available; 
     overflow-y: visible;
     height: 28px;
     margin-right: 20px;
@@ -1422,4 +1424,20 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     margin-top: -20px;
     margin-left: 15%;
     margin-bottom: 25px;
+}
+
+
+span.clickSearch-target {
+    font-family: FontAwesome;    
+}
+input[type='checkbox'].clickSearch {     
+    position: relative;
+    left: -999em; 
+}
+
+input[type='checkbox'].clickSearch + span.clickSearch-target:after {
+    content: "\f096"; 
+}
+input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
+    content: "\f046"; 
 }
