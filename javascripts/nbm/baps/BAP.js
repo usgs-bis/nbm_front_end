@@ -339,7 +339,7 @@ BAP.prototype.switchPriorityBap = function (toggle) {
     })[0]
     
     $.each(visibleLayers, function (index, layer) {
-        if(!layer.baseMap){
+        if(!layer.baseMap && !layer.summarizationRegion){
             layer.turnOffLayer(true)
             layer.section.layerHtmlControl.handleTurnOff(layer.id)
             if(layer.id != thisLayer.id){

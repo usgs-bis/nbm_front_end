@@ -146,7 +146,7 @@ ActionHandlerHelper.prototype.initPOISearch = function (search){
     let searchHandler = actionHandlers.filter(h =>{
         return h.type == "searchPoi"
     })[0]
-    searchHandler.poi.init(search)
+    searchHandler.poi.getSelectedUnit(search)
 }
 
 /**
@@ -343,13 +343,8 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFe
                 }
             });
             if (!hasData) {
-                if(that.enabledActions.filter(action => {return action.type != "drawPolygon" }).length > 0){
-                    if(that.enabledActions.filter(action => {return action.type != "drawPolygon" || action.type != "searchPoi"  }).length > 0){
-                        that.loadEmptySynthComp("");
-                    }
-                    else{
-                        that.loadEmptySynthComp("No data is available for the point clicked.");
-                    }
+                if(that.enabledActions.filter(action => {return action.type != "drawPolygon"  && action.type != "searchPoi" }).length > 0){
+                    that.loadEmptySynthComp("No data is available for the point clicked.");
                 }
                 
             }
@@ -365,27 +360,30 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFe
 ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatureSelected) {
     var that = this;
     var promises = [];
+    let otherActions = this.enabledActions.filter(action => {return action.type != "drawPolygon" && action.type != "searchPoi"})
+    let searchActions = this.enabledActions.filter(action => {return action.type == "searchPoi"})
 
-
-    if(this.enabledActions.filter(action => {return action.type != "drawPolygon"}).length > 0){
+    if(otherActions.length > 0){
 
         this.headerSent = false;
         this.cleanUp(false);
         this.updateClick(latLng);
-
         this.setCurrentActions();
-    
 
-        $.each(this.enabledActions, function (index, actionHandler) {
-            if (actionHandler.type != "drawPolygon") {
-                if (!actionHandler.headerBap) {
-                    promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
-                } else {
-                    $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
-                    promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
-                }
+        $.each(otherActions, function (index, actionHandler) {
+            if (!actionHandler.headerBap) {
+                promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
+            } else {
+                $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
+                promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
             }
         });
+    }
+    else if(searchActions.length > 0){
+        this.headerSent = false;
+        this.updateClick(latLng);
+        this.setCurrentActions();
+        promises.push(searchActions[0].sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap0", isDifferentFeatureSelected));
     }
 
     return Promise.all(promises);

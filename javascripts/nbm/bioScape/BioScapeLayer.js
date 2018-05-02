@@ -26,6 +26,7 @@ var BioScapeLayer = function(id, section, layer) {
     }, this);
     this.layerMetadata = undefined;
     this.baseMap = section.title == "Basemaps" ? true : false;
+    this.summarizationRegion = section.title == "Summarization Regions" ? true : false;
 };
 inherit(BioScapeLayerBase, BioScapeLayer);
 

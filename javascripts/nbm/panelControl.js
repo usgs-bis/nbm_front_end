@@ -15,7 +15,7 @@ function setUpIndexPage(isSmallScreen, verticalOrientation) {
 
     $(window).on('resize', function() {
         if(preventMultipleOpenPanels() && MenuPanel.isOpen() && RightPanelBar.isOpen()) {
-            MenuPanel.close();
+            //MenuPanel.close();
         } else if(!preventMultipleOpenPanels() && !MenuPanel.isOpen()) {
             MenuPanel.open();
         }
@@ -32,7 +32,7 @@ function updateIndexPage(verticalOrientation) {
     RightPanelBar = new PanelBar(rightBar);
     RightPanelBar.open = function() {
         if(preventMultipleOpenPanels()) {
-            MenuPanel.close();
+            //MenuPanel.close();
         }
         PanelBar.prototype.open.call(this);
     };
@@ -53,7 +53,7 @@ function updateIndexPage(verticalOrientation) {
 
 function closeAllUnitInfoBars() {
     RightPanelBar.close();
-    MenuPanel.close();
+    //MenuPanel.close();
 }
 
 var PanelBar = function(panelBarInfo) {
