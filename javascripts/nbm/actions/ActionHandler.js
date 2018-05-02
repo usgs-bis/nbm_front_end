@@ -29,6 +29,7 @@ var ActionHandler = function (config, layer) {
     this.html = "";
     this.trigger = undefined;
     this.noDataValue = config.noDataValue;
+    this.config = config
 };
 
 ActionHandler.prototype.getAllBapsToProcess = function () {

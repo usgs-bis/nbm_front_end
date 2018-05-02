@@ -11,8 +11,20 @@ var SearchActionHandler = function (config, layer) {
     this.geojson = undefined;
     this.poi = new PlaceOfInterestSearch(config, this);
     this.poi.initialize();
+    this.clickToSearch = true
 
     $("#unit_info_search").show().prepend(this.poi.getSearchButton());
+    if(config.actionConfig.clickToSearch){
+        let that = this
+        $("#unit_info_click_search_div").show()
+        $('#unit_info_click_search').click(function(){
+            if($(this).is(':checked')){
+                that.clickToSearch = true
+            } else {
+                that.clickToSearch = false
+            }
+        });
+    }
     ActionHandler.call(this, config.actionConfig, layer);
 };
 
@@ -200,6 +212,14 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
 SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapId) {
     var that = this;
     var promises = [];
+
+    if(this.config.clickToSearch && isHeader.lat && isHeader.lng){
+        if(this.clickToSearch){
+            PlaceOfInterestClick(isHeader,this.poi)
+        }
+        return Promise.resolve();
+    }
+
     this.geojson = this.poi.polygon.geometry;
     this.geojson.crs = {"type":"name","properties":{"name":"EPSG:4326"}};
 
@@ -249,6 +269,61 @@ SearchActionHandler.prototype.cleanUp = function () {
     this.cleanUpBaps();
 };
 
+
+var PlaceOfInterestClick = function (latlng, that) {
+
+    let query = getElasticGeoQuery(latlng)
+
+    //do the lookup then put the results in the drop down
+  
+    $(".googleResults").remove();
+    that.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
+    that.clearSearchButton.show();
+
+    $.getJSON(that.elasticEndpointGeom + query, function (data) {
+        that.clearSearchButton.show();
+        that.poisearching = false;
+        that.clearSearchButton.text("Clear Search");
+        $(".googleResults").remove();
+        if (data.hits ) {
+            var added = [];
+            data.hits.hits.sort(function (a, b) {return b._score-a._score});
+            $.each (data.hits.hits, function (index, obj) {
+                var result = new SearchResult(obj, that);
+                that.resultsElement.append(result.htmlElement);
+            });
+        } else {
+            that.resultsElement.append(that.noResults);
+        }
+    });
+
+    function  getElasticGeoQuery(latLng) {
+        var qJson = {
+            "from": 0, "size": 15,
+            "query":{
+                "bool": {
+                    "must": {
+                        "match_all": {}
+                    },
+                    "filter": {
+                        "geo_shape": {
+                            "geometry": {
+                                "shape": {
+                                    "type": "point",
+                                    "coordinates" : [latLng.lng, latLng.lat]
+                                },
+                                "relation": "intersects"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    
+        return JSON.stringify(qJson)
+    }
+}
+
 var PlaceOfInterestSearch = function (config, parent) {
     this.parent = parent;
     this.lookupProperty = config.actionConfig.lookupProperty;
@@ -258,12 +333,12 @@ var PlaceOfInterestSearch = function (config, parent) {
     this.noResults = $('<a href="#" class="list-group-item list-group-item-danger googleResults">No Results</a>');
     this.searching = false;
     this.elasticEndpoint = config.elasticEndpoint;
+    this.elasticEndpointGeom = config.elasticEndpointGeom;
     this.sqlEndpoint = config.sqlEndpoint;
     this.polygon = undefined;
     this.selectedId = undefined;
     this.selectedName = undefined;
     // this.geojson = undefined;
-    // this.elasticEndpoint = "http://34.229.92.5/api/v1/elasticsearch/search/jjuszakusgsgov/public/colorado_padus2_dissolve/_search?q=";
     // this.featureGroup = undefined;
 };
 
@@ -286,7 +361,7 @@ PlaceOfInterestSearch.prototype.initialize = function () {
         event.preventDefault();
     });
 
-    this.resultsElement.append(this.clearSearchButton);
+    this.resultsElement.append(this.clearSearchButton);    
 };
 
 PlaceOfInterestSearch.prototype.onKeyPress = function (event) {
@@ -316,7 +391,7 @@ PlaceOfInterestSearch.prototype.submitSearch = function () {
     var text = this.searchButton.val();
     if (text && !this.searching) {
         // this.searching = true;
-        this.clearSearchButton.text("Searching...");
+        this.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
         // actionHandlerHelper.cleanUp(true);
         this.lookup(text);
     }
