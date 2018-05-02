@@ -34,6 +34,8 @@ ActionHandlerHelper.prototype.createActionHandler = function (actionConfig, laye
     } else if (actionConfig.actionType == "drawPolygon") {
         this.addDrawCapability();
         return new DrawPolygonActionHandler(actionConfig, layer);
+    } else if (actionConfig.actionType == "none") {
+        return new ActionHandler(actionConfig, layer,true)
     }
     return new ActionHandler(actionConfig, layer);
 };
@@ -360,7 +362,8 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFe
 ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatureSelected) {
     var that = this;
     var promises = [];
-    let otherActions = this.enabledActions.filter(action => {return action.type != "drawPolygon" && action.type != "searchPoi"})
+
+    let otherActions = this.enabledActions.filter(action => {return action.type != "drawPolygon" && action.type != "searchPoi" && !action.noAction})
     let searchActions = this.enabledActions.filter(action => {return action.type == "searchPoi"})
 
     if(otherActions.length > 0){
@@ -371,12 +374,12 @@ ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatu
         this.setCurrentActions();
 
         $.each(otherActions, function (index, actionHandler) {
-            if (!actionHandler.headerBap) {
-                promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
-            } else {
-                $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
-                promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
-            }
+                if (!actionHandler.headerBap) {
+                    promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
+                } else {
+                    $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
+                    promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
+                }
         });
     }
     else if(searchActions.length > 0){
