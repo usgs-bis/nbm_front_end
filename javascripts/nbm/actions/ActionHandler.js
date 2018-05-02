@@ -11,7 +11,8 @@
 
  * @constructor
  */
-var ActionHandler = function (config, layer) {
+var ActionHandler = function (config, layer, noAction) {
+    this.noAction = noAction ? true : false;
     this.type = config.actionType;
     this.displayCriteria = config.displayCriteria;
     this.lookupProperty = config.lookupProperty;
