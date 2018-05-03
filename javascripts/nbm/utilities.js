@@ -543,7 +543,8 @@ function isBetaEnvironment() {
     var betaIndicators = [
         'beta',
         'localhost',
-        'staging'
+        'staging',
+        'dev-'
     ];
 
     var url = window.location.toString();
