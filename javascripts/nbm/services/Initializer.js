@@ -64,8 +64,10 @@ var Initializer = (function(initializer) {
 
         var bioscapeJson = {};
 
-        // bioScapeId = "591c7160e4b0a7fdb43dea93";
-        // thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json';
+        //bioScapeId = "591c7160e4b0a7fdb43dea93";
+        // 5ae7841be4b0e2c2dd33f591
+        //thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json';
+        //thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/test/gotthold_test.json'
 
         //request information from the bioScape ScienceBase item
         sendScienceBaseItemRequest(bioScapeId, 5000)
@@ -257,7 +259,7 @@ var Initializer = (function(initializer) {
                     RightPanelBar.close();
                 }
                 if(disclaimerModal.closeLeftPanel) {
-                    MenuPanel.close();
+                    //MenuPanel.close();
                 }
             })
             .on('show.bs.modal', function() {

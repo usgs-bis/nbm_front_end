@@ -112,9 +112,6 @@
     .helpBox, .left_arrow, .right_arrow {
         display: none;
     }
-    /* #unit_info_left_control {
-        display: block !important;
-    } */
     .panelTitle {
         font-size: 2vw;
     }
@@ -123,3 +120,28 @@
     }
 }
 
+/* iphone sideways */
+@media only screen and (max-height:500px){
+    #accordion #collapseOne {
+        max-height: 210px;
+    }
+
+}
+
+/* iphone sideways */
+@media only screen and (max-height:700px)
+    and (min-height: 501px) {
+    #accordion #collapseOne {
+        max-height: 335px;
+    }
+
+}
+
+/* ipad sideways */
+@media only screen and (max-height:900px)
+    and (min-height: 701px) {
+    #accordion #collapseOne {
+        max-height: 500px;
+    }
+
+}
