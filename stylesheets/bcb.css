@@ -1454,3 +1454,22 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 #bioScapeDetailsLink .fa-circle {
     margin-right:-18px;
 }
+
+#accordion #collapseOne {
+    width:100%;
+    margin-left: 20px;
+    max-height: -webkit-fill-available;
+    max-height: -moz-available;
+    overflow-y: auto;
+
+}
+
+.searchBoxBorder{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom: 2px solid #424243;
+    background-color: #505050;
+    width: 500px;
+    min-height: 10px;
+    margin-top: -20px;
+}

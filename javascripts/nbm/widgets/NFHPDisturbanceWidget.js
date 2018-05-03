@@ -112,6 +112,10 @@ var NFHPDisturbanceWidget = function (chart) {
             text: config.description, style: ['bapContent', 'subtitle']
         });
 
+       // content.push({});
+
+
+
         content.push(
             {
                 columns: [
@@ -120,38 +124,52 @@ var NFHPDisturbanceWidget = function (chart) {
                         width: "20%",
                         text: that.viewModel.col0,
                         bold: true,
-                        fontSize: 12
+                        fontSize: 14
                     },
                     {
                         alignment: "left",
                         width: "20%",
                         text: that.viewModel.col1,
                         bold: true,
-                        fontSize: 12
+                        fontSize: 14
                     },
                     {
                         alignment: "left",
                         width: "20%",
-                        text: that.viewModel.col0,
+                        text: that.viewModel.col2,
                         bold: true,
-                        fontSize: 12
+                        fontSize: 14
                     },
                     {
                         alignment: "left",
                         width: "20%",
-                        text: that.viewModel.col0,
+                        text: that.viewModel.col3,
                         bold: true,
-                        fontSize: 12
+                        fontSize: 14
                     },
                     {
                         alignment: "left",
                         width: "20%",
-                        text: that.viewModel.col0,
+                        text: that.viewModel.col4,
                         bold: true,
-                        fontSize: 12
+                        fontSize: 14
                     }
 
-                ]
+                ],
+                // layout: {
+                //     hLineWidth: function(i, node) {
+                //         return 1;
+                //    },
+                //     vLineWidth: function(i, node) {
+                //         return 1;
+                //    },
+                //     hLineColor: function(i, node) {
+                //         return "black";
+                //    },
+                //     vLineColor: function(i, node) {
+                //         return "black";
+                //    },
+                // }
             }
         );
 
@@ -160,42 +178,56 @@ var NFHPDisturbanceWidget = function (chart) {
                 columns: [
                     {
                         alignment: "left",
-                        width: "20%",
-                        text: rows[j].disturbance,
-                        bold: false,
-                        fontSize: 12
-                    },
-                    {
-                        alignment: "left",
-                        width: "20%",
-                        text: rows[j].local_catchment,
-                        bold: false,
-                        fontSize: 12
-                    },
-                    {
-                        alignment: "left",
-                        width: "20%",
-                        text: rows[j].network_catchment,
-                        bold: false,
-                        fontSize: 12
-                    },
-                    {
-                        alignment: "left",
-                        width: "20%",
-                        text: rows[j].local_buffer,
-                        bold: false,
-                        fontSize: 12
-                    },
-                    {
-                        alignment: "left",
-                        width: "20%",
-                        text: rows[j].network_buffer,
-                        bold: false,
-                        fontSize: 12
+                        width: "100%",
+                        text: rows[j].category,
+                        bold: true,
+                        fontSize: 12,
+                        color: "lightblue"
                     }
-
                 ]
-            });
+            })
+            for (var k = 0; k < rows[j].row.length; k++) {
+                content.push({
+                    columns: [
+                        {
+                            alignment: "left",
+                            width: "20%",
+                            text: rows[j].row[k].disturbance,
+                            bold: true,
+                            fontSize: 12
+                        },
+                        {
+                            alignment: "left",
+                            width: "20%",
+                            text: rows[j].row[k].local_catchment,
+                            bold: rows[j].row[k].local_catchment == "Significant" ? true: false,
+                            fontSize: 12
+                        },
+                        {
+                            alignment: "left",
+                            width: "20%",
+                            text: rows[j].row[k].network_catchment,
+                            bold: rows[j].row[k].network_catchment == "Significant" ? true: false,
+                            fontSize: 12
+                        },
+                        {
+                            alignment: "left",
+                            width: "20%",
+                            text: rows[j].row[k].local_buffer,
+                            bold: rows[j].row[k].local_buffer == "Significant" ? true: false,
+                            fontSize: 12
+                        },
+                        {
+                            alignment: "left",
+                            width: "20%",
+                            text: rows[j].row[k].network_buffer,
+                            bold: rows[j].row[k].network_buffer == "Significant" ? true: false,
+                            fontSize: 12
+                        }
+
+                    ]
+                });
+            }
         }
 
         return {

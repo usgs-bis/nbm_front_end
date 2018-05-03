@@ -345,7 +345,7 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFe
                 }
             });
             if (!hasData) {
-                if(that.enabledActions.filter(action => {return action.type != "drawPolygon"  && action.type != "searchPoi" }).length > 0){
+                if(that.enabledActions.filter(action => {return action.type != "drawPolygon"  && action.type != "searchPoi"  && !action.noAction}).length > 0){
                     that.loadEmptySynthComp("No data is available for the point clicked.");
                 }
                 
