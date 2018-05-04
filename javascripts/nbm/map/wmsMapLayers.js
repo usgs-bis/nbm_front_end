@@ -143,7 +143,7 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
         });
 
     function attemptGetFeatureRequest(features) {
-        if(!features.find(hasId)) {
+        if(!hasId(features)) {
             return Promise.resolve(features);
         }
 
@@ -166,8 +166,15 @@ WmsMapLayer.prototype.getIdentifyResults = function(latLng) {
                 });
             });
 
-        function hasId(feature) {
-            return feature.id;
+        function hasId(features) {
+            if (!features) return false;
+
+            for (var i = 0; i < features.length; i++) {
+                var f = features[i];
+                if (f.id) return true;
+            }
+
+            return false;
         }
     }
 

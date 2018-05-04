@@ -19,6 +19,7 @@ var ActionHandler = function (config, layer) {
     this.baps = config.baps;
     this.result = undefined;
     this.additionalParams = config.additionalParams;
+    this.crossoverBaps = config.crossoverBaps;
     this.spinner = $('<div class="spinnerContainer"><i class="fa fa-spinner fa-pulse"></i></div>');
     this.synthesisComposition = config.synthesisComposition;
 
@@ -26,6 +27,24 @@ var ActionHandler = function (config, layer) {
     this.html = "";
     this.trigger = undefined;
     this.noDataValue = config.noDataValue;
+};
+
+ActionHandler.prototype.getAllBapsToProcess = function () {
+    var bapsToProcess = [];
+
+    if (this.baps) {
+        $.each(this.baps, function (index, bap) {
+            bapsToProcess.push(bap);
+        });
+    }
+
+    $.each(actionHandlerHelper.crossoverBaps, function (index, bap) {
+        if (bapsToProcess.indexOf(bap) == -1) {
+            bapsToProcess.push(bap);
+        }
+    });
+
+    return bapsToProcess;
 };
 
 /**
@@ -40,7 +59,9 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
 
     var promises = [];
 
-    $.each(this.baps, function (index, bapId) {
+    var bapsToProcess = this.getAllBapsToProcess();
+
+    $.each(bapsToProcess, function (index, bapId) {
         var tempBap = that.getBapValue(bapId);
 
         if (tempBap) {
@@ -63,6 +84,17 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
 
         promises.push(sendJsonAjaxRequest(myServer + "/bap/get", myMap)
             .then(function (myJson) {
+                if (myJson.error) {
+                    console.log("Got an error: ", myJson);
+                    var message = "Error sending request to the BCB API, ";
+                    message += "please contact site admin if the problem continues.";
+
+                    if (!actionHandlerHelper.handleBapError(myJson.requestParams.id, message)) {
+                        console.log("Could not set BAP error, BAP does not exist");
+                    }
+                    return Promise.resolve();
+                }
+
                 var bap = that.getBapValue(myJson.id);
                 bap.reconstruct(myJson);
                 bap.initializeBAP();
@@ -70,6 +102,7 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
 
                 return Promise.resolve();
             }).catch(function(ex) {
+                console.log("Getting an error here?", ex);
                 return Promise.resolve();
             }));
     });
@@ -147,12 +180,12 @@ ActionHandler.prototype.bestGuessFields = function (bap) {
  * @param additionalParams
  * @param headerBapId
  */
-ActionHandler.prototype.sendTriggerAction = function (latLng, isHeader, additionalParams, headerBapId) {
+ActionHandler.prototype.sendTriggerAction = function (latLng, isHeader, additionalParams, headerBapId, zoomOutFlag) {
     this.cleanUp();
 
     $("#synthesisCompositionBody").append(this.spinner);
 
-    this.trigger = new ActionTrigger(latLng, isHeader, additionalParams, headerBapId, this);
+    this.trigger = new ActionTrigger(latLng, isHeader, additionalParams, headerBapId, this, zoomOutFlag);
     return this.trigger.initialize();
 };
 
@@ -163,7 +196,7 @@ ActionHandler.prototype.sendTriggerAction = function (latLng, isHeader, addition
 ActionHandler.prototype.addHeaderBaptoSC = function (headerBap) {
     actionHandlerHelper.sc.headerBap = headerBap;
 
-    $('#buildReportPdf').click(function () {
+    $('#buildReportPdf').on('click', function () {
         if (!actionHandlerHelper.canDownloadPdf) {
             actionHandlerHelper.showTempPopup("Please wait for all analysis packages to process before downloading the PDF");
             return;
@@ -199,9 +232,10 @@ ActionHandler.prototype.cleanUp = function () {
 };
 
 ActionHandler.prototype.cleanUpBaps = function () {
-    if (!this.baps) return;
+    var allBaps = this.getAllBapsToProcess();
+    if (!allBaps) return;
     var that = this;
-    $.each(this.baps, function (index, id) {
+    $.each(allBaps, function (index, id) {
         var bap = that.getBapValue(id);
         if (bap) bap.cleanUp();
     });
@@ -231,9 +265,13 @@ ActionHandler.prototype.createPseudoFeature = function (gj) {
     };
 };
 
-var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, parent) {
+var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, parent, zoomOutFlag) {
     var myself = this;
     var that = parent;
+
+    if (typeof zoomOutFlag == 'undefined') {
+        zoomOutFlag = true;
+    }
 
     this.initialize = function () {
         return that.layer.getIdentifyResults(latLng)
@@ -276,10 +314,12 @@ var ActionTrigger = function (latLng, isHeader, additionalParams, headerBapId, p
                         if (that.feature) that.feature.remove();
                         that.feature = new Feature(that.result.geojson, latLng, "", that.layer.displayFeatureNegative);
                         that.feature.show();
-                        if (!isVerticalOrientation()) {
-                            centerMapRight(that.feature.getLeafetFeatureBounds());
-                        } else {
-                            centerMapBottom(that.feature.getLeafetFeatureBounds());
+                        if (zoomOutFlag){
+                            if (!isVerticalOrientation()) {
+                                centerMapRight(that.feature.getLeafetFeatureBounds());
+                            } else {
+                                centerMapBottom(that.feature.getLeafetFeatureBounds());
+                            }
                         }
                     } catch(ex) {
                         throw new Error('Error creating a feature from the returned data');

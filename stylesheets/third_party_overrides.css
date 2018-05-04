@@ -47,3 +47,8 @@ button.close {
 .modal-header .close {
     margin-top: -10px;
 }
+
+.leaflet-top.leaflet-left {
+    left: 400px;
+    top: 0;
+}

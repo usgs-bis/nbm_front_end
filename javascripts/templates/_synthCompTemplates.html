@@ -66,6 +66,16 @@
 </div>
 </script>
 
+<script id="bapErrorInfo" type="text/x-jsrender">
+        <div class="layerExpander contextHeader">
+        <span class="bapTitle">{{:error}}<br>Analysis Package ID: {{:id}}</span>
+        </div>
+</script>
+
+<script id="widgetErrorInfo" type="text/x-jsrender">
+        <span class="bapTitle">{{:error}}</span>
+</script>
+
 <script id="synthesisCompositionHeaderTemplate" type="text/x-jsrender">
     {{if reportJsonUrl}}
         <div class="buttonBar" style="margin-bottom:10px;">
@@ -224,4 +234,10 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the sim
             </div>
         {{/for}}
     </div>
+</script>
+
+<script id="barChartWidget" type="text/x-jsrender">
+    <div id="{{: id}}" style="width: 100%; height: 400px;"></div>
+    <div style="float:right">Area with no data: {{:noData}}</div>
+    <div style="clear:both;"></div>
 </script>

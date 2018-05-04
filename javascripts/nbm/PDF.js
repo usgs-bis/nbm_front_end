@@ -36,17 +36,6 @@ PDF.prototype.buildAndDownload = function(marker) {
 PDF.prototype.getMapImage = function(marker) {
     // Temporarily remove the map credits and zoom control so they aren't displayed in the PDF.
     this.map.attributionControl.remove();
-    // this.map.zoomControl.remove();
-    // var z = $(".leaflet-control-zoom");
-    //
-    // z.hide();
-    //
-    // var vis = false;
-    // var d = $(".leaflet-draw");
-    // if (d.is(":visible")) {
-    //     d.hide();
-    //     vis = true;
-    // }
 
     var controls = $('.leaflet-control-container');
     controls.hide();
@@ -95,11 +84,7 @@ PDF.prototype.getMapImage = function(marker) {
 
     //Put the zoom control and map credits back on the map
     self.map.attributionControl.addTo(map);
-    // self.map.zoomControl.addTo(map);
-    // z.show();
-    // if (vis) {
-    //     d.show();
-    // }
+
     controls.show();
 
     //Return the feature to it's old state
@@ -285,7 +270,8 @@ PDF.prototype.getBioScapeSection = function(mapImageDataUrl) {
             style: 'bapContent'
         }
     );
-    info.push({text: 'Summary', bold: true}, {text: this.bioScape.summary, style: 'bapContent'});
+    info.push({text: 'Summary', bold: true});
+    info.push(this.getParsedHtml(this.bioScape.summary,{style:'bapContent'}));
     info.push({text: 'Sections', bold: true});
     this.bioScape.getAllSections().forEach(function(section) {
         info.push({text: section.title, style: ['bapContent', 'subtitle']});
@@ -518,7 +504,10 @@ PDF.prototype.getAppendix = function () {
     var textMap = {
         title: 'Layer Title',
         body: 'Description',
-        url: 'ScienceBase Url'
+        url: 'ScienceBase Url',
+        contacts: 'Contacts',
+        webLinks: 'Web Links',
+        alternateTitles: 'Alternate Titles'
     };
 
     var info = [];
@@ -552,20 +541,42 @@ PDF.prototype.getAppendix = function () {
                 var info = metadata[prop];
                 if(info) {
                     content.push(getTitleEl(prop));
-                    if (typeof info === 'object') {
-                        for (var prp in info) {
-                            if (info.hasOwnProperty(prp)) {
-                                content.push({
-                                    stack: [
-                                        getTitleEl(prp),
-                                        {text: info[prp]}
-                                    ],
-                                    margin: [5, 0, 0, 0]
-                                });
+                    if( Object.prototype.toString.call( info ) === '[object Array]' ) {
+                        $.each(info, function (index, obj) {
+                            var text = obj.title;
+                            if (!text) {
+                                text = obj.name;
+
+                                if (text) {
+                                    if (obj.email) {
+                                        text += " (" + obj.email + ")";
+                                    }
+                                }
                             }
-                        }
+                            if (!text) text = obj;
+
+                            if (obj.uri || obj.url) {
+                                content.push({text: text, link: obj.uri ? obj.uri : obj.url, style: 'link', margin: [5, 0, 0, 0]});
+                            } else {
+                                content.push({text: text, margin: [5, 0, 0, 0]})
+                            }
+                        });
                     } else {
-                        content.push(that.getParsedHtml(info, {style: 'appendixContent'}));
+                        if (typeof info === 'object') {
+                            for (var prp in info) {
+                                if (info.hasOwnProperty(prp)) {
+                                    content.push({
+                                        stack: [
+                                            getTitleEl(prp),
+                                            {text: info[prp]}
+                                        ],
+                                        margin: [5, 0, 0, 0]
+                                    });
+                                }
+                            }
+                        } else {
+                            content.push(that.getParsedHtml(info, {style: 'appendixContent'}));
+                        }
                     }
                 }
             }
@@ -603,19 +614,22 @@ PDF.prototype.download = function(pdfInfo, onCompletion) {
     var completedCharts = 0;
     for (var i = 0; i < charts.length; i++) {
         // Capture current state of the chart
-        charts[i].export.capture({}, function () {
-            // Export to PNG
-            this.toPNG({}, function (data) {
-                completedCharts++;
-                pdfLayout.images[this.setup.chart.div.id] = data;
-                if (completedCharts == charts.length) {
-                    // Save as single PDF and offer as download
-                    this.toPDF(pdfLayout, function (myData) {
-                        this.download(myData, this.defaults.formats.PDF.mimeType, pdfTitle);
-                        onCompletion();
-                    });
-                }
-            });
+        charts[i].export.capture({}, addChart);
+    }
+
+    function addChart() {
+        // Export to PNG
+        console.log("Adding chart");
+        this.toPNG({}, function (data) {
+            completedCharts++;
+            pdfLayout.images[this.setup.chart.div.id] = data;
+            if (completedCharts == charts.length) {
+                // Save as single PDF and offer as download
+                this.toPDF(pdfLayout, function (myData) {
+                    this.download(myData, this.defaults.formats.PDF.mimeType, pdfTitle);
+                    onCompletion();
+                });
+            }
         });
     }
 };

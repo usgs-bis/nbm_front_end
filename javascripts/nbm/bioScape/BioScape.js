@@ -11,7 +11,7 @@
  *  summarization layers to use for this bioScape
  * @constructor
  */
-var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers) {
+var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape) {
     this.id = id;
     this.title = title;
     this.summary = summary;
@@ -20,6 +20,7 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
     this.definitionUrl = 'https://www.sciencebase.gov/catalog/item/5667124be4b06a3ea36c8be6';
     this.definition = 'There is no definition available currently, ScienceBase was unreachable.';
     this.rightPanelMessage = rightPanelMessage;
+    this.customBioscape = customBioscape;
     setDefinition(this);
     this.state = {};
 
@@ -34,6 +35,9 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
                 if(data && data.body) {
                     that.definition = data.body;
                 }
+            })
+            .catch(function() {
+                console.log('There was an issue trying to get a definition from ScienceBase.');
             });
     }
 
@@ -182,8 +186,12 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      */
     this.updateState = function() {
         var tempState = {};
+
         var layers = this.getSelectedLayers();
         if(layers.length < 1) {
+            if (this.customBioscape) {
+                tempState.customBioscape = this.customBioscape;
+            }
             return tempState;
         }
         var arr = [];
@@ -193,6 +201,10 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
         });
         if(arr.length) {
             tempState.layers = arr.join(';');
+        }
+
+        if (this.customBioscape) {
+            tempState.customBioscape = this.customBioscape;
         }
 
         this.state = tempState;

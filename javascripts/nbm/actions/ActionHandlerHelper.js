@@ -16,6 +16,7 @@ var ActionHandlerHelper = function () {
     this.state = {};
     this.canDownloadPdf = false;
     this.headerSent = false;
+    this.crossoverBaps = [];
 };
 
 /**
@@ -43,38 +44,28 @@ ActionHandlerHelper.prototype.createActionHandler = function (actionConfig, laye
 ActionHandlerHelper.prototype.addDrawCapability = function () {
     var that = this;
     if (!drawnItems) {
+        $("#mapControlContainer").append(getHtmlFromJsRenderTemplate('drawPolygon'));//add the controls
+        var controls = $('#polygonControls');
+        controls.on('hide.bs.dropdown', function(e) {
+            if(drawing) {
+                e.preventDefault();
+            }
+        });
+
         //Create the object to store the drawn polygon and add it to the map
         drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
-        map.addControl(new L.Control.Draw({
-            // edit: {
-            //     featureGroup: drawnItems,
-            //     poly: {
-            //         allowIntersection: false
-            //     }
-            // },
-            draw: {
-                polygon: {
-                    allowIntersection: false,
-                    showArea: true
-                },
-                marker: false,
-                circle: false,
-                rectangle: false,
-                polyline: false
-            }
-        }));
 
         //The 'drawing' boolean is a global variable used to prevent the click from propagating to the map if the user
         //is currently drawing
         map.on(L.Draw.Event.CREATED, function (event) {
             drawing = false;
+            controls.removeClass('open');//closes the dropdown options for drawing
             var layer = event.layer;
 
             drawnItems.addLayer(layer);
 
-            that.showTempPopup("Click the \"Submit Polygon\" button at the top to submit this polygon for analysis.");
-            that.showSubmitButton();
+            that.showTempPopup("Click the \"Submit\" button at the top to submit this polygon for analysis.");
         });
 
         map.on(L.Draw.Event.DRAWSTART, function () {
@@ -87,22 +78,6 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
             drawing = false;
         });
 
-        map.on(L.Draw.Event.DELETESTART, function () {
-            drawing = true;
-        });
-
-        map.on(L.Draw.Event.DELETESTOP, function () {
-            drawing = false;
-        });
-
-        map.on(L.Draw.Event.EDITSTART, function () {
-            drawing = true;
-        });
-
-        map.on(L.Draw.Event.EDITSTOP, function () {
-            drawing = false;
-        });
-
         this.initializeSubmitButton();
     }
 };
@@ -111,15 +86,26 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
  * Create and show the submit button. The button is shown only if there are layers turned on with the "drawPolygon" action
  */
 ActionHandlerHelper.prototype.initializeSubmitButton = function () {
-    this.submitPolygonButton = $("<a id='submitPolygonButton' class='unit_info_poly overMap mapControl grayLink' " +
-        "style='padding: 4px 5px 5px 5px;' data-toggle='tooltip' data-placement='bottom' title='Click on the polygon below the zoom " +
-        "controls to begin drawing a polygon on the map. When the polygon is finished, click this button to submit it " +
-        "for analysis.'>Submit Polygon</a>");
-    $("#mapControlContainer").append(this.submitPolygonButton);
+    var polygonDraw = new L.Draw.Polygon(map, {
+        allowIntersection: false,
+        showArea: true
+    });
+
+    $('#polygonDropdown').on('click', function() {
+        polygonDraw.enable();
+    });
+    $('#finishPolygon').on('click', function() {
+        polygonDraw.completeShape();
+    });
+    $('#deletePoint').on('click', function() {
+        polygonDraw.deleteLastVertex();
+    });
+    $('#cancelPolygonDraw').on('click', function() {
+        polygonDraw.disable();
+    });
 
     var that = this;
-
-    this.submitPolygonButton.on ("click", function () {
+    $('#submitPolygon').on('click', function () {
         that.canDownloadPdf = false;
         that.handleDrawPolygonActions()
             .then(function () {
@@ -132,7 +118,8 @@ ActionHandlerHelper.prototype.initializeSubmitButton = function () {
  * When a polygon is submitted, trigger the actions for all enabled "drawPolygon" action handlers
  */
 ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
-    if (!drawnItems) return;
+    if (!drawnItems || !drawnItems.getLayers().length) return Promise.resolve();
+    this.headerSent = false;
     this.cleanUp(false, true);
 
     this.populateBottomBarWithClick();
@@ -182,11 +169,11 @@ ActionHandlerHelper.prototype.initializeRightPanel = function () {
     RightPanelBar.open();
     // this.populateBottomBarWithClick();
 
-    $('#rightPanelReset').click(function() {
+    $('#rightPanelReset').on('click', function() {
         that.cleanUp(true);
         updateUrlWithState();
     });
-    $("#closeOverlay").click(function () {
+    $("#closeOverlay").on('click', function () {
         $("#enlargedBAPContainer").fadeOut(300, function () {
             toggleUnitInfoBar();
         });
@@ -223,13 +210,14 @@ ActionHandlerHelper.prototype.cleanUp = function(hideBar, skipPolygonHandler) {
     } else {
         clearSynthComp();
     }
-
     function clearSynthComp() {
         $('#synthesisCompositionDetails').html('');
         $('#synthCompBottomBar').html('');
         $('#synthesisCompositionBody').html('');
     }
 };
+
+
 
 /**
  * If the action was a click, show the lat/lng of the click. Otherwise, the action could have been a polygon submission.
@@ -260,6 +248,7 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
     var visibleLayers = bioScape.getVisibleLayers();
     this.enabledActions = [];
     this.additionalParams = [];
+    this.crossoverBaps = [];
 
     var that = this;
     $.each(actionHandlers, function (index, actionHandler) {
@@ -273,8 +262,17 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
             that.enabledActions.push(actionHandler)
         }
 
-        if (isVisible && actionHandler.additionalParams) {
-            that.additionalParams.push(actionHandler.additionalParams)
+        if (isVisible) {
+            if (actionHandler.additionalParams) {
+                that.additionalParams.push(actionHandler.additionalParams)
+            }
+            if (actionHandler.crossoverBaps) {
+                $.each(actionHandler.crossoverBaps, function (index, bap) {
+                    if (that.crossoverBaps.indexOf(bap) == -1) {
+                        that.crossoverBaps.push(bap);
+                    }
+                });
+            }
         }
     });
 
@@ -290,21 +288,23 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
     });
 
     if (canDraw) {
-        $(".leaflet-draw, #submitPolygonButton").show()
+        $(".leaflet-draw, #polygonControls").show()
     } else {
-        $(".leaflet-draw, #submitPolygonButton").hide();
+        $(".leaflet-draw, #polygonControls").hide();
         this.cleanUpDrawnPolygons();
     }
 };
 
-ActionHandlerHelper.prototype.handleEverything = function (latLng) {
+ActionHandlerHelper.prototype.handleEverything = function (latLng, isDifferentFeatureSelected) {
     var that = this;
     this.canDownloadPdf = false;
-    return this.handleActions(latLng)
+    return this.handleActions(latLng, isDifferentFeatureSelected)
         .then(function (data) {
             var hasData = false;
             $.each(data, function (index, obj) {
-                if (!obj.noData) hasData = true;
+                if (obj != null && !obj.noData) {
+                    hasData = true;
+                }
             });
             if (!hasData) {
                 that.loadEmptySynthComp("No data is available for the point clicked.");
@@ -318,7 +318,7 @@ ActionHandlerHelper.prototype.handleEverything = function (latLng) {
  * actions.
  * @param {Object} latLng - L.LatLng
  */
-ActionHandlerHelper.prototype.handleActions = function (latLng) {
+ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatureSelected) {
     this.headerSent = false;
     this.cleanUp(false);
     this.updateClick(latLng);
@@ -331,12 +331,11 @@ ActionHandlerHelper.prototype.handleActions = function (latLng) {
 
     $.each(this.enabledActions, function (index, actionHandler) {
         if (actionHandler.type != "drawPolygon") {
-
             if (!actionHandler.headerBap) {
-                promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams));
+                promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
             } else {
                 $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
-                promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index));
+                promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
             }
         }
     });
@@ -349,7 +348,6 @@ ActionHandlerHelper.prototype.handleActions = function (latLng) {
  * of the layers changing, resend all of the trigger actions with the updated enabledActions
  */
 ActionHandlerHelper.prototype.handleLayerChange = function () {
-    var that = this;
     var currentActions = [];
     var currentParams = [];
 
@@ -385,6 +383,8 @@ ActionHandlerHelper.prototype.handleLayerChange = function () {
         } else if (this.marker && !hasClickActions) {
             this.cleanUp(false);
             this.loadEmptySynthComp();
+        } else {
+            this.handleDrawPolygonActions();
         }
     }
 };
@@ -420,22 +420,6 @@ ActionHandlerHelper.prototype.cleanUpDrawnPolygons = function () {
         drawnItems = new L.FeatureGroup();
         map.addLayer(drawnItems);
     }
-};
-
-/**
- * This just adds a little animation effect to the "Submit Polygon" button when the user finishes drawing a polygon.
- */
-ActionHandlerHelper.prototype.showSubmitButton = function () {
-    var that = this;
-    this.submitPolygonButton.animate({
-        "padding": "7px",
-        "color": "white"
-    }, 300, "swing", function () {
-        that.submitPolygonButton.animate({
-            "padding": "4px 5px 5px 5px",
-            "color": "#f3f3f3"
-        }, 300, "swing");
-    });
 };
 
 /**
@@ -475,8 +459,8 @@ ActionHandlerHelper.prototype.initializeAllBaps = function () {
     var that = this;
     var promises = [];
     $.each(actionHandlers, function (index, handler) {
-        if (handler.baps) {
-            $.each(handler.baps, function (index, bap) {
+        if (handler.getAllBapsToProcess().length) {
+            $.each(handler.getAllBapsToProcess(), function (index, bap) {
                 promises.push(sendJsonAjaxRequest(myServer + "/bap/get", {id: bap})
                     .then(function (myJson) {
                         that.allBaps[myJson.id] = {
@@ -504,7 +488,7 @@ ActionHandlerHelper.prototype.getEnabledBaps = function () {
     var that = this;
 
     $.each(this.enabledActions, function (index, handler) {
-        $.each(handler.baps, function (index, bap) {
+        $.each(handler.getAllBapsToProcess(), function (index, bap) {
             if (bap) {
                 if (retBaps.indexOf(that.allBaps[bap]) == -1) {
                     retBaps.push(that.allBaps[bap]);
@@ -565,4 +549,14 @@ ActionHandlerHelper.prototype.loadEmptySynthComp = function(message) {
 
         return Promise.resolve(html);
     }
+};
+
+ActionHandlerHelper.prototype.handleBapError = function (id, message) {
+    var bap = this.sc.baps[id];
+
+    if (!bap) return false;
+
+    bap.setErrorMessage(message);
+
+    return true;
 };

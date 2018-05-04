@@ -29,7 +29,7 @@ a {
 }
 
 strong {
-    color: orange
+    color: orange;
 }
 
 #map {
@@ -449,12 +449,30 @@ div.table {
     z-index: 1000;
 }
 
-.mapControl {
-    padding: 5px;
+.mapControl, .mapControlGroup {
     border-radius: 10px;
     margin: 10px 0 5px 10px;
     position: relative;
     float: left;
+}
+.mapControl {
+    padding: 5px;
+}
+.mapControl i, .mapControlGroup i {
+    font-size:18px;
+    vertical-align:middle;
+}
+div.mapControlGroup > a {
+    float: left;
+    padding: 5px;
+    border-left: 1px solid #f3f3f3;
+}
+div.mapControlGroup > a:first-child {
+    border-left: none;
+    border-radius: 10px 0 0 10px;
+}
+div.mapControlGroup > a:last-child {
+    border-radius: 0 10px 10px 0;
 }
 
 .action {
@@ -755,6 +773,25 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     border: 1px solid white;
 }
 
+.matrix-box {
+    height: 140px;
+    text-align: center;
+    display: table;
+    border: 1px solid black;
+}
+.matrix-text {
+    display: table-cell;
+    vertical-align: middle;
+}
+.matrix-axis-title {
+    width: 450px;
+    font-weight: bold;
+    text-align: center;
+}
+.matrix-dark {
+    color:black;
+}
+
 .big-matrix {
     margin: 50px auto 0;
     width: 650px;
@@ -776,11 +813,6 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     font-size: 11px;
 }
 
-.leaflet-top.leaflet-left {
-    left: 400px;
-    top: 0;
-}
-
 .grayLink a, a.grayLink, .grayLink a:visited, a.grayLink:visited  {
     color: #f3f3f3;
     cursor: pointer;
@@ -788,6 +820,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 .grayLink a:hover, a.grayLink:hover, .btn:focus {
     color: #cccccc;
+    background-color: rgb(10, 10, 15);
 }
 
 .summary > a {
@@ -995,4 +1028,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 #footer-text {
     padding-left: 19px;
+}
+
+.contacts-web-links {
+    margin-left: 20px;
 }

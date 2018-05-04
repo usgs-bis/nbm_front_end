@@ -11,9 +11,11 @@
 var Initializer = (function(initializer) {
     var PRETTY_URL_MAP = {
         biogeography: '5667130ee4b06a3ea36c8be8',
+        nbm_front_end: '5667130ee4b06a3ea36c8be8',
         cnr: '57b625d2e4b03fd6b7d83e1f',
         nvcs: '5810cd6fe4b0f497e7975237',
-        npn: '58a5f318e4b057081a24f6ab'
+        'terrestrial-ecosystems-2011': '5810cd6fe4b0f497e7975237',
+        npn: '591c7160e4b0a7fdb43dea93'
     };
     var disclaimerModal = {
         closeRightPanel: true,
@@ -24,7 +26,7 @@ var Initializer = (function(initializer) {
     function initialize() {
         displayBetaBanner();
         var state = {};
-        var bioScapeId = '58d1942ce4b0236b68f6b7d1';//Default is set to the National Biogeographic Map
+        var bioScapeId = '5667130ee4b06a3ea36c8be8';//Default is set to the National Biogeographic Map
 
         var path = window.location.pathname.replace(homePath, '');
         if (path.length > 1) {
@@ -34,6 +36,10 @@ var Initializer = (function(initializer) {
         //if there is a hash in the url get the bioScapeId and initial map setting from the url elements after the hash
         if (window.location.hash.length > 0) {
             state = parseHash(window.location.hash);
+        }
+
+        if (state.customBioscape) {
+            bioScapeId = state.customBioscape;
         }
 
         disclaimerModal.element = $('#disclaimerModal');
@@ -63,18 +69,71 @@ var Initializer = (function(initializer) {
 
                 return configUrl;
             })
-            .then(function(data) {
-                return Promise.resolve($.getJSON(data));
+            .then(function(url) {
+                return new Promise(function (resolve, reject) {
+                    $.getJSON(url)
+                        .done(function(data) {
+                            if (data.isLastPage) {
+                                resolve(parseConfigFromBitBucket(data.lines));
+                            } else {
+                                //Bitbucket only delivers the first 500 lines for calls like this. If we try to get the
+                                //raw file, we get a CORS issue. Here's the solution for now... If we have files over 1000
+                                //lines, we'll have to make this a loop rather than a single check.
+                                $.getJSON(url + "?start="+data.size)
+                                    .done (function (newData) {
+                                        data.lines = data.lines.concat(newData.lines);
+                                        resolve(parseConfigFromBitBucket(data.lines));
+                                    });
+                            }
+                        });
+                });
             })
             .then(function(data) {
                 setupPage(bioscapeJson, data, state);
             })
             .catch(function(err) {
-                console.log('There was an error trying to receive information from ScienceBase: ' + err + '. The default National Biogeographic Map will be loaded.');
-                $.getJSON('https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json')
+                showErrorDialog('The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.', 'Warning');
+                // console.log('There was an error trying to receive information from ScienceBase: ', err, '. The default National Biogeographic Map will be loaded.');
+                console.log('id = '+ bioScapeId);
+                var bbBioScape;   //Bitbucket bioScape
+                switch(id){
+                    case 'biogeography':
+                    case 'nbm_front_end':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
+                        break;
+                    case 'cnr':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/cnr_config.json' ;
+                        break;
+                    case 'npn':
+                         bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json' ;
+                        break;
+                    case 'nvcs':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
+                        break;
+                    case 'terrestrial-ecosystems-2011':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
+                        break;
+                    default:    // Probably not needed, but just in case
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
+                }
+
+                $.getJSON(bbBioScape)
                     .done(function(data) {
-                        var json = parseConfigFromBitBucket(data.lines);
-                        setupPage(bioscapeJson, json, state);
+                        if (data.isLastPage) {
+                            var json = parseConfigFromBitBucket(data.lines);
+                            setupPage(bioscapeJson, json, state);
+                        } else {
+                            //Bitbucket only delivers the first 500 lines for calls like this. If we try to get the
+                            //raw file, we get a CORS issue. Here's the solution for now... If we have files over 1000
+                            //lines, we'll have to make this a loop rather than a single check.
+                            $.getJSON(bbBioScape + "?start="+data.size)
+                                .done (function (newData) {
+                                    data.lines = data.lines.concat(newData.lines);
+                                    var json = parseConfigFromBitBucket(data.lines);
+
+                                    setupPage(bioscapeJson, json, state);
+                            });
+                        }
                     });
             });
     }
@@ -278,19 +337,19 @@ var Initializer = (function(initializer) {
      */
     function bindBioScapeEvents() {
         //when a user clicks one of the layer section titles
-        $('div.layerExpander').click(function() {
+        $('div.layerExpander').on('click', function() {
             var id = $(this).data('section');
             toggleContainer(id);
         });
         //when a user clicks any layer control in the pane
-        $('.layer-control').click(function(e) {
+        $('.layer-control').on('click', function(e) {
             if(isDisabled(e.currentTarget)) {
                 return;
             }
             toggleLayer(this.parentElement.id, this.parentElement.parentElement.id);
         });
         //when the user clicks an information icon
-        $('.layerMoreInfo').click(function() {
+        $('.layerMoreInfo').on('click', function() {
             displayInfo($(this).data('layer'));
         });
         //when the user changes the opacity slider
@@ -298,14 +357,14 @@ var Initializer = (function(initializer) {
             updateLayerOpacity(this.parentElement.parentElement.id, this.parentElement.parentElement.parentElement.id, $(this).val());
         });
         //when user clicks the show legend button
-        $('.displayLegendLink').click(function(e) {
+        $('.displayLegendLink').on('click', function(e) {
             if(isDisabled(e.currentTarget)) {
                 return;
             }
             showLegendDialog();
         });
         //when a user selects a bioScape from the bioScape selection modal
-        // $('.bioScapeSelect').click(function(e) {
+        // $('.bioScapeSelect').on('click', function(e) {
         //     //set the hash to the value of the clicked element (the ScienceBase id)
         //     window.location.href = "#" + $(this).val();
         //     //reload the page with the new hash

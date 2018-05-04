@@ -73,11 +73,52 @@
 <script id="bioScapeInfoDiv" type="text/x-jsrender">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="generalModalLabel">{{:title}}</h4>
+        {{if alternateTitles}}
+            <h4 class="modal-title" id="generalModalLabel">{{:alternateTitles[0]}}</h4>
+        {{else}}
+            <h4 class="modal-title" id="generalModalLabel">{{:title}}</h4>
+        {{/if}}
     </div>
-    <div class="modal-body" style="font-size:16px;">
+    <div class="modal-body">    <!--style="font-size:16px;" removed per Don's observation 5/23/17-->
         {{if body}}
             {{:body}}
+            {{if contacts && contacts.length > 0}}
+                <h5><strong>Contacts:</strong></h5>
+                    <div class="contacts-web-links">
+                        <span>
+                            <ul>
+                                {{for contacts}}
+                                    <li>
+                                        Name:&nbsp;{{:name}}
+                                        {{if email}}
+                                            <br>Email:&nbsp;&nbsp;{{:email}}
+                                        {{/if}}
+                                    </li>
+                                {{/for}}
+                            </ul>
+                        </span>
+                    </div>
+            {{/if}}
+            {{if webLinks && webLinks.length > 0}}
+                <div class="generalInfo">
+                <h5><strong>Web Links:</strong></h5>
+                <div class="contacts-web-links">
+                    <span>
+                        <ul>
+                            {{for webLinks}}
+                                <li>
+                                    {{if title}}
+                                        <a class="webLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:title}}</a>
+                                    {{else}}
+                                        <a class="webLink" target="_blank" title="{{:uri}}" href="{{:uri}}">{{:uri}}</a>
+                                    {{/if}}
+                                </li>
+                            {{/for}}
+                        </ul>
+                    </span>
+                </div>
+            </div>
+            {{/if}}
             {{if citation}}
                 <div style="margin-top:10px;font-size:14px;"><strong>Citation: </strong>{{:citation}}</div>
             {{/if}}

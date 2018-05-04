@@ -11,6 +11,10 @@ var BAP = function(serverAP, leaveOutJson) {
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
+    this.alternateTitles = serverAP.alternateTitles;
+    this.contacts = serverAP.contacts;
+    this.webLinks = serverAP.webLinks;
+
     this.id = serverAP.id;
     if (!this.config.data) this.config.data = {};
     this.description = this.config.data.description;
@@ -29,9 +33,14 @@ var BAP = function(serverAP, leaveOutJson) {
 };
 
 BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
+    //console.dir(serverAP)
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
+    this.alternateTitles = serverAP.alternateTitles;
+    this.contacts = serverAP.contacts;
+    this.webLinks = serverAP.webLinks;
+
     this.id = serverAP.id;
     if (!this.config.data) this.config.data = {};
     this.description = this.config.data.description;
@@ -48,6 +57,9 @@ BAP.prototype.getInfoDivModel = function () {
     return {
         divId: this.id,
         title: this.title,
+        alternateTitles: this.alternateTitles,
+        contacts: this.contacts,
+        webLinks: this.webLinks,
         description: this.description,
         bapReference: this.bapReference,
         lastUpdated: this.lastUpdated
@@ -58,6 +70,9 @@ BAP.prototype.getInfoDivInfo = function () {
     return {
         divId: this.id,
         title: this.title,
+        alternateTitles: this.alternateTitles,
+        contacts: this.contacts,
+        webLinks: this.webLinks,
         description: this.description,
         bapReference: this.bapReference,
         lastUpdated: this.lastUpdated
@@ -70,7 +85,11 @@ BAP.prototype.initializeWidgets = function () {
     var that = this;
 
     $.each(that.config.charts, function (index, chart) {
-        that.widgets.push(widgetHelper.getWidget(chart))
+        if (chart.error) {
+            actionHandlerHelper.showTempPopup("Error retrieving chart data for BAP, " + that.title);
+        } else {
+            that.widgets.push(widgetHelper.getWidget(chart))
+        }
     });
 };
 
@@ -80,6 +99,7 @@ BAP.prototype.getWidgetHtml = function () {
     var that = this;
 
     $.each(that.widgets, function (index, widget) {
+        if (!widget) return;
         html += widget.getHtml();
     });
 
@@ -90,9 +110,16 @@ BAP.prototype.getFullHtml = function () {
     var widgetHtml = this.getWidgetHtml();
     var infoDivModel = this.getInfoDivModel();
 
+    var title =  this.title;
+    var altTitle = this.alternateTitles;
+
+    if ( altTitle ) {
+        title = altTitle[0];
+    }
+
     var apViewModel = {
         id: this.config.id,
-        title: this.config.title,
+        title: title,
         hasInfoDiv: infoDivModel,
         simplified: this.simplified,
         openByDefault: this.config.openByDefault,
@@ -115,13 +142,16 @@ BAP.prototype.getFullHtml = function () {
         }
         var containerId = info.divId + "InfoDiv";
         var selector = "#" + containerId;
-        if ($(selector).size() == 0) {
+        if ($(selector).length === 0) {
             addModalContainerDivToBody(containerId);
         }
 
         var viewData = {
             id: info.divId + "Modal",
             title: info.title,
+            alternateTitles: info.alternateTitles,
+            contacts: info.contacts,
+            webLinks: info.webLinks,
             description: info.description,
             bapReference: info.bapReference,
             lastUpdated: info.lastUpdated
@@ -151,12 +181,12 @@ BAP.prototype.initializeChartLibraries = function () {
 BAP.prototype.bindClicks = function () {
     var that = this;
 
-    $("#" + this.config.id + "BapCase div.layerExpander").click(function() {
+    $("#" + this.config.id + "BapCase div.layerExpander").on('click', function() {
         var id = $(this).data('section');
         toggleContainer(id);
     });
 
-    $("#"+this.config.id).click(function(e) {
+    $("#"+this.config.id).on('click', function(e) {
         $("#"+that.config.id+"Modal").modal('show');
         e.stopPropagation();
     });
@@ -230,4 +260,9 @@ BAP.prototype.toggleSimplifiedFeature = function () {
     } else {
         this.simplifiedFeature.addTo(map);
     }
+};
+
+BAP.prototype.setErrorMessage = function (message) {
+    var that = this;
+    this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', {error: message, id: that.id}));
 };

@@ -60,7 +60,7 @@ var BoxAndWhiskerWidget = function(serverAP) {
             }
         });
 
-        button.click(function() {
+        button.on('click', function() {
             actionHandlerHelper.showTempPopup("Larger or more complex polygons will take longer to process");
             if(chart) {
                 chart.clear();

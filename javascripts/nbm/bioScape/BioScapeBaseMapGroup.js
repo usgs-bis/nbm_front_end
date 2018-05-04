@@ -49,10 +49,10 @@ BioScapeBaseMapGroup.prototype.addHtmlToPage = function() {
         var id = '#' + $(e.target).attr('aria-describedby');
         var popover = $(id);
 
-        popover.find('.close').click(function(){
+        popover.find('.close').on('click', function(){
             baseMapContainer.popover('hide');
         });
-        $('.baseMapSelect').click(function() {
+        $('.baseMapSelect').on('click', function() {
             self.toggleLayer(this.id);
             setTimeout(function() {
                 baseMapContainer.popover('hide');

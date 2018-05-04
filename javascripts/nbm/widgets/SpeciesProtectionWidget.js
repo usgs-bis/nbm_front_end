@@ -29,18 +29,17 @@ var SpeciesProtectionWidget = function (chartConfig) {
     };
 
     this.initializeWidget = function() {
-        var taxaType = 'all';
         initializeSpeciesCharts();
-        $("input[name='taxaType']").change(function() {
+        $("input[name='taxaType']").on('change', function() {
             currentSpeciesTaxaType = this.value;
             currentSpeciesData = getSpeciesListForTaxaType();
             resetSpeciesTable();
             updateSpeciesCharts();
         });
-        $("#resetSpeciesTable").click(function() {
+        $("#resetSpeciesTable").on('click', function() {
             resetSpeciesTable();
         });
-        $("#spNameCheckbox").click(function () {
+        $("#spNameCheckbox").on('click', function () {
             toggleSpeciesName(this);
         });
     };

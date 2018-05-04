@@ -3,17 +3,17 @@
 function setUpIndexPage(isSmallScreen, verticalOrientation) {
     updateIndexPage(verticalOrientation);
 
-    $("#unit_info_right_control").click(function () {
+    $("#unit_info_right_control").on('click', function () {
         RightPanelBar.toggle();
     });
 
-    $("#unit_info_left_control").click(function () {
+    $("#unit_info_left_control").on('click', function () {
         MenuPanel.toggle();
     });
 
     MenuPanel.open();
 
-    $(window).resize(function() {
+    $(window).on('resize', function() {
         if(preventMultipleOpenPanels() && MenuPanel.isOpen() && RightPanelBar.isOpen()) {
             MenuPanel.close();
         } else if(!preventMultipleOpenPanels() && !MenuPanel.isOpen()) {

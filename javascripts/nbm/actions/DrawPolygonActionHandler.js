@@ -64,7 +64,9 @@ DrawPolygonActionHandler.prototype.processBaps = function () {
 
     var promises = [];
 
-    $.each(this.baps, function (index, bapId) {
+    var bapsToProcess = this.getAllBapsToProcess();
+
+    $.each(bapsToProcess, function (index, bapId) {
         var tempBap = that.getBapValue(bapId);
 
         if (tempBap) {
@@ -144,7 +146,10 @@ DrawPolygonActionHandler.prototype.sendTriggerAction = function (isHeader, heade
     }
 
     if (isHeader) {
-        promises.push(this.processHeaderBap({}, headerBapId));
+        if (!actionHandlerHelper.headerSent) {
+            promises.push(this.processHeaderBap({}, headerBapId));
+            actionHandlerHelper.headerSent = true;
+        }
         promises.push(this.processBaps());
         //     .then(function () {
         //         return that.processBaps();

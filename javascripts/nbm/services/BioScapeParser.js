@@ -26,7 +26,7 @@ var BioScapeParser = (function(bioScapeParser) {
             groups.push(group);
             summarizationLayers = summarizationLayers.concat(group.getSummarizationLayers());
         }
-        return new BioScape(data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers);
+        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape);
     }
 
     /**
@@ -82,10 +82,10 @@ var BioScapeParser = (function(bioScapeParser) {
                 var id = '#' + $(e.target).attr('aria-describedby');
                 var popover = $(id);
 
-                popover.find('.close').click(function(){
+                popover.find('.close').on('click', function(){
                     downloadButton.popover('hide');
                 });
-                $('.layerDownload').click(function() {
+                $('.layerDownload').on('click', function() {
                     $(this).tooltip('hide');
                     var layer = bioScape.getLayer(this.id);
 
@@ -110,7 +110,7 @@ var BioScapeParser = (function(bioScapeParser) {
      */
     function parseGroupFromServer(index, serverGroup, layers) {
         var id = 'section' + index;
-        if(serverGroup.title.toLowerCase() === ('basemaps' || 'basemap')) {
+        if(serverGroup.title.toLowerCase() === 'basemaps' || serverGroup.title.toLowerCase() === 'basemap') {
             return new BioScapeBaseMapGroup('basemaps', serverGroup, layers);
         }
         return new BioScapeGroup(id, serverGroup, layers);

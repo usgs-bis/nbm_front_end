@@ -19,7 +19,7 @@ var EcosystemProtectionWidget = function (chartData) {
         initializeEcoProtectionChart();
         initializeGapCharts();
         initializeCoverageChart();
-        $("#resetEcosTable").click(function() {
+        $("#resetEcosTable").on('click', function() {
             resetEcosTable();
         });
     };
@@ -284,7 +284,7 @@ var EcosystemProtectionWidget = function (chartData) {
         var pieChartData = AmChartsHelper.getChartDataFromJsonArray(ecoProtection.ecosystem_coverage_data, 2);
         ecoCoverageChart = AmChartsHelper.getAmPieChart('', pieChartData, balloonText);
         ecoCoverageChart.marginTop = -40;
-        ecoCoverageChart.numberFormatter = {precision:2, decimalSeparator:'.', thousandsSeparator:','};
+        ecoCoverageChart.numberFormatter = {precision:0, decimalSeparator:'.', thousandsSeparator:','};
         ecoCoverageChart.marginBottom = -40;
 
         var legend = AmChartsHelper.getAmLegend();

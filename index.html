@@ -38,34 +38,26 @@
         var homePath = "";
     </script>
     <script src="applicationProperties.js"></script>
-    <script src="javascripts/third_party/jquery-1.11.3/jquery-1.11.3.js"></script>
+    <script src="javascripts/third_party/jquery-3.2.1/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="javascripts/application.js" ></script>
 
     <script type="text/javascript" src="javascripts/third_party/bootstrapcdn/bootstrap.min.js" ></script>
 
-    <script type="text/javascript" src="javascripts/third_party/jquery-ui-1.11.4.custom/jquery-ui.min.js" ></script>
+    <script type="text/javascript" src="javascripts/third_party/jquery-ui-1.12.1.custom/jquery-ui.min.js" ></script>
     <script type="text/javascript" src="javascripts/third_party/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js" ></script>
 
     <link rel="stylesheet" href="stylesheets/third_party/bootstrapcdn/bootstrap.min.css" >
     <link rel="stylesheet" href="stylesheets/third_party/bootstrapcdn/font-awesome.min.css" >
     <link rel="stylesheet" href="javascripts/third_party/leaflet.draw/leaflet.draw.css" >
 
-    <link rel="stylesheet" href="stylesheets/third_party/jquery-ui-1.11.4.custom/jquery-ui.min.css" >
+    <link rel="stylesheet" href="stylesheets/third_party/jquery-ui-1.12.1.custom/jquery-ui.min.css" >
     <link rel="stylesheet" href="stylesheets/third_party/leaflet-1.0.1/leaflet.css" >
     <link rel="stylesheet" href="stylesheets/third_party/amcharts/plugins/export/export.css" >
     <link rel="stylesheet" href="stylesheets/styles.nonmin.css" >
     <link rel="stylesheet" href="stylesheets/bcb.css" >
     <link rel="stylesheet" href="stylesheets/bcb_mobile.css" >
 
-    <!--<link rel="stylesheet" href="stylesheets/styles.nonmin.css" >-->
-    <!--<link rel="stylesheet" href="stylesheets/bcb_mobile.css" >-->
     <link rel="stylesheet" href="stylesheets/third_party_overrides.css" >
-
-    <!--<link rel="stylesheet" href="stylesheets/application.css" >-->
-    <!--<link rel="stylesheet" href="stylesheets/errors.css" >-->
-    <!--<link rel="stylesheet" href="stylesheets/main.css" >-->
-    <!--<link rel="stylesheet" href="stylesheets/mobile.css" >-->
-    <!--<link rel="stylesheet" href="stylesheets/nbm_css.css" >-->
 
     <title>Biogeography</title>
 </head>
@@ -250,17 +242,19 @@
     <span id="beta-banner" data-toggle="modal" data-target="#disclaimerModal">beta</span>
 </script>
 
-<script type="text/javascript" src="javascripts/third_party/w3data/w3data.js"></script>
-<!--<div w3-include-html="javascripts/templates/_modals.html"></div>-->
-<div w3-include-html="javascripts/templates/_bioScapeTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_mapButtons.html"></div>
-<div w3-include-html="javascripts/templates/_modalTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_panelTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_speciesModal.html"></div>
-<div w3-include-html="javascripts/templates/_synthCompTemplates.html"></div>
-<div w3-include-html="javascripts/templates/_ecoregionContextReport.html"></div>
-<div w3-include-html="javascripts/templates/_lmeContextReport.html"></div>
-<div w3-include-html="javascripts/templates/_synthesisComposition.html"></div>
+<!--<script type="text/javascript" src="javascripts/third_party/w3data/w3data.js"></script>-->
+<!--<div html-template="javascripts/templates/_modals.html"></div>-->
+<div html-template="javascripts/templates/_bioScapeTemplates.html"></div>
+<div html-template="javascripts/templates/_mapButtons.html"></div>
+<div html-template="javascripts/templates/_modalTemplates.html"></div>
+<div html-template="javascripts/templates/_panelTemplates.html"></div>
+<div html-template="javascripts/templates/_speciesModal.html"></div>
+<div html-template="javascripts/templates/_synthCompTemplates.html"></div>
+<div html-template="javascripts/templates/_ecoregionContextReport.html"></div>
+<div html-template="javascripts/templates/_lmeContextReport.html"></div>
+<div html-template="javascripts/templates/_synthesisComposition.html"></div>
+
+<div id="templateHolder"></div>
 
 <div id="tempPopupMessage"></div>
 
@@ -300,8 +294,6 @@
 <script type="text/javascript" src="javascripts/third_party/topojson/topojson-simplify@2.0.0.js" ></script>
 
 <script type="text/javascript" src="javascripts/nbm/utilities.js" ></script>
-<script type="text/javascript" src="javascripts/bioscape/submit.js" ></script>
-<script type="text/javascript" src="javascripts/bioscape_scripts.js" ></script>
 <script type="text/javascript" src="javascripts/nbm/SynthesisComposition.js" ></script>
 <script type="text/javascript" src="javascripts/nbm/actions/ActionHandler.js" ></script>
 <script type="text/javascript" src="javascripts/nbm/actions/ActionHandlerHelper.js" ></script>
@@ -343,7 +335,7 @@
 <script type="text/javascript" src="javascripts/nbm/widgets/HierarchyTableWidget.js" ></script>
 <script type="text/javascript" src="javascripts/nbm/widgets/SpeciesProtectionWidget.js" ></script>
 <script type="text/javascript" src="javascripts/nbm/widgets/SpeciesRichnessWidget.js" ></script>
-<script type="text/javascript" src="javascripts/nbm_scripts.js" ></script>
+<script type="text/javascript" src="javascripts/nbm/widgets/BarChartWidget.js" ></script>
 
 <script type="text/javascript" src="javascripts/third_party/leaflet-1.0.1/leaflet-src.js" ></script>
 <script type="text/javascript" src="javascripts/third_party/leaflet.draw/leaflet.draw.js" ></script>
@@ -356,8 +348,6 @@
 <script type="text/javascript" src="javascripts/nbm/index.js" ></script>
 
 <script>
-    w3IncludeHTML();
-
     $(document).ready( function () {
         $("#frontEndVersion").text(appVersion);
 

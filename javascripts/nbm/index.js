@@ -9,7 +9,10 @@ var actionHandlerHelper = new ActionHandlerHelper();
 var widgetHelper = new WidgetHelper();
 
 window.onload = function() {
-    LeafletMapService.initializeMap();
-    setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
-    Initializer.initialize();
+    loadHtmlTemplates()
+        .then(function () {
+            LeafletMapService.initializeMap();
+            setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
+            Initializer.initialize();
+        });
 };

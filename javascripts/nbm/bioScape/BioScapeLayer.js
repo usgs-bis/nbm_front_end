@@ -147,7 +147,10 @@ BioScapeLayer.prototype.getMetadata = function() {
         .then(function(data) {
             return {
                 title: that.title,
+                alternateTitles: data.alternateTitles,
                 body: data.body,
+                contacts: data.contacts,
+                webLinks: data.webLinks,
                 citation: data.citation,
                 url: data.link.url
             }
