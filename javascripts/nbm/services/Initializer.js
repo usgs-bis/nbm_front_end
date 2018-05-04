@@ -14,6 +14,7 @@ var Initializer = (function(initializer) {
         nbm_front_end: '5667130ee4b06a3ea36c8be8',
         cnr: '57b625d2e4b03fd6b7d83e1f',
         nvcs: '5810cd6fe4b0f497e7975237',
+        'terrestrial-ecosystems-2011': '5810cd6fe4b0f497e7975237',
         npn: '591c7160e4b0a7fdb43dea93'
     };
     var disclaimerModal = {
@@ -107,6 +108,9 @@ var Initializer = (function(initializer) {
                          bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json' ;
                         break;
                     case 'nvcs':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
+                        break;
+                    case 'terrestrial-ecosystems-2011':
                         bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
                         break;
                     default:    // Probably not needed, but just in case
