@@ -13,6 +13,7 @@ var Initializer = (function(initializer) {
         biogeography: '5667130ee4b06a3ea36c8be8',
         nbm_front_end: '5667130ee4b06a3ea36c8be8',
         nvcs: '5810cd6fe4b0f497e7975237',
+        'terrestrial-ecosystems-2011': '5810cd6fe4b0f497e7975237',
         npn: '591c7160e4b0a7fdb43dea93',
         phenology: '591c7160e4b0a7fdb43dea93'
     };
@@ -20,6 +21,7 @@ var Initializer = (function(initializer) {
         biogeography: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v3/nbm_config.json',
         nbm_front_end: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v3/nbm_config.json',
         nvcs: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json',
+        'terrestrial-ecosystems-2011': 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json',
         npn: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json',
         phenology: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json'
     };
@@ -136,6 +138,9 @@ var Initializer = (function(initializer) {
                         bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json' ;
                         break;
                     case 'nvcs':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
+                        break;
+                    case 'terrestrial-ecosystems-2011':
                         bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
                         break;
                     default:    // Probably not needed, but just in case
