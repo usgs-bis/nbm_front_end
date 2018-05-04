@@ -229,8 +229,15 @@
 </script>
 
 <script id="GlobalTimeSliderTemplate" type="text/x-jsrender">
-         <span id ="timeSliderLabelLeft" class="sliderLabelLeft">{{:startDate}}</span>
-         <span id ="timeSliderLabelRight" class="sliderLabelRight">{{:endDate}}</span>
-         <div id="GlobalTimeSlider" class="GlobalTimeSlider"></div>
+
+        <span id="GlobalTimeSliderbutton" class="" aria-hidden="true" >
+            <span id="GlobalTimeSliderbuttonPlay" class="glyphicon glyphicon-play-circle timePlayButton" aria-hidden="true" ></span>
+            <span id="GlobalTimeSliderbuttonPause" class="glyphicon glyphicon-pause timePlayButton" aria-hidden="true"  style="display:none;"></span>
+        </span>
+        <span id="GlobalTimeSliderInner">
+            <span id ="timeSliderLabelLeft" class="sliderLabelLeft">{{:startDate}}</span>
+            <span id ="timeSliderLabelRight" class="sliderLabelRight">{{:endDate}}</span>
+            <div id="GlobalTimeSlider" class="GlobalTimeSlider"></div>
+         <span>
 
 </script>

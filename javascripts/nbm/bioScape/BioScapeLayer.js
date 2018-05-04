@@ -27,6 +27,7 @@ var BioScapeLayer = function(id, section, layer) {
     this.layerMetadata = undefined;
     this.baseMap = section.title == "Basemaps" ? true : false;
     this.summarizationRegion = section.title == "Summarization Regions" ? true : false;
+    this.enabled= false;
 };
 inherit(BioScapeLayerBase, BioScapeLayer);
 
@@ -34,10 +35,12 @@ BioScapeLayer.prototype.turnOffLayer = function(keepSelected) {
     BioScapeLayerBase.prototype.turnOffLayer.call(this, keepSelected);
     if (this.hasLegend()) {
         this.legend.clear();
+        this.enabled = false;
     }
 };
 BioScapeLayer.prototype.turnOnLayer = function() {
     var that = this;
+    this.enabled = true;
     return BioScapeLayerBase.prototype.turnOnLayer.call(this)
         .then(function(data) {
             if(data) {

@@ -970,7 +970,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .sliderLabelLeft {
     float:left;
-    margin-right:10px;
+    margin-right:80px;
 }
 .sliderLabelCenter {
     margin-top: 5px;
@@ -1239,7 +1239,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .GlobalTimeSlider span{
-    background-color: #505050 !important;
+    background-color: #505050; 
+    /* !important; */
 }
 
 .GlobalTimeSlider .tooltip, .GlobalTimeSliderRange .tooltip {
@@ -1249,12 +1250,11 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     padding: 5px;
     font-size: 11px;
     visibility: visible;
-    margin-top: -2px;
-    bottom:120%;
     margin-left: -2em;
     opacity: unset;
-    bottom: 15px;
-    left: 4px;
+    bottom: -18px;
+    left: 26px;
+    transform: rotate(135deg);
 }
 
 .GlobalTimeSlider .tooltip .tooltip-arrow, .GlobalTimeSliderRange .tooltip .tooltip-arrow {
@@ -1277,8 +1277,9 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     text-decoration: none;
     background-color: #000000;
     -webkit-border-radius: 4px;
-       -moz-border-radius: 4px;
-            border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    font-weight: bold;
 }
 
 .ui-slider {
@@ -1446,13 +1447,13 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 #bioScapeDetailsLink{
     cursor: pointer;
     white-space: nowrap;
-    top: 18px;
+    top: 40%;
     position: absolute;
     margin-left: 5px;
 }
 
 #bioScapeDetailsLink .fa-circle {
-    margin-right:-18px;
+    position: absolute;
 }
 
 #accordion #collapseOne {
@@ -1472,4 +1473,52 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     width: 500px;
     min-height: 10px;
     margin-top: -20px;
+}
+.customSliderHandle {
+    background-color: transparent !important;
+    transform: rotate(225deg);
+    font-size: 22px;
+    margin-top: -12px;
+    color: #737373 !important;
+    border: none !important;
+    outline-width: 0 !important;
+}
+
+.customSliderHandleRange {
+    color: white !important;
+    background-color: transparent !important;
+    transform: rotate(225deg);
+    font-size: 22px;
+    margin-top: -12px;
+    border: none !important;
+    outline-width: 0 !important;
+}
+
+#GlobalTimeSliderRange span:last-of-type{
+    margin-left: -.68em !important;
+
+}
+#GlobalTimeSliderRange span:first-of-type{
+    margin-left: -.49em !important;
+}
+.timePlayButton {
+    font-size: 23px;
+    color: white;
+    position: absolute;
+    padding-top: 1px;
+
+}
+
+#GlobalTimeSliderInner {
+    padding-left: 30px;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    float: right;
+    padding-top: 1px;
+ 
+
+}
+
+.hideLayerSpinner{
+    display: none !important;
 }
