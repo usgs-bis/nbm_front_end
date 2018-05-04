@@ -101,11 +101,13 @@
             <div class="mapTopCenter">
                 <div class="drop">
                     <div class="panelTitle" style="display:block;">
-                        <h1 id="bioScapeTitle" class="panelTitle" style="display:inline;"></h1>
-                        <span id="bioScapeDetailsLink" data-toggle="collapse" data-target="#bioScapeDetails" >
-                            <i class="fa fa-circle fa-first" aria-hidden="true" style=""></i>
-                            <i class="fa fa-info-circle fa-second" aria-hidden="true"></i>
-                        </span>
+                        <div style="position: relative;">
+                            <h1 id="bioScapeTitle" class="panelTitle" style="display:inline;"></h1>
+                            <span id="bioScapeDetailsLink" data-toggle="collapse" data-target="#bioScapeDetails" >
+                                <i class="fa fa-circle fa-first" aria-hidden="true" ></i>
+                                <i class="fa fa-info-circle fa-second" aria-hidden="true" style="position: absolute;"></i>
+                            </span>
+                        </div>
                     </div>
                     <div id="bioScapeDetails" class="collapse" style="width:75%; margin:auto;"></div>
                 </div>
@@ -191,12 +193,12 @@
             <div id="mapBottomLeft">
                 <div class="row">
                     <div class="col col-md-auto">
-                        <div id="mapScaleContainer" class="unit_info overMap mapControl" style="margin-bottom: 10px;">
+                        <div id="mapScaleContainer" class="unit_info overMap mapControl" style="margin-bottom: 25px;">
                             <div id="mapScale"></div>
                         </div>
                     </div>
                     <div class="col col-md-auto">
-                        <div id="mouseCoordinates" class="unit_info overMap mapControl" style="margin-bottom: 10px;">
+                        <div id="mouseCoordinates" class="unit_info overMap mapControl" style="margin-bottom: 25px;">
                             <span style="font-weight:bold;">Lat</span>:
                             <span id="latCoordinates"></span>,
                             <span style="font-weight:bold;">Lng</span>:
@@ -204,7 +206,8 @@
                         </div>
                     </div>
                     <div class="col col-md-auto">
-                        <div id="GlobalTimeControl" class="unit_info overMap mapControl " style="display:none;">
+                        <div>
+                            <div id="GlobalTimeControl" class="unit_info overMap mapControl " style="display:none;"></div>
                         </div>
                     </div>
                 </div>

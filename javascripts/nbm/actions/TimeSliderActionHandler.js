@@ -11,7 +11,6 @@ var TimeSliderActionHandler = function (config, layer) {
 
     this.gts = new GlobalTimeSlider(config, this)
     this.gts.initialize()
-
     ActionHandler.call(this, config, layer);
 
 };
@@ -28,8 +27,10 @@ let GlobalTimeSlider = function (config, parent) {
     this.defaultDate = parseInt(config.defaultDate) || config.startDate;
     this.autoRangeAdjust = config.autoRangeAdjust;
     this.timeSliderDiv = $("#GlobalTimeControl");
+    this.playButtonDiv = $("#GlobalTimeControlPlay");
     this.ts = $("#GlobalTimeSlider");
     this.layerList = [];
+    this.palying = false;
 
 };
 
@@ -63,6 +64,8 @@ GlobalTimeSlider.prototype.initialize = function () {
     var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + curValue + '</div><div class="tooltip-arrow"></div></div>';
     that.ts.find('.ui-slider-handle').html(tooltip);
 
+    that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass( "glyphicon glyphicon-tag customSliderHandle" );
+
 
     this.ts.slider({
         change: function (event, ui) {
@@ -70,13 +73,28 @@ GlobalTimeSlider.prototype.initialize = function () {
             $.each(that.layerList, function (index, layer) {
                 layer.mapLayer.timeControl = val;
                 layer.mapLayer.leafletLayer.setParams({
-                    "time": val
+                    "time": val,
                 })
                 that.checkoutOfRange(val, layer);
             })
+            var curValue = ui.value || time.defaultDate;
+            var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+            that.ts.find('.ui-slider-handle').html(tooltip);
         }
     });
 
+    $( "#GlobalTimeSliderbutton" ).click(function() {
+
+        if($(GlobalTimeSliderbuttonPlay).is(":visible")){
+            that.play()
+            that.playTimeSlider(true);
+        }
+        else{
+            that.pause()
+            that.playTimeSlider(false);
+
+        }
+      });
 };
 
 
@@ -141,4 +159,82 @@ GlobalTimeSlider.prototype.checkoutOfRange = function (val, layer) {
     }
 
 
+};
+
+
+GlobalTimeSlider.prototype.playTimeSlider = function (play) {
+    let that = this
+    //play 
+    if(play && this.playing){
+        let layerFound = false;
+        $.each(that.layerList, function (index, layer) {
+            if(layer.enabled){
+                layerFound = true
+                let ti = layer.getTimeInfo()
+                let startDate = ti.startDate
+                let endDate = ti.endDate
+                let currValue = that.ts.slider( "value" )
+
+                if(currValue < startDate || currValue > endDate) that.ts.slider( "value",startDate );
+                setTimeout(function(){that.updateTime(ti)}, 2000) 
+            }
+        })
+        if(!layerFound){
+            this.playing = false;
+            $(GlobalTimeSliderbuttonPlay).show()
+            $(GlobalTimeSliderbuttonPause).hide()
+            actionHandlerHelper.showTempPopup("Please select a time enabled layer to use this feature.");
+        } 
+        
+    }
+    // pause
+    else{
+        //this.playing = false;
+        that.pause()
+    }
+
+};
+
+GlobalTimeSlider.prototype.updateTime = function (ti) {
+    let that = this
+    if(this.playing){
+
+        let startDate = ti.startDate
+        let endDate = ti.endDate
+        let currValue = that.ts.slider( "value" )
+
+        if(currValue < startDate || currValue == endDate){
+            that.ts.slider( "value",startDate );
+        }
+        else if(currValue + 1 == endDate){
+            that.ts.slider( "value",currValue + 1 );
+            // $(GlobalTimeSliderbuttonPlay).show()
+            // $(GlobalTimeSliderbuttonPause).hide()
+            // this.playing = false;
+            that.pause()
+            return
+        }
+        else{
+            that.ts.slider( "value",currValue + 1 );
+        }
+        that.playTimeSlider(true)
+    
+       
+       
+    }
+}
+
+GlobalTimeSlider.prototype.play = function () {
+    $(GlobalTimeSliderbuttonPlay).hide()
+    $(GlobalTimeSliderbuttonPause).show()
+    $("#mySpinner").addClass("hideLayerSpinner")
+    this.playing = true
+}
+
+
+GlobalTimeSlider.prototype.pause = function () {
+    $(GlobalTimeSliderbuttonPlay).show()
+    $(GlobalTimeSliderbuttonPause).hide()
+    $("#mySpinner").removeClass("hideLayerSpinner")
+    this.playing = false
 }

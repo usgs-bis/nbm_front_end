@@ -46,7 +46,7 @@ WidgetHelper.prototype.addTimeSlider = function(){
         return (t)
     } 
 
-    $("#GlobalTimeControl").append('<div id="GlobalTimeSliderRange" class=" GlobalTimeSliderRange"></div>')
+    $("#GlobalTimeControl").find("#GlobalTimeSliderInner").append('<div id="GlobalTimeSliderRange" class=" GlobalTimeSliderRange"></div>')
     let globalTs = $("#GlobalTimeSlider").slider( "widget" );
     let ts = $("#GlobalTimeSliderRange")
 
@@ -79,6 +79,7 @@ WidgetHelper.prototype.addTimeSlider = function(){
         create: sliderTooltip,
         slide: sliderTooltip
     });
+    ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass( "glyphicon glyphicon-tag customSliderHandleRange " );
 
     this.timeSlider = true;
     return ts
