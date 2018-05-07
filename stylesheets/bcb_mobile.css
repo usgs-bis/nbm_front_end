@@ -105,6 +105,10 @@
     .expand-chart {
         display: none;
     }
+    .bioScapeTitle{
+        white-space: normal;
+        font-size: 1.7vw;
+    }
 }
 
 @media screen and (max-width:975px),
@@ -145,3 +149,14 @@
     }
 
 }
+
+
+
+/* ipad sideways */
+@media only screen and (max-width:1700px){
+        .bioScapeTitleMobile{
+            position: relative;
+            top: 10px;
+        }
+}
+

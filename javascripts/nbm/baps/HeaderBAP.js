@@ -58,6 +58,10 @@ HeaderBAP.prototype.showSpinner = function () {
 
 HeaderBAP.prototype.initializeBAP = function () {
     $("#"+this.headerBapId).html(this.getHtml());
+    let headerHeight = $("#synthesisCompositionTitle").height()
+    $('#synthesisCompositionBodyTitle').css('margin-top', `${headerHeight + 85}px`);
+    $('#settingsMenuMargin').css('margin-top', `${parseInt(headerHeight/2)}px`);
+    
 };
 
 HeaderBAP.prototype.cleanUp = function () {
