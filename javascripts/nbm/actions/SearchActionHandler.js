@@ -16,7 +16,7 @@ var SearchActionHandler = function (config, layer) {
     $("#unit_info_search").show().prepend(this.poi.getSearchButton());
     if(config.actionConfig.clickToSearch){
         let that = this
-        $("#unit_info_click_search_div").show()
+        //$("#unit_info_click_search_div").show()
         $('#unit_info_click_search').click(function(){
             if($(this).is(':checked')){
                 that.clickToSearch = true
@@ -277,10 +277,10 @@ var PlaceOfInterestClick = function (latlng, that) {
   
     $(".googleResults").remove();
     that.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
-    that.clearSearchButton.show();
-
+    //that.clearSearchButton.show();
+    that.searchButton.focus()
     $.getJSON(that.elasticEndpoint + query, function (data) {
-        that.clearSearchButton.show();
+        //that.clearSearchButton.show();
         that.poisearching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
@@ -379,7 +379,7 @@ PlaceOfInterestSearch.prototype.onKeyUp = function(event){
         } else if (cs === 0) {
             this.clearSearch();
         } else {
-            this.clearSearchButton.show();
+            //this.clearSearchButton.show();
             $(".googleResults").remove();
         }
     }
@@ -433,7 +433,7 @@ PlaceOfInterestSearch.prototype.lookup = function (text) {
     };
 
     var that = this;
-    this.clearSearchButton.show();
+    //this.clearSearchButton.show();
     $(".googleResults").remove();
     var testElastic = this.elasticEndpoint + JSON.stringify(elasticQuery);
     $.getJSON(testElastic, function (data) {

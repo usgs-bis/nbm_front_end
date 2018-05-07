@@ -36,7 +36,9 @@
  <h1 class="panelTitle" style="font-size: 28px;">{{:title}}</h1>
 {{/if}}
 {{if type}}
-    <div style="text-align:center;font-size:16px;">{{:type}}</div>
+<div class="generalInfo">
+        <span class="summaryHeader">Category: </span>{{:type}}
+    </div>
 {{/if}}
 {{if acres}}
     <div id="synthCompAcres" class="generalInfo">
@@ -111,8 +113,16 @@
 </script>
 
 <script id="buttonBar" type="text/x-jsrender">
-        <div class="buttonBar" style="margin:10px;">
-            <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip"  data-placement="bottom" title="Share this map by copying the URL to your clipboard.">
+        <div class="buttonBar" style="margin:10px; margin-top: 5px;">
+
+            <div id="SimplifiedPolyDiv" class="SimplifiedPolyDiv">
+                <button onclick="actionHandlerHelper.showSimplifiedJson(false)" style='width: 27px;'
+                    class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the modified polygon used for analysis.">
+                            <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <button id="copyToClipboard" class="btn-xs" style="margin-left: -40px;"data-toggle="tooltip"  data-placement="bottom" title="Share this map by copying the URL to your clipboard.">
                 <!-- <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span> -->
                 Share
             </button>
@@ -168,12 +178,12 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
             </button>
 </div>
 {{/if}}
-<div id="{{:id}}SimplifiedDiv" style='width: 100%; display: none;'>
+<!-- <div id="{{:id}}SimplifiedDiv" style='width: 100%; display: none;'>
             <button onclick="actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: -25px; left: calc(100% - 45px);'
 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the modified polygon used for analysis.">
                 <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
             </button>
-</div>
+</div> -->
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
         {{:sectionHtml}}
     </div>

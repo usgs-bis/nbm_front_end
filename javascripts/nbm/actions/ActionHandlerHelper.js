@@ -134,7 +134,7 @@ ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
             if (!actionHandler.headerBap) {
                 promises.push(actionHandler.sendTriggerAction(false));
             } else {
-                $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
+                $("#synthesisCompositionTitle").html("<div id='HeaderBap" + index + "'></div>");
                 promises.push(actionHandler.sendTriggerAction(true, "HeaderBap" + index));
             }
         }
@@ -167,7 +167,7 @@ ActionHandlerHelper.prototype.handleSearchActions = function (geojson) {
             if (!actionHandler.headerBap) {
                 promises.push(actionHandler.sendTriggerAction(false, undefined, geojson));
             } else {
-                $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
+                $("#synthesisCompositionTitle").html("<div id='HeaderBap" + index + "'></div>");
                 promises.push(actionHandler.sendTriggerAction(true, "HeaderBap" + index, geojson));
             }
         }
@@ -377,7 +377,7 @@ ActionHandlerHelper.prototype.handleActions = function (latLng, isDifferentFeatu
                 if (!actionHandler.headerBap) {
                     promises.push(actionHandler.sendTriggerAction(latLng, false, that.additionalParams,undefined, isDifferentFeatureSelected));
                 } else {
-                    $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
+                    $("#synthesisCompositionTitle").html("<div id='HeaderBap" + index + "'></div>");
                     promises.push(actionHandler.sendTriggerAction(latLng, true, that.additionalParams, "HeaderBap" + index, isDifferentFeatureSelected));
                 }
         });
@@ -456,7 +456,9 @@ ActionHandlerHelper.prototype.viewSynthCompJson = function () {
 };
 
 ActionHandlerHelper.prototype.showSimplifiedJson = function (id) {
-    var bap = this.sc.baps[id];
+    let bap = this.sc.baps[Object.getOwnPropertyNames(this.sc.baps)[0]];
+    if(id) bap = this.sc.baps[id];
+
     bap.toggleSimplifiedFeature();
 };
 
