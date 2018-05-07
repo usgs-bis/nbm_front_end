@@ -59,8 +59,9 @@ HeaderBAP.prototype.showSpinner = function () {
 HeaderBAP.prototype.initializeBAP = function () {
     $("#"+this.headerBapId).html(this.getHtml());
     let headerHeight = $("#synthesisCompositionTitle").height()
-    $('#synthesisCompositionBodyTitle').css('margin-top', `${headerHeight + 85}px`);
-    $('#settingsMenuMargin').css('margin-top', `${parseInt(headerHeight/2)}px`);
+    $('#synthesisCompositionBodyTitleSpace').css('margin-top', `${headerHeight + 70}px`);
+    $('#synthesisCompositionBody').css('margin-bottom', `${headerHeight + 80}px`);
+    $('#settingsMenuMargin').css('margin-top', `${headerHeight-60}px`);
     
 };
 

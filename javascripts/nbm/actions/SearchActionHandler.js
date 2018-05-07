@@ -420,18 +420,18 @@ PlaceOfInterestSearch.prototype.getSelectedUnit = function (id) {
 }
 // This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
-    var elasticQuery = {
-        "from": 0, "size": 15,
-        "_source": "properties.*",
-        "query" : {
-            "multi_match" : {
-                "fields" : ["properties." + this.lookupProperty],
-                "query" : text,
-                "type" : "phrase_prefix"
+    var elasticQuery = 
+        {
+            "from": 0, "size": 15,
+            "_source": "properties.*",
+            "query": {
+                "match_phrase_prefix" : {
+                }
             }
         }
-    };
-
+        elasticQuery.query.match_phrase_prefix[`properties.${this.lookupProperty}`] = {"query":text,'max_expansions':100};
+        
+        
     var that = this;
     //this.clearSearchButton.show();
     $(".googleResults").remove();
