@@ -90,6 +90,7 @@
     height: -webkit-fill-available;
     height: -moz-available;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .unit_info_content, .unit_info_content_main {
