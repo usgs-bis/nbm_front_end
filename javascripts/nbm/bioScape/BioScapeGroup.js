@@ -80,6 +80,8 @@ BioScapeGroup.prototype.addHtmlToPage = function() {
         $("#baseMapSelector").append(html);
     }
     else if (this.title.toLowerCase() != 'analysis layers'){
+        $("#OverlayLayerSection").show()
+        $("#settingsMenuMargin").height(10)
         $("#Overlays").append(html);
     }
     
