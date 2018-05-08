@@ -2015,7 +2015,7 @@
 	var RasterLayer = L.Layer.extend({
 
 	  options: {
-	    opacity: .75,
+	    opacity: .5,
 	    position: 'front',
 	    f: 'image',
 	    useCors: cors,

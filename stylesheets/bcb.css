@@ -319,6 +319,14 @@ select option {
     text-align: center;
     margin: 0;
     color: white;
+    margin-right: 10px;
+}
+.modifiedPoly{
+    font-size: 12px;
+    vertical-align: middle;
+    color: lightblue;
+    border-radius: 7px;
+    margin-bottom: 5px
 }
 .bioScapeTitle{
     white-space: nowrap;
@@ -460,6 +468,8 @@ div.table {
 .settingsLegendBtn {
     float: left;
     margin-left: 5px;
+    height: 34px;
+    padding-right: 5px;
 }
 
 .attrDiv {
@@ -989,6 +999,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 .sliderLabelCenter {
     margin-top: 5px;
+    font-size: 15px;
 }
 .sliderLabelRight {
     float:right;
@@ -1134,13 +1145,13 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .ridgeLinePlotNumberPicker{
-    width: 75%;
-    margin: auto;
+    width: 405px;
+    margin-left: 55px;
     fill: rgb(204, 204, 204);
     color: rgb(204, 204, 204);
     font-family: Verdana;
-    margin-bottom: 15px;
-    margin-top: 30px;
+    margin-bottom: 50px;
+    margin-top: -20px;
 
 }
 
@@ -1369,7 +1380,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     z-index: 1000;
     position: absolute;
     width: 375px;
-    margin-left: 110px;
+    margin-left: 150px;
 }
 
 #HeaderBap1 {
@@ -1426,7 +1437,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .unit_info_search{
     width: 375px;
-    margin-left: 110px;
+    margin-left: 115px;
+    margin-top: 1px;
 }
 
 .mapControlContainer {
@@ -1569,6 +1581,9 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     color: white;
     margin-left: 10px;
     margin-top: 15px;
+    width: 235px;
+    padding-right: 0px;
+    display: inline-block;
 }
 
 .SimplifiedPolyDiv{
@@ -1602,4 +1617,14 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     height: auto;
+}
+
+.bapList{
+    margin-left: 10px;
+}
+
+
+.opacitySliderGlobal{
+    display: inline-block;
+    width: 250px;
 }

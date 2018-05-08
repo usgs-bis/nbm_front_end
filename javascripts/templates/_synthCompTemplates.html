@@ -15,12 +15,11 @@
         {{else}}
             Please click somewhere to populate this report.
         {{/if}}
-        <div class="bapList" style="padding-top: 30px;"></div>
+        <div class="bapList" ></div>
     </div>
 </script>
 
 <script id="emptySynthCompBapListTemplate" type="text/x-jsrender">
-    <div style="margin-bottom:20px;">Available Analysis Packages</div>
     {{:html}}
 </script>
 
@@ -33,7 +32,12 @@
 <script id="synthesisCompositionDetailsTemplate" type="text/x-jsrender">
 <div >
 {{if title}}
- <h1 class="panelTitle" style="font-size: 28px;">{{:title}}</h1>
+    <h1 class="panelTitle" style="font-size: 28px;">{{:title}}
+        <span class=" modifiedPoly glyphicon glyphicon glyphicon-unchecked " aria-hidden="true" 
+            onclick="actionHandlerHelper.showSimplifiedJson(false)" data-toggle="tooltip" data-placement="top" 
+            title="View the modified polygon used for analysis.">
+        </span>
+    </h1>
 {{/if}}
 {{if type}}
 <div class="generalInfo">
@@ -115,22 +119,20 @@
 <script id="buttonBar" type="text/x-jsrender">
         <div class="buttonBar" style="margin:10px; margin-top: 5px;">
 
-            <div id="SimplifiedPolyDiv" class="SimplifiedPolyDiv">
-                <button onclick="actionHandlerHelper.showSimplifiedJson(false)" style='width: 27px;'
-                    class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the modified polygon used for analysis.">
-                            <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
-                </button>
-            </div>
-
-            <button id="copyToClipboard" class="btn-xs" style="margin-left: -40px;"data-toggle="tooltip"  data-placement="bottom" title="Share this map by copying the URL to your clipboard.">
+            <button id="copyToClipboard" class="btn-xs" data-toggle="tooltip"  data-placement="top" title="Share this map by copying the URL to your clipboard.">
                 <!-- <span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span> -->
                 Share
             </button>
-            <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip"  data-placement="bottom" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
+            <button id="buildReportPdf" class="btn-xs" data-toggle="tooltip"  data-placement="top" title="Only expanded sections will appear in the PDF and all user selections/filters will be reflected.">
                 <!-- <span class="glyphicon glyphicon-save bootstrapGlyph" aria-hidden="true"></span> -->
                 Report
             </button>
-            <!-- <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="Something will happen when this button is clicked">
+            <!-- <button onclick="actionHandlerHelper.showSimplifiedJson(false)"
+                    class="btn-xs" data-toggle="tooltip" data-placement="top" title="View the modified polygon used for analysis.">
+                    <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
+                Polygon
+            </button> -->
+            <!-- <button id="ExploreProject" class="btn-xs" data-toggle="tooltip" data-placement="top" title="Something will happen when this button is clicked">
                 <span class="glyphicon glyphicon-eye-open bootstrapGlyph" aria-hidden="true"></span>
                 Explore
             </button> -->
@@ -237,11 +239,9 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
                         </button>
                 </div>
             </div>
-            <div class="col col-md-1"></div>
-            <div class="col col-md-6">
-                <div id="bapRangeSlider"  class="sliderLabelCenter"> Current selection: {{: min}}-{{: max}}</div>
+            <div class="col col-md-8">
+                <div id="bapRangeSlider"  class="sliderLabelCenter"> Analyze Time Period: {{: min}}-{{: max}}</div>
             </div>
-            <div class="col col-md-1"></div>
             <div class="col col-md-2">
                 <div style="clear:both;"></div>
                 <div style="text-align:center;width:100%;">
@@ -262,12 +262,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 </script>
 
 <script id="histogramTemplate" type="text/x-jsrender">
-    <div id="histogramPlot{{:id}}" class="histogramPlot" style="display:none;">
-            <div class="ridgeLinePlotNumberPicker slidecontainer" id="ridgeLinePlotNumberPickerDiv" >
-                <div style="margin-bottom: 10px;">Bucket Size: <span id="ridgeLinePlotRangeValue"></span> </div>
-                <input type="range" min="1" max="8" value="3" class="slider" id="ridgeLinePlotRange"
-                data-toggle="tooltip" data-placement="right" title="The number of datapoints = 365/{Bucket Size} ">
-            </div>
+    <div id="histogramPlot{{:id}}" class="histogramPlot" style="display:none;">        
             <div id="histogramTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
             <div id="histogramSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
             <div id = "histogramChart"></div>
@@ -282,6 +277,11 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
         <div id="ridgeLinePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
         <div id="ridgeLinePlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
         <div id ="ridgeLinePlotChart"></div>
+        <div class="ridgeLinePlotNumberPicker slidecontainer" id="ridgeLinePlotNumberPickerDiv" >
+                <div style="margin-bottom: 10px;">Binwidth: <span id="ridgeLinePlotRangeValue"></span> </div>
+                <input type="range" min="1" max="8" value="3" class="slider" id="ridgeLinePlotRange"
+                data-toggle="tooltip" data-placement="top" title="The number of datapoints = 365/{Bucket Size} ">
+            </div>
     </div>
 </script>
 
@@ -365,6 +365,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
         </button>
         <div class="nfhpBapHeader" id="{{:bapID}}BapTitle">{{:title}}</div>
     </div>
+    <div class="contextSubHeader subHeaderTitle" style=" color: #f3f3f3; line-height: 20px; font-size: 17px; margin-top: 30px; margin-left: 20px; margin-right: 20px; ">{{:title}}</div>
     <div id="{{: id}}" style="width: 100%; height: 400px;"></div>
     <div id="{{:noData}}" style="float:right">No Data</div>
     <div style="clear:both;"></div>

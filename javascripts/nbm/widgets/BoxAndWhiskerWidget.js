@@ -63,7 +63,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 button.hide()
             }
             else{
-                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Current selection: ' + min + '-' + max);
+                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Analyze Time Period: ' + min + '-' + max);
                 button.show();
             }    
         }
