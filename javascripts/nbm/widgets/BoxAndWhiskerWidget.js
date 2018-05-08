@@ -59,11 +59,11 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
 
         let checkRange = function(min,max){
             if(time.startDate > min || time.endDate < max){
-                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + '-' + time.endDate);
+                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate);
                 button.hide()
             }
             else{
-                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Analyze Time Period: ' + min + '-' + max);
+                $("#" + that.bap.id + "BAP").find('#bapRangeSlider').html('Analyze Time Period: ' + min + ' to ' + max);
                 button.show();
             }    
         }
