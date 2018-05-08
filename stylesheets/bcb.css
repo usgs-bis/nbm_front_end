@@ -1626,5 +1626,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 
 .opacitySliderGlobal{
     display: inline-block;
-    width: 250px;
+    width: 235px;
+    margin-top: 20px;
+    text-align: center;
 }
