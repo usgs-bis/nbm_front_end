@@ -86,104 +86,92 @@
                     </span> -->
                 </div>
                 <div class="mapTopCenter">
-                        <div class="drop">
-                            <div class="titleDiv" style="display:block;">
-                                <div id="bioScapeTitle" class="bioScapeTitle" style="display:inline;"></div>
-                                <span id="bioScapeDetailsLink" data-toggle="collapse" data-target="#bioScapeDetails">
-                                    <i class="fa fa-circle fa-first" aria-hidden="true"></i>
-                                    <i class="fa fa-info-circle fa-second" aria-hidden="true" style="position: absolute;"></i>
-                                </span>
-                            </div>
-                            <div id="bioScapeDetails" class="titleDropDown collapse" ></div>
+                    <div class="drop">
+                        <div class="titleDiv" style="display:block;">
+                            <div id="bioScapeTitle" class="bioScapeTitle" style="display:inline;"></div>
+                            <span id="bioScapeDetailsLink" data-toggle="collapse" data-target="#bioScapeDetails">
+                                <i class="fa fa-circle fa-first" aria-hidden="true"></i>
+                                <i class="fa fa-info-circle fa-second" aria-hidden="true" style="position: absolute;"></i>
+                            </span>
                         </div>
-                    </div>
-        
-            </div>
-            <div id="mapControlContainer" class="mapControlContainer"> </div>
-            <div id="bioScapeSelector" class="unit_info bottomBar" style="height:30px; overflow-x: hidden; overflow-y: hidden;">
-                <div class=" buttonBar">
-                    <div id="bioScapeLegend" style="display:none;">
-                        <button type="button" class="btn displayLegendLink disabled" data-toggle="tooltip" data-placement="top" title="Show the legend">
-                            <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
-                            <span style="font-weight: bold;">Legend</span>
-                        </button>
+                        <div id="bioScapeDetails" class="titleDropDown collapse"></div>
                     </div>
                 </div>
-            </div>
 
-           
+            </div>
+            <div id="mapControlContainer" class="mapControlContainer"> </div>
+
+
+
 
             <div id="unit_info_left" style="position:absolute;top: 55px; height: calc(100% - 55px);">
                 <div class="solidOverMapBG unit_info unit_info_main" style="overflow-x: hidden !important;">
                     <div id="synthesisCompositionHead" class="unit_info_content_main "></div>
-                        <div id="SCUIHead" class="unit_info_content_main UIhead">
+                    <div id="SCUIHead" class="unit_info_content_main UIhead">
 
 
-                            <div id="accordion">
-                                <div class="card" style="padding: 0px 10px; position: relative;">
-                                    <div class="card-header" id="headingOne" style="margin-top:15px; margin-bottom:15px;">
-                                        <div class="row" style="width:98%">
-                                            <div class="col col-sm-auto">
-                                                <button class="btn overMap mapControl" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
-                                                    style="margin-left: 20px;padding: inherit;">
-                                                    <span class="glyphicon glyphicon-menu-hamburger bootstrapGlyph" aria-hidden="true" style="font-size:18px;margin: 3px;margin-left: 8px;"></span>
-                                                    <span></span>
-                                                </button>
-                                            </div>
-                                            <div class="col col-xs-9 col-sm-10" style="padding: 0px 0px 0px 10px;">
-                                                <div id="unit_info_search" class="unit_info_search">
-                                                </div>
-
-                                                <div id="searchResults" class="list-group searchRessultsBox"></div>
-                                            </div>
-                                            <div class="col col-sm-auto">
-                                                <span class="clickSearch" id="unit_info_click_search_div" style="display:none;">
-                                                    <label class="clickSearch" style="display: flex;">
-                                                        <input id="unit_info_click_search" type="checkbox" class="clickSearch" Checked/>
-                                                        <span class=" clickSearch-target" data-toggle="tooltip" data-placement="right" title="Click to Search"></span>
-                                                    </label>
-                                                </span>
-
-                                            </div>
-
+                        <div id="accordion">
+                            <div class="card" style="padding: 0px 10px; position: relative;">
+                                <div class="card-header" id="headingOne" style="margin-top:15px; margin-bottom:15px;">
+                                    <div class="row" style="width:98%">
+                                        <div class="settingsLegendBtn" data-toggle="tooltip" data-placement="top" title="Settings">
+                                            <button class="btn overMap mapControl" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                                style="margin-left: 20px;padding: inherit;">
+                                                <span class="glyphicon glyphicon-menu-hamburger bootstrapGlyph" aria-hidden="true" style="font-size:18px;margin: 3px;margin-left: 8px;"></span>
+                                                <span></span>
+                                            </button>
                                         </div>
+
+                                        <div id="bioScapeLegend" class="settingsLegendBtn" style="display:none;" data-toggle="tooltip" data-placement="top" title="Legend">
+                                            <button type="button" class="btn displayLegendLink disabled">
+                                                <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
+                                                <span></span>
+                                            </button>
+                                        </div>
+
+                                        <div id="unit_info_search" class="unit_info_search">
+                                        </div>
+
+                                        <div id="searchResults" class="list-group searchRessultsBox"></div>
+
+                                        <span class="clickSearch" id="unit_info_click_search_div" style="display:none;">
+                                            <label class="clickSearch" style="display: flex;">
+                                                <input id="unit_info_click_search" type="checkbox" class="clickSearch" Checked/>
+                                                <span class=" clickSearch-target" data-toggle="tooltip" data-placement="right" title="Click to Search"></span>
+                                            </label>
+                                        </span>
 
                                     </div>
-                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                                        <div style="margin-left: 10px;">
-                                            <div id="baseMapSelector">
-                                            </div>
 
-                                            <div class="contextHeader layerExpander" data-section="Overlays">
-                                                <span id="OverlaysControl">&#9658;</span>
-                                                Overlays
-                                            </div>
-                                            <div id="Overlays" class="layerSection">
-                                            </div>
-                                            <div id="settingsMenuMargin" style="height:10px"></div>
+                                </div>
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                    <div style="margin-left: 10px;">
+                                        <div id="baseMapSelector">
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col col-sm-12">
-                                            <div id="synthesisCompositionTitle" class="synthesisCompositionTitle"></div>
+
+                                        <div class="contextHeader layerExpander" data-section="Overlays">
+                                            <span id="OverlaysControl">&#9658;</span>
+                                            Overlays
                                         </div>
-                                        
+                                        <div id="Overlays" class="layerSection">
+                                        </div>
+                                        <div id="settingsMenuMargin" style="height:10px"></div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="row">
+                                    <div class="col col-sm-12">
+                                        <div id="synthesisCompositionTitle" class="synthesisCompositionTitle"></div>
+                                    </div>
 
-                            <div id="bioScape" class="menu-layers"></div>
-                            <div class="buttonBar">
-                                <div id="mobileBioScapeLegend">
-                                    <button type="button" class="btn displayLegendLink disabled">
-                                        <span class="glyphicon glyphicon-list-alt bootstrapGlyph" aria-hidden="true"></span>
-                                        <span style="font-weight: bold;">Legend</span>
-                                    </button>
                                 </div>
                             </div>
-                            <div id="mobileBioScapeLegendContainer"></div>
                         </div>
-                    <div id="synthesisCompositionBodyTitleSpace" class ="synthesisCompositionBodyTitleSpace"></div>
+
+                        <div id="bioScape" class="menu-layers"></div>
+                        <div class="buttonBar"></div>
+                        <div id="mobileBioScapeLegendContainer"></div>
+                    </div>
+                    <div id="synthesisCompositionBodyTitleSpace" class="synthesisCompositionBodyTitleSpace"></div>
                     <div id="unit_info_right" class="">
                         <div id="synthesisCompositionBodyTitle" class="synthesisCompositionBodyTitle">Analytical Packages</div>
                         <div id="synthesisCompositionBody" class="unit_info_content_main UIbody"></div>
