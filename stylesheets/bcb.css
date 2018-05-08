@@ -322,7 +322,7 @@ select option {
 }
 .bioScapeTitle{
     white-space: nowrap;
-    font-size: 1.7vw;
+    font-size: 28px;
     text-align: center;
     vertical-align: middle;
     line-height: 55px;
@@ -457,9 +457,9 @@ div.table {
     width:650px !important;
 }
 
-#bioScapeLegend {
-    padding-bottom: 10px;
-    text-align: center;
+.settingsLegendBtn {
+    float: left;
+    margin-left: 5px;
 }
 
 .attrDiv {
@@ -1368,8 +1368,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .searchRessultsBox {
     z-index: 1000;
     position: absolute;
-    width: 100%;
-    padding-right: 10px;
+    width: 375px;
+    margin-left: 110px;
 }
 
 #HeaderBap1 {
@@ -1425,12 +1425,13 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .unit_info_search{
-    width: 100%;
+    width: 375px;
+    margin-left: 110px;
 }
 
 .mapControlContainer {
-    right: 80px;
-    top: 89px;
+    right: 70px;
+    top: 60px;
     position: absolute;
 }
 
@@ -1599,7 +1600,6 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     position: relative;
     top: -11px;
     border-bottom-left-radius: 10px;
-    padding: 10px;
     border-bottom-right-radius: 10px;
     height: auto;
 }

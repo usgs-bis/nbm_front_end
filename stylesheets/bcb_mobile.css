@@ -1,83 +1,3 @@
-/* @media screen and (max-width:516px) {
-    #header, #unit_info_left {
-        width: 100%;
-    }
-    #unit_info_left {
-        top: inherit;
-        bottom: calc(100% - 72px);
-        height: 60%;
-        max-height: 500px;
-        left: 0;
-    }
-    #unit_info_left.open {
-        top: 72px;
-    }
-    #unit_info_left_control {
-        border-radius: 0 0 10px 10px;
-        -webkit-border-radius: 0 0 10px 10px;
-        -moz-border-radius: 0 0 10px 10px;
-        transform: rotateX(-25deg);
-        -webkit-transform: rotateX(-25deg);
-        -ms-transform: rotateX(-25deg);
-        display: block !important;
-    }
-
-    .unit_info_control {
-        height: 25px;
-        width: 100px;
-        margin-left: -50px;
-        line-height: 25px;
-        left: 50%;
-    }
-
-    .unit_info_control.left {
-        bottom: -25px;
-    }
-
-    #mapBottomLeft.open {
-        left: 0;
-    }
-
-    .layerTitle {
-        width: 90%;
-    }
-
-    #unit_info_right {
-        top: 100%;
-        width: 100%;
-        height: 60%;
-        max-height: 500px;
-        right: 0;
-    }
-    #unit_info_right.open {
-        bottom: 0;
-        top: auto;
-    }
-    #unit_info_right_control {
-        border-radius: 10px 10px 0 0;
-        -webkit-border-radius: 10px 10px 0 0;
-        -moz-border-radius: 10px 10px 0 0;
-        transform: rotateX(25deg);
-        -webkit-transform: rotateX(25deg);
-        -ms-transform: rotateX(25deg);
-    }
-
-    .unit_info_control.right {
-        top: -25px;
-        bottom: 0;
-        left: 50%;
-    }
-
-    #mouseCoordinates {
-        display: none;
-    }
-
-    .leaflet-top.leaflet-left {
-        left: 0;
-        top: 72px;
-    }
-} */
-
 @media screen and (max-width:933px) {
     #bioScapeSelector {
         display: none;
@@ -87,17 +7,11 @@
         height: 100%;
     }
 
-    #mobileBioScapeLegend {
-        display: block;
-        top: 80px;
-        right: 60px;
-        position: fixed;
-    }
 
     #mobileBioScapeLegendContainer {
         display: block;
-        top: 200px;
-        right: 60px;
+        top: 56px;
+        right: 54px;
         position: fixed;
         background-color: black;
     }
@@ -105,22 +19,12 @@
     .expand-chart {
         display: none;
     }
-    .bioScapeTitle{
-        white-space: normal;
-        font-size: 1.7vw;
-    }
 }
 
 @media screen and (max-width:975px),
     screen and (max-height:650px){
     .helpBox, .left_arrow, .right_arrow {
         display: none;
-    }
-    .panelTitle {
-        font-size: 2vw;
-    }
-    #bioScapeDetailsLink .fa-circle {
-        margin-right:-15px;
     }
 }
 
@@ -149,14 +53,3 @@
     }
 
 }
-
-
-
-/* ipad sideways */
-/* @media only screen and (max-width:1700px){
-        .bioScapeTitleMobile{
-            position: relative;
-            top: 10px;
-        }
-}
- */
