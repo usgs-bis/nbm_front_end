@@ -330,6 +330,7 @@ BAP.prototype.setErrorMessage = function (message) {
 
 BAP.prototype.switchPriorityBap = function (toggle) {
     //console.log(id)
+    $("#opacitySliderGlobal").hide()
     var allLayers = bioScape.getAllLayers();
     var visibleLayers = bioScape.getVisibleLayers();
     let thisLayer = allLayers.filter(layer =>{
@@ -350,6 +351,8 @@ BAP.prototype.switchPriorityBap = function (toggle) {
     })
 
     if(toggle && thisLayer){
+        $("#opacitySliderGlobal").show()
+        $("#opacitySliderGlobalInput").val(parseFloat(thisLayer.getOpacity()));
         thisLayer.turnOnLayer()
         thisLayer.section.layerHtmlControl.handleTurnOn(thisLayer.id)
     }

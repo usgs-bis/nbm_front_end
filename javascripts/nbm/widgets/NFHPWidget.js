@@ -15,12 +15,15 @@ let NFHPWidget = function (chartConfig) {
     this.getHtml = function () {
         config = that.bap.config
         let noDataArea = AmCharts.addPrefix(config.noDataArea, '', '', formatter);
+
+        let lookUpProp = that.bap.actionRef.placeNameProperty ? that.bap.actionRef.placeNameProperty : that.bap.actionRef.lookupProperty;
+        let placeName = that.bap.actionRef.result.geojson.properties[lookUpProp];
         return getHtmlFromJsRenderTemplate('#NFHPWidget', {
             id: config.id + "NFHPChart",
             json: config.id + "json",
             bapID: config.id,
             noData: config.id + "noData",
-            title: ""
+            title: `Risk to Fish Habitat Degradation in ${placeName}`,
         });
     };
 
@@ -129,6 +132,7 @@ let NFHPWidget = function (chartConfig) {
             "type": "serial",
             "dataProvider": chartData,
             "categoryField": "Risk",
+            "autoWrap": true, 
             "graphs": [{
                 "valueField": "Precent",
                 "type": "column",
@@ -152,13 +156,6 @@ let NFHPWidget = function (chartConfig) {
                     "title": "NFHP Scored Stream Kilometers [%]",
                     "axisColor": AmChartsHelper.getChartColor(),
                     "axisAlpha": 1,
-                }
-            ],
-            "titles": [
-                {
-                    "text": `Risk To Fish Habitat Degradation\n ${placeName}`,
-                    "size": 15,
-                    "color": "#f3f3f3"
                 }
             ],
             "export": {

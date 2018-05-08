@@ -277,7 +277,7 @@ wms.Overlay = L.Layer.extend({
         'crs': null,
         'uppercase': false,
         'attribution': '',
-        'opacity': .75,
+        'opacity': .5,
         'bringToBack': false
     },
 
@@ -361,7 +361,7 @@ wms.Overlay = L.Layer.extend({
             }
             this._currentOverlay = overlay;
             overlay.setOpacity(
-                this.options.opacity ? this.options.opacity : .75
+                this.options.opacity ? this.options.opacity : .5
             );
 
             //since there is no zIndex for overlays in leaflet if this overlay has a config setting

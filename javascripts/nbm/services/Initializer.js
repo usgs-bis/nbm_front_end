@@ -67,7 +67,7 @@ var Initializer = (function(initializer) {
         var bioscapeJson = {};
 
         //bioScapeId = "591c7160e4b0a7fdb43dea93";
-        // 5ae7841be4b0e2c2dd33f591
+        //bioScapeId = "5810cd6fe4b0f497e7975237";
         //thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json';
         //thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/test/gotthold_test.json'
 
@@ -456,8 +456,12 @@ var Initializer = (function(initializer) {
      * @param {number} newOpacity - between 0 and 1
      */
     function updateLayerOpacity(layerId, sectionId, newOpacity) {
-        var section = bioScape.getSection(sectionId);
-        section.updateLayerOpacity(layerId, newOpacity);
+        var visibleLayers = bioScape.getVisibleLayers();
+        $.each(visibleLayers, function (index, layer) {
+            if(!layer.baseMap && !layer.summarizationRegion){
+                layer.section.updateLayerOpacity(layer.id, newOpacity);
+            }  
+        })
     }
 
     /**

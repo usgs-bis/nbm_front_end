@@ -79,7 +79,7 @@ BioScapeGroup.prototype.addHtmlToPage = function() {
     if(this.title.toLowerCase() === 'basemaps' || this.title.toLowerCase() === 'basemap') {
         $("#baseMapSelector").append(html);
     }
-    else{
+    else if (this.title.toLowerCase() != 'analysis layers'){
         $("#Overlays").append(html);
     }
     
