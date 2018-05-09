@@ -95,7 +95,7 @@ var NFHPDisturbanceWidget = function (chart) {
 
      this.getHtml = function () {
         let e = {
-            error: "An Error has occurred. Unable to retrieve data for this widget.",
+            error: "There is no analysis data for the chosen geometry.",
             title: "Disturbances Influencing Risk to Fish Habitat Condition",
             id: that.bap.id,
             bap: "NFHPD"
