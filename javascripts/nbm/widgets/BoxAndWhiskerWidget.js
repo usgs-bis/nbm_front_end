@@ -49,7 +49,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
 
         let movehtml = $("#" + that.bap.id + "BapHeader").html()
         $("#" + that.bap.id + "BapHeader").html("")
-        $("#" + that.bap.id + "BAP").prepend(movehtml)
+        $("#" + that.bap.id + "Inputs").append(movehtml)
 
         feature = originalFeature;
         if(!layer) {

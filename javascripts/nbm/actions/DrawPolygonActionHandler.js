@@ -87,7 +87,7 @@ DrawPolygonActionHandler.prototype.processBaps = function () {
         promises.push(sendPostRequest(myServer + "/bap/get", myMap)
             .then(function(data) {
                 var bap = that.getBapValue(data.id);
-                bap.reconstruct(data, true);
+                bap.reconstruct(data, false);
 
                 bap.feature = that.feature;
                 bap.initializeBAP();

@@ -71,7 +71,7 @@ ActionHandler.prototype.processBaps = function (additionalParams) {
         if (tempBap) {
             tempBap.setEmptyBap();
         } else {
-            tempBap = new BAP({id: bapId}, undefined, that);
+            tempBap = new BAP({id: bapId}, false, that);
             that.setBapValue(bapId, tempBap);
         }
 
