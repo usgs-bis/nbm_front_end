@@ -86,7 +86,11 @@
     <div id="{{:id}}{{:bap}}error">
         <div class="contextSubHeader subHeaderTitle" style=" color: #f3f3f3; line-height: 20px; font-size: 17px; margin-top: 30px; margin-left: 20px; margin-right: 20px; ">{{:title}}</div>
         <br>
-        <div class="bapTitle"> {{:error}} </div>
+        <div class="bapTitle"> 
+            <span class="fa fa-circle fa-first" aria-hidden="true" style="margin-right: -16px;color: red; opacity: .8;"></span>
+            <span class="glyphicon glyphicon-exclamation-sign exclamation" aria-hidden="true"></span>
+            <span>{{:error}}</span>
+         </div>
     </div>
 </script>
 
@@ -212,7 +216,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
                        
                     </div>
                     <div id="opacitySlider{{:id}}" class="sliderContainer opacitySliderBap" >
-                        <label>Map Layer Opacity</label>
+                        <label>Map Display Opacity</label>
                         <input id="opacitySliderInput{{:id}}" class="opacitySlider" type="range" min="0" value="0.5" max="1"  step=".05" style="display:inline;vertical-align:middle;margin-bottom: -5px;"/>
                     </div>
                 </div>

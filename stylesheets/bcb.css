@@ -1639,6 +1639,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 .inputExpander{
     display: inline-block;
     color: white;
+    font-size: 16px;
 }
 .bapInputSection{
     margin-bottom: 25px;
@@ -1653,4 +1654,8 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     padding-right: 0px;
     margin-right: 10px;
     padding-top: 5px;
+}
+.exclamation{
+    color: yellow;
+    opacity: .80;
 }
