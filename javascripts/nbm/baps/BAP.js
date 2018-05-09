@@ -132,7 +132,9 @@ BAP.prototype.getFullHtml = function () {
     if ( altTitle ) {
         title = altTitle[0];
     }
-
+    var allLayers = bioScape.getAllLayers();
+    let thisLayer = this.GetThisLayer()
+   
     var apViewModel = {
         id: this.config.id,
         title: title,
@@ -140,8 +142,11 @@ BAP.prototype.getFullHtml = function () {
         simplified: this.simplified,
         openByDefault: this.config.openByDefault,
         leaveOutJson: this.leaveOutJson,
+        inputs: thisLayer ? true : false,
         sectionHtml: widgetHtml,
-        imagePath: "" // <-- what is this for?
+        imagePath: "", // <-- what is this for?
+        divId: thisLayer ? thisLayer.id : "",
+        layerTitle: thisLayer ? thisLayer.title : ""
     };
 
     createAndPushInfoDiv(infoDivModel);
@@ -202,10 +207,40 @@ BAP.prototype.bindClicks = function () {
         let toggle = toggleContainer(id);
         that.switchPriorityBap(toggle)
     });
+    $("#" + this.config.id + "BapCase div.inputExpander").on('click', function() {
+        var id = $(this).data('section');
+        let toggle = toggleContainer(id);
+    });
 
     $("#"+this.config.id).on('click', function(e) {
         $("#"+that.config.id+"Modal").modal('show');
         e.stopPropagation();
+    });
+
+    $('#toggleLayer' + this.config.id).click(function(){
+
+       
+        var allLayers = bioScape.getAllLayers();
+        let thisLayer = that.GetThisLayer()
+        if(this.checked){
+            thisLayer.turnOnLayer()
+        } else {
+            thisLayer.turnOffLayer()
+        }
+    });
+
+    $('#opacitySliderInput' + this.config.id).on("change mousemove", function() {
+        var visibleLayers = bioScape.getVisibleLayers();
+        $.each(visibleLayers, function (index, layer) {
+            if(!layer.baseMap && !layer.summarizationRegion){
+                layer.section.updateLayerOpacity(layer.id, $('#opacitySliderInput' + that.config.id).val());
+            }  
+        })
+    });
+
+     //when the user clicks an information icon
+     $('#' + this.config.id + 'BAP ' +'.layerMoreInfo').on('click', function() {
+        that.GetThisLayer().displayLayerInformation();
     });
 };
 
@@ -327,18 +362,26 @@ BAP.prototype.setErrorMessage = function (message) {
     this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', {error: message, id: that.id}));
 };
 
+BAP.prototype.GetThisLayer = function (toggle) {
+    let thisLayer = false
+    try{
+        var allLayers = bioScape.getAllLayers();
+        thisLayer = allLayers.filter(layer =>{
+            if(layer.actionConfig){
+                return layer.actionConfig.baps[0] == this.id
+            } return false
+        })[0]
+    }
+    catch(error){}
+    return thisLayer
+}
 
 BAP.prototype.switchPriorityBap = function (toggle) {
-    //console.log(id)
-    $("#opacitySliderGlobal").hide()
-    var allLayers = bioScape.getAllLayers();
+
+    let thisLayer = this.GetThisLayer()
+    if(!thisLayer) return
     var visibleLayers = bioScape.getVisibleLayers();
-    let thisLayer = allLayers.filter(layer =>{
-        if(layer.actionConfig){
-            return layer.actionConfig.baps[0] == this.id
-        } return false
-    })[0]
-    
+   
     $.each(visibleLayers, function (index, layer) {
         if(!layer.baseMap && !layer.summarizationRegion){
             layer.turnOffLayer(true)
@@ -351,8 +394,8 @@ BAP.prototype.switchPriorityBap = function (toggle) {
     })
 
     if(toggle && thisLayer){
-        $("#opacitySliderGlobal").show()
-        $("#opacitySliderGlobalInput").val(parseFloat(thisLayer.getOpacity()));
+        $('#opacitySliderInput' + this.config.id).val(parseFloat(thisLayer.getOpacity()));
+        $('#toggleLayer' + this.config.id)[0].checked=true;
         thisLayer.turnOnLayer()
         thisLayer.section.layerHtmlControl.handleTurnOn(thisLayer.id)
     }

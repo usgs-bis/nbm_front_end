@@ -1458,9 +1458,9 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     color: rgb(243, 243, 243);
     font-weight: bold;
     line-height: 20px;
-    margin-top: -20px;
     margin-left: 15%;
     margin-bottom: 25px;
+    margin-top: 10px;
 }
 
 
@@ -1593,7 +1593,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 
 .synthesisCompositionBodyTitleSpace{
     height: 10px;
-    margin-top: 60px;
+    margin-top: 90px;
     /* border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     border-bottom: 2px solid #424243; */
@@ -1629,4 +1629,28 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     width: 235px;
     margin-top: 20px;
     text-align: center;
+    padding: 0px;
+}
+.jsonDiv{
+    display: inline-block;
+    float: right;
+    padding: 10px;
+}
+.inputExpander{
+    display: inline-block;
+    color: white;
+}
+.bapInputSection{
+    margin-bottom: 25px;
+    display: none;
+}
+
+.opacitySliderBap{
+    display: inline-block;
+    text-align: center;
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 0px;
+    margin-right: 10px;
+    padding-top: 5px;
 }

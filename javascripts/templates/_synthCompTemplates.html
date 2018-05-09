@@ -172,7 +172,7 @@
         {{/if}}
 </div>
 </div>
-{{if !leaveOutJson}}
+{{if !inputs && !leaveOutJson}}
 <div style='width: 100%;'>
 <button onclick="actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: -25px; left: calc(100% - 45px);'
 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
@@ -180,13 +180,44 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
             </button>
 </div>
 {{/if}}
-<!-- <div id="{{:id}}SimplifiedDiv" style='width: 100%; display: none;'>
-            <button onclick="actionHandlerHelper.showSimplifiedJson('{{:id}}')" style='font-size: 10px; width: 27px; position: relative; top: -25px; left: calc(100% - 45px);'
-class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the modified polygon used for analysis.">
-                <span class="glyphicon glyphicon glyphicon-unchecked bootstrapGlyph" aria-hidden="true"></span>
-            </button>
-</div> -->
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
+        {{if inputs}}
+            <div id="{{:id}}Inputs">
+                {{if !leaveOutJson}}
+                    <div id="{{:id}}JsonDiv" class ="jsonDiv">
+                            <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
+                            class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+                                <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+                            </button>
+                    </div>
+                {{/if}}
+                
+                <div id="{{:id}}AnalysisInputsSection" class="contextHeader inputExpander" data-section="{{:id}}AnalysisInputs">
+                    <span id="{{:id}}AnalysisInputsControl">&#9658;</span>
+                    Analysis Inputs
+                </div>
+                <div id="{{:id}}AnalysisInputs" class="bapInputSection">
+                    <div style="display: flex; padding-left: 10px;">
+                        <span class="clickSearch" style="margin-right: 10px;">
+                            <label class="clickSearch" style="display: flex;">
+                                <input id="toggleLayer{{:id}}" type="checkbox" class="clickSearch" Checked/>
+                                <span class=" clickSearch-target" data-toggle="tooltip" data-placement="top" title="Toggle Layer"></span>
+                            </label>
+                        </span>
+                        <span>{{:layerTitle}}</span> 
+                        <span style="white-space:nowrap; margin-left: 5px;">
+                            <i class="fa fa-circle fa-first" aria-hidden="true" data-original-title></i>
+                            <i class="fa fa-info-circle fa-second layerMoreInfo" aria-hidden="true" data-layer="{{:divId}}"></i>
+                        </span>
+                       
+                    </div>
+                    <div id="opacitySlider{{:id}}" class="sliderContainer opacitySliderBap" >
+                        <label>Map Layer Opacity</label>
+                        <input id="opacitySliderInput{{:id}}" class="opacitySlider" type="range" min="0" value="0.5" max="1"  step=".05" style="display:inline;vertical-align:middle;margin-bottom: -5px;"/>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
         {{:sectionHtml}}
     </div>
 </div>
@@ -232,12 +263,6 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div id="{{:id}}BapHeader"> 
         <div class="row" style="margin-top: 15px;">
             <div class="col col-md-2">
-                <div id="{{:id}}JsonDiv" style='width: 100%; display: none;'>
-                        <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
-                        class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
-                            <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
-                        </button>
-                </div>
             </div>
             <div class="col col-md-8">
                 <div id="bapRangeSlider"  class="sliderLabelCenter"> Analyze Time Period: {{: min}} to {{: max}}</div>
@@ -358,13 +383,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 </script>
 
 <script id="NFHPWidget" type="text/x-jsrender">
-    <div id="{{:json}}" style='width: 100%;'>
-        <button onclick="actionHandlerHelper.showRawJson('{{:bapID}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; top: 5px; left: 5px; z-index: 1000;'
-        class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
-            <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
-        </button>
-        <div class="nfhpBapHeader" id="{{:bapID}}BapTitle">{{:title}}</div>
-    </div>
+    <div class="nfhpBapHeader" id="{{:bapID}}BapTitle">{{:title}}</div>
     <div class="contextSubHeader subHeaderTitle" style=" color: #f3f3f3; line-height: 20px; font-size: 17px; margin-top: 30px; margin-left: 20px; margin-right: 20px; ">{{:title}}</div>
     <div id="{{: id}}" style="width: 100%; height: 400px;"></div>
     <div id="{{:noData}}" style="float:right">No Data</div>

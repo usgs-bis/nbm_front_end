@@ -100,7 +100,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                 if (tempBap) {
                     tempBap.setEmptyBap();
                 } else {
-                    tempBap = new BAP({id: bapId}, undefined, that);
+                    tempBap = new BAP({id: bapId}, false, that);
                     that.setBapValue(bapId, tempBap);
                 }
 
@@ -153,7 +153,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                                 return that.sendPostRequest(myServer + "/bap/get", myMap)
                                     .then(function (data) {
                                         var bap = that.getBapValue(data.id);
-                                        bap.reconstruct(data, true);
+                                        bap.reconstruct(data, false);
 
                                         var feature = that.createPseudoFeature(newGj.geometry);
                                         feature.layer = that.layer;
@@ -180,7 +180,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                     promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
                         .then(function(data) {
                             var bap = that.getBapValue(data.id);
-                            bap.reconstruct(data, true);
+                            bap.reconstruct(data, false);
 
                             var feature = that.createPseudoFeature(newGj.geometry);
                             feature.layer = that.layer;

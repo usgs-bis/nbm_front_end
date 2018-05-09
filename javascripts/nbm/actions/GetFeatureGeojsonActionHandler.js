@@ -54,7 +54,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                             return that.sendPostRequest(myServer + "/bap/get", myMap)
                                 .then(function (data) {
                                     var bap = that.getBapValue(data.id);
-                                    bap.reconstruct(data, true);
+                                    bap.reconstruct(data, false);
 
                                     var feature = that.createPseudoFeature(newGj.geometry);
                                     feature.layer = that.layer;
@@ -74,7 +74,7 @@ GetFeatureGeojsonActionHandler.prototype.processBaps = function (additionalParam
                     promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
                         .then(function(data) {
                             var bap = that.getBapValue(data.id);
-                            bap.reconstruct(data, true);
+                            bap.reconstruct(data, false);
 
                             var feature = that.createPseudoFeature(newGj.geometry);
                             feature.layer = that.layer;
