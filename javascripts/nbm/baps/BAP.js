@@ -230,12 +230,8 @@ BAP.prototype.bindClicks = function () {
     });
 
     $('#opacitySliderInput' + this.config.id).on("change mousemove", function() {
-        var visibleLayers = bioScape.getVisibleLayers();
-        $.each(visibleLayers, function (index, layer) {
-            if(!layer.baseMap && !layer.summarizationRegion){
-                layer.section.updateLayerOpacity(layer.id, $('#opacitySliderInput' + that.config.id).val());
-            }  
-        })
+        let thisLayer = that.GetThisLayer()
+        thisLayer.section.updateLayerOpacity(thisLayer.id, $('#opacitySliderInput' + that.config.id).val());
     });
 
      //when the user clicks an information icon
