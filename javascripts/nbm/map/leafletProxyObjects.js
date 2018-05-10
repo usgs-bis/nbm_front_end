@@ -3,7 +3,7 @@ var LAT_MAX = 85;
 var LAT_MIN = -60;
 var MAP_COORDINATES_WIDTH = 360;
 var MAP_OFFSET = 180;
-var EDGE_OF_MAP_THRESHOLD = 35;
+var EDGE_OF_MAP_THRESHOLD = 55;
 var MAP_ITITIAL_CENTER = [40,-86];
 var MAP_INITIAL_ZOOM = 5;
 
@@ -222,6 +222,9 @@ var Marker = function(latLng, overrideTranslationToMainMap) {
 var Feature = function(geojson, latLng, color, displayFeatureNegative) {
     color = getValueOrDefault(color, '#FF0000');
     if (!latLng) latLng = L.geoJSON(geojson).getBounds().getCenter();
+    if(latLng.lng == 0){
+        latLng.lng = -180;
+    }
     this.geojson = geojson;
     this.latLng = latLng;
     this.leafletFeature = getLeafletFeature(geojson, latLng, color, displayFeatureNegative);
@@ -237,7 +240,7 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
         this.featureNegative = getNegativeFeature(geojson);
     }
     this.outline = getOutlineFeature(this.leafletFeature.toGeoJSON(), displayFeatureNegative);
-
+    this.outlineCopy = false
     this.dummyFeatures = new DummyLayers(function(direction) {
         var geojsonCopy = $.extend(true, {}, this.geojson);
 
@@ -256,9 +259,10 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
                 }
             }
         }
-
+        this.outlineCopy = getOutlineFeature(geojsonCopy, displayFeatureNegative);
         return getLGeoJson(geojsonCopy);
     }, this);
+   
 
     /**
      * This callback is called when the user clicks the feature. The user's click event is passed in as an argument.
@@ -283,6 +287,11 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
                     onClick(newClick);
                 });
         }
+        if(this.outlineCopy){
+            this.outlineCopy
+                .addTo(map)
+                .bringToBack();
+        }
         this.outline
             .addTo(map)
             .bringToBack();
@@ -296,6 +305,7 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
         this.leafletFeature.remove();
         if (this.featureNegative) this.featureNegative.remove();
         this.outline.remove();
+        if(this.outlineCopy) this.outlineCopy.remove();
         this.dummyFeatures.removeFromMap();
     };
 
