@@ -203,6 +203,14 @@ function toggleUnitInfoBar(bounds) {
  * @param {Object} bounds - L.Bounds
  */
 function centerMapRight(bounds) {
+    if(bounds._northEast.lng > 180){
+        bounds._northEast.lng -= 360;
+        bounds._southWest.lng -= 360;
+    }
+    else if(bounds._southWest.lng > 180){
+        bounds._southWest.lng -= 360;
+        bounds._northEast.lng -= 360;
+    }
     var padding = [$("#unit_info_right").width(), 0];
     centerPolygonInViewWindow(bounds, padding);
 }

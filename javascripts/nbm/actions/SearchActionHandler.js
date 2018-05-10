@@ -226,7 +226,7 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
 
     if (this.geojson.coordinates[0].length === 0) return Promise.resolve();
 
-    this.feature = new Feature(this.poi.polygon, undefined, "", false);
+    this.feature = new Feature(this.poi.polygon, undefined, "", undefined);
     this.feature.show();
 
     try {
@@ -271,6 +271,10 @@ SearchActionHandler.prototype.cleanUp = function () {
 
 var PlaceOfInterestClick = function (latlng, that) {
 
+    ///clicking west most alaska
+    if(latlng.lng < - 180){
+        latlng.lng += 360
+    }
     let query = getElasticGeoQuery(latlng)
 
     //do the lookup then put the results in the drop down
