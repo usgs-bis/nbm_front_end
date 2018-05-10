@@ -305,6 +305,7 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
         this.leafletFeature.remove();
         if (this.featureNegative) this.featureNegative.remove();
         this.outline.remove();
+        if(this.outlineCopy) this.outlineCopy.remove();
         this.dummyFeatures.removeFromMap();
     };
 
