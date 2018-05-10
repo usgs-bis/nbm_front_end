@@ -456,12 +456,9 @@ var Initializer = (function(initializer) {
      * @param {number} newOpacity - between 0 and 1
      */
     function updateLayerOpacity(layerId, sectionId, newOpacity) {
-        var visibleLayers = bioScape.getVisibleLayers();
-        $.each(visibleLayers, function (index, layer) {
-            if(!layer.baseMap && !layer.summarizationRegion){
-                layer.section.updateLayerOpacity(layer.id, newOpacity);
-            }  
-        })
+        var section = bioScape.getSection(sectionId);
+        section.updateLayerOpacity(layerId, newOpacity);
+  
     }
 
     /**
