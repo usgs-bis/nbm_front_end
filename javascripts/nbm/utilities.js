@@ -16,9 +16,9 @@ $(document)
         });
         clipboard.on('success', function(e) {
             var el = $(e.trigger);
-            el.html('<span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>Copied');
+            el.html('Copied');
             window.setTimeout(function() {
-                el.html('<span class="glyphicon glyphicon-copy bootstrapGlyph" aria-hidden="true"></span>Share');
+                el.html('Share');
                 //$("#dropdownButtonGroup").removeClass("open").addClass("closed");
             }, 2000);
             window.setTimeout(function() {
