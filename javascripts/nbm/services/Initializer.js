@@ -9,22 +9,6 @@
  * initialize() - setup the website functionality
  */
 var Initializer = (function(initializer) {
-    var PRETTY_URL_MAP = {
-        biogeography: '5667130ee4b06a3ea36c8be8',
-        nbm_front_end: '5667130ee4b06a3ea36c8be8',
-        nvcs: '5810cd6fe4b0f497e7975237',
-        'terrestrial-ecosystems-2011': '5810cd6fe4b0f497e7975237',
-        npn: '591c7160e4b0a7fdb43dea93',
-        phenology: '591c7160e4b0a7fdb43dea93'
-    };
-    var CONFIG_URL_MAP = {
-        biogeography: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v3/nbm_config.json',
-        nbm_front_end: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v3/nbm_config.json',
-        nvcs: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json',
-        'terrestrial-ecosystems-2011': 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json',
-        npn: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json',
-        phenology: 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json'
-    };
     var disclaimerModal = {
         closeRightPanel: true,
         closeLeftPanel: false,
@@ -34,8 +18,7 @@ var Initializer = (function(initializer) {
     function initialize() {
         displayBetaBanner();
         var state = {};
-        var bioScapeId = '5667130ee4b06a3ea36c8be8';//Default is set to the National Biogeographic Map
-        var thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json';
+        var bioscapeName = "biogeography";
 
         var name = window.location.pathname.replace(homePath, '');
         var chunks = name.split("/");
@@ -49,9 +32,7 @@ var Initializer = (function(initializer) {
         }
 
         if (path.length > 1) {
-            var id = path.replace(/\//g, '');
-            bioScapeId = PRETTY_URL_MAP[id] ? PRETTY_URL_MAP[id] : id;
-            thisConfig = CONFIG_URL_MAP[id] ? CONFIG_URL_MAP[id] : thisConfig;
+            bioscapeName = path.replace(/\//g, '');
         }
         //if there is a hash in the url get the bioScapeId and initial map setting from the url elements after the hash
         if (window.location.hash.length > 0) {
@@ -59,61 +40,25 @@ var Initializer = (function(initializer) {
         }
 
         if (state.customBioscape) {
-            bioScapeId = state.customBioscape;
+            bioscapeName = state.customBioscape;
         }
 
         disclaimerModal.element = $('#disclaimerModal');
 
         var bioscapeJson = {};
 
-        //bioScapeId = "591c7160e4b0a7fdb43dea93";
-        //bioScapeId = "5810cd6fe4b0f497e7975237";
-        //thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json';
-        //thisConfig = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/test/gotthold_test.json'
-
-        //request information from the bioScape ScienceBase item
-        sendScienceBaseItemRequest(bioScapeId, 5000)
-            .then(function(data) {
-                //add the general ScienceBase information to the bioScapeJson object
+        $.getJSON(myServer + "/bioscape/config/" + bioscapeName)
+            .then(function(response) {
                 bioscapeJson = {
-                    id: data.id,
-                    title: data.title,
-                    summary: data.body,
-                    lastUpdated: data.provenance ? data.provenance.lastUpdated : new Date()
+                    id: response.sbItem.id,
+                    title: response.sbItem.title,
+                    summary: response.sbItem.body,
+                    lastUpdated: response.sbItem.provenance ? response.sbItem.provenance.lastUpdated : new Date()
                 };
 
-                document.title = data.title;
+                document.title = response.sbItem.title;
 
-                if (state.customBioscape) {
-                    var configUrl = getConfigUrl(data);
-
-                    if(configUrl === '') {
-                        alert('This collection doesn\'t seem to have a config file. Please add one, otherwise the site may not work correctly. SB Item #: ' + bioScapeId);
-                    }
-
-                    return configUrl;
-                } else {
-                    return thisConfig;
-                }
-            })
-            .then(function(url) {
-                return new Promise(function (resolve, reject) {
-                    $.getJSON(url)
-                        .done(function(data) {
-                            if (data.isLastPage) {
-                                resolve(parseConfigFromBitBucket(data.lines));
-                            } else {
-                                //Bitbucket only delivers the first 500 lines for calls like this. If we try to get the
-                                //raw file, we get a CORS issue. Here's the solution for now... If we have files over 1000
-                                //lines, we'll have to make this a loop rather than a single check.
-                                $.getJSON(url + "?start="+data.size)
-                                    .done (function (newData) {
-                                        data.lines = data.lines.concat(newData.lines);
-                                        resolve(parseConfigFromBitBucket(data.lines));
-                                    });
-                            }
-                        });
-                });
+                return response.config;
             })
             .then(function(data) {
                 setupPage(bioscapeJson, data, state);
@@ -121,10 +66,11 @@ var Initializer = (function(initializer) {
             .catch(function(err) {
                 showErrorDialog('The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.', 'Warning');
                 // console.log('There was an error trying to receive information from ScienceBase: ', err, '. The default National Biogeographic Map will be loaded.');
-                console.log('id = '+ bioScapeId);
                 var bbBioScape;   //Bitbucket bioScape
-                switch(id){
+                switch(bioscapeName){
                     case 'biogeography':
+                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
+                        break;
                     case 'nbm_front_end':
                         bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
                         break;
@@ -162,7 +108,7 @@ var Initializer = (function(initializer) {
                                     var json = parseConfigFromBitBucket(data.lines);
 
                                     setupPage(bioscapeJson, json, state);
-                            });
+                                });
                         }
                     });
             });
