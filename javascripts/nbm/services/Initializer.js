@@ -31,6 +31,7 @@ var Initializer = (function(initializer) {
         var path = window.location.pathname.replace(homePath, '');
         if (path.length > 1) {
             var id = path.replace(/\//g, '');
+            console.log("PATH ID: ", id);
             bioScapeId = PRETTY_URL_MAP[id] ? PRETTY_URL_MAP[id] : id;
         }
         //if there is a hash in the url get the bioScapeId and initial map setting from the url elements after the hash
