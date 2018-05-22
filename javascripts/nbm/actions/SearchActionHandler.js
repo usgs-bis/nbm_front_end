@@ -447,7 +447,12 @@ PlaceOfInterestSearch.prototype.lookup = function (text) {
         $(".googleResults").remove();
         if (data.hits ) {
             var added = [];
-            data.hits.hits.sort(function (a, b) {return b._score-a._score});
+            // data.hits.hits.sort(function (a, b) {return b._score-a._score}); //sort by best match
+            data.hits.hits.sort(function (a, b) {
+                 if(a._source.properties.place_name < b._source.properties.place_name) return -1
+                 if(a._source.properties.place_name > b._source.properties.place_name) return 1
+                 return 0
+                }); // sort alpha
             $.each (data.hits.hits, function (index, obj) {
                 // if (added.indexOf(obj._source.properties.unit_nm) === -1) {
                 var result = new SearchResult(obj, that);
