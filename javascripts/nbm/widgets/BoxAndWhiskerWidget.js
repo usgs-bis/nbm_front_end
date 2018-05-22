@@ -32,7 +32,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
             return 'A time enabled layer must be turned on for this Analysis Package to work.';
         }
         let values = timeSlider.slider( "values" )
-        let location = actionHandlerHelper.sc.headerBap.config.title
+        let location = ((actionHandlerHelper.sc.headerBap || {}).config || {}).title
         var viewData = {
             id: that.bap.id,
             startDate: time.startDate,
@@ -158,6 +158,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
 
     this.updateTitle = function(data){
         let years = Object.getOwnPropertyNames(data)
+        let location = ((actionHandlerHelper.sc.headerBap || {}).config || {}).title
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").html(`Spring Index ${location ? location : ""}`)
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").html(`Annual Spring Index for the Period ${years[0]} to ${years[years.length-1]}`)
     
     }

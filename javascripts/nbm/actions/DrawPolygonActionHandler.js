@@ -95,6 +95,7 @@ DrawPolygonActionHandler.prototype.processBaps = function () {
                 return Promise.resolve();
             })
             .catch(function (ex) {
+                console.log(ex)
             }));
     });
 
