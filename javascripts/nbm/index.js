@@ -8,14 +8,26 @@ var actionHandlers = [];
 var actionHandlerHelper = new ActionHandlerHelper();
 var widgetHelper = new WidgetHelper();
 var NPNTOKEN = "";
+let noPW = true // setting the backend password to fixed value and sending that in without user interaction
 
 window.onload = function() {
     loadHtmlTemplates()
         .then(function () {
             LeafletMapService.initializeMap();
             setUpIndexPage(preventMultipleOpenPanels(), isVerticalOrientation());
-            //if(true){
-            if (window.location.pathname.indexOf("phenology") !== -1 || window.location.pathname.indexOf("biogeography") !== -1) {
+            if(noPW){
+                sendPostRequest(myServer + "/main/getNpnToken",{p:"abc",e:"nbm"})
+                .then(function (data) {
+                    if (data.success) {
+                        NPNTOKEN = data.success;
+                        Initializer.initialize();
+                    } else {
+                        $("html, body").html("Wrong password");
+                    }
+                });
+
+            }
+            else if (window.location.pathname.indexOf("phenology") !== -1 || window.location.pathname.indexOf("biogeography") !== -1) {
                 let env = "nbm"
                 if (window.location.pathname.indexOf("phenology") !== -1) {
                     env = "npn"
