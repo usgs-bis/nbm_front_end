@@ -404,6 +404,7 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
     this.searchButton.val("");
     $(".googleResults").remove();
     this.clearSearchButton.hide();
+    $(".searchRessultsBox").hide()
 };
 
 
@@ -476,6 +477,7 @@ PlaceOfInterestSearch.prototype.getClearButton = function () {
 
 
 var SearchResult = function (result, searchParent) {
+    $(".searchRessultsBox").show()
     this.id = result._source.properties.gid;
     this.name = result._source.properties[searchParent.lookupProperty];
     this.searchParent = searchParent;

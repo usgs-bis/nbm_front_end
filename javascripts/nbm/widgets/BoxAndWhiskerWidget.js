@@ -120,8 +120,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 // that.bap.showJsonDiv();
                 if (!gotAnyData) {
                     if (alreadySentBuffer) {
-                        setError('An error occurred retrieving data from the NPN dataset. ' +
-                            'The input polygon may be too small for the Geoserver Web Processing Service to analyze');
+                        setError(' Your polygon falls outside the geographic extent of the data you\'re trying to analyze. ' );
                         alreadySentBuffer = false;
                         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     } else {
@@ -132,7 +131,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                     $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     alreadySentBuffer = false;
                     var years = noDatas.join(", ");
-                    setError('There was an error analyzing data for the following years: ' + years + '. ' +
+                    setError(' There was an error analyzing data for the following years: ' + years + '. ' +
                         'They will not be displayed in the chart. If the problem continues, please contact site admin');
                 } else {
                     that.updateTitle(jsonData)
@@ -145,9 +144,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
 
                     $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"JsonDiv").show();
                     if (alreadySentBuffer) {
-                        setError('The polygon was too small and did not overlap the center of any of the raster cells. ' +
-                            'We\'ve added a buffer to the polygon and resumbitted for analysis. To view the buffered ' +
-                            'polygon, click the button to the top right of the chart.');
+                        setError(' Your polygon was buffered so it overlaps with the center of the nearest raster cell. ' +
+                            'You can click the \'square\' icon next to the polygon title to view the buffered polygon.');
                     }
                     // alreadySentBuffer = false;
                 }
@@ -301,9 +299,13 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
     }
 
     function setError(message) {
-        $("#" + that.bap.id + "BAP").find('#boxAndWhiskerError').html('<div style="font-size: 16px;" class="myNpnInfo">' +
-            message +
-            '</div>');
+        $("#" + that.bap.id + "BAP").find('#boxAndWhiskerError').html(
+            '<div style="font-size: 16px; line-height: 20px;" class="myNpnInfo">' +
+            '<span class="fa fa-circle fa-first" aria-hidden="true" style="margin-right: -14px;color: red; opacity: .8; font-size: 14px;"></span>' +
+            '<span class="glyphicon glyphicon-exclamation-sign exclamation" aria-hidden="true"></span>'
+            + '<span>' + message + '</span>' + 
+            '</div>'
+        );
     }
 
     function handleRequests(requests) {
@@ -335,7 +337,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                     }
                 });
             }).catch(function(e) {
-                setError('There was an error processing one or more of the box plots, they will not be displayed in the chart')
+                setError(' There was a problem communicating with the server. Please try again later.')
             });
         }, Promise.resolve())
             .catch(function() {
