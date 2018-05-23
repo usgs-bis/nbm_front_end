@@ -825,6 +825,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .dropdown-menu {
     border: 1px solid #bbb;
+    right: -15px;
+    left: unset;
 }
 
 .matrix-html-tooltip, .matrix-top-tooltip {
@@ -1386,6 +1388,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     overflow-y: scroll;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    display: none;
 }
 
 #HeaderBap1 {
