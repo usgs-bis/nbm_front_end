@@ -49,12 +49,7 @@
         <span class="summaryHeader">{{if approximate}}Approximate {{/if}}Area: </span>{{:acres}} acres
     </div>
 {{/if}}
-{{if hasSummaryData}}
-    <div>
-        <span class="summaryLabel summaryHeader">Summary: </span>
-        {{include summaryData tmpl="#summaryTemplate"/}}
-    </div>
-{{/if}}
+
 </div>
 </script>
 
@@ -176,7 +171,7 @@
         {{/if}}
 </div>
 </div>
-{{if !inputs && !leaveOutJson}}
+{{if !hasInputs && !leaveOutJson}}
 <div style='width: 100%;'>
 <button onclick="actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: -25px; left: calc(100% - 45px);'
 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
@@ -185,7 +180,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
 </div>
 {{/if}}
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
-        {{if inputs}}
+        {{if hasInputs}}
             <div id="{{:id}}Inputs">
                 {{if !leaveOutJson}}
                     <div id="{{:id}}JsonDiv" class ="jsonDiv">
@@ -201,24 +196,28 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
                     Analysis Inputs
                 </div>
                 <div id="{{:id}}AnalysisInputs" class="bapInputSection">
-                    <div style="display: flex; padding-left: 10px;">
-                        <span class="clickSearch" style="margin-right: 10px;">
-                            <label class="clickSearch" style="display: flex;">
-                                <input id="toggleLayer{{:id}}" type="checkbox" class="clickSearch" Checked/>
-                                <span class=" clickSearch-target" data-toggle="tooltip" data-placement="top" title="Toggle Layer"></span>
-                            </label>
-                        </span>
-                        <span>{{:layerTitle}}</span> 
-                        <span style="white-space:nowrap; margin-left: 5px;">
-                            <i class="fa fa-circle fa-first" aria-hidden="true" data-original-title></i>
-                            <i class="fa fa-info-circle fa-second layerMoreInfo" aria-hidden="true" data-layer="{{:divId}}"></i>
-                        </span>
-                       
-                    </div>
-                    <div id="opacitySlider{{:id}}" class="sliderContainer opacitySliderBap" >
-                        <label>Map Display Opacity</label>
-                        <input id="opacitySliderInput{{:id}}" class="opacitySlider" type="range" min="0" value="0.5" max="1"  step=".05" style="display:inline;vertical-align:middle;margin-bottom: -5px;"/>
-                    </div>
+                    {{for layerInputs}}
+                    
+                        <div style="display: flex; padding-left: 10px;">
+                            <span class="clickSearch" style="margin-right: 10px;">
+                                <label class="clickSearch" style="display: flex;">
+                                    <input id="toggleLayer{{:id}}" type="checkbox" class="clickSearch" />
+                                    <span class=" clickSearch-target" data-toggle="tooltip" data-placement="top" title="Toggle Layer"></span>
+                                </label>
+                            </span>
+                            <span>{{:title}}</span> 
+                            <span id="{{:id}}layerMoreInfo" style="white-space:nowrap; margin-left: 5px;">
+                                <i class="fa fa-circle fa-first" aria-hidden="true" data-original-title></i>
+                                <i class="fa fa-info-circle fa-second layerMoreInfo" aria-hidden="true" data-layer="{{:divId}}"></i>
+                            </span>
+                        
+                        </div>
+                        <div id="opacitySlider{{:id}}" class="sliderContainer opacitySliderBap" >
+                            <label>Map Display Opacity</label>
+                            <input id="opacitySliderInput{{:id}}" class="opacitySlider" type="range" min="0" value="0.5" max="1"  step=".05" style="display:inline;vertical-align:middle;margin-bottom: -5px;"/>
+                        </div>
+                 
+                    {{/for}}
                 </div>
             </div>
         {{/if}}
@@ -239,9 +238,12 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 <script id="pixelHierarchyPlaceholder" type="text/x-jsrender">
     <div id="hierarchyChart{{:id}}"></div>
 </script>
+<script id="hierarchyTablePlaceholder" type="text/x-jsrender">
+    <div id="hierarchyTable{{:id}}"></div>
+</script>
 
 <script id="identifyUnitTemplate" type="text/x-jsrender">
-    <div class="layerExpander contextHeader hierarchyExpanders" data-section="identify{{:id}}"
+    <div class=" contextHeader hierarchyExpanders" data-section="identify{{:id}}"
     {{if isOn}}style="color:orange; font-weight: bold; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"
     {{else}}style="color:#f3f3f3; font-weight: normal; font-size: 14px; padding: 7px 4px 7px 4px; min-height: 30px; {{if !isLast}}border-top: 1px solid rgba(245,245,245,.2);{{/if}}"{{/if}}>
         <span id="identify{{:id}}Control">&#9658;</span>

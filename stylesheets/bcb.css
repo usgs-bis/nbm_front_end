@@ -204,8 +204,19 @@ select option {
     padding: 10px;
     cursor: pointer;
 }
+.hierarchyExpanders{
+    padding: 10px;
+    cursor: pointer;
+}
 
 .layerExpander:hover {
+    text-shadow:
+    0 0 0.1em rgba(245,245,245,.2),
+    0 0 0.1em rgba(245,245,245,.2),
+    0 0 0.1em rgba(245,245,245,.2),
+    0 0 0.1em rgba(245,245,245,.2)
+}
+.hierarchyExpanders:hover{
     text-shadow:
     0 0 0.1em rgba(245,245,245,.2),
     0 0 0.1em rgba(245,245,245,.2),

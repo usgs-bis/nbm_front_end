@@ -152,6 +152,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                                 myMap.featureValue = myMap.featureValue.substring(numChunks * WAF_LIMIT, myMap.featureValue.length);
                                 return that.sendPostRequest(myServer + "/bap/get", myMap)
                                     .then(function (data) {
+                                        if(data.error) return Promise.resolve();
                                         var bap = that.getBapValue(data.id);
                                         bap.reconstruct(data, false);
 
