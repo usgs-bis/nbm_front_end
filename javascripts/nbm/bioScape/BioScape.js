@@ -188,21 +188,23 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
     this.updateState = function() {
         var tempState = {};
 
-        var layers = this.getSelectedLayers();
-        if(layers.length < 1) {
-            if (this.customBioscape) {
-                tempState.customBioscape = this.customBioscape;
-            }
-            return tempState;
-        }
-        var arr = [];
-        layers.forEach(function(layer) {
-            var opacityString = '';//layer.getOpacity() === 1 ? '' : ',opacity:' + layer.getOpacity();
-            arr.push('id:' + layer.id + opacityString);
-        });
-        if(arr.length) {
-            tempState.layers = arr.join(';');
-        }
+        // TODO! 
+
+        // var layers = this.getSelectedLayers();
+        // if(layers.length < 1) {
+        //     if (this.customBioscape) {
+        //         tempState.customBioscape = this.customBioscape;
+        //     }
+        //     return tempState;
+        // }
+        // var arr = [];
+        // layers.forEach(function(layer) {
+        //     var opacityString = '';//layer.getOpacity() === 1 ? '' : ',opacity:' + layer.getOpacity();
+        //     arr.push('id:' + layer.id + opacityString);
+        // });
+        // if(arr.length) {
+        //     tempState.layers = arr.join(';');
+        // }
 
         if (this.customBioscape) {
             tempState.customBioscape = this.customBioscape;
@@ -210,4 +212,15 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
 
         this.state = tempState;
     }
+
+    this.getAllBaps = function() {
+        let allBaps = []
+        $.each(actionHandlerHelper.enabledActions, function (index, action) {
+            $.each(action.config.baps, function (index, bap) {
+                allBaps.push(bap)
+            })
+        })
+        return allBaps
+}
+
 };

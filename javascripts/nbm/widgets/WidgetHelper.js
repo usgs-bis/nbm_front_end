@@ -29,9 +29,9 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
     } else if (config.type === "nfhp_disturbance") {
         return new NFHPDisturbanceWidget(config);
     } else if (config.type === "hierarchyByPixelElastic") {
-        return new HBPElasticWidget(config);
+        return new HBPElasticWidget(config,bap);
     } else if (config.type === "hierarchyTableElastic") {
-        return new HierarchyTableWidgetElastic(config);
+        return new HierarchyTableWidgetElastic(config,bap);
     } else if (config.type === "histogram") {
         return new HistogramWidget(config,bap);
     } else if (config.type === "smoothPlot") {

@@ -17,9 +17,9 @@ var BAP = function(serverAP, leaveOutJson, actionRef) {
     this.id = serverAP.id
     this.unique = this.guidGenerator();
     if (!this.config.data) this.config.data = {};
-    this.description = this.config.data.description;
-    this.bapReference = this.config.url;
-    this.lastUpdated = this.config.data.lastUpdated;
+    this.description = this.config.data.description || "";
+    this.bapReference = this.config.url || "";
+    this.lastUpdated = this.config.data.lastUpdated || "";
     this.widgets = [];
     this.feature = undefined;
     this.leaveOutJson = leaveOutJson;
@@ -30,8 +30,8 @@ var BAP = function(serverAP, leaveOutJson, actionRef) {
     this.rawJson = {};
     this.actionRef = actionRef;
 
-    $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
-
+    if(! $(`#${this.id}BAP`).length)  $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
+   
     this.htmlElement = $("#" + this.id + "BapCase");
 
 
@@ -132,8 +132,10 @@ BAP.prototype.getFullHtml = function () {
     if ( altTitle ) {
         title = altTitle[0];
     }
-    var allLayers = bioScape.getAllLayers();
-    let thisLayer = this.GetThisLayer()
+    
+    let layerInputs = this.GetBapLayers().filter(l =>{
+        return !l.summarizationRegion
+    })
    
     var apViewModel = {
         id: this.config.id,
@@ -142,11 +144,10 @@ BAP.prototype.getFullHtml = function () {
         simplified: this.simplified,
         openByDefault: this.config.openByDefault,
         leaveOutJson: this.leaveOutJson,
-        inputs: thisLayer ? true : false,
+        hasInputs: layerInputs.length ? true : false,
+        layerInputs : layerInputs,
         sectionHtml: widgetHtml,
         imagePath: "", // <-- what is this for?
-        divId: thisLayer ? thisLayer.id : "",
-        layerTitle: thisLayer ? thisLayer.title : ""
     };
 
     createAndPushInfoDiv(infoDivModel);
@@ -217,27 +218,27 @@ BAP.prototype.bindClicks = function () {
         e.stopPropagation();
     });
 
-    $('#toggleLayer' + this.config.id).click(function(){
 
-       
-        var allLayers = bioScape.getAllLayers();
-        let thisLayer = that.GetThisLayer()
-        if(this.checked){
-            thisLayer.turnOnLayer()
-        } else {
-            thisLayer.turnOffLayer()
-        }
-    });
+    let layers = that.GetBapLayers()
+    $.each(layers, function (index, layer) {
+        $(`#${that.id}BAP #toggleLayer${layer.id}`).click(function(){
+            if(this.checked){
+                that.turnOffBapLayers()
+                layer.turnOnLayer()
+            } else {
+                layer.turnOffLayer()
+            }
+        })
+        $(`#${that.id}BAP #opacitySliderInput${layer.id}`).on("change mousemove", function() {
 
-    $('#opacitySliderInput' + this.config.id).on("change mousemove", function() {
-        let thisLayer = that.GetThisLayer()
-        thisLayer.section.updateLayerOpacity(thisLayer.id, $('#opacitySliderInput' + that.config.id).val());
-    });
+            layer.section.updateLayerOpacity(layer.id, $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val());
+        });
 
-     //when the user clicks an information icon
-     $('#' + this.config.id + 'BAP ' +'.layerMoreInfo').on('click', function() {
-        that.GetThisLayer().displayLayerInformation();
-    });
+         //when the user clicks an information icon
+        $(`#${that.id}BAP #${layer.id}layerMoreInfo`).on('click', function() {
+            layer.displayLayerInformation();
+        });
+    })
 };
 
 BAP.prototype.showSimplifiedDiv = function () {
@@ -358,44 +359,62 @@ BAP.prototype.setErrorMessage = function (message) {
     this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', {error: message, id: that.id}));
 };
 
-BAP.prototype.GetThisLayer = function (toggle) {
-    let thisLayer = false
+BAP.prototype.GetBapLayers = function () {
+    let bapLayers = false
     try{
         var allLayers = bioScape.getAllLayers();
-        thisLayer = allLayers.filter(layer =>{
+        bapLayers = allLayers.filter(layer =>{
+            let id = this.id;
+            let found = false
             if(layer.actionConfig){
-                return layer.actionConfig.baps[0] == this.id
-            } return false
-        })[0]
+                $.each(layer.actionConfig.baps, function (index, b) {
+                    if(b == id){
+                        found = true;
+                    } 
+                })
+            } return found
+        })
     }
     catch(error){}
-    return thisLayer
+    return bapLayers
 }
 
 BAP.prototype.switchPriorityBap = function (toggle) {
-
-    let thisLayer = this.GetThisLayer()
+    let that = this
+    let thisLayer = this.GetBapLayers()[0]
     if(!thisLayer) return
+
+    this.turnOffBapLayers()
+  
+    $.each(bioScape.getAllBaps(), function (index, bap) {
+        if(bap != that.id){
+            try { collapseContainer(bap + "BAP")}
+            catch(error){}
+        }
+    })
+       
+    if(toggle && thisLayer){
+        $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked=false;
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
+    }
+};
+
+BAP.prototype.turnOffBapLayers = function(){
+    let that = this;
     var visibleLayers = bioScape.getVisibleLayers();
    
     $.each(visibleLayers, function (index, layer) {
-        if(!layer.baseMap && !layer.summarizationRegion){
+        if(!layer.baseMap && !layer.summarizationRegion){  
+
+            if(($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked){
+                $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
+            }
+            else{
             layer.turnOffLayer(true)
             layer.section.layerHtmlControl.handleTurnOff(layer.id)
-            if(layer.id != thisLayer.id){
-                try { toggleContainer(layer.actionConfig.baps[0] + "BAP")}
-                catch(error){}
             }
         }
     })
 
-    if(toggle && thisLayer){
-        $('#opacitySliderInput' + this.config.id).val(parseFloat(thisLayer.getOpacity()));
-        $('#toggleLayer' + this.config.id)[0].checked=true;
-        thisLayer.turnOnLayer()
-        thisLayer.section.layerHtmlControl.handleTurnOn(thisLayer.id)
-    }
-    
-};
-
-
+}

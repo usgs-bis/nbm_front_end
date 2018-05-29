@@ -76,7 +76,15 @@ var HierarchyByPixelWidget = function(chartData) {
         }
     };
 
-    this.initializeWidget = function() {
-
+    this.bindClicks = function () {
+        $(".hierarchyExpanders").on('click', function() {
+            var id = $(this).data('section');
+            toggleContainer(id);
+        });
     };
+
+    this.initializeWidget = function() {
+        this.bindClicks()
+    };
+
 };

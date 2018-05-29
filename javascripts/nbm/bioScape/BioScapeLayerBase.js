@@ -295,6 +295,7 @@ BioScapeLayerBase.prototype.addAdditionalHtml = function() {
         var layerId = this.id;
         var that = this;
         var time = this.getTimeInfo();
+        if (!time) return;
         this.timeIndex = time.default;
         var html = getHtmlFromJsRenderTemplate('#timeSliderTemplate', time);
         var timeSlider = $("#" + layerId+ "TimeControl");
@@ -384,12 +385,16 @@ BioScapeLayerBase.prototype.checkGlobalSlider = function() {
 
 
 BioScapeLayerBase.prototype.getTimeInfo = function() {
-    if (!this.mapLayer.timeControl) {
+    if (!this.mapLayer.timeControl ) {
         return undefined;
     }
     var layerId = this.id;
 
     var time = this.mapLayer.timeMap[this.featureName];
+
+    if (!time) {
+        return undefined;
+    }
     // var layerOptions = [];
     // if(this.layerSelector) {
     //     var timeMap = this.mapLayer.timeMap;

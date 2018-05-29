@@ -5,23 +5,26 @@
  * @param {*} chartData - chart data from the server
  * @constructor
  */
-var HBPElasticWidget = function(chartData) {
-    var that = this;
+var HBPElasticWidget = function (chartData, bap) {
+   
     this.config = chartData;
-    var hierarchy;
+    var hierarchy = [];
+    this.bap = bap
+    this.level = 0
+    let that = this;
 
     this.getHtml = function () {
-        return getHtmlFromJsRenderTemplate('#pixelHierarchyPlaceholder', {id:that.bap.id});
+        return getHtmlFromJsRenderTemplate('#pixelHierarchyPlaceholder', { id: that.bap.id });
     };
 
-    this.getInitializedHtml = function() {
+    this.getInitializedHtml = function () {
         var html = '';
-        for(var i = 0; i < hierarchy.length; i++) {
+        for (var i = 0; i < hierarchy.length; i++) {
             var level = hierarchy[i];
             //data is returned from lowest hierarchy level (ecological system) to highest (class) while bioscape lists them in opposite order
-            level.isOn = ((hierarchy.length - 1) - i) === that.config.layerIndex;
+            level.isOn = this.level == ((hierarchy.length - 1) - i);
             level.isLast = i === hierarchy.length - 1;
-            if(i === 0) {
+            if (i === 0) {
                 level.url = that.elasticUrl;
                 html = getHtmlFromJsRenderTemplate('#identifyUnitTemplate', level);
             } else {
@@ -30,15 +33,16 @@ var HBPElasticWidget = function(chartData) {
             }
         }
 
-        html = '<div style="border: 1px solid rgba(245,245,245,.2); background: rgba(30,30,35,.5); border-radius: 1em;">' + html + '</div>';
+        html = '<div style="border: 1px solid rgba(245,245,245,.2); background: rgba(30,30,35,.5); border-radius: 1em;">' + html +
+            `</div> <div style="margin-top: 40px;" id ="hierarchyTable${that.bap.id}"></div>`;
 
         return html;
     };
 
-    this.getPdfLayout = function() {
+    this.getPdfLayout = function () {
         var content = [];
 
-        for(var i = hierarchy.length - 1; i > -1; i--) {
+        for (var i = hierarchy.length - 1; i > -1; i--) {
             var level = hierarchy[i];
             //data is returned from lowest hierarchy level (ecological system) to highest (class) while bioscape lists them in opposite order
             level.isOn = ((hierarchy.length - 1) - i) == chartData.layerIndex;
@@ -100,23 +104,28 @@ var HBPElasticWidget = function(chartData) {
         for (var i = 0; i < prefixes.length; i++) {
             var prefix = prefixes[i];
             levels.push({
-                id: "hierarchyLevel"+i,
+                id: "hierarchyLevel" + i,
                 code: obj[prefix + "code"],
                 description: obj[prefix + "description"],
                 title: obj[prefix + "title"],
                 type: obj[prefix + "type"]
             });
         }
-
         hierarchy = levels;
     };
 
-    this.initializeWidget = function() {
+  
+    this.initializeWidget = function(){
+        this.getNewData()
+        bindLayers()
+    }
+
+    this.getNewData = function () {
         var that = this;
 
         var elasticQuery = {
-            "query" : {
-                "term" : {}
+            "query": {
+                "term": {}
             }
         };
 
@@ -124,21 +133,43 @@ var HBPElasticWidget = function(chartData) {
 
         that.elasticUrl = this.config.elasticUrl + encodeURI(JSON.stringify(elasticQuery));
         $.getJSON(that.elasticUrl, function (data) {
-            var hit = data["success"]["hits"]["hits"][0]["_source"]["properties"];
-            that.reformatData(hit);
+            if (data.error) {
+                console.log("An Error Has Occured")
+            }
+            else if (data.success.hits.hits.length) {
+                var hit = data["success"]["hits"]["hits"][0]["_source"]["properties"];
+                that.reformatData(hit);
+                that.bap.rawJson = hit;
+                that.reInitilize()
+            }
 
-            var jsonButton = getHtmlFromJsRenderTemplate('#rawJsonButtonTemplate', {url: that.elasticUrl});
-            var initializedPackage = that.getInitializedHtml();
-            $("#hierarchyChart"+that.bap.id).html(jsonButton + initializedPackage);
-
-            that.bindClicks();
+            else {
+                console.log("The Querry Returned No Data")
+            }
         });
     };
 
-    this.bindClicks = function () {
-        $(".hierarchyExpanders").on('click', function() {
+    function bindClicks() {
+        $(".hierarchyExpanders").on('click', function () {
             var id = $(this).data('section');
             toggleContainer(id);
         });
     };
+
+    function bindLayers() {
+        let layers = that.bap.GetBapLayers()
+        $.each(layers, function (index, layer) {
+            $(`#${that.bap.id}BAP #toggleLayer${layer.id}`).change(function () {
+                    that.level = layer.actionConfig.additionalParams.layerLevel
+                    that.reInitilize()
+            })
+        })
+    }
+
+    this.reInitilize = function () {
+        let initializedPackage = that.getInitializedHtml();
+        $("#hierarchyChart" + that.bap.id).html(initializedPackage);
+        bindClicks()
+    }
+
 };
