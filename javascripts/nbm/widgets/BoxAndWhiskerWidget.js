@@ -70,39 +70,50 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         checkRange(timeSlider.slider( "values", 0 ),timeSlider.slider( "values", 1 ))
        
 
-        timeSlider.on("slide", function (event, ui) {
-            var min = ui.values[0];
-            var max = ui.values[1];
+        timeSlider.on("slidechange", function (event, ui) {
+            if(ui){
+                var min = ui.values[0];
+                var max = ui.values[1];
 
-            var diff = max - min;
-            if (diff < 0) {
-                return false;
-            }
-            if (diff > REQUEST_LIMIT) { //limit the range to a maximum
-                if (ui.handleIndex == 0) {
-                    max = min + REQUEST_LIMIT;
-                } else {
-                    min = max - REQUEST_LIMIT;
+                var diff = max - min;
+                if (diff < 0) {
+                    return false;
                 }
-                timeSlider.slider("values", [min, max]);
+                if (diff > REQUEST_LIMIT) { //limit the range to a maximum
+                    if (ui.handleIndex == 0) {
+                        max = min + REQUEST_LIMIT;
+                    } else {
+                        min = max - REQUEST_LIMIT;
+                    }
+                    timeSlider.slider("values", [min, max]);
+                }
+                checkRange(min, max)
             }
-            checkRange(min, max)
 
         });
 
         button.on('click', function() {
             that.submitData("Larger or more complex polygons will take longer to process", feature);
         });
+
+        if(this.bap.initConfig.time){
+            actionHandlerHelper.globalTimeSlider().setToRange(this.bap.initConfig.time)
+            button.click()
+            this.bap.initConfig.time = undefined
+        }
     };
 
     this.submitData = function(message, inputFeature) {
+        var values = timeSlider.slider('values');
+        this.bap.state.time = values
+        this.bap.updateState(true)
+
         noDatas = [];
         gotAnyData = false;
         actionHandlerHelper.showTempPopup(message);
         if(chart) {
             chart.clear();
         }
-        var values = timeSlider.slider('values');
         chart = undefined;
         button.hide();
         $("#" + that.bap.id + "BAP").find('#boxAndWhiskerError').html('');

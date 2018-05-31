@@ -80,6 +80,7 @@ GlobalTimeSlider.prototype.initialize = function () {
             var curValue = ui.value || time.defaultDate;
             var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + curValue + '</div><div class="tooltip-arrow"></div></div>';
             that.ts.find('.ui-slider-handle').html(tooltip);
+            bioScape.updateState()
         }
     });
 
@@ -237,4 +238,16 @@ GlobalTimeSlider.prototype.pause = function () {
     $(GlobalTimeSliderbuttonPause).hide()
     $("#mySpinner").removeClass("hideLayerSpinner")
     this.playing = false
+}
+
+GlobalTimeSlider.prototype.setToTime = function (year){
+    year = parseInt(year)
+    this.ts.slider("value", year);
+}
+
+GlobalTimeSlider.prototype.setToRange = function (years){
+   if(years.length != 2) return 
+    
+    let ts = $("#GlobalTimeSliderRange")
+    ts.slider( "option", "values", [ parseInt(years[0]), parseInt(years[1])] );
 }

@@ -29,6 +29,8 @@ var BAP = function(serverAP, leaveOutJson, actionRef) {
     this.hasZoomed = false;
     this.rawJson = {};
     this.actionRef = actionRef;
+    this.state = {}
+    this.initConfig = {}
 
     if(! $(`#${this.id}BAP`).length)  $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
    
@@ -225,13 +227,21 @@ BAP.prototype.bindClicks = function () {
             if(this.checked){
                 that.turnOffBapLayers()
                 layer.turnOnLayer()
+                .then(function(){
+                    that.updateState(true)
+                })
             } else {
                 layer.turnOffLayer()
+                that.updateState(true)
+            
             }
+         
+
         })
         $(`#${that.id}BAP #opacitySliderInput${layer.id}`).on("change mousemove", function() {
 
             layer.section.updateLayerOpacity(layer.id, $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val());
+            that.updateState(true)
         });
 
          //when the user clicks an information icon
@@ -282,6 +292,11 @@ BAP.prototype.setEmptyBap = function () {
 };
 
 BAP.prototype.initializeBAP = function () {
+    showSpinner()
+    let that = this;
+    let config = bioScape.initBapState
+    if(config.id == this.id) this.initConfig = config
+
     this.initializeWidgets();
     this.htmlElement = $("#" + this.id + "BapCase");
     this.htmlElement.removeClass().html(this.getFullHtml());
@@ -291,9 +306,36 @@ BAP.prototype.initializeBAP = function () {
     if (this.simplified) {
         this.showSimplifiedDiv();
     }
-    this.switchPriorityBap(true)
 
-    // this.htmlElement = $("#"+this.id+"BapCase");
+    if(config.id == this.id){
+        this.switchPriorityBap(false)
+        config.layers.forEach(l => {
+            let layer = bioScape.getLayer(l.id)
+            if(!layer.summarizationRegion && !layer.baseMap){
+                $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
+                // layer.turnOnLayer()
+                // .then(function(){
+                    //layer.updateOpacity(l.opacity)
+                    try{layer.section.updateLayerOpacity(layer.id,l.opacity)}
+                    catch(error){}
+                    $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
+               // })
+               
+
+                if(l.time ){
+                    actionHandlerHelper.globalTimeSlider().setToTime(l.time)
+                }
+                hideSpinner(true) 
+            }   
+        });
+    }
+    else{
+        try { collapseContainer(this.id + "BAP")}
+        catch(error){}
+    }
+    hideSpinner()
+    
+
 };
 
 BAP.prototype.isVisible = function() {
@@ -396,7 +438,10 @@ BAP.prototype.switchPriorityBap = function (toggle) {
     if(toggle && thisLayer){
         $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked=false;
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()      
+    }
+    else{
+        that.updateState(false)
     }
 };
 
@@ -408,7 +453,7 @@ BAP.prototype.turnOffBapLayers = function(){
         if(!layer.baseMap && !layer.summarizationRegion){  
 
             if(($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked){
-                $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
+                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
             }
             else{
             layer.turnOffLayer(true)
@@ -417,4 +462,16 @@ BAP.prototype.turnOffBapLayers = function(){
         }
     })
 
+}
+
+
+BAP.prototype.updateState = function(enabled){
+   
+    let s = this.state
+    s.id = this.id
+    s.enabled = false
+    if(enabled) s.enabled = true
+
+    bioScape.updateState(s)
+    
 }
