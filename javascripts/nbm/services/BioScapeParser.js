@@ -27,8 +27,14 @@ var BioScapeParser = (function(bioScapeParser) {
             summarizationLayers = summarizationLayers.concat(group.getSummarizationLayers());
         }
         let additionalParams = {"defaultBapMessage": data.defaultBapMessage};
-
-        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape, additionalParams);
+        let bap = {layers:[]}
+        if(state.bap){
+            try{bap = JSON.parse(atob(state.bap))}
+            catch(error){
+                showErrorDialog('Unable to load the captured state. ', false);
+            }
+        }
+        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape, additionalParams, bap);
 
 }
 

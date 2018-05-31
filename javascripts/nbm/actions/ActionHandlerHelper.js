@@ -514,6 +514,7 @@ ActionHandlerHelper.prototype.showTempPopup = function (message) {
 ActionHandlerHelper.prototype.initializeAllBaps = function () {
     var that = this;
     var promises = [];
+    showSpinner()
     $.each(actionHandlers, function (index, handler) {
         if (handler.getAllBapsToProcess().length) {
             $.each(handler.getAllBapsToProcess(), function (index, bap) {
@@ -530,6 +531,7 @@ ActionHandlerHelper.prototype.initializeAllBaps = function () {
 
     return Promise.all(promises)
         .then(function() {
+            hideSpinner()
             that.loadEmptySynthComp();
         });
 };

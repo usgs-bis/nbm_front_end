@@ -13,7 +13,7 @@ var StateKeeper = (function (state) {
      * @returns {string}
      */
     function getState() {
-        var states = [map.getState(), actionHandlerHelper.getState(), bioScape.getState()];
+        var states = [map.getState(), actionHandlerHelper.getState()];
         var stateString = '';
         states.forEach(function(item) {
             for(var prop in item) {
@@ -24,12 +24,9 @@ var StateKeeper = (function (state) {
                 }
             }
         });
-        return stateString ? '#' + stateString : '';
+        stateString += "/bap=" + bioScape.getState()
+        return stateString ? '#' + stateString : '' ;
     }
-    //
-    // function updateUrl() {
-    //     window.location = getState();
-    // }
 
     state = {
         getState: getState

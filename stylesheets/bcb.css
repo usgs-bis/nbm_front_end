@@ -76,7 +76,7 @@ strong {
     opacity: 1;
 }
 
-#mySpinner {
+.mySpinner {
     width: 100px;
     height: 100px;
     position: fixed;
@@ -1492,10 +1492,10 @@ input[type='checkbox'].clickSearch {
 }
 
 input[type='checkbox'].clickSearch + span.clickSearch-target:after {
-    content: "\f096"; 
+    content: "\f1db"; 
 }
 input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
-    content: "\f046"; 
+    content: "\f05d"; 
 }
 
 #bioScapeDetailsLink{

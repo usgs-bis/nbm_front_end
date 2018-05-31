@@ -77,7 +77,8 @@ WidgetHelper.prototype.addTimeSlider = function(){
         step: 1,
         values: [ t1Value,t2Value],
         create: sliderTooltip,
-        slide: sliderTooltip
+        slide: sliderTooltip,
+        change: sliderTooltip
     });
     ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass( "glyphicon glyphicon-tag customSliderHandleRange " );
 

@@ -1,7 +1,7 @@
 'use strict';
 
 $(document)
-    .on('keyup', function(e) {
+    .on('keyup', function (e) {
         // Hide things if the <esc> key is pressed
         if (e.keyCode === 27) {
             closeAllUnitInfoBars();
@@ -10,26 +10,26 @@ $(document)
     .ready(function () {
         //set up the copy to clipboard functionality for the page's url
         var clipboard = new Clipboard("#copyToClipboard", {
-            text: function() {
+            text: function () {
                 return window.location.href.replace(window.location.hash, '') + StateKeeper.getState();
             }
         });
-        clipboard.on('success', function(e) {
+        clipboard.on('success', function (e) {
             var el = $(e.trigger);
             el.html('Copied');
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 el.html('Share');
                 //$("#dropdownButtonGroup").removeClass("open").addClass("closed");
             }, 2000);
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 $("#dropdownButtonGroup").addClass("open");
             }, 0);
         });
-        clipboard.on('error', function(e) {
+        clipboard.on('error', function (e) {
             var el = $(e.trigger);
             var id = 'clipboardCopy';
             var input = document.getElementById(id);
-            if(!input) {
+            if (!input) {
                 input = document.createElement('input');
                 input.id = id;
                 input.setAttribute('data-toggle', 'tooltip');
@@ -53,21 +53,21 @@ $(document)
  */
 function checkMixedContent(layerTitle) {
     var promise = Promise.resolve(allowsMixedContent);
-    if(allowsMixedContent === undefined) {
+    if (allowsMixedContent === undefined) {
         promise = sendAjaxRequest({
             url: 'http://my-beta.usgs.gov/bcb/main/jsTest.js',
             dataType: 'script',
             timeout: '2000'
-        }).then(function() {
+        }).then(function () {
             return true;
-        }).catch(function() {
+        }).catch(function () {
             return false;
-        }).then(function(data) {
+        }).then(function (data) {
             allowsMixedContent = data;
         });
     }
-    return promise.then(function() {
-        if(!allowsMixedContent) {
+    return promise.then(function () {
+        if (!allowsMixedContent) {
             displayMixedContentWarning(layerTitle);
         }
         return allowsMixedContent;
@@ -86,16 +86,28 @@ function displayMixedContentWarning(layerTitle) {
 /**
  * Show the spinner to the user.
  */
-function showSpinner() {
-    $("#mySpinner").fadeIn('fast');
+function showSpinner(bool) {
+    if (bool === true) {
+        $("#mySpinner2").fadeIn('fast');
+    }
+    else {
+        $("#mySpinner").fadeIn('fast');
+    }
+
 }
 
 /**
  * Hide the spinner from the user.
  */
-function hideSpinner() {
-    $("#mySpinner").fadeOut('fast');
+function hideSpinner(bool) {
+    if (bool === true) {
+        $("#mySpinner2").fadeOut('fast');
+    }
+    else {
+        $("#mySpinner").fadeOut('fast');
+    }
 }
+
 
 /**
  * Display error dialog to the user.
@@ -104,6 +116,8 @@ function hideSpinner() {
  * @param {boolean} options - If this is present, attempt to notify admin of failed service
  */
 function showErrorDialog(html, warning, options) {
+    hideSpinner()
+    hideSpinner(true)
     createDialog(
         "#myDialog",
         warning ? "Warning" : "Error",
@@ -115,8 +129,8 @@ function showErrorDialog(html, warning, options) {
                     icons: {
                         primary: "ui-icon-closethick"
                     },
-                    click: function() {
-                        $( this ).dialog( "close" );
+                    click: function () {
+                        $(this).dialog("close");
                     }
                 }
             ]
@@ -143,14 +157,14 @@ function showErrorDialog(html, warning, options) {
 function createDialog(target, title, additionalSettings, html) {
     target = target.indexOf('#') === 0 ? target : '#' + target;
     var targetEl = $(target);
-    if(html) {
+    if (html) {
         targetEl.html(html);
     }
 
     var settings = {
         show: { effect: "drop", duration: 200 },
         title: title,
-        open: function() {
+        open: function () {
             //Wait until the dialog is loaded then remove focus on all buttons within the
             // dialog div
             setTimeout(function () {
@@ -158,8 +172,8 @@ function createDialog(target, title, additionalSettings, html) {
             }, 500);
         }
     };
-    for(var setting in additionalSettings) {
-        if(additionalSettings.hasOwnProperty(setting)) {
+    for (var setting in additionalSettings) {
+        if (additionalSettings.hasOwnProperty(setting)) {
             settings[setting] = additionalSettings[setting];
         }
     }
@@ -187,12 +201,12 @@ function toggleUnitInfoBar(bounds) {
     // Landscape
     RightPanelBar.open();
     if (!isVerticalOrientation()) {
-        if(bounds) {
+        if (bounds) {
             centerMapRight(bounds);
         }
     } else {
         // Portrait
-        if(bounds){
+        if (bounds) {
             centerMapBottom(bounds);
         }
     }
@@ -203,11 +217,11 @@ function toggleUnitInfoBar(bounds) {
  * @param {Object} bounds - L.Bounds
  */
 function centerMapRight(bounds) {
-    if(bounds._northEast.lng > 180){
+    if (bounds._northEast.lng > 180) {
         bounds._northEast.lng -= 360;
         bounds._southWest.lng -= 360;
     }
-    else if(bounds._southWest.lng > 180){
+    else if (bounds._southWest.lng > 180) {
         bounds._southWest.lng -= 360;
         bounds._northEast.lng -= 360;
     }
@@ -222,7 +236,7 @@ function centerMapRight(bounds) {
 function centerMapLeft(bounds) {
     var padding = [$("#unit_info_left").width(), 0];
     console.log("Padding:", padding);
-    map.fitBounds(bounds, {paddingTopLeft: padding});
+    map.fitBounds(bounds, { paddingTopLeft: padding });
     // centerPolygonInViewWindow(bounds, padding);
 }
 
@@ -241,7 +255,7 @@ function centerMapBottom(bounds) {
  * @param {*} padding
  */
 function centerPolygonInViewWindow(bounds, padding) {
-    map.fitBounds(bounds, {paddingBottomRight: padding});
+    map.fitBounds(bounds, { paddingBottomRight: padding });
 }
 
 function componentToHex(c) {
@@ -255,10 +269,10 @@ function rgbToHex(r, g, b) {
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
-        } : null;
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
 }
 
 
@@ -299,16 +313,16 @@ function narrowLegend() {
 
     //Grab the map as an image
     html2canvas(map.getContainer(), { useCORS: true })
-        .then(function(canvas) {
-            var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
+        .then(function (canvas) {
+            var imgData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
             var data = imgData.data;
 
             //Iterate through each pixel on the map and store each unique color. It is stored as hex so we can just
             //store a string
-            for(var i=0; i<data.length; i+=4) {
+            for (var i = 0; i < data.length; i += 4) {
                 var red = data[i];
-                var green = data[i+1];
-                var blue = data[i+2];
+                var green = data[i + 1];
+                var blue = data[i + 2];
                 var hex = rgbToHex(red, green, blue);
 
                 if (shown.indexOf(hex) == -1) {
@@ -356,14 +370,14 @@ function addToColorMap(e) {
         canvas.height = img.height;
         canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
 
-        var imgData = canvas.getContext("2d").getImageData(0,0,canvas.width,canvas.height);
+        var imgData = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
         var data = imgData.data;
 
         //Grab the first color in the image that is not black. A lot of the returned images have black borders.
-        for(var i=0; i<data.length; i+=4) {
+        for (var i = 0; i < data.length; i += 4) {
             var red = data[i];
-            var green = data[i+1];
-            var blue = data[i+2];
+            var green = data[i + 1];
+            var blue = data[i + 2];
             var hex = rgbToHex(red, green, blue);
 
             if (hex != "#000000") {
@@ -383,8 +397,8 @@ function addToColorMap(e) {
  * @returns {boolean} - true if the container is now visible to the user, false otherwise
  */
 function toggleContainer(id) {
-    var group = $("#"+id);
-    var mySpan = $("#"+id + 'Control');
+    var group = $("#" + id);
+    var mySpan = $("#" + id + 'Control');
 
     if (group.is(':visible')) {
         mySpan.html('&#9658;');
@@ -402,8 +416,8 @@ function toggleContainer(id) {
  * @returns {boolean} - true if the container closed
  */
 function collapseContainer(id) {
-    var group = $("#"+id);
-    var mySpan = $("#"+id + 'Control');
+    var group = $("#" + id);
+    var mySpan = $("#" + id + 'Control');
 
     if (group.is(':visible')) {
         mySpan.html('&#9658;');
@@ -423,14 +437,14 @@ function collapseContainer(id) {
  */
 function createDivIfDoesNotExist(divId, parentId, innerHtml, cssProperties) {
     var el = $('#' + divId);
-    if(el.length === 0) {
+    if (el.length === 0) {
         var div = document.createElement('div');
         div.id = divId;
-        if(innerHtml) {
+        if (innerHtml) {
             div.innerHTML = innerHtml;
         }
         var $div = $(div);
-        if(cssProperties) {
+        if (cssProperties) {
             $div.css(cssProperties);
         }
         $('#' + parentId).append(div);
@@ -453,7 +467,7 @@ function isDisabled(el) {
  * @param {jQuery} $el - the element to show or hide
  */
 function toggleVisibility($el) {
-    if($el.is(':visible')) {
+    if ($el.is(':visible')) {
         $el.hide();
         return;
     }
@@ -475,7 +489,7 @@ function getHtmlFromJsRenderTemplate(templateId, viewData, helpers) {
     var html = '';
     try {
         html = template.render(viewData, helpers);
-    } catch(ex) {
+    } catch (ex) {
         html = 'There was an error building the html for the template ' + templateId + ': ' + ex;
     }
 
@@ -542,13 +556,13 @@ function xmlToJson(xml) {
 
     // do children
     if (xml.hasChildNodes()) {
-        for(var i = 0; i < xml.childNodes.length; i++) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
             var item = xml.childNodes.item(i);
             var nodeName = item.nodeName;
-            if (typeof(obj[nodeName]) == "undefined") {
+            if (typeof (obj[nodeName]) == "undefined") {
                 obj[nodeName] = xmlToJson(item);
             } else {
-                if (typeof(obj[nodeName].push) == "undefined") {
+                if (typeof (obj[nodeName].push) == "undefined") {
                     var old = obj[nodeName];
                     obj[nodeName] = [];
                     obj[nodeName].push(old);
@@ -577,8 +591,8 @@ function isBetaEnvironment() {
 
     function urlContainsAnyString(stringArray) {
         var isPresent = false;
-        stringArray.forEach(function(str) {
-            if(isPresentInUrl(str)) {
+        stringArray.forEach(function (str) {
+            if (isPresentInUrl(str)) {
                 isPresent = true;
             }
         });
@@ -601,8 +615,8 @@ var DEFAULT_AJAX_TIMEOUT = 15000;
  */
 function sendJsonRequestHandleError(url, timeout, params) {
     return sendJsonAjaxRequest(url, params, timeout)
-        .then(function(data) {
-            if(data.error) {
+        .then(function (data) {
+            if (data.error) {
                 return Promise.reject(data);
             }
             return data;
@@ -651,7 +665,7 @@ function sendXmlAjaxRequest(url) {
 
 function sendScienceBaseItemRequest(sbId, timeout) {
     var sbItemUrl = 'https://www.sciencebase.gov/catalog/item/';
-    return sendJsonAjaxRequest(sbItemUrl + sbId, {format: 'json'}, timeout);
+    return sendJsonAjaxRequest(sbItemUrl + sbId, { format: 'json' }, timeout);
 }
 
 /**
@@ -662,12 +676,12 @@ function formatLocalDateToISO8601() {
     var now = new Date(),
         // tzo = -now.getTimezoneOffset(),
         // dif = tzo >= 0 ? '+' : '-',
-        pad = function(num) {
+        pad = function (num) {
             var norm = Math.abs(Math.floor(num));
             return (norm < 10 ? '0' : '') + norm;
         };
     return now.getFullYear()
-        + '-' + pad(now.getMonth()+1)
+        + '-' + pad(now.getMonth() + 1)
         + '-' + pad(now.getDate());
     // + 'T' + pad(now.getHours())
     // + ':' + pad(now.getMinutes())
@@ -719,13 +733,13 @@ function preventMultipleOpenPanels() {
     return $(window).width() < 933;
 }
 
-function getDrawnPolygons (items) {
+function getDrawnPolygons(items) {
     var gj = {
         coordinates: [
             [
             ]
         ],
-        crs: {"type":"name","properties":{"name":"EPSG:4326"}},
+        crs: { "type": "name", "properties": { "name": "EPSG:4326" } },
         type: "MultiPolygon"
     };
     items.eachLayer(function (layer) {
@@ -809,7 +823,7 @@ function loadHtmlTemplates() {
     getHtmlTemplateElements().each(function () {
         promises.push(
             getTemplateHtml(getTemplatePath(this))
-                .then(function (data){
+                .then(function (data) {
                     templateHolder.append(data);
                     return Promise.resolve();
                 })
@@ -826,7 +840,7 @@ function loadHtmlTemplates() {
 }
 
 function roundNumber(number, multiplier) {
-    return Math.round(number*multiplier)/multiplier;
+    return Math.round(number * multiplier) / multiplier;
 }
 
 function getRoundedGeometry(geojson, sigFigs) {
@@ -865,7 +879,7 @@ function presimplify(topology) {
         tree = rbush(),
         maxArea = 0;
     var arcs = topology.arcs;
-    for(var j = 0, length = arcs.length; j < length; ++j) {
+    for (var j = 0, length = arcs.length; j < length; ++j) {
         var points = arcs[j],
             previous = null,
             boxes = [];
@@ -873,12 +887,12 @@ function presimplify(topology) {
         var i = 0,
             n = points.length - 1,
             point = points[i];
-        while(++i <= n) {
+        while (++i <= n) {
             boxes.push(bbox(point, point = points[i]));
         }
         tree.load(boxes);
 
-        for(i = 1; i < n; ++i) {
+        for (i = 1; i < n; ++i) {
             var triangle = {
                 a: points[i - 1],
                 b: points[i],
@@ -900,7 +914,7 @@ function presimplify(topology) {
 
     var intersecting = [], t;
 
-    while(triangle = heap.pop()) {
+    while (triangle = heap.pop()) {
         // If the area of the current point is less than that of the previous point
         // to be eliminated, use the latter’s area instead. This ensures that the
         // current point cannot be eliminated without eliminating previously-
@@ -908,11 +922,11 @@ function presimplify(topology) {
         if (triangle.b[2] < maxArea) triangle.b[2] = maxArea;
         else maxArea = triangle.b[2];
 
-        if(intersect(tree, triangle)) {
+        if (intersect(tree, triangle)) {
             intersecting.push(triangle);
             continue;
         }
-        while(t = intersecting.pop()) {
+        while (t = intersecting.pop()) {
             heap.push(t);
         }
 
@@ -1012,13 +1026,13 @@ function minHeap() {
 
     var heap = {
 
-        push: function(object) {
+        push: function (object) {
             array.push(object);
             up(array, object.index = size++);
             return size;
         },
 
-        pop: function() {
+        pop: function () {
             if (size <= 0) return;
             var removed = array[0],
                 object = array.pop();
@@ -1029,7 +1043,7 @@ function minHeap() {
             return removed;
         },
 
-        remove: function(removed) {
+        remove: function (removed) {
             var i = removed.index,
                 object = array.pop();
             if (i !== --size) {

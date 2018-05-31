@@ -11,7 +11,7 @@
  *  summarization layers to use for this bioScape
  * @constructor
  */
-var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams) {
+var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams, initBapState) {
     this.id = id;
     this.title = title;
     this.summary = summary;
@@ -23,8 +23,9 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
     this.customBioscape = customBioscape;
     setDefinition(this);
     this.state = {};
+    this.initBapState = initBapState;
     this.additionalParams = additionalParams;
-
+    
     /**
      * Send a json request to ScienceBase for the definition of 'Bioscape'. Set the definition if there is a
      *  successful response.
@@ -48,10 +49,24 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * @promise
      */
     this.initializeBioScape = function() {
+        let that = this;
         var promises = this.sections.map(function(section) {
             return section.initializeGroup();
         });
-        this.updateState();
+        if(this.initBapState.enabled){
+            showSpinner(true)
+        }
+        if(this.initBapState.layers.length){
+            this.initBapState.layers.forEach(function(l) {
+                let layer = that.getLayer(l.id)
+                if(layer.summarizationRegion || layer.baseMap){
+                    layer.turnOffLayer()
+                    that.toggleLayer(layer)
+                }
+            })
+        }
+
+        //this.updateState();
         return Promise.all(promises);
     };
 
@@ -174,43 +189,54 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
         return undefined;
     };
 
+
+    this.toggleLayer = function (layer) {
+        var section = bioScape.getSection(layer.section.id);
+        section.toggleLayer(layer.id);
+    }
+
     /**
      * Returns the current state of the BioScape.
      * @returns {{}|{layers: string}}
      */
     this.getState = function() {
-        return this.state;
+        return btoa(JSON.stringify(this.state));
     };
+
 
     /**
      * Updates the state of the BioScape and calls StateKeeper.updateUrl.
      */
-    this.updateState = function() {
-        var tempState = {};
+    this.updateState = function(bap) {
 
-        // TODO! 
-
-        // var layers = this.getSelectedLayers();
-        // if(layers.length < 1) {
-        //     if (this.customBioscape) {
-        //         tempState.customBioscape = this.customBioscape;
-        //     }
-        //     return tempState;
-        // }
-        // var arr = [];
-        // layers.forEach(function(layer) {
-        //     var opacityString = '';//layer.getOpacity() === 1 ? '' : ',opacity:' + layer.getOpacity();
-        //     arr.push('id:' + layer.id + opacityString);
-        // });
-        // if(arr.length) {
-        //     tempState.layers = arr.join(';');
-        // }
-
-        if (this.customBioscape) {
-            tempState.customBioscape = this.customBioscape;
+        if(!bap){
+            bap = this.state || {}
         }
+        this.state ={}
+        let layerData = []
+        if(bap.id) this.state.id = bap.id
+        if(bap.time) this.state.time = bap.time
+        this.state.enabled = bap.enabled
 
-        this.state = tempState;
+        var layers = this.getVisibleLayers();
+           
+        layers.forEach(function(layer) {
+            let l = {}
+            l.id = layer.id
+            l.opacity = layer.getOpacity()
+            if(layer.mapLayer.timeControl){
+                l.time = layer.mapLayer.timeControl
+            }
+            layerData.push(l)
+        });
+
+        this.state.layers = layerData
+    
+        if (this.customBioscape) {
+            this.state.customBioscape = this.customBioscape;
+        }
+        
+        updateUrlWithState()
     }
 
     this.getAllBaps = function() {
