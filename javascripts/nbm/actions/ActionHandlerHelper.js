@@ -130,7 +130,7 @@ ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
     var promises = [];
 
     $.each(actionHandlers, function (index, actionHandler) {
-        if (actionHandler.type == "drawPolygon" )) { //&& map.hasLayer(actionHandler.layer.leafletLayer
+        if (actionHandler.type == "drawPolygon" ) { //&& map.hasLayer(actionHandler.layer.leafletLayer)
             if (!actionHandler.headerBap) {
                 promises.push(actionHandler.sendTriggerAction(false));
             } else {
