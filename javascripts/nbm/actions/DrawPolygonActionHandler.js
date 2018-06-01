@@ -88,8 +88,9 @@ DrawPolygonActionHandler.prototype.processBaps = function () {
             .then(function(data) {
                 var bap = that.getBapValue(data.id);
                 bap.reconstruct(data, false);
-
+              
                 bap.feature = that.feature;
+                bap.feature.userDefined = true;
                 bap.initializeBAP();
                 that.setBapValue(data.id, bap);
                 return Promise.resolve();
