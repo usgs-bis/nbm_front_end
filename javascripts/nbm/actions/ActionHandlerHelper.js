@@ -531,8 +531,8 @@ ActionHandlerHelper.prototype.initializeAllBaps = function () {
 
     return Promise.all(promises)
         .then(function() {
-            hideSpinner()
             that.loadEmptySynthComp();
+            hideSpinner()
         });
 };
 

@@ -292,10 +292,11 @@ BAP.prototype.setEmptyBap = function () {
 };
 
 BAP.prototype.initializeBAP = function () {
-    showSpinner()
+    showSpinner(true)
     let that = this;
-    let config = bioScape.initBapState
-    if(config.id == this.id) this.initConfig = config
+    if(bioScape.initBapState.id == this.id) {
+        this.initConfig = bioScape.initBapState
+    }
 
     this.initializeWidgets();
     this.htmlElement = $("#" + this.id + "BapCase");
@@ -307,20 +308,23 @@ BAP.prototype.initializeBAP = function () {
         this.showSimplifiedDiv();
     }
 
-    if(config.id == this.id){
+    if((this.feature || {}).userDefined){
+        this.state.userDefined = true
+    }
+    else{
+        this.state.userDefined = false
+    }
+
+    if(this.initConfig.id == this.id  && !this.initConfig.userDefined){
         this.switchPriorityBap(false)
-        config.layers.forEach(l => {
+        that.initConfig.layers.forEach(l => {
             let layer = bioScape.getLayer(l.id)
             if(!layer.summarizationRegion && !layer.baseMap){
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
-                // layer.turnOnLayer()
-                // .then(function(){
-                    //layer.updateOpacity(l.opacity)
-                    try{layer.section.updateLayerOpacity(layer.id,l.opacity)}
-                    catch(error){}
-                    $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
-               // })
-               
+            
+                try{layer.section.updateLayerOpacity(layer.id,l.opacity)}
+                catch(error){}
+                $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
 
                 if(l.time ){
                     actionHandlerHelper.globalTimeSlider().setToTime(l.time)
@@ -328,13 +332,25 @@ BAP.prototype.initializeBAP = function () {
                 hideSpinner(true) 
             }   
         });
+        this.initConfig = {}
+        bioScape.initBapState = {}
+        bioScape.initBapState.found = true
+        // this is a hack! when we are initlizing all the baps we dont want to open others
+        // after 4 seconds we will default to the last bap open
+        setTimeout(function(){ bioScape.initBapState.found = false }, 4000);
     }
     else{
-        try { collapseContainer(this.id + "BAP")}
-        catch(error){}
+       
+        if(!bioScape.initBapState.found){
+            this.switchPriorityBap(true)
+        }
+        else{
+            try { collapseContainer(this.id + "BAP")}
+            catch(error){}
+        }     
     }
-    hideSpinner()
-    
+    hideSpinner(true)
+   
 
 };
 

@@ -286,12 +286,14 @@ var Initializer = (function(initializer) {
      * @param {Object} state - state of the application
      */
     function loadBioScape(data, state) {
+        showSpinner(true)
         map.attributionControl.remove();
         bioScape = BioScapeParser.parse(data, state);
         bioScape.initializeBioScape()
             .then(function() {
                 //populate the right panel with the default empty look. This just hits all the possible baps specified in the
                 //action configs, grabs the title from the returned json, then stores that in a map.
+               
                 return actionHandlerHelper.initializeAllBaps()
             })
             .then(function() {
@@ -314,10 +316,12 @@ var Initializer = (function(initializer) {
                     map.setView(L.latLng(state.center.split(',')), state.zoom);
                 }
                 updateUrlWithState();
+                hideSpinner(true)
             });
             
         //bind all of the click events for the bioScape
         bindBioScapeEvents();
+       
     }
 
     /**

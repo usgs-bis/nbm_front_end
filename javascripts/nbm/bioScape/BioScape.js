@@ -53,8 +53,11 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
         var promises = this.sections.map(function(section) {
             return section.initializeGroup();
         });
-        if(this.initBapState.enabled){
+        if(this.initBapState.enabled && !this.initBapState.userDefined){
             showSpinner(true)
+        }
+        if(this.initBapState.userDefined){
+            showErrorDialog('Unable to load user drawn polygon. ', false);
         }
         if(this.initBapState.layers.length){
             this.initBapState.layers.forEach(function(l) {
@@ -217,6 +220,7 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
         if(bap.id) this.state.id = bap.id
         if(bap.time) this.state.time = bap.time
         this.state.enabled = bap.enabled
+        this.state.userDefined = bap.userDefined
 
         var layers = this.getVisibleLayers();
            
