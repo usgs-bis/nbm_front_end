@@ -121,20 +121,17 @@ var LeafletMapService = (function (leafletMapService){
 
     /**
      * Turns layers on or off according to their availability.
+     *
      */
     function adjustLayersToZoom() {
-        var sections = bioScape.getAllSections();
-        sections.forEach(function(section) {
-            var layers = section.getLayers();
-            //loops through all of the layers in the section
-            layers.forEach(function(layer) {
-                if (!layer.updateAvailabilityAndReturnIsAvailable() && layer.isVisible()) {
-                    layer.turnOffLayer(true);
-                    layer.displayLayerHiddenWarning();
-                } else if (layer.updateAvailabilityAndReturnIsAvailable() && layer.selected && !layer.isVisible()) {
-                    layer.turnOnLayer();
-                }
-            });
+        var layers = bioScape.getVisibleLayers()
+        layers.forEach(function(layer) {
+            if (!layer.updateAvailabilityAndReturnIsAvailable()) {
+                layer.turnOffLayer(true);
+                layer.displayLayerHiddenWarning();
+            } else {
+                layer.turnOnLayer();
+            }
         });
     }
 

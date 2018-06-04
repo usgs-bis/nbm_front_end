@@ -6,7 +6,7 @@
  * @param {*} leaveOutJson - if this is set, don't show the "View BAP JSON" button
  * @constructor
  */
-var BAP = function(serverAP, leaveOutJson, actionRef) {
+var BAP = function (serverAP, leaveOutJson, actionRef) {
     this.featureValue = serverAP.featureValue;
     this.config = serverAP;
     this.title = serverAP.title;
@@ -32,19 +32,16 @@ var BAP = function(serverAP, leaveOutJson, actionRef) {
     this.state = {}
     this.initConfig = {}
 
-    if(! $(`#${this.id}BAP`).length)  $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', {id: this.id}));
-   
+    if (!$(`#${this.id}BAP`).length) $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', { id: this.id }));
     this.htmlElement = $("#" + this.id + "BapCase");
-
-
 
 };
 
-BAP.prototype.guidGenerator = function() {
-    var S4 = function() {
-       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+BAP.prototype.guidGenerator = function () {
+    var S4 = function () {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
-    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 }
 
 BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
@@ -104,7 +101,7 @@ BAP.prototype.initializeWidgets = function () {
         if (chart.error) {
             actionHandlerHelper.showTempPopup("Error retrieving chart data for BAP, " + that.title);
         } else {
-            var w = widgetHelper.getWidget(chart,that);
+            var w = widgetHelper.getWidget(chart, that);
             w.bap = that;
             that.widgets.push(w)
         }
@@ -128,17 +125,17 @@ BAP.prototype.getFullHtml = function () {
     var widgetHtml = this.getWidgetHtml();
     var infoDivModel = this.getInfoDivModel();
 
-    var title =  this.title;
+    var title = this.title;
     var altTitle = this.alternateTitles;
 
-    if ( altTitle ) {
+    if (altTitle) {
         title = altTitle[0];
     }
-    
-    let layerInputs = this.GetBapLayers().filter(l =>{
+
+    let layerInputs = this.GetBapLayers().filter(l => {
         return !l.summarizationRegion
     })
-   
+
     var apViewModel = {
         id: this.config.id,
         title: title,
@@ -147,7 +144,7 @@ BAP.prototype.getFullHtml = function () {
         openByDefault: this.config.openByDefault,
         leaveOutJson: this.leaveOutJson,
         hasInputs: layerInputs.length ? true : false,
-        layerInputs : layerInputs,
+        layerInputs: layerInputs,
         sectionHtml: widgetHtml,
         imagePath: "", // <-- what is this for?
     };
@@ -161,7 +158,7 @@ BAP.prototype.getFullHtml = function () {
      *  information to display to the user
      */
     function createAndPushInfoDiv(info) {
-        if(!info) {
+        if (!info) {
             return;
         }
         var containerId = info.divId + "InfoDiv";
@@ -205,47 +202,48 @@ BAP.prototype.initializeChartLibraries = function () {
 BAP.prototype.bindClicks = function () {
     var that = this;
 
-    $("#" + this.config.id + "BapCase div.layerExpander").on('click', function() {
+    $("#" + this.config.id + "BapCase div.layerExpander").on('click', function () {
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
         that.switchPriorityBap(toggle)
     });
-    $("#" + this.config.id + "BapCase div.inputExpander").on('click', function() {
+    $("#" + this.config.id + "BapCase div.inputExpander").on('click', function () {
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
     });
 
-    $("#"+this.config.id).on('click', function(e) {
-        $("#"+that.config.id+"Modal").modal('show');
+    $("#" + this.config.id).on('click', function (e) {
+        $("#" + that.config.id + "Modal").modal('show');
         e.stopPropagation();
     });
 
 
     let layers = that.GetBapLayers()
     $.each(layers, function (index, layer) {
-        $(`#${that.id}BAP #toggleLayer${layer.id}`).click(function(){
-            if(this.checked){
+        $(`#${that.id}BAP #toggleLayer${layer.id}`).click(function () {
+            if (this.checked) {
                 that.turnOffBapLayers()
                 layer.turnOnLayer()
-                .then(function(){
-                    that.updateState(true)
-                })
+                    .then(function () {
+                        that.showTimeSlider(layer.timeIndex)
+                        that.updateState(true)
+                    })
             } else {
                 layer.turnOffLayer()
                 that.updateState(true)
-            
+
             }
-         
+
 
         })
-        $(`#${that.id}BAP #opacitySliderInput${layer.id}`).on("change mousemove", function() {
+        $(`#${that.id}BAP #opacitySliderInput${layer.id}`).on("change mousemove", function () {
 
             layer.section.updateLayerOpacity(layer.id, $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val());
             that.updateState(true)
         });
 
-         //when the user clicks an information icon
-        $(`#${that.id}BAP #${layer.id}layerMoreInfo`).on('click', function() {
+        //when the user clicks an information icon
+        $(`#${that.id}BAP #${layer.id}layerMoreInfo`).on('click', function () {
             layer.displayLayerInformation();
         });
     })
@@ -265,7 +263,7 @@ BAP.prototype.showRawJson = function () {
 
     var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.rawJson));
     var dlAnchorElem = document.getElementById('downloadMe');
-    dlAnchorElem.setAttribute("href",     dataStr     );
+    dlAnchorElem.setAttribute("href", dataStr);
     dlAnchorElem.setAttribute("download", "npn-json.json");
 };
 
@@ -294,7 +292,7 @@ BAP.prototype.setEmptyBap = function () {
 BAP.prototype.initializeBAP = function () {
     showSpinner(true)
     let that = this;
-    if(bioScape.initBapState.id == this.id) {
+    if (bioScape.initBapState.id == this.id) {
         this.initConfig = bioScape.initBapState
     }
 
@@ -308,53 +306,56 @@ BAP.prototype.initializeBAP = function () {
         this.showSimplifiedDiv();
     }
 
-    if((this.feature || {}).userDefined){
+    if ((this.feature || {}).userDefined) {
         this.state.userDefined = true
     }
-    else{
+    else {
         this.state.userDefined = false
     }
 
-    if(this.initConfig.id == this.id  && !this.initConfig.userDefined){
+    if (this.initConfig.id == this.id && !this.initConfig.userDefined) {
         this.switchPriorityBap(false)
         that.initConfig.layers.forEach(l => {
             let layer = bioScape.getLayer(l.id)
-            if(!layer.summarizationRegion && !layer.baseMap){
+            if (!layer.summarizationRegion && !layer.baseMap) {
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
-            
-                try{layer.section.updateLayerOpacity(layer.id,l.opacity)}
-                catch(error){}
+
+                try { layer.section.updateLayerOpacity(layer.id, l.opacity) }
+                catch (error) { }
                 $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
 
-                if(l.time ){
+                if (l.time) {
                     actionHandlerHelper.globalTimeSlider().setToTime(l.time)
                 }
-                hideSpinner(true) 
-            }   
+                hideSpinner(true)
+            }
         });
         this.initConfig = {}
         bioScape.initBapState = {}
         bioScape.initBapState.found = true
         // this is a hack! when we are initlizing all the baps we dont want to open others
-        // after 4 seconds we will default to the last bap open
-        setTimeout(function(){ bioScape.initBapState.found = false }, 4000);
+        // after 4 seconds we will default to the priority bap
+        setTimeout(function () { bioScape.initBapState.found = false }, 4000);
     }
-    else{
-       
-        if(!bioScape.initBapState.found){
+    else {
+
+        if (!bioScape.initBapState.found && ((that.actionRef || {} ).config || {} ).priority == this.id) {
             this.switchPriorityBap(true)
         }
-        else{
-            try { collapseContainer(this.id + "BAP")}
-            catch(error){}
-        }     
+        else if(!that.actionRef){
+            this.switchPriorityBap(true)
+        }
+        else {
+            try { collapseContainer(this.id + "BAP") }
+            catch (error) { }
+        }
     }
     hideSpinner(true)
-   
+
 
 };
 
-BAP.prototype.isVisible = function() {
+BAP.prototype.isVisible = function () {
     return $('#' + this.config.id + 'BAP').is(':visible');
 };
 
@@ -414,80 +415,85 @@ BAP.prototype.toggleSimplifiedFeature = function () {
 
 BAP.prototype.setErrorMessage = function (message) {
     var that = this;
-    this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', {error: message, id: that.id}));
+    this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', { error: message, id: that.id }));
 };
 
 BAP.prototype.GetBapLayers = function () {
     let bapLayers = false
-    try{
+    try {
         var allLayers = bioScape.getAllLayers();
-        bapLayers = allLayers.filter(layer =>{
+        bapLayers = allLayers.filter(layer => {
             let id = this.id;
             let found = false
-            if(layer.actionConfig){
+            if (layer.actionConfig) {
                 $.each(layer.actionConfig.baps, function (index, b) {
-                    if(b == id){
+                    if (b == id) {
                         found = true;
-                    } 
+                    }
                 })
             } return found
         })
     }
-    catch(error){}
+    catch (error) { }
     return bapLayers
 }
 
 BAP.prototype.switchPriorityBap = function (toggle) {
     let that = this
     let thisLayer = this.GetBapLayers()[0]
-    if(!thisLayer) return
+    $("#mySpinner").hide()
+    if (!thisLayer) return
 
     this.turnOffBapLayers()
-  
+
     $.each(bioScape.getAllBaps(), function (index, bap) {
-        if(bap != that.id){
-            try { collapseContainer(bap + "BAP")}
-            catch(error){}
+        if (bap != that.id) {
+            try { collapseContainer(bap + "BAP") }
+            catch (error) { }
         }
     })
-       
-    if(toggle && thisLayer){
+
+    if (toggle && thisLayer) {
         $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked=false;
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()      
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked = false;
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
     }
-    else{
+    else {
         that.updateState(false)
     }
 };
 
-BAP.prototype.turnOffBapLayers = function(){
+BAP.prototype.turnOffBapLayers = function () {
     let that = this;
+    this.showTimeSlider(false)
     var visibleLayers = bioScape.getVisibleLayers();
-   
-    $.each(visibleLayers, function (index, layer) {
-        if(!layer.baseMap && !layer.summarizationRegion){  
 
-            if(($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked){
-                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
+    $.each(visibleLayers, function (index, layer) {
+        if (!layer.baseMap && !layer.summarizationRegion) {
+
+            if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
+                $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
             }
-            else{
-            layer.turnOffLayer(true)
-            layer.section.layerHtmlControl.handleTurnOff(layer.id)
+            else {
+                layer.turnOffLayer(true)
+                layer.section.layerHtmlControl.handleTurnOff(layer.id)
             }
         }
     })
 
 }
 
+BAP.prototype.updateState = function (enabled) {
 
-BAP.prototype.updateState = function(enabled){
-   
     let s = this.state
     s.id = this.id
     s.enabled = false
-    if(enabled) s.enabled = true
-
+    if (enabled) s.enabled = true
     bioScape.updateState(s)
-    
+}
+
+BAP.prototype.showTimeSlider = function (show) {
+
+    try { actionHandlerHelper.globalTimeSlider().showTimeSlider(show) }
+    catch (error) { }
 }

@@ -251,3 +251,22 @@ GlobalTimeSlider.prototype.setToRange = function (years){
     let ts = $("#GlobalTimeSliderRange")
     ts.slider( "option", "values", [ parseInt(years[0]), parseInt(years[1])] );
 }
+
+GlobalTimeSlider.prototype.showTimeSlider = function(show){
+    
+    let ts = $("#GlobalTimeSlider");
+    let tsr = $("#GlobalTimeSliderRange")
+    let gtc = $("#GlobalTimeControl")
+    if(show){
+        ts.slider( "enable" );
+        tsr.slider( "enable" );
+        tsr.css( "opacity", 1 );
+        gtc.css( "opacity", 1 );
+    }
+    else{
+        ts.slider( "disable" );
+        tsr.slider( "disable" );
+        gtc.css( "opacity", .6 );
+        tsr.css( "opacity", 0 );
+    }
+}

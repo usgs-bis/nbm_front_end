@@ -599,6 +599,7 @@ div.inline {
     overflow-y: visible;
     height: 28px;
     margin-right: 20px;
+    opacity: 0.6;
 }
 
 #GlobalTimeSliderRange {
