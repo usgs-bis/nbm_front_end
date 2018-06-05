@@ -481,9 +481,10 @@ var SearchResult = function (result, searchParent) {
     $(".searchRessultsBox").show()
     this.id = result._source.properties.gid;
     this.name = result._source.properties[searchParent.lookupProperty];
+    this.type = result._source.properties.ftype.replace('_',' ');
     this.searchParent = searchParent;
     this.htmlElement = $('<a href="#" class="list-group-item googleResults">\n' +
-        '    <h6 class="list-group-item-heading">' + this.name + '</h6>\n'
+        '    <h6 class="list-group-item-heading">' + this.name + '  (' + this.type + ')'+'</h6>\n'
         +
         '  </a>');
     this.initialize();
