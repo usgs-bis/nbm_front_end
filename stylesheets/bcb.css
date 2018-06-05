@@ -1323,6 +1323,14 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     font-family: inherit;
     font-weight: bolder;
 }
+.GlobalTimeSlider .tooltip-inner {
+    width: 120px;
+}
+
+.GlobalTimeSlider .tooltip{
+    bottom: -17px;
+    left: -16px;
+}
 
 .ui-slider {
     background: black repeat-x bottom left;
