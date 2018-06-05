@@ -101,7 +101,11 @@ BioScapeGroupBase.prototype.toggleLayer = function(layerId, secondPass) {
                         if(data) {
                             timeControl.show();
                             that.layerHtmlControl.handleTurnOn(layerId);
-
+                            // dynamic map layers need to be brought to top manualy when a basemap is turned on
+                            bioScape.getVisibleLayers().forEach(function(l){
+                                try{l.mapLayer.updateZIndex()}
+                                catch(error){}                           
+                            })
                             onFinish();
                         } else {
                             showErrorDialog('The following map service is not available: ' + layer.serviceUrl +
