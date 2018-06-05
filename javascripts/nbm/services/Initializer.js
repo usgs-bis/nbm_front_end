@@ -270,10 +270,11 @@ var Initializer = (function(initializer) {
 
         let lastTimeMouseMoved = 0;
         map.on('mousemove', function (e) {
+            pane.html('Loading');
             lastTimeMouseMoved = new Date().getTime();
             var t = setTimeout(function () {
                 var currentTime = new Date().getTime();
-                if (currentTime - lastTimeMouseMoved > timeout) {
+                if (currentTime - lastTimeMouseMoved >= timeout) {
                      pane.html('Loading');
                     $.getJSON(`${source}x=${e.latlng.lng}&y=${e.latlng.lat}&units=Meters&output=json`, function (data) {
                         identifiedElevationValue = data.USGS_Elevation_Point_Query_Service
