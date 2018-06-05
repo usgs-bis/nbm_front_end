@@ -55,7 +55,7 @@ var Initializer = (function(initializer) {
                     summary: response.sbItem.body,
                     lastUpdated: response.sbItem.provenance ? response.sbItem.provenance.lastUpdated : new Date()
                 };
-
+       
                 document.title = response.sbItem.title;
 
                 return response.config;
@@ -229,8 +229,16 @@ var Initializer = (function(initializer) {
             $("#userHelpLink").attr("data-target", "#disclaimerModal").show();
         }
 
+        if (bioscapeJson.elevationSource){
+            let timeout = bioscapeJson.elevationTimeout
+            timeout = timeout ? timeout : 1000
+            startElevationService(bioscapeJson.elevationSource,timeout)
+        }
+
         loadBioScape(bioscapeJson, state);
     }
+
+    
 
     /**
      * Return the BioScape json with any additional settings from the config.
@@ -246,6 +254,36 @@ var Initializer = (function(initializer) {
         }
 
         return updateObjectProperties(bioscapeJson, json);
+    }
+
+      /**
+     * display the elevation on the map at the point of the mouse
+     * @param {*} source - the api source
+     * @param {*} timeout how long to wait so we dont spam the service. (ms)
+     * @returns {*}
+     */
+    function startElevationService(source, timeout) {
+        timeout = parseInt(timeout)
+        $("#elevationValueDiv").show()
+        var identifiedElevationValue;
+        var pane = $('#elevationValue');
+
+        let lastTimeMouseMoved = 0;
+        map.on('mousemove', function (e) {
+            lastTimeMouseMoved = new Date().getTime();
+            var t = setTimeout(function () {
+                var currentTime = new Date().getTime();
+                if (currentTime - lastTimeMouseMoved > timeout) {
+                     pane.html('Loading');
+                    $.getJSON(`${source}x=${e.latlng.lng}&y=${e.latlng.lat}&units=Meters&output=json`, function (data) {
+                        identifiedElevationValue = data.USGS_Elevation_Point_Query_Service
+                        let elev = identifiedElevationValue.Elevation_Query.Elevation;
+                        elev = elev > -20 ? elev  + 'm' : "No Data"
+                        pane.html(elev);
+                    });
+                }
+            }, timeout)
+        });
     }
 
     /**

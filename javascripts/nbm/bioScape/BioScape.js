@@ -11,7 +11,7 @@
  *  summarization layers to use for this bioScape
  * @constructor
  */
-var BioScape = function(id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams, initBapState) {
+var BioScape = function (id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams, initBapState) {
     this.id = id;
     this.title = title;
     this.summary = summary;
@@ -25,7 +25,7 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
     this.state = {};
     this.initBapState = initBapState;
     this.additionalParams = additionalParams;
-    
+
     /**
      * Send a json request to ScienceBase for the definition of 'Bioscape'. Set the definition if there is a
      *  successful response.
@@ -33,12 +33,12 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      */
     function setDefinition(that) {
         sendJsonRequestHandleError(that.definitionUrl)
-            .then(function(data) {
-                if(data && data.body) {
+            .then(function (data) {
+                if (data && data.body) {
                     that.definition = data.body;
                 }
             })
-            .catch(function() {
+            .catch(function () {
                 console.log('There was an issue trying to get a definition from ScienceBase.');
             });
     }
@@ -48,21 +48,21 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      *  sections complete initialization.
      * @promise
      */
-    this.initializeBioScape = function() {
+    this.initializeBioScape = function () {
         let that = this;
-        var promises = this.sections.map(function(section) {
+        var promises = this.sections.map(function (section) {
             return section.initializeGroup();
         });
-        if(this.initBapState.enabled && !this.initBapState.userDefined){
+        if (this.initBapState.enabled && !this.initBapState.userDefined) {
             showSpinner(true)
         }
-        if(this.initBapState.userDefined){
+        if (this.initBapState.userDefined) {
             showErrorDialog('Unable to load user drawn polygon. ', false);
         }
-        if(this.initBapState.layers.length){
-            this.initBapState.layers.forEach(function(l) {
+        if (this.initBapState.layers.length) {
+            this.initBapState.layers.forEach(function (l) {
                 let layer = that.getLayer(l.id)
-                if(layer.summarizationRegion || layer.baseMap){
+                if (layer.summarizationRegion || layer.baseMap) {
                     layer.turnOffLayer()
                     that.toggleLayer(layer)
                 }
@@ -78,10 +78,10 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * @param {string} id - id of the section to return
      * @returns {*|undefined}
      */
-    this.getSection = function(id) {
+    this.getSection = function (id) {
         var result = undefined;
-        this.sections.forEach(function(section) {
-            if(section.id === id) {
+        this.sections.forEach(function (section) {
+            if (section.id === id) {
                 result = section;
             }
         });
@@ -93,10 +93,10 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * @param {boolean} [includeBasemap] - include basemap sections - optional
      * @returns {Array.<*>}
      */
-    this.getAllSections = function(includeBasemap) {
+    this.getAllSections = function (includeBasemap) {
         var result = [];
-        this.sections.forEach(function(section) {
-            if(section instanceof BioScapeBaseMapGroup && !includeBasemap) {
+        this.sections.forEach(function (section) {
+            if (section instanceof BioScapeBaseMapGroup && !includeBasemap) {
                 return;
             }
             result.push(section);
@@ -110,10 +110,10 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * @param {boolean} [includeBasemaps - include basemaps - optional
      * @returns {Array.<*>}
      */
-    this.getAllLayers = function(includeBasemaps) {
+    this.getAllLayers = function (includeBasemaps) {
         var result = [];
         var sections = this.getAllSections(includeBasemaps);
-        sections.forEach(function(section) {
+        sections.forEach(function (section) {
             result = result.concat(section.getLayers());
         });
 
@@ -124,10 +124,10 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * Returns all non base map layers that are currently visible on the map in the BioScape.
      * @returns {Array.<*>}
      */
-    this.getVisibleLayers = function() {
+    this.getVisibleLayers = function () {
         var result = [];
         var layers = this.getAllLayers();
-        layers.forEach(function(layer) {
+        layers.forEach(function (layer) {
             if (layer.isVisible()) {
                 result.push(layer);
             }
@@ -141,11 +141,11 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      *  or if non are selected return the default layer if one exists.
      * @returns {Array.<*>}
      */
-    this.getSummarizationLayers = function() {
+    this.getSummarizationLayers = function () {
         var result = [];
         var defaultLayer;
-        this.summarizationLayers.forEach(function(layer) {
-            if(layer.selected) {
+        this.summarizationLayers.forEach(function (layer) {
+            if (layer.selected) {
                 result.push(layer);
             } else if (layer.defaultSummaryLayer) {
                 defaultLayer = layer;
@@ -163,11 +163,11 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      *  Returns all layers that are currently selected in the BioScape.
      * @returns {Array.<*>}
      */
-    this.getSelectedLayers = function() {
+    this.getSelectedLayers = function () {
         var result = [];
         var layers = this.getAllLayers(true);
-        layers.forEach(function(layer) {
-            if(layer.selected) {
+        layers.forEach(function (layer) {
+            if (layer.selected) {
                 result.push(layer);
             }
         });
@@ -180,11 +180,11 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * @param {string} id - id of the layer to return
      * @returns {undefined|Object}
      */
-    this.getLayer = function(id) {
+    this.getLayer = function (id) {
         var layers = this.getAllLayers();
 
-        for(var i = 0; i < layers.length; i++) {
-            if(layers[i].id === id) {
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].id === id) {
                 return layers[i];
             }
         }
@@ -202,7 +202,7 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
      * Returns the current state of the BioScape.
      * @returns {{}|{layers: string}}
      */
-    this.getState = function() {
+    this.getState = function () {
         return btoa(JSON.stringify(this.state));
     };
 
@@ -210,40 +210,40 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
     /**
      * Updates the state of the BioScape and calls StateKeeper.updateUrl.
      */
-    this.updateState = function(bap) {
+    this.updateState = function (bap) {
 
-        if(!bap){
+        if (!bap) {
             bap = this.state || {}
         }
-        this.state ={}
+        this.state = {}
         let layerData = []
-        if(bap.id) this.state.id = bap.id
-        if(bap.time) this.state.time = bap.time
+        if (bap.id) this.state.id = bap.id
+        if (bap.time) this.state.time = bap.time
         this.state.enabled = bap.enabled
         this.state.userDefined = bap.userDefined
 
         var layers = this.getVisibleLayers();
-           
-        layers.forEach(function(layer) {
+
+        layers.forEach(function (layer) {
             let l = {}
             l.id = layer.id
             l.opacity = layer.getOpacity()
-            if(layer.mapLayer.timeControl){
+            if (layer.mapLayer.timeControl) {
                 l.time = layer.mapLayer.timeControl
             }
             layerData.push(l)
         });
 
         this.state.layers = layerData
-    
+
         if (this.customBioscape) {
             this.state.customBioscape = this.customBioscape;
         }
-        
+
         updateUrlWithState()
     }
 
-    this.getAllBaps = function() {
+    this.getAllBaps = function () {
         let allBaps = []
         $.each(actionHandlerHelper.enabledActions, function (index, action) {
             $.each(action.config.baps, function (index, bap) {
@@ -251,6 +251,6 @@ var BioScape = function(id, title, summary, rightPanelMessage, sections, summari
             })
         })
         return allBaps
-}
+    }
 
 };
