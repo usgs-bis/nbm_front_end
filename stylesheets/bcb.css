@@ -1687,3 +1687,9 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     color: yellow;
     opacity: .80;
 }
+
+.priorityBap {
+    display: inline-block;
+    white-space: nowrap;
+    float: right;
+}

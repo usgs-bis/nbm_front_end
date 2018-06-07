@@ -169,6 +169,13 @@
                 <i class="fa fa-info-circle fa-second" aria-hidden="true"></i>
             </div>
         {{/if}}
+        <div id="priorityBapInput{{:id}}" class="priorityBap">
+            <label class="clickSearch">
+                    <input id="priorityBap{{:id}}" type="checkbox" class="clickSearch" />
+                    <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top" title="Make Priority Bap"></span>
+            </label>
+        </div>
+
 </div>
 </div>
 {{if !hasInputs && !leaveOutJson}}
@@ -191,7 +198,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
                     </div>
                 {{/if}}
                 
-                <div style="cursor: pointer;" id="{{:id}}AnalysisInputsSection" class="contextHeader inputExpander" data-section="{{:id}}AnalysisInputs">
+                <div style="cursor: pointer;" id="{{:id}}AnalysisInputsSection" class="contextHeader inputExpander AnalysisInputsSection" data-section="{{:id}}AnalysisInputs">
                     <span id="{{:id}}AnalysisInputsControl">&#9658;</span>
                     Analysis Inputs
                 </div>

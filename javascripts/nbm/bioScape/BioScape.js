@@ -22,7 +22,7 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
     this.rightPanelMessage = rightPanelMessage;
     this.customBioscape = customBioscape;
     setDefinition(this);
-    this.state = {};
+    this.state = {baps:[],layers:[]}
     this.initBapState = initBapState;
     this.additionalParams = additionalParams;
 
@@ -53,12 +53,16 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         var promises = this.sections.map(function (section) {
             return section.initializeGroup();
         });
-        if (this.initBapState.enabled && !this.initBapState.userDefined) {
-            showSpinner(true)
-        }
-        if (this.initBapState.userDefined) {
-            showErrorDialog('Unable to load user drawn polygon. ', false);
-        }
+
+        bioScape.initBapState.baps.forEach(function(initBap){
+            if (initBap.enabled && !initBap.userDefined) {
+                showSpinner(true)
+            }
+            if (initBap.userDefined) {
+                showErrorDialog('Unable to load user drawn polygon. ', false);
+            }
+        });
+       
         if (this.initBapState.layers.length) {
             this.initBapState.layers.forEach(function (l) {
                 let layer = that.getLayer(l.id)
@@ -211,16 +215,29 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
      * Updates the state of the BioScape and calls StateKeeper.updateUrl.
      */
     this.updateState = function (bap) {
+        let that = this
+        
+        let oldState = JSON.parse(JSON.stringify(this.state))
+        this.state = {baps:[],layers:[]}
+        if (!bap) bap = {}
 
-        if (!bap) {
-            bap = this.state || {}
+       let update = false; 
+        oldState.baps.forEach(function(currentBap){
+            if(currentBap.id == bap.id ){
+                    if (bap.range) currentBap.range = bap.range
+                    if (bap.userDefined) currentBap.userDefined = bap.userDefined
+                    currentBap.enabled = bap.enabled
+                    currentBap.priority = bap.priority
+                    that.state.baps.push(currentBap)
+                    update = true
+            }
+            else{
+                that.state.baps.push(currentBap)
+            }
+        })
+        if(!update && bap.id){
+            this.state.baps.push(bap)
         }
-        this.state = {}
-        let layerData = []
-        if (bap.id) this.state.id = bap.id
-        if (bap.time) this.state.time = bap.time
-        this.state.enabled = bap.enabled
-        this.state.userDefined = bap.userDefined
 
         var layers = this.getVisibleLayers();
 
@@ -231,15 +248,12 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
             if (layer.mapLayer.timeControl) {
                 l.time = layer.mapLayer.timeControl
             }
-            layerData.push(l)
+            that.state.layers.push(l)
         });
-
-        this.state.layers = layerData
 
         if (this.customBioscape) {
             this.state.customBioscape = this.customBioscape;
         }
-
         updateUrlWithState()
     }
 

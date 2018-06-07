@@ -428,6 +428,24 @@ function collapseContainer(id) {
 }
 
 /**
+ * shows the container
+ * @param {string} id
+ * @returns {boolean} - true if the container opened
+ */
+function showContainer(id) {
+    var group = $("#" + id);
+    var mySpan = $("#" + id + 'Control');
+
+    if (group.is(':visible')) {
+        return true;
+    }
+    mySpan.html('&#9660;');
+    group.slideDown('fast');
+    return true;
+}
+
+
+/**
  * Create a div with an id if no other div with the same id exists on the page.
  * @param {string} divId - id of the div
  * @param {string} parentId - id of the element to add this div to
