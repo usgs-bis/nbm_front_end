@@ -257,7 +257,7 @@ GlobalTimeSlider.prototype.showTimeSlider = function(show){
     let ts = $("#GlobalTimeSlider");
     let tsr = $("#GlobalTimeSliderRange")
     let gtc = $("#GlobalTimeControl")
-    if(show){
+    if(show != undefined){
         ts.slider( "enable" );
         tsr.slider( "enable" );
         tsr.css( "opacity", 1 );
