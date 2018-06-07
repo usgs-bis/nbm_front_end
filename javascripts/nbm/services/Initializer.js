@@ -47,7 +47,7 @@ var Initializer = (function(initializer) {
 
         var bioscapeJson = {};
 
-        $.getJSON(myServer + "/bioscape/config/" + bioscapeName)
+        $.getJSON(myServer + "/bioscape/config/" + bioscapeName + "/" + myEnv)
             .then(function(response) {
                 bioscapeJson = {
                     id: response.sbItem.id,
