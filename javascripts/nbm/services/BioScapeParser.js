@@ -27,7 +27,7 @@ var BioScapeParser = (function(bioScapeParser) {
             summarizationLayers = summarizationLayers.concat(group.getSummarizationLayers());
         }
         let additionalParams = {"defaultBapMessage": data.defaultBapMessage};
-        let bap = {layers:[]}
+        let bap = {baps:[],layers:[]}
         if(state.bap){
             try{bap = JSON.parse(atob(state.bap))}
             catch(error){
