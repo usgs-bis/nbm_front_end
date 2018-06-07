@@ -31,6 +31,7 @@ var BAP = function (serverAP, leaveOutJson, actionRef) {
     this.actionRef = actionRef;
     this.state = {}
     this.initConfig = {}
+    this.priority = false
 
     if (!$(`#${this.id}BAP`).length) $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', { id: this.id }));
     this.htmlElement = $("#" + this.id + "BapCase");
@@ -205,7 +206,10 @@ BAP.prototype.bindClicks = function () {
     $("#" + this.config.id + "BapCase div.layerExpander").on('click', function () {
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
-        that.switchPriorityBap(toggle)
+        if(!that.priority){
+            $(`#${that.id}Inputs`).hide()
+        }
+        that.updateState(toggle)
     });
     $("#" + this.config.id + "BapCase div.inputExpander").on('click', function () {
         var id = $(this).data('section');
@@ -216,6 +220,14 @@ BAP.prototype.bindClicks = function () {
         $("#" + that.config.id + "Modal").modal('show');
         e.stopPropagation();
     });
+
+    $(`#${that.id}BapCase #priorityBap${that.id}`).on('click', function (e) {
+        that.setPriorityBap(e.target.checked)
+         e.stopPropagation();
+     });
+     $(`#${that.id}BapCase #priorityBapInput${that.id}`).on('click', function (e) {
+         e.stopPropagation();
+     });
 
 
     let layers = that.GetBapLayers()
@@ -292,9 +304,13 @@ BAP.prototype.setEmptyBap = function () {
 BAP.prototype.initializeBAP = function () {
     showSpinner(true)
     let that = this;
-    if (bioScape.initBapState.id == this.id) {
-        this.initConfig = bioScape.initBapState
-    }
+    
+    bioScape.initBapState.baps.forEach(function(initBap){
+        if (initBap.id == that.id && !initBap.userDefined) {
+            that.initConfig = initBap
+        }
+    })
+
 
     this.initializeWidgets();
     this.htmlElement = $("#" + this.id + "BapCase");
@@ -313,47 +329,79 @@ BAP.prototype.initializeBAP = function () {
         this.state.userDefined = false
     }
 
-    if (this.initConfig.id == this.id && !this.initConfig.userDefined) {
-        this.switchPriorityBap(false)
-        that.initConfig.layers.forEach(l => {
-            let layer = bioScape.getLayer(l.id)
-            if (!layer.summarizationRegion && !layer.baseMap) {
-                $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
-
-                try { layer.section.updateLayerOpacity(layer.id, l.opacity) }
-                catch (error) { }
-                $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
-
-                if (l.time) {
-                    actionHandlerHelper.globalTimeSlider().setToTime(l.time)
-                }
-                hideSpinner(true)
-            }
-        });
-        this.initConfig = {}
-        bioScape.initBapState = {}
-        bioScape.initBapState.found = true
-        // this is a hack! when we are initlizing all the baps we dont want to open others
-        // after 4 seconds we will default to the priority bap
-        setTimeout(function () { bioScape.initBapState.found = false }, 4000);
-    }
-    else {
-
-        if (!bioScape.initBapState.found && ((that.actionRef || {} ).config || {} ).priority == this.id) {
-            this.switchPriorityBap(true)
+    if(this.loadBapState()){}
+    else{
+        if(((that.actionRef || {} ).config || {} ).priority == this.id){
+            $(`#${that.id}BapCase #priorityBap${that.id}`).click()
         }
-        else if(!that.actionRef){
-            this.switchPriorityBap(true)
-        }
-        else {
-            try { collapseContainer(this.id + "BAP") }
-            catch (error) { }
+        else{
+            collapseContainer(this.id + "BAP") 
         }
     }
+
     hideSpinner(true)
-
-
+    hideSpinner()
 };
+
+
+// load the bap state from the shared url
+BAP.prototype.loadBapState = function(){
+    let that = this;
+    if(!bioScape.initBapState.baps.length) return false
+    let found = false
+    bioScape.initBapState.baps.forEach(function(initBap){
+        if (initBap.id == that.id && !initBap.userDefined) {
+            found = true
+            if(initBap.priority){
+                $(`#${that.id}BapCase #priorityBap${that.id}`).click()
+                setTimeout(function(){
+                    bioScape.initBapState.layers.forEach(l => {
+                        let layer = bioScape.getLayer(l.id)
+                        if (!layer.summarizationRegion && !layer.baseMap) {
+                            try {
+                                if(!$(`#${that.id}BAP #toggleLayer${layer.id}`)[0].checked){
+                                    $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
+                                }
+                            }
+                            catch(error){}
+                    
+                            try { layer.section.updateLayerOpacity(layer.id, l.opacity) }
+                            catch (error) { }
+                            $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
+                    
+                            if (l.time) {
+                                actionHandlerHelper.globalTimeSlider().setToTime(l.time)
+                            }
+                            hideSpinner(true)
+                        }
+                    });
+
+                    if (!initBap.enabled){
+                        collapseContainer(that.id + "BAP") 
+                    }
+                    that.initConfig = {} 
+                    bioScape.initBapState ={baps:[],layers:[]}
+                    that.updateState(true)
+                },1000)
+            }
+            else{
+                $(`#${that.id}Inputs`).hide()
+                
+                if (initBap.enabled){
+                    showContainer(that.id + "BAP") 
+                }
+                else{
+                    collapseContainer(that.id + "BAP") 
+                }
+            }
+        }
+    })
+    if(!found){
+        collapseContainer(this.id + "BAP") 
+    }
+    return true
+}
+
 
 BAP.prototype.isVisible = function () {
     return $('#' + this.config.id + 'BAP').is(':visible');
@@ -438,35 +486,11 @@ BAP.prototype.GetBapLayers = function () {
     return bapLayers
 }
 
-BAP.prototype.switchPriorityBap = function (toggle) {
-    let that = this
-    let thisLayer = this.GetBapLayers()[0]
-    $("#mySpinner").hide()
-    if (!thisLayer) return
-
-    this.turnOffBapLayers()
-
-    $.each(bioScape.getAllBaps(), function (index, bap) {
-        if (bap != that.id) {
-            try { collapseContainer(bap + "BAP") }
-            catch (error) { }
-        }
-    })
-
-    if (toggle && thisLayer) {
-        $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked = false;
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
-    }
-    else {
-        that.updateState(false)
-    }
-};
 
 BAP.prototype.turnOffBapLayers = function () {
     let that = this;
     this.showTimeSlider(false)
-    var visibleLayers = bioScape.getVisibleLayers();
+    var visibleLayers = bioScape.getAllLayers();
 
     $.each(visibleLayers, function (index, layer) {
         if (!layer.baseMap && !layer.summarizationRegion) {
@@ -480,20 +504,56 @@ BAP.prototype.turnOffBapLayers = function () {
             }
         }
     })
-
 }
 
 BAP.prototype.updateState = function (enabled) {
 
     let s = this.state
     s.id = this.id
-    s.enabled = false
-    if (enabled) s.enabled = true
+    s.enabled = enabled
+    s.priority = this.priority
     bioScape.updateState(s)
 }
+
 
 BAP.prototype.showTimeSlider = function (show) {
 
     try { actionHandlerHelper.globalTimeSlider().showTimeSlider(show) }
     catch (error) { }
 }
+
+BAP.prototype.setPriorityBap = function (checked) {
+    let that = this
+
+    if(checked && !this.priority){
+        this.priority = true
+        $("#mySpinner").hide()
+        let thisLayer = this.GetBapLayers()[0]
+        if (!thisLayer) return
+        this.turnOffBapLayers()
+        $.each(bioScape.getAllBaps(), function (index, bap) {
+            try{
+                if (bap != that.id && $(`#priorityBap${bap}`)[0].checked) {
+                    $(`#priorityBap${this}`).click()
+                }
+            }
+            catch(error){}
+            if (bap != that.id){
+                $(`#${bap}Inputs`).hide()
+            }
+        })
+
+        $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked = false;
+        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
+        
+        showContainer(that.id + "BAP")
+        $(`#${that.id}Inputs`).show()
+        that.updateState(true)
+        
+    }
+    else{
+        this.priority = false
+        this.updateState(true)
+    } 
+};

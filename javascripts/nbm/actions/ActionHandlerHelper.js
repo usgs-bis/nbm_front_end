@@ -126,15 +126,17 @@ ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
 
     this.populateBottomBarWithClick();
     this.initializeRightPanel();
-
     var promises = [];
 
+    $("#synthesisCompositionTitle").html('')
     $.each(actionHandlers, function (index, actionHandler) {
         if (actionHandler.type == "drawPolygon" ) { //&& map.hasLayer(actionHandler.layer.leafletLayer)
             if (!actionHandler.headerBap) {
                 promises.push(actionHandler.sendTriggerAction(false));
             } else {
-                $("#synthesisCompositionTitle").html("<div id='HeaderBap" + index + "'></div>");
+                if($("#HeaderBap" + index).length == 0){
+                    $("#synthesisCompositionTitle").append("<div id='HeaderBap" + index + "'></div>");
+                }
                 promises.push(actionHandler.sendTriggerAction(true, "HeaderBap" + index));
             }
         }

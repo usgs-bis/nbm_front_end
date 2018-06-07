@@ -96,16 +96,16 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
             that.submitData("Larger or more complex polygons will take longer to process", feature);
         });
 
-        if(this.bap.initConfig.time){
-            actionHandlerHelper.globalTimeSlider().setToRange(this.bap.initConfig.time)
+        if(this.bap.initConfig.range){
+            actionHandlerHelper.globalTimeSlider().setToRange(this.bap.initConfig.range)
             button.click()
-            this.bap.initConfig.time = undefined
+            this.bap.initConfig.range = undefined
         }
     };
 
     this.submitData = function(message, inputFeature) {
         var values = timeSlider.slider('values');
-        this.bap.state.time = values
+        this.bap.state.range = values
         this.bap.updateState(true)
 
         noDatas = [];
