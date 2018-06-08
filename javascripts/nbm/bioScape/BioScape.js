@@ -215,6 +215,13 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         return btoa(JSON.stringify(this.state));
     };
 
+    this.getCustomState = function () {
+        if (this.customBioscape) {
+            return {customBioscape:this.customBioscape};
+        }
+        return {}
+    };
+
 
     /**
      * Updates the state of the BioScape and calls StateKeeper.updateUrl.
@@ -256,9 +263,6 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
             that.state.layers.push(l)
         });
 
-        if (this.customBioscape) {
-            this.state.customBioscape = this.customBioscape;
-        }
         updateUrlWithState()
     }
 
