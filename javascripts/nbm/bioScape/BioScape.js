@@ -63,16 +63,21 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
             }
         });
        
-        if (this.initBapState.layers.length) {
-            this.initBapState.layers.forEach(function (l) {
-                let layer = that.getLayer(l.id)
-                if (layer.summarizationRegion || layer.baseMap) {
-                    layer.turnOffLayer()
-                    that.toggleLayer(layer)
-                }
-            })
+        try{
+            if (this.initBapState.layers.length) {
+                this.initBapState.layers.forEach(function (l) {
+                    let layer = that.getLayer(l.id)
+                    if (layer.summarizationRegion || layer.baseMap) {
+                        layer.turnOffLayer()
+                        that.toggleLayer(layer)
+                    }
+                })
+            }
         }
-
+        catch(error){
+            showErrorDialog('Unable to load the captured state. ', false);
+        }
+        
         //this.updateState();
         return Promise.all(promises);
     };

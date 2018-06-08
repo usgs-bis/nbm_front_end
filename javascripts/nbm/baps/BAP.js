@@ -206,7 +206,7 @@ BAP.prototype.bindClicks = function () {
     $("#" + this.config.id + "BapCase div.layerExpander").on('click', function () {
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
-        if(!that.priority){
+        if (!that.priority) {
             $(`#${that.id}Inputs`).hide()
         }
         that.updateState(toggle)
@@ -223,11 +223,11 @@ BAP.prototype.bindClicks = function () {
 
     $(`#${that.id}BapCase #priorityBap${that.id}`).on('click', function (e) {
         that.setPriorityBap(e.target.checked)
-         e.stopPropagation();
-     });
-     $(`#${that.id}BapCase #priorityBapInput${that.id}`).on('click', function (e) {
-         e.stopPropagation();
-     });
+        e.stopPropagation();
+    });
+    $(`#${that.id}BapCase #priorityBapInput${that.id}`).on('click', function (e) {
+        e.stopPropagation();
+    });
 
 
     let layers = that.GetBapLayers()
@@ -304,14 +304,15 @@ BAP.prototype.setEmptyBap = function () {
 BAP.prototype.initializeBAP = function () {
     showSpinner(true)
     let that = this;
-    
-    bioScape.initBapState.baps.forEach(function(initBap){
+
+    // set this baps initconfig to the correct part of the entire config
+    bioScape.initBapState.baps.forEach(function (initBap) {
         if (initBap.id == that.id && !initBap.userDefined) {
             that.initConfig = initBap
         }
     })
 
-
+    // build the widgets
     this.initializeWidgets();
     this.htmlElement = $("#" + this.id + "BapCase");
     this.htmlElement.removeClass().html(this.getFullHtml());
@@ -329,14 +330,21 @@ BAP.prototype.initializeBAP = function () {
         this.state.userDefined = false
     }
 
-    if(this.loadBapState()){}
-    else{
-        if(((that.actionRef || {} ).config || {} ).priority == this.id){
-            $(`#${that.id}BapCase #priorityBap${that.id}`).click()
+    // try to load the bap state
+    try {
+        if (this.loadBapState()) { } // bap state loaded successfully 
+        else {
+            // bap state did not load or there is no state to load 
+            if (((that.actionRef || {}).config || {}).priority == this.id) {
+                $(`#${that.id}BapCase #priorityBap${that.id}`).click()
+            }
+            else {
+                collapseContainer(this.id + "BAP")
+            }
         }
-        else{
-            collapseContainer(this.id + "BAP") 
-        }
+    }
+    catch (error) {
+        showErrorDialog('Unable to load the captured state. ', false);
     }
 
     hideSpinner(true)
@@ -345,30 +353,34 @@ BAP.prototype.initializeBAP = function () {
 
 
 // load the bap state from the shared url
-BAP.prototype.loadBapState = function(){
+// determine if this bap is the priority and load the correct layers
+// the widget it's self takes care of any initlization related to the charts
+BAP.prototype.loadBapState = function () {
     let that = this;
-    if(!bioScape.initBapState.baps.length) return false
+    if (!bioScape.initBapState.baps.length) return false
     let found = false
-    bioScape.initBapState.baps.forEach(function(initBap){
+    bioScape.initBapState.baps.forEach(function (initBap) {
         if (initBap.id == that.id && !initBap.userDefined) {
             found = true
-            if(initBap.priority){
+            if (initBap.priority) {
                 $(`#${that.id}BapCase #priorityBap${that.id}`).click()
-                setTimeout(function(){
+                // setting a timeout so that the priority bap has a chance to load default before we change its inputs
+                // it would be nice to call async functions directly but calling click also handels alot of the html changes
+                setTimeout(function () {
                     bioScape.initBapState.layers.forEach(l => {
                         let layer = bioScape.getLayer(l.id)
                         if (!layer.summarizationRegion && !layer.baseMap) {
                             try {
-                                if(!$(`#${that.id}BAP #toggleLayer${layer.id}`)[0].checked){
+                                if (!$(`#${that.id}BAP #toggleLayer${layer.id}`)[0].checked) {
                                     $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
                                 }
                             }
-                            catch(error){}
-                    
+                            catch (error) { console.log("unable to locate layer ", error) }
+
                             try { layer.section.updateLayerOpacity(layer.id, l.opacity) }
-                            catch (error) { }
+                            catch (error) { console.log("unable to locate layer ", error) }
                             $(`#${that.id}BAP #opacitySliderInput${layer.id}`).val(l.opacity)
-                    
+
                             if (l.time) {
                                 actionHandlerHelper.globalTimeSlider().setToTime(l.time)
                             }
@@ -376,28 +388,28 @@ BAP.prototype.loadBapState = function(){
                         }
                     });
 
-                    if (!initBap.enabled){
-                        collapseContainer(that.id + "BAP") 
+                    if (!initBap.enabled) {
+                        collapseContainer(that.id + "BAP")
                     }
-                    that.initConfig = {} 
-                    bioScape.initBapState ={baps:[],layers:[]}
+                    that.initConfig = {}
+                    bioScape.initBapState = { baps: [], layers: [] }
                     that.updateState(true)
-                },1000)
+                }, 1000)
             }
-            else{
+            else {
                 $(`#${that.id}Inputs`).hide()
-                
-                if (initBap.enabled){
-                    showContainer(that.id + "BAP") 
+
+                if (initBap.enabled) {
+                    showContainer(that.id + "BAP")
                 }
-                else{
-                    collapseContainer(that.id + "BAP") 
+                else {
+                    collapseContainer(that.id + "BAP")
                 }
             }
         }
     })
-    if(!found){
-        collapseContainer(this.id + "BAP") 
+    if (!found) {
+        collapseContainer(this.id + "BAP")
     }
     return true
 }
@@ -486,7 +498,8 @@ BAP.prototype.GetBapLayers = function () {
     return bapLayers
 }
 
-
+// turn off all layers asociated with baps
+// skips things like basemaps, sumerization regions ect.
 BAP.prototype.turnOffBapLayers = function () {
     let that = this;
     this.showTimeSlider(false)
@@ -506,6 +519,7 @@ BAP.prototype.turnOffBapLayers = function () {
     })
 }
 
+// send off the state of this bap to be added to the url
 BAP.prototype.updateState = function (enabled) {
 
     let s = this.state
@@ -522,23 +536,25 @@ BAP.prototype.showTimeSlider = function (show) {
     catch (error) { }
 }
 
+// when priority bap is changed turn on the default layers for that bap
+// hide the inputs to the other baps
 BAP.prototype.setPriorityBap = function (checked) {
     let that = this
 
-    if(checked && !this.priority){
+    if (checked && !this.priority) {
         this.priority = true
         $("#mySpinner").hide()
         let thisLayer = this.GetBapLayers()[0]
         if (!thisLayer) return
         this.turnOffBapLayers()
         $.each(bioScape.getAllBaps(), function (index, bap) {
-            try{
+            try {
                 if (bap != that.id && $(`#priorityBap${bap}`)[0].checked) {
                     $(`#priorityBap${this}`).click()
                 }
             }
-            catch(error){}
-            if (bap != that.id){
+            catch (error) { }
+            if (bap != that.id) {
                 $(`#${bap}Inputs`).hide()
             }
         })
@@ -546,14 +562,14 @@ BAP.prototype.setPriorityBap = function (checked) {
         $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked = false;
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
-        
+
         showContainer(that.id + "BAP")
         $(`#${that.id}Inputs`).show()
         that.updateState(true)
-        
+
     }
-    else{
+    else {
         this.priority = false
         this.updateState(true)
-    } 
+    }
 };
