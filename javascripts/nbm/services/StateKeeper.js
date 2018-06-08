@@ -13,7 +13,7 @@ var StateKeeper = (function (state) {
      * @returns {string}
      */
     function getState() {
-        var states = [map.getState(), actionHandlerHelper.getState()];
+        var states = [map.getState(), actionHandlerHelper.getState(), bioScape.getCustomState()];
         var stateString = '';
         states.forEach(function(item) {
             for(var prop in item) {
