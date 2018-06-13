@@ -87,8 +87,7 @@
 #unit_info_right.open {
     right: 0;
     left: auto;
-    height: -webkit-fill-available;
-    height: -moz-available;
+    height: calc(100%);
     overflow-y: scroll;
     overflow-x: hidden;
 }
