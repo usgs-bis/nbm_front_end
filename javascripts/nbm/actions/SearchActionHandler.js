@@ -420,6 +420,7 @@ PlaceOfInterestSearch.prototype.getSelectedUnit = function (id) {
         that.selectedArea = parseInt(data.features[0].properties.st_area) * 0.000247105;
         that.polygon = data.features[0];
         actionHandlerHelper.handleSearchActions();
+        bioScape.resetState()
         updateUrlWithState();
     })
 
