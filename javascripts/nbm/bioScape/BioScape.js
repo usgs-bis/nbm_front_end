@@ -43,6 +43,12 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
             });
     }
 
+    this.resetState = function(){
+        let state = {baps:[],layers:[]}
+        this.state = state
+        return state
+    }
+
     /**
      * Initializes the BioScape by initializing all of the sections. Promise is resolved once all
      *  sections complete initialization.
@@ -230,7 +236,7 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         let that = this
         
         let oldState = JSON.parse(JSON.stringify(this.state))
-        this.state = {baps:[],layers:[]}
+        this.resetState()
         if (!bap) bap = {}
 
        let update = false; 
