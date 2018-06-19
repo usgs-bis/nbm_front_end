@@ -18,7 +18,7 @@ function SmoothPlotWidget(config, bap) {
             content: [
                 {text: $(selector).find("#ridgeLinePlotTitle").text(),style: ['titleChart']},
                 {text: $(selector).find("#ridgeLinePlotSubTitle").text(),style: ['subTitleChart']},
-                {image: dataURI},
+                {image: dataURI, alignment: 'center', width: 400},
             ],
             charts: []
         }

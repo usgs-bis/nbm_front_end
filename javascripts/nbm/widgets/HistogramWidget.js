@@ -20,7 +20,7 @@ function HistogramWidget(config, bap) {
            
                 {text: $(selector).find("#histogramTitle").text(), style: ['titleChart']},
                 {text: $(selector).find("#histogramSubTitle").text(), style: ['subTitleChart']},
-                {image: dataURI}
+                {image: dataURI, alignment: 'center', width: 400}
         
             ],
             charts: []
