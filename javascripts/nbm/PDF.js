@@ -59,12 +59,12 @@ PDF.prototype.getMapImage = function(marker) {
         { offsetX: mapPaneTransforms.x, offsetY: mapPaneTransforms.y}
     );
 
-    var self = this;
+    // var self = this;
     var promise = html2canvas(this.map.getContainer(), { useCORS: true })
         .then(function(canvas) {
             //add the feature image to the canvas
             var destCtx = canvas.getContext('2d');
-            destCtx.drawImage(featureCanvas,0,0);
+            // destCtx.drawImage(featureCanvas,0,0);
 
             //add the marker image to the canvas
             if (marker) {
