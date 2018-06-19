@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  nbm-front-end:
+    container_name: nbm-front-end
+    image: httpd:2.4
+    volumes:
+      - '.:/usr/local/apache2/htdocs/biogeography/'
+      - '.:/usr/local/apache2/htdocs/phenology/'
+      - '.:/usr/local/apache2/htdocs/terrestrial-ecosystems-2011/'
+      - '.:/usr/local/apache2/htdocs/nvcs/'
+      - '.:/usr/local/apache2/htdocs/npn/'
+    ports:
+      - '80:80'
