@@ -15,10 +15,13 @@ if (myServer.indexOf("igskbac") !== -1) {
     myServer = "https://www.sciencebase.gov/bcb"
 }
 
-myEnv = "dev"
+// FOR DEVELOPMENT 
+//myEnv = "dev"
 //myServer = "http://localhost:8080/bcb";
-myServer = "https://dev-api.sciencebase.gov/bcb";
+//myServer = "https://dev-api.sciencebase.gov/bcb";
 //myServer = "https://my-beta.usgs.gov/bcb";
+
+
 var allowsMixedContent = undefined;
 var supportEmail = 'bcb@usgs.gov';
 var colorMap = {};
