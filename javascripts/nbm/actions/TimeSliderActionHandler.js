@@ -31,6 +31,7 @@ let GlobalTimeSlider = function (config, parent) {
     this.ts = $("#GlobalTimeSlider");
     this.layerList = [];
     this.playing = false;
+    this.waiting = false;
 
 };
 
@@ -44,6 +45,10 @@ GlobalTimeSlider.prototype.initialize = function () {
     let time = { startDate: this.startDate, endDate: this.endDate, defaultDate: this.defaultDate };
     var html = getHtmlFromJsRenderTemplate('#GlobalTimeSliderTemplate', time);
     this.timeSliderDiv.html(html);
+
+    window.onblur = function() {
+        that.pause()
+     };
 
     var sliderTooltip = function (event, ui) {
         var curValue = ui.value || time.defaultDate;
@@ -66,59 +71,68 @@ GlobalTimeSlider.prototype.initialize = function () {
 
     that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass( "glyphicon glyphicon-tag customSliderHandle" );
 
+
+    
+    // recursive function to fade in the layers
+   GlobalTimeSlider.prototype.fade = function (targetOpacity,layer1,layer2,year,fade,timeOut) {
+
+       let layer1Opacity = Number(layer1.options.opacity)
+       let layer2Opacity = Number(layer2.options.opacity)
+
+        if(layer1Opacity > 0 ){
+            setTimeout(function(){
+                layer1Opacity -= fade
+                layer2Opacity += fade
+                layer1.setOpacity(layer1Opacity);
+                layer2.setOpacity(layer2Opacity);
+                that.fade(targetOpacity,layer1,layer2,year,fade,timeOut)
+            }, timeOut)
+        }
+        else{
+            // done fading, update the copy layer for next time
+            layer1.setParams({
+                "time": year,
+            });
+            that.waiting = false
+        }
+   }
+   
+
     this.ts.slider({
         change: function (event, ui) {
             let val = ui.value
             $.each(that.layerList, function (index, layer) {
                 if (that.playing) {
-                    //Get the current opacity of the layer
-                    let startOpacity = Number(layer.mapLayer.leafletLayer.options.opacity);
-                    let op = startOpacity;
-
-                    //The interval is set to every .1 seconds, so the .05 change takes 2 seconds to complete
-                    let change = 0.05;
-
-                    //If the start opacity is less than one, simultaneously fade the copy out as the other one shows
-                    let fadeOut = startOpacity < 1.0;
+                    
+                    // //Get the current opacity of the layer
+                    let startOpacity = Number($(`#opacitySliderInput${layer.id}` ).val()) //Number(layer.mapLayer.leafletLayer.options.opacity);
 
                     //Show the layer copy
                     layer.mapLayer.layerCopy.setOpacity(startOpacity);
 
-                    //Hide the original layer and update its params with the next time value
+                    // //Hide the original layer and update its params with the next time value
                     layer.mapLayer.leafletLayer.setOpacity(0.0);
+
+                    // get the new time layer
+                    that.waiting = true
                     layer.mapLayer.timeControl = val;
                     layer.mapLayer.leafletLayer.setParams({
                         "time": val,
+                    })
+
+                    // then once the new layer is completly loaded begin the fade
+                    layer.mapLayer.leafletLayer.on('load', function (event) {
+                        setTimeout(function(){  that.fade(startOpacity,layer.mapLayer.layerCopy,layer.mapLayer.leafletLayer,val,0.05,50)},200)
                     });
-                    layer.mapLayer.leafletLayer.bringToFront();
 
-                    //Set interval every .1 seconds
-                    let myInt = setInterval(function () {
-                        op -= change;
-                        if (op < 0.0) {
-                            //If copy opacity < 0, hide copy, show original, and clear this interval
-                            op = 0.0;
-                            layer.mapLayer.layerCopy.setOpacity(0.0);
-                            layer.mapLayer.layerCopy.setParams({
-                                "time": val,
-                            });
-                            layer.mapLayer.leafletLayer.setOpacity(startOpacity);
-                            clearInterval(myInt);
-                        } else if (fadeOut) {
-                            //If fadeOut, slowly hide the copy
-                            layer.mapLayer.leafletLayer.setOpacity(startOpacity - op);
-                            layer.mapLayer.layerCopy.setOpacity(op);
-                        } else {
-                            //If not fadeOut, keep the copy opacity as-is
-                            layer.mapLayer.leafletLayer.setOpacity(startOpacity - op);
-                        }
-
-                    }, 100);
                 } else {
                     layer.mapLayer.timeControl = val;
                     layer.mapLayer.leafletLayer.setParams({
                         "time": val,
                     })
+                    layer.mapLayer.layerCopy.setParams({
+                        "time": val,
+                    });
                 }
                 // other.addTo(map);
                 that.checkoutOfRange(val, layer);
@@ -245,6 +259,14 @@ GlobalTimeSlider.prototype.playTimeSlider = function (play) {
 GlobalTimeSlider.prototype.updateTime = function (ti) {
     let that = this
     if(this.playing){
+
+        // transition has finished
+        if(this.waiting){
+            setTimeout(function(){
+                that.updateTime(ti)
+            },500)
+            return
+        }
 
         let startDate = ti.startDate
         let endDate = ti.endDate
