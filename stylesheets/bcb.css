@@ -1692,4 +1692,5 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     display: inline-block;
     white-space: nowrap;
     float: right;
+    width: 15px;
 }
