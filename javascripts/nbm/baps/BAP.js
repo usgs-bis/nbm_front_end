@@ -234,9 +234,10 @@ BAP.prototype.bindClicks = function () {
     $.each(layers, function (index, layer) {
         $(`#${that.id}BAP #toggleLayer${layer.id}`).click(function () {
             if (this.checked) {
-                that.turnOffBapLayers()
+                that.turnOffBapLayers(layer.id)
                 layer.turnOnLayer()
                     .then(function () {
+                        that.checked = true
                         that.showTimeSlider(layer.timeIndex)
                         that.updateState(true)
                     })
@@ -500,13 +501,13 @@ BAP.prototype.GetBapLayers = function () {
 
 // turn off all layers asociated with baps
 // skips things like basemaps, sumerization regions ect.
-BAP.prototype.turnOffBapLayers = function () {
+BAP.prototype.turnOffBapLayers = function (skipID) {
     let that = this;
     this.showTimeSlider(false)
     var visibleLayers = bioScape.getAllLayers();
 
     $.each(visibleLayers, function (index, layer) {
-        if (!layer.baseMap && !layer.summarizationRegion) {
+        if (!layer.baseMap && !layer.summarizationRegion && layer.id != skipID) {
 
             if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()

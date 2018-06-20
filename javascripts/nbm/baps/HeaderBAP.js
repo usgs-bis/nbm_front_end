@@ -31,7 +31,7 @@ HeaderBAP.prototype.getHtml = function () {
         var longDisplay = shortSummary ? "none" : "inline";
 
         var viewData = {
-            type: details.type,
+            type: details.type ? details.type : "Polygon",
             title: details.title,
             approximate: details.bapType == "User Defined Polygon",
             acres: formatAcres(details.acres),
@@ -61,6 +61,10 @@ HeaderBAP.prototype.initializeBAP = function () {
     let headerHeight = $("#synthesisCompositionTitle").height()
     $('#synthesisCompositionBodyTitleSpace').css('margin-top', `${headerHeight + 70}px`);
     $('#synthesisCompositionBody').css('margin-bottom', `${headerHeight + 80}px`);
+
+    let fullHeight =  $("#SCUIHead").outerHeight()
+    $('#unit_info_right').css('height', `calc( 100% - ${fullHeight - 10}px )`);
+
     $('#settingsMenuMargin').css('margin-top', `${headerHeight-60}px`);
     
 };
