@@ -30,7 +30,9 @@ let GlobalTimeSlider = function (config, parent) {
     this.playButtonDiv = $("#GlobalTimeControlPlay");
     this.ts = $("#GlobalTimeSlider");
     this.layerList = [];
-    this.palying = false;
+    this.playing = false;
+    this.fadingLayers = false;
+    this.val = 0;
 
 };
 
@@ -44,6 +46,10 @@ GlobalTimeSlider.prototype.initialize = function () {
     let time = { startDate: this.startDate, endDate: this.endDate, defaultDate: this.defaultDate };
     var html = getHtmlFromJsRenderTemplate('#GlobalTimeSliderTemplate', time);
     this.timeSliderDiv.html(html);
+
+    window.onblur = function() {
+        that.pause()
+     };
 
     var sliderTooltip = function (event, ui) {
         var curValue = ui.value || time.defaultDate;
@@ -67,15 +73,65 @@ GlobalTimeSlider.prototype.initialize = function () {
     that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass( "glyphicon glyphicon-tag customSliderHandle" );
 
 
+    
+    // recursive function to fade in the layers
+   GlobalTimeSlider.prototype.fade = function (targetOpacity,layer1,layer2,year,fade,timeOut) {
+       let layer1Opacity = Number(layer1.options.opacity)
+       let layer2Opacity = Number(layer2.options.opacity)
+
+        if(layer1Opacity > 0 && that.fadingLayers ){
+            setTimeout(function(){
+                layer1Opacity -= fade
+                layer2Opacity += fade
+                layer1.setOpacity(layer1Opacity);
+                layer2.setOpacity(layer2Opacity);
+                that.fade(targetOpacity,layer1,layer2,year,fade,timeOut)
+            }, timeOut)
+        }
+        else if(that.fadingLayers){
+            layer1.setParams({
+                "time": year,
+            });
+            that.fadingLayers = false
+        }
+   }
+   
+
     this.ts.slider({
         change: function (event, ui) {
-            let val = ui.value
+            that.val = ui.value
             $.each(that.layerList, function (index, layer) {
-                layer.mapLayer.timeControl = val;
-                layer.mapLayer.leafletLayer.setParams({
-                    "time": val,
-                })
-                that.checkoutOfRange(val, layer);
+                if (that.playing) {
+                    
+                    // //Get the current opacity of the layer
+                    let startOpacity = Number($(`#opacitySliderInput${layer.id}` ).val());
+
+                    //Show the layer copy
+                    layer.mapLayer.layerCopy.setOpacity(startOpacity);
+
+                    //Hide the original layer and update its params with the next time value
+                    layer.mapLayer.leafletLayer.setOpacity(0.0);
+
+                    // get the new time layer
+                    that.fadingLayers = true;
+                    layer.mapLayer.timeControl = that.val;
+                    layer.mapLayer.leafletLayer.setParams({
+                        "time": that.val,
+                    })
+
+                    layer.mapLayer.leafletLayer.setOpacity(0.0);
+                   
+
+                } else {
+                    layer.mapLayer.timeControl = that.val;
+                    layer.mapLayer.leafletLayer.setParams({
+                        "time": that.val,
+                    })
+                    layer.mapLayer.layerCopy.setParams({
+                        "time": that.val,
+                    });
+                }
+                that.checkoutOfRange(that.val, layer);
             })
             var curValue = ui.value || time.defaultDate;
             var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
@@ -95,7 +151,7 @@ GlobalTimeSlider.prototype.initialize = function () {
             that.playTimeSlider(false);
 
         }
-      });
+    });
 };
 
 
@@ -106,10 +162,16 @@ GlobalTimeSlider.prototype.initialize = function () {
  * time slider
  */
 GlobalTimeSlider.prototype.subscribe = function (layer) {
+    let that = this;
     this.layerList.push(layer);
     $("#" + layer.id + "TimeControl").html('')
     this.ts.slider("value", this.defaultDate);
     this.updateSliderRange(layer.getTimeInfo());
+    layer.mapLayer.leafletLayer.on('load', function (event) {
+        let startOpacity = Number($(`#opacitySliderInput${layer.id}` ).val()) 
+        that.fade(startOpacity,layer.mapLayer.layerCopy,layer.mapLayer.leafletLayer,that.val,0.05,50)
+    });
+
 };
 
 
@@ -140,7 +202,7 @@ GlobalTimeSlider.prototype.updateSliderRange = function (time) {
 
 /**
  *  Adds CSS when a layer goes out of range of the time slider
- *  Add's 'out of range' text to layer title   
+ *  Add's 'out of range' text to layer title
  */
 GlobalTimeSlider.prototype.checkoutOfRange = function (val, layer) {
 
@@ -177,7 +239,7 @@ GlobalTimeSlider.prototype.playTimeSlider = function (play) {
                 let currValue = that.ts.slider( "value" )
 
                 if(currValue < startDate || currValue > endDate) that.ts.slider( "value",startDate );
-                setTimeout(function(){that.updateTime(ti)}, 2000) 
+                setTimeout(function(){that.updateTime(ti)}, 2500)
             }
         })
         if(!layerFound){
@@ -185,8 +247,8 @@ GlobalTimeSlider.prototype.playTimeSlider = function (play) {
             $(GlobalTimeSliderbuttonPlay).show()
             $(GlobalTimeSliderbuttonPause).hide()
             actionHandlerHelper.showTempPopup("Please select a time enabled layer to use this feature.");
-        } 
-        
+        }
+
     }
     // pause
     else{
@@ -199,6 +261,14 @@ GlobalTimeSlider.prototype.playTimeSlider = function (play) {
 GlobalTimeSlider.prototype.updateTime = function (ti) {
     let that = this
     if(this.playing){
+
+        // transition has not finished
+        if(this.fadingLayers){
+            setTimeout(function(){
+                that.updateTime(ti)
+            },500)
+            return
+        }
 
         let startDate = ti.startDate
         let endDate = ti.endDate
@@ -219,9 +289,9 @@ GlobalTimeSlider.prototype.updateTime = function (ti) {
             that.ts.slider( "value",currValue + 1 );
         }
         that.playTimeSlider(true)
-    
-       
-       
+
+
+
     }
 }
 
@@ -246,14 +316,14 @@ GlobalTimeSlider.prototype.setToTime = function (year){
 }
 
 GlobalTimeSlider.prototype.setToRange = function (years){
-   if(years.length != 2) return 
-    
+    if(years.length != 2) return
+
     let ts = $("#GlobalTimeSliderRange")
     ts.slider( "option", "values", [ parseInt(years[0]), parseInt(years[1])] );
 }
 
 GlobalTimeSlider.prototype.showTimeSlider = function(show){
-    
+
     let ts = $("#GlobalTimeSlider");
     let tsr = $("#GlobalTimeSliderRange")
     let gtc = $("#GlobalTimeControl")

@@ -11,10 +11,11 @@
  * @constructor
  * @extends MapLayerBase
  */
-var WmsMapLayer = function(serviceUrl, leafletLayer, identifyAttributes) {
+var WmsMapLayer = function(serviceUrl, leafletLayer, identifyAttributes, layerCopy) {
     this.layers = leafletLayer.wmsParams.layers;
     this.sld = leafletLayer.wmsParams.sld;
     this.timeControl = leafletLayer.options && leafletLayer.options.time;
+    this.layerCopy = layerCopy;
 
     if(this.sld) {
         this.parseSldMap();
@@ -31,7 +32,7 @@ var WmsMapLayer = function(serviceUrl, leafletLayer, identifyAttributes) {
         this.timeMap = {};
     }
 
-    MapLayerBase.call(this, serviceUrl, leafletLayer, identifyAttributes);
+    MapLayerBase.call(this, serviceUrl, leafletLayer, identifyAttributes, layerCopy);
     this.crs = 'EPSG:4326';//default to the leaflet crs
     this.wmsCapabilitiesInfo = undefined;
 };
@@ -520,7 +521,7 @@ var WmsOverlayMapLayer = function(serviceUrl, properties, identifyAttributes) {
     this.nativeCrs = properties.nativeCrs;
     this.queryUrl = properties.queryUrl;
     this.elasticUrl = properties.elasticUrl;
-    WmsMapLayer.call(this, serviceUrl, L.WMS.overlay(serviceUrl, properties), identifyAttributes);
+    WmsMapLayer.call(this, serviceUrl, L.WMS.overlay(serviceUrl, properties), identifyAttributes, L.WMS.overlay(serviceUrl, properties));
 };
 inherit(WmsMapLayer, WmsOverlayMapLayer);
 
@@ -533,7 +534,7 @@ inherit(WmsMapLayer, WmsOverlayMapLayer);
  * @extends WmsMapLayer
  */
 var WmsTileMapLayer = function(serviceUrl, properties, identifyAttributes) {
-    WmsMapLayer.call(this, serviceUrl, L.tileLayer.wms(serviceUrl, properties), identifyAttributes);
+    WmsMapLayer.call(this, serviceUrl, L.tileLayer.wms(serviceUrl, properties), identifyAttributes, L.tileLayer.wms(serviceUrl, properties));
     bindTileLayerEvents(this.leafletLayer);
 };
 inherit(WmsMapLayer, WmsTileMapLayer);

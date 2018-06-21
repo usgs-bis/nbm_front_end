@@ -7,13 +7,18 @@
  * @param {Array.<string>} identifyAttributes - attributes to display when identify is run on this layer
  * @constructor
  */
-var MapLayerBase = function(serviceUrl, leafletLayer, identifyAttributes) {
+var MapLayerBase = function(serviceUrl, leafletLayer, identifyAttributes, layerCopy) {
     this.serviceUrl = serviceUrl;
     this.leafletLayer = leafletLayer;
     this.layerMetadata = undefined;
     this.identifyAttributes = identifyAttributes;
     this.downloader = undefined;
     this.isValid = undefined;
+    this.layerCopy = layerCopy;
+    if (this.layerCopy) {
+        this.layerCopy.setOpacity(0.0);
+        map.addLayer(this.layerCopy);
+    }
 };
 /**
  * Adds the layer to the Leaflet map.
