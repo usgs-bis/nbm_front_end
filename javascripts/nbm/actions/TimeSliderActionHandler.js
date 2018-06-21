@@ -79,11 +79,14 @@ GlobalTimeSlider.prototype.initialize = function () {
        let layer1Opacity = Number(layer1.options.opacity)
        let layer2Opacity = Number(layer2.options.opacity)
 
-        if(layer1Opacity > 0 && that.fadingLayers ){
+        if(layer2Opacity < targetOpacity && that.fadingLayers ){
             setTimeout(function(){
                 layer1Opacity -= fade
                 layer2Opacity += fade
-                layer1.setOpacity(layer1Opacity);
+                if(targetOpacity <= .90){
+                    layer1.setOpacity(layer1Opacity);
+                }
+                
                 layer2.setOpacity(layer2Opacity);
                 that.fade(targetOpacity,layer1,layer2,year,fade,timeOut)
             }, timeOut)
