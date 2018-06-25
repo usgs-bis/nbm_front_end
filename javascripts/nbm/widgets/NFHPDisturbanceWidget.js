@@ -109,12 +109,9 @@ var NFHPDisturbanceWidget = function (chart) {
         var content = [];
 
         content.push({
-            text: config.description, style: ['bapContent', 'subtitle']
+            text: config.description, style: ['bapContent', 'subtitle'],
+            pageBreak: 'before'
         });
-
-       // content.push({});
-
-
 
         content.push(
             {

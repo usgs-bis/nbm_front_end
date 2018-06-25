@@ -59,8 +59,8 @@ PDF.prototype.getMapImage = function(marker) {
         { offsetX: mapPaneTransforms.x, offsetY: mapPaneTransforms.y}
     );
 
-    // var self = this;
-    var promise = html2canvas(this.map.getContainer(), { useCORS: true })
+     // var self = this;
+    var promise = html2canvas(this.map.getContainer(), { useCORS: true,  logging: false })
         .then(function(canvas) {
             //add the feature image to the canvas
             var destCtx = canvas.getContext('2d');
@@ -164,7 +164,7 @@ PDF.prototype.createLayoutAndGetCharts = function(mapImageDataUrl) {
             subTitleChart: {
                 fontSize: 12,
                 bold: true,
-                margin: [10,5,0,5]
+                margin: [10,5,20,5]
             },
             titleChart: {
                 fontSize: 14,
@@ -216,19 +216,22 @@ PDF.prototype.createLayoutAndGetCharts = function(mapImageDataUrl) {
         });
 };
 PDF.prototype.getPdfInfoContent = function(mapImageDataUrl) {
+    let that = this;
     var info = [];
     info = info.concat(this.getTitlePage(mapImageDataUrl));
     info = info.concat(this.getBioScapeSection(mapImageDataUrl));
-    var synthComp = this.getSynthesisCompositionSection();
-    info = info.concat(synthComp.content);
-    return this.getAppendix()
-        .then(function(data) {
-            info = info.concat(data);
-            return {
-                content: info,
-                charts: synthComp.charts
-            };
-        });
+    return this.getSynthesisCompositionSection()
+    .then(function (synthComp) {
+        info = info.concat(synthComp.content);
+        return that.getAppendix()
+            .then(function (data) {
+                info = info.concat(data);
+                return {
+                    content: info,
+                    charts: synthComp.charts
+                };
+            });
+    })
 };
 PDF.prototype.getTitlePage = function(mapImageDataUrl) {
     var info = [];
@@ -456,17 +459,17 @@ PDF.prototype.getSynthesisCompositionSection = function() {
             info.push({text: webLink.title, link: webLink.uri, italics: true, style: ['link', 'bapContent']});
         });
     }
-    var analysisPackageContent = this.getAnalysisPackageContent();
-    info = info.concat(analysisPackageContent.content);
-
-    return {
-        content: info,
-        charts: analysisPackageContent.charts
-    };
+    return this.getAnalysisPackageContent()
+    .then(function(analysisPackageContent){
+        info = info.concat(analysisPackageContent.content);
+        return {
+            content: info,
+            charts: analysisPackageContent.charts
+        };
+    })
 };
 PDF.prototype.getAnalysisPackageContent = function() {
     var content = [];
-    var charts = [];
     var that = this;
     this.analysisPackages.forEach(function(ap) {
     
@@ -475,27 +478,41 @@ PDF.prototype.getAnalysisPackageContent = function() {
          
             if (ap.widgets !== undefined) {
                 $.each(ap.widgets, function (index, widget) {
-                    var pdfComponents = widget.getPdfLayout();
-                    content.push(pdfComponents.content);
-                    pdfComponents.charts.forEach(function(data) {
-                        charts.push(data);
-                    });
+                    content.push(widget.getPdfLayout());
+
                 });
             } else {
-                var pdfComponents = ap.getPdfLayout();
-                content.push(pdfComponents.content);
-                pdfComponents.charts.forEach(function(data) {
-                    charts.push(data);
-                });
+                content.push( ap.getPdfLayout());
+
             }
         }
     });
 
-    return {
-        content: content,
-        charts: charts
-    };
+    return Promise.all(content)
+        .then(function(c){
+            var contents = [];
+            var charts = [];
+            c.forEach(function(data){
+                if(data.content){
+                    contents.push(data.content)
+                }
+                else{
+                    contents.push(data)
+                }
+                if(data.charts){
+                    data.charts.forEach(function(chart) {
+                        charts.push(chart);
+                    });
+                }
+            })
+         
+            let d = {}
+            d.content = contents;
+            d.charts = charts;
+            return d        
 
+        })
+   
     function getGeneralAnalysisPackageContent(ap, parser) {
         var content = [];
         content.push({text: ap.title, style: 'bapHeader'});

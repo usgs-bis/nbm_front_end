@@ -1216,7 +1216,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     stroke: rgb(10,10,15,.2);
     stroke-width: 1;
 }
-#tooltip {
+.tooltipValues {
 
     background: rgb(204, 204, 204);
     font-size: 11px;
@@ -1228,7 +1228,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
     box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
 }
-#tooltip p{
+.tooltipValues p{
     margin: 5px;
 }
 .hidden {

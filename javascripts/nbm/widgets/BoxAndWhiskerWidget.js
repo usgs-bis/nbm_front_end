@@ -143,7 +143,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                     alreadySentBuffer = false;
                     var years = noDatas.join(", ");
                     setError(' There was an error analyzing data for the following years: ' + years + '. ' +
-                        'They will not be displayed in the chart. If the problem continues, please contact site admin');
+                        'They will not be displayed in the chart. If the problem continues, please contact site admin.');
                 } else {
                     that.updateTitle(jsonData)
                     
@@ -177,16 +177,16 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         if(!chart) {
             return {
                 content: [
-                    {text: 'No analysis was performed.', style: ['bapContent', 'subtitle']}
+                    {text: 'No analysis was performed.', style: ['bapContent', 'subTitleChart']}
                 ],
                 charts: []
             }
         }
         return  { 
             content: [
-                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").text(), style: ['titleChart']},
+                {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").text(), style: ['titleChart'], pageBreak: 'before'},
                 {text:  $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").text(), style: ['subTitleChart']},
-                {image: chart.div.id, alignment: 'center', width: 400}
+                {image: chart.div.id, alignment: 'center', width: 500,}
             ],
             charts: [chart]
         }
@@ -208,6 +208,10 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 };
 
                 sendPostRequest(myServer + '/main/getBufferedShape', params, true).then(function (something) {
+                    if(!something.geometry){
+                        setError(' An error has occured. If the problem continues, please contact site admin.');
+                        return
+                    }
                     something.geometry.crs = {"type":"name","properties":{"name":"EPSG:4326"}};
                     something.type = "Feature";
                     that.bap.feature = ActionHandler.prototype.createPseudoFeature(something.geometry);

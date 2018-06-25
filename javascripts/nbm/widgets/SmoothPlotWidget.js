@@ -14,14 +14,31 @@ function SmoothPlotWidget(config, bap) {
     this.initializeWidget = function () { }
     
     this.getPdfLayout = function() {
-        return {
-            content: [
-                {text: $(selector).find("#ridgeLinePlotTitle").text(),style: ['titleChart']},
-                {text: $(selector).find("#ridgeLinePlotSubTitle").text(),style: ['subTitleChart']},
-                {image: dataURI, alignment: 'center', width: 400},
-            ],
-            charts: []
+     
+        let elm = $(`#ridgeLinePlotChart${id}`);
+        if(!elm.html()){
+            return {content:[
+                {text:"No analysis was performed.",style: ['subTitleChart']},
+            ],charts:[]}
         }
+        let isChrome = !!window.chrome && !!window.chrome.webstore;
+        let options = {
+            height: elm.height() + 100,
+            y: isChrome ? elm.height() : 0,
+            width: elm.width(),
+            logging: false
+        }
+        return html2canvas( elm[0],options)
+            .then(function(canvas){
+                return {
+                    content: [
+                        {text: $(selector).find("#ridgeLinePlotTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                        {text: $(selector).find("#ridgeLinePlotSubTitle").text(),style: ['subTitleChart']},
+                        {image: canvas.toDataURL(),  alignment: 'center', width:500} 
+                    ],
+                    charts: []
+                }  
+            })
     }
 
     let ts = widgetHelper.addTimeSlider()
@@ -95,12 +112,15 @@ function SmoothPlotWidget(config, bap) {
             ridgelineplot.select("#ridgeLinePlotSubTitle").append("text")
                 .text(`Annual Spring Index by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
-            $(selector).find("#ridgeLinePlotChart").height( 80 + (35 * dataNest.length))
+            $(selector).find(`#ridgeLinePlotChart${id}`).height( 80 + (35 * dataNest.length))
 
-            let svg = ridgelineplot.select("#ridgeLinePlotChart").selectAll("svg")
+            let svg = ridgelineplot.select(`#ridgeLinePlotChart${id}`).selectAll("svg")
                 .data(dataNest)
                 .enter()
                 .append("svg")
+                .attr("version", "1.1")
+                .attr("baseProfile", "full")
+                .attr("xmlns","http://www.w3.org/2000/svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
@@ -170,21 +190,21 @@ function SmoothPlotWidget(config, bap) {
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
-                    xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                    yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
+                    xPos = event.clientX
+                    yPos = event.clientY - 50 
 
-                    d3.select('#tooltip')
+                    ridgelineplot.select('.tooltipValues')
                         .style('left', xPos + 'px')
                         .style('top', yPos + 'px')
                         .select('#value')
                         .html(d.key);
 
                     //Show the tooltip
-                    d3.select('#tooltip').classed('hidden', false);
+                    ridgelineplot.select('.tooltipValues').classed('hidden', false);
                 })
                 .on('mouseout', function () {
                     //Remove the tooltip
-                    d3.select('#tooltip').classed('hidden', true);
+                    ridgelineplot.select('.tooltipValues').classed('hidden', true);
                 });;
 
 
@@ -236,7 +256,7 @@ function SmoothPlotWidget(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Year");
 
-             let lables = ridgelineplot.select("#ridgeLinePlotChart").append("svg")
+             let lables = ridgelineplot.select(`#ridgeLinePlotChart${id}`).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
@@ -249,16 +269,8 @@ function SmoothPlotWidget(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Day of Year");
 
-            getDataURI()
         }
       
-        async function getDataURI(){
-            let elm = $(selector).find(`#ridgeLinePlot${id}`).find("#ridgeLinePlotChart")
-            html2canvas(elm.get(0),{width: elm.width() , height: elm.height()}).then( function (canvas) {
-                dataURI = canvas.toDataURL() 
-                });
-        }
-
 
         function type(d) {
             d.value = +d.value;
