@@ -303,7 +303,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div id="histogramPlot{{:id}}" class="histogramPlot" style="display:none;">        
             <div id="histogramTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
             <div id="histogramSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
-            <div id = "histogramChart"></div>
+            <div id="histogramChart{{:id}}"></div>
             <div id="tooltip" class="hidden">
                 <p><span id="value">100</span></p>
               </div>
@@ -314,7 +314,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div id="ridgeLinePlot{{:id}}" class="ridgeLinePlot" style="display:none;">
         <div id="ridgeLinePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
         <div id="ridgeLinePlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
-        <div id ="ridgeLinePlotChart"></div>
+        <div id ="ridgeLinePlotChart{{:id}}"></div>
         <div class="ridgeLinePlotNumberPicker slidecontainer" id="ridgeLinePlotNumberPickerDiv" >
                 <div style="margin-bottom: 10px;">Binwidth: <span id="ridgeLinePlotRangeValue"></span> </div>
                 <input type="range" min="1" max="8" value="3" class="slider" id="ridgeLinePlotRange"

@@ -14,18 +14,34 @@ function HistogramWidget(config, bap) {
     }
 
     this.getPdfLayout = function() {
-   
-        return {
-            content: [
-           
-                {text: $(selector).find("#histogramTitle").text(), style: ['titleChart']},
-                {text: $(selector).find("#histogramSubTitle").text(), style: ['subTitleChart']},
-                {image: dataURI, alignment: 'center', width: 400}
-        
-            ],
-            charts: []
-        }  
-    };
+     
+        let elm = $(`#histogramChart${id}`);
+        if(!elm.html()){
+            return {content:[
+                {text:"No analysis was performed.",style: ['subTitleChart']},
+            ],charts:[]}
+        }
+        let isChrome = !!window.chrome && !!window.chrome.webstore;
+        let options = {
+            height: elm.height() + 100,
+            y: isChrome ? elm.height() : 0,
+            width: elm.width(),
+            logging: false
+        }
+        return html2canvas( elm[0],options)
+            .then(function(canvas){        
+                return {
+                
+                    content: [
+                        {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                        {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
+                        {image: canvas.toDataURL(),  alignment: 'center', width:500}
+                    ],
+                    charts: []
+                }  
+            })
+    }
+
 
     let ts = widgetHelper.addTimeSlider()
 
@@ -93,9 +109,15 @@ function HistogramWidget(config, bap) {
 
             histogram.select("svg").remove()
 
-            var svg = histogram.select("#histogramChart").append("svg")
+           // $(selector).find(`#histogramChart${id}`).height( height + margin.top + margin.bottom)
+
+
+            var svg = histogram.select(`#histogramChart${id}`).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
+                .attr("version", "1.1")
+                .attr("baseProfile", "full")
+                .attr("xmlns","http://www.w3.org/2000/svg")
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
@@ -197,18 +219,11 @@ function HistogramWidget(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Count");
 
-            getDataURI()
+           
 
         }
 
-        async function getDataURI(){
-            let elm = $(selector).find(`#histogramPlot${id}`).find("#histogramChart")
-            html2canvas(elm.get(0),{width: elm.width() , height: elm.height()}).then( function (canvas) {
-                dataURI = canvas.toDataURL() 
-                });
-        }
-
-
+      
         function type(d) {
             d.count = d.count;
             d.day = +d.day;

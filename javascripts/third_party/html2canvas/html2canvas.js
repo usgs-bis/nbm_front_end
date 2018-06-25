@@ -3481,7 +3481,7 @@ var renderElement = exports.renderElement = function renderElement(element, opti
                     logger: logger,
                     scale: options.scale,
                     x: typeof options.x === 'number' ? options.x : left,
-                    y: typeof options.y === 'number' ? options.y : top,
+                    y: typeof options.y === 'number' ? options.y + top: top,
                     width: typeof options.width === 'number' ? options.width : Math.ceil(width),
                     height: typeof options.height === 'number' ? options.height : Math.ceil(height),
                     windowWidth: options.windowWidth,
@@ -3532,7 +3532,7 @@ var renderElement = exports.renderElement = function renderElement(element, opti
                     logger: logger,
                     scale: options.scale,
                     x: typeof options.x === 'number' ? options.x : left,
-                    y: typeof options.y === 'number' ? options.y : top,
+                    y: typeof options.y === 'number' ? options.y + top : top,
                     width: typeof options.width === 'number' ? options.width : Math.ceil(width),
                     height: typeof options.height === 'number' ? options.height : Math.ceil(height)
                 };
