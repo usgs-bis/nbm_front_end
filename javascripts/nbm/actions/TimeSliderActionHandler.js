@@ -104,37 +104,39 @@ GlobalTimeSlider.prototype.initialize = function () {
         change: function (event, ui) {
             that.val = ui.value
             $.each(that.layerList, function (index, layer) {
-                if (that.playing) {
+                if(layer.enabled){
+                    if (that.playing) {
+                        
+                        // //Get the current opacity of the layer
+                        let startOpacity = Number($(`#opacitySliderInput${layer.id}` ).val());
+
+                        //Show the layer copy
+                        layer.mapLayer.layerCopy.setOpacity(startOpacity);
+
+                        //Hide the original layer and update its params with the next time value
+                        layer.mapLayer.leafletLayer.setOpacity(0.0);
+
+                        // get the new time layer
+                        that.fadingLayers = true;
+                        layer.mapLayer.timeControl = that.val;
+                        layer.mapLayer.leafletLayer.setParams({
+                            "time": that.val,
+                        })
+
+                        layer.mapLayer.leafletLayer.setOpacity(0.0);
                     
-                    // //Get the current opacity of the layer
-                    let startOpacity = Number($(`#opacitySliderInput${layer.id}` ).val());
 
-                    //Show the layer copy
-                    layer.mapLayer.layerCopy.setOpacity(startOpacity);
-
-                    //Hide the original layer and update its params with the next time value
-                    layer.mapLayer.leafletLayer.setOpacity(0.0);
-
-                    // get the new time layer
-                    that.fadingLayers = true;
-                    layer.mapLayer.timeControl = that.val;
-                    layer.mapLayer.leafletLayer.setParams({
-                        "time": that.val,
-                    })
-
-                    layer.mapLayer.leafletLayer.setOpacity(0.0);
-                   
-
-                } else {
-                    layer.mapLayer.timeControl = that.val;
-                    layer.mapLayer.leafletLayer.setParams({
-                        "time": that.val,
-                    })
-                    layer.mapLayer.layerCopy.setParams({
-                        "time": that.val,
-                    });
+                    } else {
+                        layer.mapLayer.timeControl = that.val;
+                        layer.mapLayer.leafletLayer.setParams({
+                            "time": that.val,
+                        })
+                        layer.mapLayer.layerCopy.setParams({
+                            "time": that.val,
+                        });
+                    }
+                    that.checkoutOfRange(that.val, layer);
                 }
-                that.checkoutOfRange(that.val, layer);
             })
             var curValue = ui.value || time.defaultDate;
             var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';

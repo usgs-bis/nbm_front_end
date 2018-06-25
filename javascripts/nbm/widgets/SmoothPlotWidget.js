@@ -190,21 +190,21 @@ function SmoothPlotWidget(config, bap) {
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
-                    xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                    yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
+                    xPos = event.clientX
+                    yPos = event.clientY - 50 
 
-                    d3.select('#tooltip')
+                    ridgelineplot.select('.tooltipValues')
                         .style('left', xPos + 'px')
                         .style('top', yPos + 'px')
                         .select('#value')
                         .html(d.key);
 
                     //Show the tooltip
-                    d3.select('#tooltip').classed('hidden', false);
+                    ridgelineplot.select('.tooltipValues').classed('hidden', false);
                 })
                 .on('mouseout', function () {
                     //Remove the tooltip
-                    d3.select('#tooltip').classed('hidden', true);
+                    ridgelineplot.select('.tooltipValues').classed('hidden', true);
                 });;
 
 

@@ -146,21 +146,21 @@ function HistogramWidget(config, bap) {
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, then augment for the tooltip
-                    xPos = parseFloat(d3.select(this).attr("x")) + 2 * buk;
-                    yPos = (height / 3) + pos.top;
+                    xPos = event.clientX
+                    yPos = event.clientY - 50 
 
-                    d3.select('#tooltip')
+                    histogram.select('.tooltipValues')
                         .style('left', xPos + 'px')
                         .style('top', yPos + 'px')
                         .select('#value')
                         .html(toolTipLabel(d, buk));
 
                     //Show the tooltip
-                    d3.select('#tooltip').classed('hidden', false);
+                    histogram.select('.tooltipValues').classed('hidden', false);
                 })
                 .on('mouseout', function () {
                     //Remove the tooltip
-                    d3.select('#tooltip').classed('hidden', true);
+                    histogram.select('.tooltipValues').classed('hidden', true);
                 });
 
 
