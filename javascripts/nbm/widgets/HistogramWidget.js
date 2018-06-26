@@ -21,13 +21,17 @@ function HistogramWidget(config, bap) {
                 {text:"No analysis was performed.",style: ['subTitleChart']},
             ],charts:[]}
         }
-        let isChrome = getChromeVersion()
         let options = {
             height: elm.height() + 100,
-            y: isChrome > 66 ? elm.height() : 0,
             width: elm.width(),
             logging: false
         }
+
+        // chrome 67 chenged the way canvas worked
+        if(getChromeVersion() > 66){
+            options.y = elm.height()
+        }
+
         return html2canvas( elm[0],options)
             .then(function(canvas){        
                 return {
