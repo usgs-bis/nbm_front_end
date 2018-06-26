@@ -1696,8 +1696,8 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 }
 
 .initializeLoader {
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #3498db;
+    border: 10px solid #f3f3f3;
+    border-top: 10px solid #3498db;
     border-radius: 50%;
     width: 225px;
     height: 225px;
