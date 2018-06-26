@@ -21,10 +21,10 @@ function SmoothPlotWidget(config, bap) {
                 {text:"No analysis was performed.",style: ['subTitleChart']},
             ],charts:[]}
         }
-        let isChrome = !!window.chrome && !!window.chrome.webstore;
+        let isChrome = getChromeVersion()
         let options = {
             height: elm.height() + 100,
-            y: isChrome ? elm.height() : 0,
+            y: isChrome > 66 ? elm.height() : 0,
             width: elm.width(),
             logging: false
         }
