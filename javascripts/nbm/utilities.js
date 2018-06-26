@@ -1133,9 +1133,8 @@ function sendGeojsonChunks(featureValue, token) {
     return Promise.all(tempPromises);
 }
 
+// return chrome version or 0 if not chrome
 function getChromeVersion() {
-    let isChrome = !!window.chrome && !!window.chrome.webstore;
-    if(!isChrome) return 0
     var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-    return raw ? parseInt(raw[2], 10) : false;
+    return raw ? parseInt(raw[2], 10) : 0;
 }
