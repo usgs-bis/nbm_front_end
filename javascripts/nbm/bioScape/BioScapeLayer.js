@@ -37,16 +37,28 @@ BioScapeLayer.prototype.turnOffLayer = function(keepSelected) {
         this.legend.clear();
         this.enabled = false;
     }
+    if((this.mapLayer || {}).layerCopy){
+        this.mapLayer.layerCopy.remove()
+    }
 };
+
 BioScapeLayer.prototype.turnOnLayer = function() {
     var that = this;
     this.enabled = true;
+    bioScape.pendingLayers.push(this) // add layer to list of pending layers so we can remember to turn it off after it loads 
     return BioScapeLayerBase.prototype.turnOnLayer.call(this)
         .then(function(data) {
             if(data) {
                 if(that.legend) {
                     that.legend.displayLegend();
                 }
+            }
+            if((that.mapLayer || {}).layerCopy){
+                that.mapLayer.layerCopy.addTo(map)
+            }
+            let index = bioScape.pendingLayers.indexOf(that);
+            if (index > -1) {
+                bioScape.pendingLayers.splice(index, 1);
             }
             return data;
         });

@@ -161,7 +161,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                     // alreadySentBuffer = false;
                 }
                 timeSlider.slider('enable');
-                toggleSpinner();
+                toggleSpinner(true);
             });
     };
 
@@ -287,7 +287,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                         west: bounds.sw.lng,
                         north: bounds.ne.lat,
                         east: bounds.ne.lng,
-                        npnToken: NPNTOKEN
+                        npnToken: NPNTOKEN,
+                        npnProperty: that.bap.config.bapProperties.npnProperty
                     };
 
                     return sendPostRequest(myServer + '/main/sendData', params, true);
@@ -301,16 +302,21 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 west: bounds.sw.lng,
                 north: bounds.ne.lat,
                 east: bounds.ne.lng,
-                npnToken: NPNTOKEN
+                npnToken: NPNTOKEN,
+                npnProperty: that.bap.config.bapProperties.npnProperty
             };
 
             return sendPostRequest(myServer + '/main/sendData', params, true);
         }
     }
 
-    function toggleSpinner() {
-        var el = $("#" + that.bap.id + "BAP").find('#bapSpinner');
-        toggleVisibility(el);
+    function toggleSpinner(hide) {
+        if(hide){
+            $("#" + that.bap.id + "BAP").find('#bapSpinner').hide()
+        }
+        else{
+            $("#" + that.bap.id + "BAP").find('#bapSpinner').show()
+        }
     }
 
     function setError(message) {

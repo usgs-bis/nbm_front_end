@@ -173,6 +173,7 @@ BioScapeLayerBase.prototype.turnOffLayer = function(keepSelected) {
         this.selected = false;
     }
     this.removeLayerFromMap();
+    hideSpinner();
 };
 /**
  * Checks to see if a layer is valid, if it is valid, selects the layer and adds it to the map.

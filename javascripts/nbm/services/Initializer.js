@@ -324,10 +324,10 @@ var Initializer = (function(initializer) {
      * @param {*} data - JSON from the configuration file
      * @param {Object} state - state of the application
      */
-    function loadBioScape(data, state) {
-        showSpinner(true)
+    function loadBioScape(data, state) {  
         map.attributionControl.remove();
         bioScape = BioScapeParser.parse(data, state);
+        bioScape.bapLoading("bioscape",false)
         bioScape.initializeBioScape()
             .then(function() {
                 //populate the right panel with the default empty look. This just hits all the possible baps specified in the
@@ -355,7 +355,7 @@ var Initializer = (function(initializer) {
                     map.setView(L.latLng(state.center.split(',')), state.zoom);
                 }
                 updateUrlWithState();
-                hideSpinner(true)
+                bioScape.bapLoading("bioscape",true)
             });
             
         //bind all of the click events for the bioScape

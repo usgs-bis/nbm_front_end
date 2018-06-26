@@ -192,9 +192,14 @@ function SmoothPlotWidget(config, bap) {
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
-                    xPos = event.clientX
-                    yPos = event.clientY - 50 
-
+                    try{
+                        xPos = event.clientX
+                        yPos = event.clientY - 50 
+                    }
+                    catch(error){
+                        xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
+                        yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
+                    }
                     ridgelineplot.select('.tooltipValues')
                         .style('left', xPos + 'px')
                         .style('top', yPos + 'px')

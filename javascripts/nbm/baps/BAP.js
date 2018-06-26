@@ -234,7 +234,7 @@ BAP.prototype.bindClicks = function () {
     $.each(layers, function (index, layer) {
         $(`#${that.id}BAP #toggleLayer${layer.id}`).click(function () {
             if (this.checked) {
-                that.turnOffBapLayers(layer.id)
+                that.turnOffOtherLayers(layer.id)
                 layer.turnOnLayer()
                     .then(function () {
                         that.checked = true
@@ -299,11 +299,12 @@ BAP.prototype.setHtml = function (html) {
 };
 
 BAP.prototype.setEmptyBap = function () {
-    this.htmlElement.html(getHtmlFromJsRenderTemplate('#bapSpinner', {}));
+    // this.htmlElement.html(getHtmlFromJsRenderTemplate('#bapSpinner', {}));
+    this.htmlElement.html('');
 };
 
 BAP.prototype.initializeBAP = function () {
-    showSpinner(true)
+
     let that = this;
 
     // set this baps initconfig to the correct part of the entire config
@@ -348,8 +349,7 @@ BAP.prototype.initializeBAP = function () {
         showErrorDialog('Unable to load the captured state. ', false);
     }
 
-    hideSpinner(true)
-    hideSpinner()
+    bioScape.bapLoading(this.id,true)
 };
 
 
@@ -385,7 +385,6 @@ BAP.prototype.loadBapState = function () {
                             if (l.time) {
                                 actionHandlerHelper.globalTimeSlider().setToTime(l.time)
                             }
-                            hideSpinner(true)
                         }
                     });
 
@@ -501,13 +500,13 @@ BAP.prototype.GetBapLayers = function () {
 
 // turn off all layers asociated with baps
 // skips things like basemaps, sumerization regions ect.
-BAP.prototype.turnOffBapLayers = function (skipID) {
+BAP.prototype.turnOffOtherLayers = function (skipID) {
     let that = this;
     this.showTimeSlider(false)
-    var visibleLayers = bioScape.getAllLayers();
+    var visibleLayers = bioScape.getVisibleLayers(false);
 
     $.each(visibleLayers, function (index, layer) {
-        if (!layer.baseMap && !layer.summarizationRegion && layer.id != skipID) {
+        if (!layer.summarizationRegion && layer.id != skipID) {
 
             if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
@@ -544,10 +543,9 @@ BAP.prototype.setPriorityBap = function (checked) {
 
     if (checked && !this.priority) {
         this.priority = true
-        $("#mySpinner").hide()
         let thisLayer = this.GetBapLayers()[0]
         if (!thisLayer) return
-        this.turnOffBapLayers()
+        this.turnOffOtherLayers()
         $.each(bioScape.getAllBaps(), function (index, bap) {
             try {
                 if (bap != that.id && $(`#priorityBap${bap}`)[0].checked) {
