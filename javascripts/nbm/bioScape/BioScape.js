@@ -25,6 +25,8 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
     this.state = {baps:[],layers:[]}
     this.initBapState = initBapState;
     this.additionalParams = additionalParams;
+    this.pendingLayers=[]
+    this.loadingBaps = []
 
     /**
      * Send a json request to ScienceBase for the definition of 'Bioscape'. Set the definition if there is a
@@ -63,6 +65,8 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         bioScape.initBapState.baps.forEach(function(initBap){
             if (initBap.enabled && !initBap.userDefined) {
                 showSpinner(true)
+                bioScape.bapLoading(initBap.id,false)
+
             }
             if (initBap.userDefined) {
                 showErrorDialog('Unable to load user drawn polygon. ', false);
@@ -75,7 +79,8 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
                     let layer = that.getLayer(l.id)
                     if (layer.summarizationRegion || layer.baseMap) {
                         layer.turnOffLayer()
-                        that.toggleLayer(layer)
+                        bioScape.getSection(layer.section.id).toggleLayer(layer.id);
+                        
                     }
                 })
             }
@@ -87,6 +92,25 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         //this.updateState();
         return Promise.all(promises);
     };
+
+    this.bapLoading = function(id,doneLoading){
+        if(!doneLoading){
+            if (this.loadingBaps.length == 0){
+                $("#initializeBioscape").show()
+            }
+            this.loadingBaps.push(id)
+        }
+        else{
+            let index = this.loadingBaps.indexOf(id);
+            let lastItem = this.loadingBaps[index]
+            if (index > -1) {
+                this.loadingBaps.splice(index, 1);
+            }
+            if(this.loadingBaps.length == 0){
+                $("#initializeBioscape").hide()
+            }
+        }
+    }
 
     /**
      * Return the bioScape section with id or undefined if no section with id is found.
@@ -111,10 +135,48 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
     this.getAllSections = function (includeBasemap) {
         var result = [];
         this.sections.forEach(function (section) {
-            if (section instanceof BioScapeBaseMapGroup && !includeBasemap) {
+            if (section.title.toLowerCase().includes("basemap") && !includeBasemap) {
                 return;
             }
             result.push(section);
+        });
+
+        return result;
+    };
+
+
+     /**
+     * Returns the layer with id or undefined.
+     * @param {string} id - id of the layer to return
+     * @returns {undefined|Object}
+     */
+    this.getLayer = function (id) {
+        var layers = this.getAllLayers();
+
+        for (var i = 0; i < layers.length; i++) {
+            if (layers[i].id === id) {
+                return layers[i];
+            }
+        }
+
+        return undefined;
+    };
+
+      /**
+     * Returns all layers that are currently visible on the map
+     * or are in the process of being added to the map
+     * @returns {Array.<*>}
+     */
+    this.getVisibleLayers = function (includeBasemaps) {
+        var result = [];
+        var layers = this.getAllLayers(includeBasemaps);
+        layers.forEach(function (layer) {
+            if (layer.isVisible()) {
+                result.push(layer);
+            }
+        });
+        this.pendingLayers.forEach(function (layer) {
+            result.push(layer);
         });
 
         return result;
@@ -135,83 +197,6 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         return result;
     };
 
-    /**
-     * Returns all non base map layers that are currently visible on the map in the BioScape.
-     * @returns {Array.<*>}
-     */
-    this.getVisibleLayers = function () {
-        var result = [];
-        var layers = this.getAllLayers();
-        layers.forEach(function (layer) {
-            if (layer.isVisible()) {
-                result.push(layer);
-            }
-        });
-
-        return result;
-    };
-
-    /**
-     * Returns the available summarization layers in the BioScape. Only return selected summarization layers,
-     *  or if non are selected return the default layer if one exists.
-     * @returns {Array.<*>}
-     */
-    this.getSummarizationLayers = function () {
-        var result = [];
-        var defaultLayer;
-        this.summarizationLayers.forEach(function (layer) {
-            if (layer.selected) {
-                result.push(layer);
-            } else if (layer.defaultSummaryLayer) {
-                defaultLayer = layer;
-            }
-        });
-
-        if (result.length == 0 && defaultLayer) {
-            result.push(defaultLayer);
-        }
-
-        return result;
-    };
-
-    /**
-     *  Returns all layers that are currently selected in the BioScape.
-     * @returns {Array.<*>}
-     */
-    this.getSelectedLayers = function () {
-        var result = [];
-        var layers = this.getAllLayers(true);
-        layers.forEach(function (layer) {
-            if (layer.selected) {
-                result.push(layer);
-            }
-        });
-
-        return result;
-    };
-
-    /**
-     * Returns the layer with id or undefined.
-     * @param {string} id - id of the layer to return
-     * @returns {undefined|Object}
-     */
-    this.getLayer = function (id) {
-        var layers = this.getAllLayers();
-
-        for (var i = 0; i < layers.length; i++) {
-            if (layers[i].id === id) {
-                return layers[i];
-            }
-        }
-
-        return undefined;
-    };
-
-
-    this.toggleLayer = function (layer) {
-        var section = bioScape.getSection(layer.section.id);
-        section.toggleLayer(layer.id);
-    }
 
     /**
      * Returns the current state of the BioScape.

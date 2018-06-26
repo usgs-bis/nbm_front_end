@@ -35,7 +35,6 @@ var ActionHandler = function (config, layer, noAction) {
 
 ActionHandler.prototype.getAllBapsToProcess = function () {
     var bapsToProcess = [];
-
     if (this.baps) {
         $.each(this.baps, function (index, bap) {
             bapsToProcess.push(bap);

@@ -86,26 +86,18 @@ function displayMixedContentWarning(layerTitle) {
 /**
  * Show the spinner to the user.
  */
-function showSpinner(bool) {
-    if (bool === true) {
-        $("#mySpinner2").fadeIn('fast');
-    }
-    else {
-        $("#mySpinner").fadeIn('fast');
-    }
+function showSpinner() {
+    if($("#initializeBioscape").is(":visible")) return
+     $("#mySpinner").fadeIn('fast');
 
 }
 
 /**
  * Hide the spinner from the user.
  */
-function hideSpinner(bool) {
-    if (bool === true) {
-        $("#mySpinner2").fadeOut('fast');
-    }
-    else {
-        $("#mySpinner").fadeOut('fast');
-    }
+function hideSpinner() {
+
+    $("#mySpinner").fadeOut('fast');
 }
 
 
@@ -117,7 +109,7 @@ function hideSpinner(bool) {
  */
 function showErrorDialog(html, warning, options) {
     hideSpinner()
-    hideSpinner(true)
+    //hideSpinner(true)
     createDialog(
         "#myDialog",
         warning ? "Warning" : "Error",
