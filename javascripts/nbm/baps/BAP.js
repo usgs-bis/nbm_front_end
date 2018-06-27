@@ -200,6 +200,11 @@ BAP.prototype.initializeChartLibraries = function () {
     });
 };
 
+/**
+ * initiate logic when an element in the bap is clicked
+ * layer inputs, priority switch, show json ect
+ * clicking on charts is handeled in the widget
+ */
 BAP.prototype.bindClicks = function () {
     var that = this;
 
@@ -295,7 +300,6 @@ BAP.prototype.togglePretty = function () {
 };
 
 BAP.prototype.setHtml = function (html) {
-
 };
 
 BAP.prototype.setEmptyBap = function () {
@@ -303,6 +307,11 @@ BAP.prototype.setEmptyBap = function () {
     this.htmlElement.html('');
 };
 
+
+/**
+ * Try to load the bap state from the url/bioscape
+ * otherwise start bap as default
+ */
 BAP.prototype.initializeBAP = function () {
 
     let that = this;
@@ -349,7 +358,7 @@ BAP.prototype.initializeBAP = function () {
         showErrorDialog('Unable to load the captured state. ', false);
     }
 
-    bioScape.bapLoading(this.id,true)
+    bioScape.bapLoading(this.id, true)
 };
 
 
@@ -478,6 +487,10 @@ BAP.prototype.setErrorMessage = function (message) {
     this.htmlElement.removeClass().html(getHtmlFromJsRenderTemplate('#bapErrorInfo', { error: message, id: that.id }));
 };
 
+/**
+ * Get all the layers associated with this bap
+ * layers can be asociated with more then one bap
+ */
 BAP.prototype.GetBapLayers = function () {
     let bapLayers = false
     try {
@@ -498,8 +511,11 @@ BAP.prototype.GetBapLayers = function () {
     return bapLayers
 }
 
-// turn off all layers asociated with baps
-// skips things like basemaps, sumerization regions ect.
+/**
+ * turn off all layers asociated with baps
+ * skips things like basemaps, sumerization regions ect.
+ * by providing the false flag to getVisableLayers()
+ */
 BAP.prototype.turnOffOtherLayers = function (skipID) {
     let that = this;
     this.showTimeSlider(false)
@@ -519,7 +535,9 @@ BAP.prototype.turnOffOtherLayers = function (skipID) {
     })
 }
 
-// send off the state of this bap to be added to the url
+/**
+ *  Send off the state of this bap to be added to the url
+ */
 BAP.prototype.updateState = function (enabled) {
 
     let s = this.state
@@ -536,8 +554,11 @@ BAP.prototype.showTimeSlider = function (show) {
     catch (error) { }
 }
 
-// when priority bap is changed turn on the default layers for that bap
-// hide the inputs to the other baps
+
+/**
+ * When priority bap is changed turn on the default layers for that bap
+ * Hide the inputs to the other baps
+ */
 BAP.prototype.setPriorityBap = function (checked) {
     let that = this
 

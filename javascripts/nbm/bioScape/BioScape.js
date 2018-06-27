@@ -96,7 +96,7 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
     this.bapLoading = function(id,doneLoading){
         if(!doneLoading){
             if (this.loadingBaps.length == 0){
-                $("#initializeBioscape").show()
+                $("#initializeLoader").show()
             }
             this.loadingBaps.push(id)
         }
@@ -107,7 +107,7 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
                 this.loadingBaps.splice(index, 1);
             }
             if(this.loadingBaps.length == 0){
-                $("#initializeBioscape").hide()
+                $("#initializeLoader").hide()
             }
         }
     }

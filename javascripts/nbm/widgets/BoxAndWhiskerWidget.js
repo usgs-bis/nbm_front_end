@@ -49,7 +49,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
 
         let movehtml = $("#" + that.bap.id + "BapHeader").html()
         $("#" + that.bap.id + "BapHeader").html("")
-        $("#" + that.bap.id + "Inputs").append(movehtml)
+        $("#" + that.bap.id + "Inputs").after(movehtml)
 
         feature = originalFeature;
         if(!layer) {
@@ -97,6 +97,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         });
 
         if(this.bap.initConfig.range){
+            bioScape.bapLoading(that.bap.id,false)
             actionHandlerHelper.globalTimeSlider().setToRange(this.bap.initConfig.range)
             button.click()
             this.bap.initConfig.range = undefined
@@ -144,6 +145,9 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                     var years = noDatas.join(", ");
                     setError(' There was an error analyzing data for the following years: ' + years + '. ' +
                         'They will not be displayed in the chart. If the problem continues, please contact site admin.');
+                    $.each(that.bap.widgets, function (index, widget) {
+                        widget.buildChart(jsonData,that.bap.id);
+                    });
                 } else {
                     that.updateTitle(jsonData)
                     
@@ -162,6 +166,7 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
                 }
                 timeSlider.slider('enable');
                 toggleSpinner(true);
+                bioScape.bapLoading(that.bap.id,true)
             });
     };
 

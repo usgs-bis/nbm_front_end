@@ -1696,36 +1696,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 }
 
 .initializeLoader {
-    border: 10px solid #f3f3f3;
-    border-top: 10px solid #3498db;
-    border-radius: 50%;
-    width: 225px;
-    height: 225px;
-    animation: spin 2s linear infinite;
-    margin-top: -100px;
-    margin-left: -25px;
-    background-color: rgba(10, 10, 15, .6);    
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.initilizerText{
-    font-weight: bolder;
-    font-size: 20px;
     text-align: center;
-    position: fixed;
-    color: white;
-    z-index: 9999;
-}
-
-
-#initializeBioscape{
-    z-index: 9999999;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-
+    font-size: 28px;
+    vertical-align: middle;
 }
