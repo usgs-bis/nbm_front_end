@@ -1713,12 +1713,8 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     position: absolute;
     z-index: 9;
     text-align: center;
-    height: 800px;
-    width: 600px;
-    /* min-height: 180px;
-    max-height: 95%;
-    min-width: 250px;
-    max-width: 75%; */
+    height: 600px;
+    width: 450px;
     top: 75px;
     left: 550px;
     display: none;
