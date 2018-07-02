@@ -14,36 +14,35 @@ function HistogramWidget(config, bap) {
     }
 
     this.getPdfLayout = function() {
-     
-        let elm = $(`#histogramChart${id}`);
-        if(!elm.html()){
-            return {content:[
-                {text:"No analysis was performed.",style: ['subTitleChart']},
-            ],charts:[]}
-        }
-        let options = {
-            height: elm.height() + 100,
-            width: elm.width(),
-            logging: false
-        }
 
-        // chrome 67 chenged the way canvas worked
-        if(getChromeVersion() > 66){
-            options.y = elm.height()
-        }
+        try{
+            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="800" height="800" style="position: fixed;"></canvas>`)
+            d3.select(`#histogramPlot${id}`).select("svg").attr("height",500)
+            d3.select(`#histogramPlot${id}`).select("svg").attr("width",500)
+            
+            let c = document.getElementById(`myCanvas${id}`);
+            let ctx = c.getContext('2d');
+            ctx.drawSvg($(`#histogramChart${id} .svg-container-histogramPlot`).html(), 0, 0, 800, 800);
+            
+            // clean up
+            d3.select(`#histogramPlot${id}`).select("svg").attr("height",null)
+            d3.select(`#histogramPlot${id}`).select("svg").attr("width",null)
+            $("#canvasHolder").html("")
 
-        return html2canvas( elm[0],options)
-            .then(function(canvas){        
-                return {
-                
-                    content: [
-                        {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                        {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
-                        {image: canvas.toDataURL(),  alignment: 'center', width:500}
-                    ],
-                    charts: []
-                }  
-            })
+            return {
+                content: [
+                    {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                    {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
+                    {image: c.toDataURL(),  alignment: 'center', width:500}
+                ],
+                charts: []
+            }
+           
+        }
+        catch(error){
+            showErrorDialog("Error printing one or more charts to report.",false);
+            return {content:[],charts:[]}
+        }
     }
 
 
@@ -55,10 +54,10 @@ function HistogramWidget(config, bap) {
         
 
         $(selector).find(`#histogramPlot${id}`).show()
-        $(selector).find("#ridgeLinePlotRangeValue").html(3);
-        $(selector).find("#ridgeLinePlotRange").val(3);
+        $(selector).find(".ridgeLinePlotRangeValue").html(3);
+        $(selector).find(".ridgeLinePlotRange").val(3);
 
-        d3.select(`#histogramPlot${id}`).select("svg").remove()
+        d3.select(`#histogramPlot${id}`).select(".svg-container-histogramPlot").remove()
 
 
         let margin = { top: 20, right: 20, bottom: 25, left: 60 },
@@ -103,22 +102,23 @@ function HistogramWidget(config, bap) {
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
             histogram.select("#histogramTitle").append("text")
-                .text(`Spring Index ${location ? location : ""}`);
+                .text(`${config.title} ${location ? location : ""}`);
 
             // Subtitle    
             histogram.select("#histogramSubTitle").append("text")
-                .text(`Annual Spring Index for the Period ${years[0]} to ${years[years.length - 1]}`);
+                .text(`Annual ${config.title} for the Period ${years[0]} to ${years[years.length - 1]}`);
 
             histogram.transition()
 
-            histogram.select("svg").remove()
+            histogram.select(".svg-container-histogramPlot").remove()
 
-           // $(selector).find(`#histogramChart${id}`).height( height + margin.top + margin.bottom)
-
-
-            var svg = histogram.select(`#histogramChart${id}`).append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+            var svg = histogram.select(`#histogramChart${id}`)
+                .append("div")
+                .classed("svg-container-histogramPlot", true)
+                .append("svg")
+                .attr("preserveAspectRatio", "xMinYMin meet")
+                .attr("viewBox", "0 0 " + (width + margin.left) + " " + (height + margin.top + margin.bottom))
+                .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")
                 .attr("xmlns","http://www.w3.org/2000/svg")
@@ -315,10 +315,10 @@ function HistogramWidget(config, bap) {
             }
         }
 
-        let bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
+        let bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
         updateChart(chartData, bucketSize)
-        $(selector).find("#ridgeLinePlotRange").change(function () {
-            bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
+        $(selector).find(".ridgeLinePlotRange").change(function () {
+            bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
             updateChart(chartData, bucketSize)
         });
 

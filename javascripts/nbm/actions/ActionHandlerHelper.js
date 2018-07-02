@@ -469,6 +469,75 @@ ActionHandlerHelper.prototype.showRawJson = function (id) {
     bap.showRawJson();
 };
 
+
+ActionHandlerHelper.prototype.closeExpandedBap = function (id){
+
+    // put html back in left container
+    $(`#${id}BAP #${id}Inputs`).show()
+    $(`#${id}BAP`).appendTo($(`#${id}BapCase`))
+
+    // moving the binwidth slider back up 
+    $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top","0px")
+    
+    // unbind any handlers on the popup 
+    $(`#compareBapModal${id}`).off()
+    $(`#compareBapModalHeader${id}`).off()
+    $(`#compareBapModal${id}`).remove()
+
+    // enable reporting if last pop up to close
+    if(! $("#compareBapModalHolder div").length){
+        $("#buildReportPdf").prop("disabled",false);
+    }
+
+    // switch colapse icon 
+    $("#" + id + 'BAPControl').html('&#9660;');
+    $(`#${id}BapCase .layerExpander`).css("pointer-events", "unset")
+   
+}
+
+
+ActionHandlerHelper.prototype.expandBap = function (id){
+
+    $("#" + id + 'BAPControl').html('&#9658;');
+    $(`#${id}BapCase .layerExpander`).css("pointer-events", "none")
+  
+    $("#compareBapModalHolder").append(`<div id="compareBapModal${id}" class="compareBapModal-container"></div>`)
+
+
+    let compareBapModal = $(`#compareBapModal${id}`)
+    let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
+    compareBapModal.html(modalHtml)
+   
+    $(`#${id}BAP #${id}Inputs`).hide()
+    $(`#${id}BAP`).appendTo($(".compareBap"))
+
+    compareBapModal.resizable({
+        aspectRatio: true,
+        maxWidth: 700,
+        maxHeight: 933,
+        minHeight:400,
+        minWidth:300
+      });
+
+    
+    compareBapModal.resizable({
+        resize: function( event, ui ) {
+            let newHeight =(ui.size.height - 800)
+            if(newHeight < 0){newHeight = newHeight * 0.5}
+            $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", newHeight + "px")
+        }
+      });
+
+    compareBapModal.draggable({});
+
+    $("#buildReportPdf").prop("disabled",true);
+
+    compareBapModal.show()
+    $(`#${id}BAP`).show()
+    
+}
+
+
 /**
  * Remove the drawn polygons from the map
  */

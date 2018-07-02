@@ -39,8 +39,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
             min: values[0],
             max: values[1],
             endDate: time.endDate,
-            title: `Spring Index ${location ? location : ""}`,
-            subTitle: `Annual Spring Index for the Period ${time.dates[minIdx]} to ${time.dates[maxIdx]}`
+            title: `${serverAP.title} ${location ? location : ""}`,
+            subTitle: `Annual ${serverAP.title} for the Period ${time.dates[minIdx]} to ${time.dates[maxIdx]}`
         };
         return getHtmlFromJsRenderTemplate('#boxAndWhiskerTemplate', viewData);
     };
@@ -173,8 +173,8 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
     this.updateTitle = function(data){
         let years = Object.getOwnPropertyNames(data)
         let location = ((actionHandlerHelper.sc.headerBap || {}).config || {}).title
-        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").html(`Spring Index ${location ? location : ""}`)
-        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").html(`Annual Spring Index for the Period ${years[0]} to ${years[years.length-1]}`)
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwTitle").html(`${serverAP.title} ${location ? location : ""}`)
+        $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").html(`Annual ${serverAP.title} for the Period ${years[0]} to ${years[years.length-1]}`)
     
     }
 

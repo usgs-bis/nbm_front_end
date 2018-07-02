@@ -2,9 +2,12 @@
     <div class="modal fade" id="generalModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-mdm">
             <div id="generalModalContent" class="modal-content">
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 </div>
 
 <script id="infoDivTemplate" type="text/x-jsrender">
@@ -144,3 +147,29 @@
         <span class="arrow right_arrow">&nbsp;</span>
     </div>
 </script>
+
+<script id="compareBapTemplate" type="text/x-jsrender">
+
+
+    <div class="modal-content compareBapModal">
+        <div id="compareBapModal{{:id}}Header" class="modal-header">
+            <button type="button" class="close" onClick="actionHandlerHelper.closeExpandedBap('{{:id}}')">&times;</button>
+            <h4 class="modal-title compareModalTitle">Compare Analysis Packages</h4>
+        </div>
+        <div class="modal-body">
+            <!-- <div class="row">
+                <div class="col col-md-12"> -->
+                    <div class="compareBap flex-container"></div>
+                <!-- </div>
+            </div> -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" onClick="actionHandlerHelper.closeExpandedBap('{{:id}}')">Close</button>
+        </div>
+    </div>
+
+        
+
+</script>
+
+
