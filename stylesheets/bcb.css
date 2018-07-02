@@ -103,7 +103,7 @@ strong {
     position: absolute
 }
 
-.unit_info button {
+.unit_info button, .compareBapModal button {
     background-image:-webkit-linear-gradient(rgba(10, 10, 15, .6), rgba(10, 10, 15, .7), rgba(10, 10, 15, .8));
     background-image:-moz-linear-gradient(rgba(10, 10, 15, .6), rgba(10, 10, 15, .7), rgba(10, 10, 15, .8));
     background-image:-ms-linear-gradient(rgba(10, 10, 15, .6), rgba(10, 10, 15, .7), rgba(10, 10, 15, .8));
@@ -113,7 +113,7 @@ strong {
     box-shadow: 1px 1px rgba(10, 10, 15, .6);
     margin: 2px;
 }
-.unit_info button:hover {
+.unit_info button:hover, .compareBapModal button:hover, {
     background-image:-webkit-linear-gradient(rgba(10, 10, 15, .7), rgb(10, 10, 15));
     background-image:-moz-linear-gradient(rgba(10, 10, 15, .7), rgb(10, 10, 15));
     background-image:-ms-linear-gradient(rgba(10, 10, 15, .7), rgb(10, 10, 15));
@@ -1116,7 +1116,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     width: 100%;
 }
 .ridgeLinePlot svg {
-    margin-bottom: -50px;
+    /* margin-bottom: -50px; */
     overflow: visible
 }
 
@@ -1144,7 +1144,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .ridgeLinePlotSubTitle{
     font-weight: normal;
     font-size: 14px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     margin-top: -5px;
     color: rgb(204, 204, 204) !important;
     fill: rgb(204, 204, 204) !important;
@@ -1159,13 +1159,15 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .ridgeLinePlotNumberPicker{
-    width: 405px;
-    margin-left: 55px;
+    width: 85%;
     fill: rgb(204, 204, 204);
     color: rgb(204, 204, 204);
     font-family: Verdana;
     margin-bottom: 50px;
-    margin-top: -20px;
+    margin: auto;
+    text-align: left;
+    position: relative;
+
 
 }
 
@@ -1196,9 +1198,9 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .histogramPlot svg{
-    overflow: visible;
-    margin-bottom: 20px;
-    height: 475px;
+    /* overflow: visible;
+    margin-bottom: 20px; */
+    /* height: 475px; */
 }
 
 .histogramPlot text {
@@ -1224,7 +1226,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     border-radius: 4px;
     padding: .25em;
     pointer-events: none;
-    position: absolute;
+    position: fixed;
     -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
     box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
 }
@@ -1700,3 +1702,81 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     font-size: 28px;
     vertical-align: middle;
 }
+
+.centerDiv{
+    width: 90%;
+    margin: auto;
+    text-align: center;
+}
+
+.compareBapModal-container{
+    position: absolute;
+    z-index: 9;
+    text-align: center;
+    height: 800px;
+    width: 600px;
+    /* min-height: 180px;
+    max-height: 95%;
+    min-width: 250px;
+    max-width: 75%; */
+    top: 75px;
+    left: 550px;
+    display: none;
+}
+
+
+.compareBapModal{
+    background-color: #505050;
+    overflow-y: hidden;
+    height: 100%;
+}
+
+.compareBapModal .modal-title{
+    color: white;
+    font-size: x-large;
+}
+.compareBapModal .modal-close{
+    color: white;
+    opacity: 1;
+}
+.compareBapModal .modal-body{
+    color: white;
+    overflow: scroll;
+    height: calc(100% - 145px);
+    position: relative;
+}
+
+.compareBapModal .modal-header{
+    height: 85px;
+}
+.compareBapModal .modal-footer{
+    height: 60px;
+}
+.compareBapModal .modal-footer button{
+    color: white;
+}
+
+.svg-container-smoothPlot {
+    display: block;
+    position: relative;
+    width: 100%;
+
+
+}
+.svg-container-histogramPlot {
+    display: block;
+    position: relative;
+    width: 100%;
+
+}
+.svg-content-responsive {
+    top: 10px;
+    left: 0;
+    display: flex;
+    position: relative;
+}
+
+  .bapChart{
+    position: relative;
+    overflow: visible;
+  }

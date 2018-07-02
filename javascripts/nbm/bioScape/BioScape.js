@@ -65,7 +65,8 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
         bioScape.initBapState.baps.forEach(function(initBap){
             if (initBap.enabled && !initBap.userDefined) {
                 showSpinner(true)
-                bioScape.bapLoading(initBap.id,false)
+                
+                //bioScape.bapLoading(initBap.id,false)
 
             }
             if (initBap.userDefined) {

@@ -7,6 +7,7 @@ function SmoothPlotWidget(config, bap) {
     let selector = "#" + id + "BAP";
     let dataURI = ""
 
+
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#smoothPlotTemplate', { id: id });
     }
@@ -14,33 +15,47 @@ function SmoothPlotWidget(config, bap) {
     this.initializeWidget = function () { }
     
     this.getPdfLayout = function() {
-     
-        let elm = $(`#ridgeLinePlotChart${id}`);
-        if(!elm.html()){
-            return {content:[
-                {text:"No analysis was performed.",style: ['subTitleChart']},
-            ],charts:[]}
-        }
-        let options = {
-            height: elm.height() + 100,
-            width: elm.width(),
-            logging: false
-        }
-        if(getChromeVersion() > 66){
-            options.y = elm.height()
+
+        try{
+
+            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="1000" style="position: fixed;"></canvas>`)
+            d3.select(`#ridgeLinePlotChart${id}`).selectAll("svg").attr("height",80)
+            d3.select(`#ridgeLinePlotChart${id}`).selectAll("svg").attr("width",500)
+            let c = document.getElementById(`myCanvas${id}`);
+            let ctx = c.getContext('2d');
+
+        
+            let maxIndex = 0
+            $(`#ridgeLinePlotChart${id} .svg-container-smoothPlot`).each(function( index ) {
+                ctx.drawSvg($(this).html(), 0, 80*index, 500, 80);
+                maxIndex = index
+            })
+
+            $("#canvasHolder").append(`<canvas id="myCanvasCrop${id}" width="500" height="${ 80 + (35 * maxIndex)}" style="position: fixed;"></canvas>`)
+            let cCrop = document.getElementById(`myCanvasCrop${id}`);
+            let ctxCrop = cCrop.getContext('2d');
+            ctxCrop.drawImage(c, 0, 0);
+
+
+            // clean up
+            d3.select(`#ridgeLinePlotChart${id}`).selectAll("svg").attr("height",null)
+            d3.select(`#ridgeLinePlotChart${id}`).selectAll("svg").attr("width",null)
+            $("#canvasHolder").html("") // could have problem here? erase other baps drawing
+
+            return {
+                content: [
+                    {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                    {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
+                    {image: cCrop.toDataURL(),  alignment: 'center', width:500}
+                ],
+                charts: []
+            }
         }
 
-        return html2canvas( elm[0],options)
-            .then(function(canvas){
-                return {
-                    content: [
-                        {text: $(selector).find("#ridgeLinePlotTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                        {text: $(selector).find("#ridgeLinePlotSubTitle").text(),style: ['subTitleChart']},
-                        {image: canvas.toDataURL(),  alignment: 'center', width:500} 
-                    ],
-                    charts: []
-                }  
-            })
+        catch(error){
+            showErrorDialog("Error printing one or more charts to report.",false);
+            return {content:[],charts:[]}
+        }
     }
 
     let ts = widgetHelper.addTimeSlider()
@@ -53,7 +68,7 @@ function SmoothPlotWidget(config, bap) {
 
         $(selector).find("#ridgeLinePlot" + id).show()
 
-        d3.select(`#ridgeLinePlot${id}`).selectAll("svg").remove()
+        d3.select(`#ridgeLinePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
 
         let bucketSize = 3
 
@@ -83,6 +98,8 @@ function SmoothPlotWidget(config, bap) {
 
         function updateChart(dta, buk) {
 
+       
+
             let data = processData(dta, buk)
 
             let dataNest = d3.nest()
@@ -97,7 +114,7 @@ function SmoothPlotWidget(config, bap) {
 
             d3.select(`#ridgeLinePlot${id}`).transition()
 
-            d3.select(`#ridgeLinePlot${id}`).selectAll("svg").remove()
+            d3.select(`#ridgeLinePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
 
             let ridgelineplot = d3.select(`#ridgeLinePlot${id}`)
 
@@ -108,23 +125,26 @@ function SmoothPlotWidget(config, bap) {
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
             ridgelineplot.select("#ridgeLinePlotTitle").append("text")
-                .text(`Spring Index ${location ? location : ""}`);
+                .text(`${config.title} ${location ? location : ""}`);
 
             // Subtitle    
             ridgelineplot.select("#ridgeLinePlotSubTitle").append("text")
-                .text(`Annual Spring Index by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
+                .text(`Annual ${config.title} by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
             $(selector).find(`#ridgeLinePlotChart${id}`).height( 80 + (35 * dataNest.length))
-
-            let svg = ridgelineplot.select(`#ridgeLinePlotChart${id}`).selectAll("svg")
+            
+            let svg = ridgelineplot.select(`#ridgeLinePlotChart${id}`) .selectAll(".svg-container-smoothPlot")
                 .data(dataNest)
                 .enter()
+                .append("div")
+                .classed("svg-container-smoothPlot", true)
                 .append("svg")
+                .attr("preserveAspectRatio", "xMinYMin meet")
+                .attr("viewBox",  function(d,i){return  "0 " +  parseInt(i * 50) +" " + (width + margin.left) + " " + (height + margin.top + margin.bottom)} )
+                .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")
                 .attr("xmlns","http://www.w3.org/2000/svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                 .each(function (year) {
@@ -132,6 +152,7 @@ function SmoothPlotWidget(config, bap) {
                         .domain([0, d3.max(year.values, function (d) { return d.value; })])
                         .range([height, 0])
                 })
+                
 
 
             // clip rectangle
@@ -249,6 +270,17 @@ function SmoothPlotWidget(config, bap) {
                 .attr("fill", "rgb(0, 0, 0)")
                 .call(xAxis)
 
+                last.append("g")
+                .attr("transform", "translate(0," + (33) + ")")
+                .append("text")
+                .attr("y",  60)
+                .attr("x", 210)
+                .attr("fill", "rgb(0, 0, 0)")
+                .attr("font-size", "14px")
+                .style("text-anchor", "middle")
+                .text("Day of Year");
+    
+
             
             let mid = svg.middle()
 
@@ -263,20 +295,7 @@ function SmoothPlotWidget(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Year");
 
-             let lables = ridgelineplot.select(`#ridgeLinePlotChart${id}`).append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                .append("text")
-                .attr("y",  60)
-                .attr("x", 210)
-                .attr("fill", "rgb(0, 0, 0)")
-                .attr("font-size", "14px")
-                .style("text-anchor", "middle")
-                .text("Day of Year");
-
-        }
+         }
       
 
         function type(d) {
@@ -357,9 +376,9 @@ function SmoothPlotWidget(config, bap) {
 
         updateChart(chartData, bucketSize)
         
-        $(selector).find("#ridgeLinePlotRange").change(function () {
-            bucketSize = parseInt($(selector).find("#ridgeLinePlotRange").val());
-            $(selector).find("#ridgeLinePlotRangeValue").html(bucketSize);
+        $(selector).find(".ridgeLinePlotRange").change(function () {
+            bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
+            $(selector).find(".ridgeLinePlotRangeValue").html(bucketSize);
             updateChart(chartData, bucketSize)
         });
     }

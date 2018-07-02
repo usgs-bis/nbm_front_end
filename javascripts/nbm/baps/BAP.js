@@ -212,7 +212,7 @@ BAP.prototype.bindClicks = function () {
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
         if (!that.priority) {
-            $(`#${that.id}Inputs`).hide()
+            $(`#${that.id}AnalysisInputsSection`).hide()
         }
         that.updateState(toggle)
     });
@@ -320,6 +320,7 @@ BAP.prototype.initializeBAP = function () {
     bioScape.initBapState.baps.forEach(function (initBap) {
         if (initBap.id == that.id && !initBap.userDefined) {
             that.initConfig = initBap
+            bioScape.bapLoading(that.id,false)
         }
     })
 
@@ -406,14 +407,16 @@ BAP.prototype.loadBapState = function () {
                 }, 1000)
             }
             else {
-                $(`#${that.id}Inputs`).hide()
+                $(`#${that.id}AnalysisInputsSection`).hide()
 
-                if (initBap.enabled) {
+                // was getting a weird svg render in the colapsed contaner
+               // if (initBap.enabled) {
                     showContainer(that.id + "BAP")
-                }
-                else {
-                    collapseContainer(that.id + "BAP")
-                }
+               // }
+                
+                // else {
+                //     collapseContainer(that.id + "BAP")
+                // }
             }
         }
     })
@@ -575,7 +578,10 @@ BAP.prototype.setPriorityBap = function (checked) {
             }
             catch (error) { }
             if (bap != that.id) {
-                $(`#${bap}Inputs`).hide()
+                //$(`#${bap}Inputs`).hide()
+                $(`#${bap}AnalysisInputsSection`).hide()
+
+                
             }
         })
 
@@ -584,7 +590,9 @@ BAP.prototype.setPriorityBap = function (checked) {
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
 
         showContainer(that.id + "BAP")
-        $(`#${that.id}Inputs`).show()
+        //$(`#${that.id}Inputs`).show()
+        $(`#${that.id}AnalysisInputsSection`).show()
+        
         that.updateState(true)
 
     }
