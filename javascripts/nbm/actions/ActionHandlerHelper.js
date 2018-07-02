@@ -522,7 +522,7 @@ ActionHandlerHelper.prototype.expandBap = function (id){
     
     compareBapModal.resizable({
         resize: function( event, ui ) {
-            let newHeight =(ui.size.height - 800) 
+            let newHeight =(ui.size.height - 600) 
             if(newHeight < 0){newHeight = (newHeight * 0.2)}
             $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", (newHeight + 20) + "px")
         }
