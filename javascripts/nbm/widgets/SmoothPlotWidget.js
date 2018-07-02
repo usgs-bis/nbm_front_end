@@ -69,6 +69,8 @@ function SmoothPlotWidget(config, bap) {
         $(selector).find("#ridgeLinePlot" + id).show()
 
         d3.select(`#ridgeLinePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
+        $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", "0px")
+
 
         let bucketSize = 3
 
