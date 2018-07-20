@@ -306,12 +306,20 @@ function HistogramWidget(config, bap) {
             return formatTime(new Date(date.setDate(day)));
         }
         function toolTipLabel(d, buk) {
-            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label>  <br /> `
+            var percentage = parseInt(parseInt(d.count)/parseInt(totalCount) * 100)
+            if (percentage < 1) {
+                percentage = '< 1' ;
+            }
+            else{
+                percentage = percentage.toString();
+            }
+
+            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> values ( ~ ${percentage}%)<br />  are in this date range across all years <br />in this reporting period.`
             if (buk == 1) {
-                return `${count}  Day: <label> ${dateFromDay(2018, d.day)} </label>`
+                return `  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count}`
             }
             else {
-                return `${count}  Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label>`
+                return ` Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label><br />${count} `
             }
         }
 
