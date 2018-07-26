@@ -6,6 +6,8 @@ function HistogramWidget(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
     let dataURI = ""
+    var startYear;
+    var endYear;
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
@@ -107,6 +109,8 @@ function HistogramWidget(config, bap) {
             // Subtitle    
             histogram.select("#histogramSubTitle").append("text")
                 .text(`Annual ${config.title} for the Period ${years[0]} to ${years[years.length - 1]}`);
+            startYear = years[0];
+            endYear = years[years.length-1];
 
             histogram.transition()
 
@@ -306,12 +310,20 @@ function HistogramWidget(config, bap) {
             return formatTime(new Date(date.setDate(day)));
         }
         function toolTipLabel(d, buk) {
-            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label>  <br /> `
+            var percentage = parseInt(parseInt(d.count)/parseInt(totalCount) * 100);
+            if (percentage < 1) {
+                percentage = '< 1' ;
+            }
+            else{
+                percentage = percentage.toString();
+            }
+
+            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Count = values that occur ${dateFromDay(2018, d.day * buk - buk)} to ${dateFromDay(2018, d.day * buk - 1)} <br /> for all selected years (${startYear} to ${endYear}). <br />`
             if (buk == 1) {
-                return `${count}  Day: <label> ${dateFromDay(2018, d.day)} </label>`
+                return `  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count}`
             }
             else {
-                return `${count}  Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label>`
+                return ` Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label><br />${count} `
             }
         }
 
