@@ -64,7 +64,7 @@ PDF.prototype.getMapImage = function(marker) {
         .then(function(canvas) {
             //add the feature image to the canvas
             var destCtx = canvas.getContext('2d');
-            // destCtx.drawImage(featureCanvas,0,0);
+            destCtx.drawImage(featureCanvas,0,0);
 
             //add the marker image to the canvas
             if (marker) {

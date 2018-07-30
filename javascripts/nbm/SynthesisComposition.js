@@ -46,8 +46,10 @@ SynthesisComposition.prototype.setPdf = function (marker) {
             console.log(error.message);
         })
         .then(function() {
-            that.pdf = new PDF(bioScape, synCompDetails.title, synCompDetails.type, formatAcres(synCompDetails.acres), synCompDetails.description, synCompDetails.webLinks, definition, definitionUrl, map, bapsAsList);
-            that.pdf.buildAndDownload(marker);
+            setTimeout(function(){
+                that.pdf = new PDF(bioScape, synCompDetails.title, synCompDetails.type, formatAcres(synCompDetails.acres), synCompDetails.description, synCompDetails.webLinks, definition, definitionUrl, map, bapsAsList);
+                that.pdf.buildAndDownload(marker);
+            },2000);
         });
 };
 
