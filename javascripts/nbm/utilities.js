@@ -683,21 +683,29 @@ function sendScienceBaseItemRequest(sbId, timeout) {
  * @returns {string}
  */
 function formatLocalDateToISO8601() {
-    var now = new Date(),
-        // tzo = -now.getTimezoneOffset(),
-        // dif = tzo >= 0 ? '+' : '-',
-        pad = function (num) {
-            var norm = Math.abs(Math.floor(num));
-            return (norm < 10 ? '0' : '') + norm;
-        };
-    return now.getFullYear()
-        + '-' + pad(now.getMonth() + 1)
-        + '-' + pad(now.getDate());
-    // + 'T' + pad(now.getHours())
+    // Use the moment package for now..jic things change
+    var x = moment();
+    var t = x.format('h:mma');
+    var d = x.format('YYYY-MM-DD');
+    var q = t + ' MT, ' + d;
+    return q;
+    //var now = new Date(),
+    //     tzo = -now.getTimezoneOffset(),
+    //     dif = tzo >= 0 ? '+' : '-',
+    //    pad = function (num) {
+    //        var norm = Math.abs(Math.floor(num));
+    //        return (norm < 10 ? '0' : '') + norm;
+    //    };
+    //var zt = now.getFullYear()
+    //    + '-' + pad(now.getMonth() + 1)
+    //    + '-' + pad(now.getDate())
+    // + ' T' + pad(now.getHours())
     // + ':' + pad(now.getMinutes())
     // + ':' + pad(now.getSeconds())
     // + dif + pad(tzo / 60)
     // + ':' + pad(tzo % 60);
+    //
+    //return zt;
 }
 
 function resetLegendCull() {

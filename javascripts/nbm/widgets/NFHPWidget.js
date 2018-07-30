@@ -6,6 +6,8 @@ let NFHPWidget = function (chartConfig) {
     let config = chartConfig;
     let jsonData = {}
     let formatter = { precision: 0, decimalSeparator: '.', thousandsSeparator: ',' };
+    var titleLine;
+    var subTitleLine;
 
     const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -30,6 +32,8 @@ let NFHPWidget = function (chartConfig) {
     this.getPdfLayout = function () {
         return {
             content: [
+                {text: titleLine, style:['titleChart'], pageBreak: 'before'},
+                {text: subTitleLine,style: ['subTitleChart']},
                 { image: NFHPChart.div.id, alignment: 'center', width: 500 }
             ],
             charts: [NFHPChart]
@@ -68,9 +72,6 @@ let NFHPWidget = function (chartConfig) {
 
         $.getJSON(url)
             .done(function (data) {
-
-               
-
                 if (data.error) {
                     $("#" + config.id + "noData").replaceWith(html);
                     $("#" + config.id + "noData").show();
@@ -84,6 +85,9 @@ let NFHPWidget = function (chartConfig) {
                     let val1 = numberWithCommas((d.scored_km).toFixed(0))
                     let val2 = numberWithCommas((d.scored_km + d.not_scored_km).toFixed(0))
                     $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${val1} of ${val2} NHDPlusV1 stream kilometers within ${d.place_name}.`)
+
+                    titleLine = 'Fish habitat condition was scored on ' + val1+' of '+ val2 + ' NHDPlusV1 stream kilometers within ' + d.place_name ;
+                    subTitleLine = 'Risk to Fish Habitat Degradation in ' + d.place_name;
                 }
                 else {
                     $("#" + config.id + "noData").replaceWith(html);
