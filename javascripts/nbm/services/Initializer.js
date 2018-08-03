@@ -279,7 +279,7 @@ var Initializer = (function(initializer) {
                     $.getJSON(`${source}x=${e.latlng.lng}&y=${e.latlng.lat}&units=Meters&output=json`, function (data) {
                         identifiedElevationValue = data.USGS_Elevation_Point_Query_Service
                         let elev = identifiedElevationValue.Elevation_Query.Elevation;
-                        elev = elev > -20 ? elev  + 'm' : "No Data"
+                        elev = elev > -20 ? parseInt(elev)  + 'm' : "No Data"
                         pane.html(elev);
                     });
                 }
