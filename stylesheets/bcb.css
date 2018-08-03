@@ -1326,7 +1326,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     font-weight: bolder;
 }
 .GlobalTimeSlider .tooltip-inner {
-    width: 120px;
+    width: 122px;
 }
 
 .GlobalTimeSlider .tooltip{
@@ -1668,7 +1668,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 }
 .inputExpander{
     display: inline-block;
-    color: white;
+    color: white !important;
     font-size: 16px;
 }
 .bapInputSection{
@@ -1738,18 +1738,26 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 .compareBapModal .modal-body{
     color: white;
     overflow: scroll;
-    height: calc(100% - 145px);
+    height: calc(100% - 70px);
     position: relative;
 }
 
 .compareBapModal .modal-header{
-    height: 85px;
+    height: 60px;
 }
 .compareBapModal .modal-footer{
     height: 60px;
+    border: none;
 }
 .compareBapModal .modal-footer button{
     color: white;
+}
+
+.compareBapModal .close{
+    color: white;
+    opacity: 0.8;
+    font-size: 24px;
+    margin-top: 0px !important;
 }
 
 .svg-container-smoothPlot {
