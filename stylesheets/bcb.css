@@ -1729,7 +1729,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 
 .compareBapModal .modal-title{
     color: white;
-    font-size: x-large;
+    font-size: large;
 }
 .compareBapModal .modal-close{
     color: white;
@@ -1738,12 +1738,12 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 .compareBapModal .modal-body{
     color: white;
     overflow: scroll;
-    height: calc(100% - 70px);
+    height: calc(100% - 80px);
     position: relative;
 }
 
 .compareBapModal .modal-header{
-    height: 60px;
+    height: 70px;
 }
 .compareBapModal .modal-footer{
     height: 60px;

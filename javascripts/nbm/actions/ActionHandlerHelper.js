@@ -511,13 +511,13 @@ ActionHandlerHelper.prototype.expandBap = function (id){
 
     $("#compareBapModalHolder").append(`<div id="compareBapModal${id}" class="compareBapModal-container"></div>`)
 
-
     let compareBapModal = $(`#compareBapModal${id}`)
     let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
     compareBapModal.html(modalHtml)
    
     //$(`#${id}BAP #${id}Inputs`).hide()
     $(`#${id}BAP`).appendTo($(".compareBap"))
+    compareBapModal.find(".compareModalTitle").text($(`#${id}BapCase .bapTitle`).text())
 
 
     compareBapModal.resizable({
