@@ -209,6 +209,7 @@ BAP.prototype.bindClicks = function () {
     var that = this;
 
     $("#" + this.config.id + "BapCase div.layerExpander").on('click', function () {
+        if( actionHandlerHelper.closeExpandedBap(that.config.id)) return 
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
         if (!that.priority) {

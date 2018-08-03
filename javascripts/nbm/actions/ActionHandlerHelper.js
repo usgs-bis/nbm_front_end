@@ -472,8 +472,11 @@ ActionHandlerHelper.prototype.showRawJson = function (id) {
 
 ActionHandlerHelper.prototype.closeExpandedBap = function (id){
 
+    if(! $(`#compareBapModal${id}`).length) return false
+
     // put html back in left container
-    $(`#${id}BAP #${id}Inputs`).show()
+    //$(`#${id}BAP #${id}Inputs`).show()
+    $(`#${id}BAP .jsonDiv`).show()
     $(`#${id}BAP`).appendTo($(`#${id}BapCase`))
 
     // moving the binwidth slider back up 
@@ -491,16 +494,19 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
 
     // switch colapse icon 
     $("#" + id + 'BAPControl').html('&#9660;');
-    $(`#${id}BapCase .layerExpander`).css("pointer-events", "unset")
+    //$(`#${id}BapCase .layerExpander`).css("pointer-events", "unset")
    
+    return true
 }
 
 
 ActionHandlerHelper.prototype.expandBap = function (id){
 
     $("#" + id + 'BAPControl').html('&#9658;');
-    $(`#${id}BapCase .layerExpander`).css("pointer-events", "none")
-  
+    $(`.tooltip`).hide()
+    $(`#${id}BAP .jsonDiv`).hide()
+    //$(`#${id}BapCase .layerExpander`).css("pointer-events", "none")
+
     $("#compareBapModalHolder").append(`<div id="compareBapModal${id}" class="compareBapModal-container"></div>`)
 
 
@@ -508,8 +514,9 @@ ActionHandlerHelper.prototype.expandBap = function (id){
     let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
     compareBapModal.html(modalHtml)
    
-    $(`#${id}BAP #${id}Inputs`).hide()
+    //$(`#${id}BAP #${id}Inputs`).hide()
     $(`#${id}BAP`).appendTo($(".compareBap"))
+
 
     compareBapModal.resizable({
         aspectRatio: true,

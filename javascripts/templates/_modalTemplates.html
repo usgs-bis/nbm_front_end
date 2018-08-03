@@ -150,11 +150,12 @@
 
 <script id="compareBapTemplate" type="text/x-jsrender">
 
-
     <div class="modal-content compareBapModal">
         <div id="compareBapModal{{:id}}Header" class="modal-header">
-            <button type="button" class="close" onClick="actionHandlerHelper.closeExpandedBap('{{:id}}')">&times;</button>
-            <h4 class="modal-title compareModalTitle">Compare Analysis Packages</h4>
+            <button type="button" class=" btn btn-default close" onClick="actionHandlerHelper.closeExpandedBap('{{:id}}')">
+               <span> &times; </span>
+            </button>
+            <h4 class="modal-title compareModalTitle">Analytical Packages</h4>
         </div>
         <div class="modal-body">
             <!-- <div class="row">
@@ -164,11 +165,9 @@
             </div> -->
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" onClick="actionHandlerHelper.closeExpandedBap('{{:id}}')">Close</button>
+            <!-- <button type="button" class="btn btn-default" onClick="actionHandlerHelper.closeExpandedBap('{{:id}}')">Close</button> -->
         </div>
     </div>
-
-        
 
 </script>
 
