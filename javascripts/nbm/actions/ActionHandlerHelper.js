@@ -504,6 +504,8 @@ ActionHandlerHelper.prototype.expandBap = function (id){
 
     $("#" + id + 'BAPControl').html('&#9658;');
     $(`.tooltip`).hide()
+    $(`#GlobalTimeControl .tooltip`).show()
+
     $(`#${id}BAP .jsonDiv`).hide()
     //$(`#${id}BapCase .layerExpander`).css("pointer-events", "none")
 
