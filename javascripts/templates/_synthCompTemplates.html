@@ -277,23 +277,28 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 
 
 <script id="boxAndWhiskerTemplate" type="text/x-jsrender">
-    <div id="{{:id}}BapHeader"> 
-        <div class="row" style="margin-top: 15px;">
-            <div class="col col-md-12 ">
-                <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
-                <div class= "centerDiv" style="margin-top:10px;"> <button id="getBWData" class="btn-xs ">Submit</button> </div>
+    <div class="bapChart">
+        <div class="bapHeader">
+            <div class="row" style="margin-top: 15px;">
+                    <div class="col col-md-12 ">
+                        <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
+                        <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
+                    </div>
+                </div>
+        
+                <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+                <div id="boxAndWhiskerError"></div>
             </div>
         </div>
 
-        <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
-        <div id="boxAndWhiskerError"></div>
+        <div id="boxPlot{{:id}}" class="boxPlot" style="display:none;">
+            
+                <div id="boxPlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="boxPlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+                <div id ="boxPlotChart{{:id}}" class="myNpnInfo" style="width:100%;height:500px;"></div>
+        </div>
     </div>
-    <div class= "bapChart">
-        <div id="{{:id}}BwTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" style="display: none;">{{:title}}</div>
-        <div id="{{:id}}BwSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" style="display: none;">{{:subTitle}}</div>
-        <div id="{{:id}}boxAndWhisker" class="myNpnInfo" style="width:100%;height:500px;"></div>
-    </div>
-   
+
 </script>
 
 <script id="histogramTemplate" type="text/x-jsrender">

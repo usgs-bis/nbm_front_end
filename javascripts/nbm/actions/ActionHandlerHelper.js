@@ -17,6 +17,7 @@ var ActionHandlerHelper = function () {
     this.canDownloadPdf = false;
     this.headerSent = false;
     this.crossoverBaps = [];
+    this.bufferedFeature = null;
 };
 
 /**
