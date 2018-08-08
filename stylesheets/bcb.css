@@ -1784,3 +1784,11 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     position: relative;
     overflow: visible;
   }
+
+  .comparePlot path{
+    stroke: rgb(56, 155, 198);
+    stroke-width: 3;
+  }
+  .comparePlot g g path{
+    stroke-width: 1;
+  }

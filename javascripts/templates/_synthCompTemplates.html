@@ -328,8 +328,31 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     </div>
 </div>
 </div>
+</script>
 
-  
+<script id="comparePlotTemplate" type="text/x-jsrender">
+    <div class="bapChart">
+        <div class="row" style="margin-top: 15px;">
+                <div class="col col-md-12 ">
+                    <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
+                    <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
+                </div>
+            </div>
+    
+            <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+            <div id="comparePlotError"></div>
+        </div>
+
+        <div id="comparePlot{{:id}}" class="ridgeLinePlot comparePlot" style="display:none;">
+           
+                <div id="comparePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="comparePlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+                <div id ="comparePlotChart{{:id}}"></div>
+                <div class=" tooltipValues hidden">
+                    <p><span id="value">100</span></p>
+                </div>
+        </div>
+    </div>
 </script>
 
 <script id="unknownBapTemplate" type="text/x-jsrender">

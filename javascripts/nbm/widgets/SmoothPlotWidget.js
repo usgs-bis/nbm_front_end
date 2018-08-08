@@ -142,7 +142,7 @@ function SmoothPlotWidget(config, bap) {
                 .classed("svg-container-smoothPlot", true)
                 .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox",  function(d,i){return  "0 " +  parseInt(i * 50) +" " + (width + margin.left) + " " + (height + margin.top + margin.bottom)} )
+                .attr("viewBox",  function(d,i){return  "0 " +  parseInt(i * 50) +" " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom)} )
                 .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")
