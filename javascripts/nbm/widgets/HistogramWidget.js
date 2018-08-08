@@ -92,7 +92,7 @@ function HistogramWidget(config, bap) {
             y.domain([0, domain.yMax]);
 
             let xAxis = d3.axisBottom(x)
-                .ticks(((domain.xMax - domain.xMin) * buk) / 30.5)
+                .ticks(5)
                 .tickFormat(x => { return dateFromDay(2018, x * buk) })
 
             let yAxis = d3.axisLeft(y)
@@ -122,7 +122,7 @@ function HistogramWidget(config, bap) {
                 .classed("svg-container-histogramPlot", true)
                 .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", "0 0 " + (width + margin.left) + " " + (height + margin.top + margin.bottom))
+                .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
                 .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")

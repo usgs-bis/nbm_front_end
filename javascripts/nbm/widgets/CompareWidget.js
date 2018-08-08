@@ -87,78 +87,59 @@ function CompareWidget(config, bap) {
                     return data
                 })
             )
-
         })
 
         Promise.all(promises).then(function (data) {
             that.bap.rawJson = data;
             let missingYears = []
 
-            if (data.length != 2) {
+            if (data.length != 2 || !data[0] || !data[1]) {
                 setError(' An error has occured. If the problem continues, please contact site admin.');
             }
-
-            for (let i = values[0]; i <= values[1]; i++) {
-                if (!data[0][i] || !data[1][i]) {
-                    missingYears.push(i)
+            else{
+                for (let i = values[0]; i <= values[1]; i++) {
+                    if (!data[0][i] || !data[1][i]) {
+                        missingYears.push(i)
+                    }
                 }
-                if (!data[0][i].length || !data[1][i].length) {
-                    if (alreadySentBuffer) {
-                        setError(' Your polygon falls outside the geographic extent of the data you\'re trying to analyze. ');
-                        alreadySentBuffer = false;
-                        $(selector).find("#" + that.bap.id + "JsonDiv").show();
+                if (!data[0][values[0]].length || !data[1][values[0]].length) {
+                    if (!alreadySentBuffer) {
+                        alreadySentBuffer = true;
+                        widgetHelper.getBufferedFeature(inputFeature)
+                            .then(function (bufferedFeature) {
+                                if (!bufferedFeature.geometry) {
+                                    setError(' An error has occured. If the problem continues, please contact site admin.');
+                                }
+                                else {
+                                    that.bap.feature = ActionHandler.prototype.createPseudoFeature(bufferedFeature.geometry);
+                                    that.bap.simplified = true;
+                                    that.bap.showSimplifiedDiv();
+                                    that.submitData("No data received, resending polygon with buffer", that.bap.feature);
+                                }
+                            })
                     }
                     else {
-                        alreadySentBuffer = true;
-                        that.sendBufferedFeature(inputFeature);
-                        return;
+                        setError(' Your polygon falls outside the geographic extent of the data you\'re trying to analyze. ');
                     }
                 }
-            }
-
-            if (missingYears.length) {
-                setError(' There was an error analyzing data for the following years: ' + missingYears + '. ' +
-                    'They will not be displayed in the chart. If the problem continues, please contact site admin.');
-            }
-            if (alreadySentBuffer) {
-                setError(' Your polygon was buffered so it overlaps with the center of the nearest raster cell. ' +
-                    'You can click the \'square\' icon next to the polygon title to view the buffered polygon.');
+                else {
+                    if (missingYears.length) {
+                        setError(' There was an error analyzing data for the following years: ' + missingYears + '. ' +
+                            'They will not be displayed in the chart. If the problem continues, please contact site admin.');
+                    }
+                    else if (alreadySentBuffer) {
+                        setError(' Your polygon was buffered so it overlaps with the center of the nearest raster cell. ' +
+                            'You can click the \'square\' icon next to the polygon title to view the buffered polygon.');
+                    }
+                    that.buildChart(data, id);
+                }
             }
 
             $(selector).find("#" + that.bap.id + "JsonDiv").show();
             timeSlider.slider('enable');
-            that.buildChart(data, id);
             toggleSpinner(true);
             bioScape.bapLoading(that.bap.id, true)
         });
-    };
-
-
-    this.sendBufferedFeature = function (feature) {
-        var geojson = JSON.stringify(feature.geojson.geometry);
-        var token = Math.random().toString();
-        var numChunks = Math.floor(geojson.length / WAF_LIMIT);
-        sendGeojsonChunks(geojson, token)
-            .then(function () {
-                geojson = geojson.substring(numChunks * WAF_LIMIT, geojson.length);
-                var params = {
-                    geojson: geojson
-                };
-
-                sendPostRequest(myServer + '/main/getBufferedShape', params, true).then(function (something) {
-                    if (!something.geometry) {
-                        setError(' An error has occured. If the problem continues, please contact site admin.');
-                        return
-                    }
-                    something.geometry.crs = { "type": "name", "properties": { "name": "EPSG:4326" } };
-                    something.type = "Feature";
-                    that.bap.feature = ActionHandler.prototype.createPseudoFeature(something.geometry);
-                    that.bap.simplified = true;
-                    that.bap.showSimplifiedDiv();
-                    feature = that.bap.feature;
-                    that.submitData("No data received, resending polygon with buffer", that.bap.feature);
-                });
-            });
     };
 
 
@@ -229,7 +210,7 @@ function CompareWidget(config, bap) {
 
     this.buildChart = function (chartData, id) {
 
-        
+
         $(selector).find("#comparePlot" + id).show()
 
         d3.select(`#comparePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
@@ -256,7 +237,7 @@ function CompareWidget(config, bap) {
         };
 
         d3.selection.prototype.middle = function () {
-            var mid = parseInt(this["_groups"][0].length/2);
+            var mid = parseInt(this["_groups"][0].length / 2);
 
             return d3.select(this["_groups"][0][mid]);
         };
@@ -264,7 +245,7 @@ function CompareWidget(config, bap) {
 
         function updateChart(dta, buk) {
 
-       
+
 
             let data = processData(dta, buk)
 
@@ -298,28 +279,28 @@ function CompareWidget(config, bap) {
             ridgelineplot.select("#comparePlotSubTitle").append("text")
                 .text(`Annual ${config.title} by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
-            $(selector).find(`#comparePlotChart${id}`).height( 80 + (35 * dataNest.length))
-            
-            let svg = ridgelineplot.select(`#comparePlotChart${id}`) .selectAll(".svg-container-smoothPlot")
+            $(selector).find(`#comparePlotChart${id}`).height(80 + (35 * dataNest.length))
+
+            let svg = ridgelineplot.select(`#comparePlotChart${id}`).selectAll(".svg-container-smoothPlot")
                 .data(dataNest)
                 .enter()
                 .append("div")
                 .classed("svg-container-smoothPlot", true)
                 .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox",  function(d,i){return  "0 " +  parseInt(i * 50) +" " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom)} )
+                .attr("viewBox", function (d, i) { return "0 " + parseInt(i * 50) + " " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom) })
                 .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")
-                .attr("xmlns","http://www.w3.org/2000/svg")
+                .attr("xmlns", "http://www.w3.org/2000/svg")
                 .append("g")
                 .attr("transform", "translate(" + margin.left + ",2)")
                 .each(function (year) {
                     year.y = d3.scaleLinear()
-                        .domain([0,50])
+                        .domain([0, 50])
                         .range([height, 0])
                 })
-                
+
 
 
             // clip rectangle
@@ -338,18 +319,18 @@ function CompareWidget(config, bap) {
                 .attr("clip-path", "url(#cut-off-path)")
                 .attr("d", function (year) {
                     return d3.line()
-                    .x(function (d) { return x(d.DOY); })
-                    .y(function (d) { return year.y(d.value); })
-                    (year.values)
+                        .x(function (d) { return x(d.DOY); })
+                        .y(function (d) { return year.y(d.value); })
+                        (year.values)
                 })
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
-                    try{
+                    try {
                         xPos = event.clientX
-                        yPos = event.clientY - 50 
+                        yPos = event.clientY - 50
                     }
-                    catch(error){
+                    catch (error) {
                         xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
                         yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
                     }
@@ -367,22 +348,22 @@ function CompareWidget(config, bap) {
                     ridgelineplot.select('.tooltipValues').classed('hidden', true);
                 });
 
-              // Add the scatterplot
+            // Add the scatterplot
             svg.append("circle")
                 .attr("r", 8)
-                .attr("cx", function(d) { 
+                .attr("cx", function (d) {
                     return x(d.values[0].DOY);
                 })
                 .attr("cy", 37)
-                .attr("fill","red")
+                .attr("fill", "red")
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
-                    try{
+                    try {
                         xPos = event.clientX
-                        yPos = event.clientY - 50 
+                        yPos = event.clientY - 50
                     }
-                    catch(error){
+                    catch (error) {
                         xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
                         yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
                     }
@@ -400,22 +381,22 @@ function CompareWidget(config, bap) {
                     ridgelineplot.select('.tooltipValues').classed('hidden', true);
                 });
 
-            
+
             svg.append("circle")
                 .attr("r", 8)
-                .attr("cx", function(d) { 
+                .attr("cx", function (d) {
                     return x(d.values[1].DOY);
                 })
                 .attr("cy", 37)
-                .attr("fill","green")
+                .attr("fill", "green")
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
-                    try{
+                    try {
                         xPos = event.clientX
-                        yPos = event.clientY - 50 
+                        yPos = event.clientY - 50
                     }
-                    catch(error){
+                    catch (error) {
                         xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
                         yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
                     }
@@ -460,7 +441,7 @@ function CompareWidget(config, bap) {
                 .tickFormat(x => { return dateFromDay(2018, x) })
 
             let last = svg.last()
-             
+
             last.append("g")
                 .attr("transform", "translate(0," + (height) + ")")
                 .attr("class", "axis-label")
@@ -468,18 +449,18 @@ function CompareWidget(config, bap) {
                 .attr("fill", "rgb(0, 0, 0)")
                 .call(xAxis)
 
-                last.append("g")
+            last.append("g")
                 .attr("transform", "translate(0," + (33) + ")")
                 .append("text")
-                .attr("y",  60)
+                .attr("y", 60)
                 .attr("x", 210)
                 .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Day of Year");
-    
 
-            
+
+
             let mid = svg.middle()
 
             mid.append("g")
@@ -493,7 +474,7 @@ function CompareWidget(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Year");
 
-         }
+        }
 
 
         function type(d) {
@@ -506,12 +487,12 @@ function CompareWidget(config, bap) {
         function processData(rawData) {
             let processedData = []
             for (let currentYear in rawData[0]) {
-                let adv = rawData[0][currentYear].reduce(getSum) /  rawData[0][currentYear].length
-                    processedData.push({ year: currentYear, DOY: adv, value: 15 })
+                let adv = rawData[0][currentYear].reduce(getSum) / rawData[0][currentYear].length
+                processedData.push({ year: currentYear, DOY: adv, value: 15 })
             }
             for (let currentYear in rawData[1]) {
-                let adv = rawData[1][currentYear].reduce(getSum) /  rawData[1][currentYear].length
-                    processedData.push({ year: currentYear, DOY: adv, value: 15 })
+                let adv = rawData[1][currentYear].reduce(getSum) / rawData[1][currentYear].length
+                processedData.push({ year: currentYear, DOY: adv, value: 15 })
             }
             return processedData
 
@@ -527,15 +508,15 @@ function CompareWidget(config, bap) {
             for (let i = 0; i < rawData.length; i++) {
                 for (let j = 0; j < rawData[i].values.length; j++) {
                     let v = rawData[i].values[j].DOY
-                     if (v  < min) {
-                            min = v
-                        }
-                        else if (v  > max) {
-                            max = v
-                        }
+                    if (v < min) {
+                        min = v
+                    }
+                    else if (v > max) {
+                        max = v
+                    }
                 }
             }
-            
+
             return { dayMin: min, dayMax: max }
         }
 
@@ -553,17 +534,17 @@ function CompareWidget(config, bap) {
             return 1
         }
 
-        function getToolTipHTML(d){
-            let html = 
-            `
+        function getToolTipHTML(d) {
+            let html =
+                `
             <div>Year: <label>${d.key}</label> </div>
-            <div>Bloom Index: <label>${dateFromDay(2018,d.values[0].DOY)} </label></div>
-            <div>Leaf Index: <label>${dateFromDay(2018,d.values[1].DOY)}</label> </div>
+            <div>Bloom Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label></div>
+            <div>Leaf Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label> </div>
             `
             return html
         }
 
-        updateChart(chartData,bucketSize)
+        updateChart(chartData, bucketSize)
     }
 
 }

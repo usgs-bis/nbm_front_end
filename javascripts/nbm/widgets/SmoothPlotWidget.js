@@ -112,7 +112,7 @@ function SmoothPlotWidget(config, bap) {
 
             let minMax = getMinMax(dataNest)
 
-            x.domain([minMax.dayMin - 1, minMax.dayMax + 1]);
+            x.domain([minMax.dayMin - 3, minMax.dayMax + 3]);
 
             d3.select(`#ridgeLinePlot${id}`).transition()
 
@@ -260,7 +260,7 @@ function SmoothPlotWidget(config, bap) {
 
             // X-axis 
             let xAxis = d3.axisBottom(x)
-                .ticks(((minMax.dayMax - minMax.dayMin) * buk) / 30.5)
+                .ticks(5)
                 .tickFormat(x => { return dateFromDay(2018, x * buk) })
 
             let last = svg.last()

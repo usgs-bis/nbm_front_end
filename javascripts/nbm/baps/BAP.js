@@ -453,12 +453,18 @@ BAP.prototype.cleanUp = function () {
 };
 
 BAP.prototype.toggleSimplifiedFeature = function () {
-    if (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry) {
+
+    let feature = actionHandlerHelper.bufferedFeature ? actionHandlerHelper.bufferedFeature: null;
+
+
+    if (!feature && (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry)) {
         return;
     }
 
-    if (!this.simplifiedFeature) {
-        this.simplifiedFeature = L.geoJson(this.feature.geojson.geometry,
+    if (map.hasLayer(this.simplifiedFeature)) {
+        this.simplifiedFeature.remove();
+    } else {
+        this.simplifiedFeature = L.geoJson( feature ? feature : this.feature.geojson.geometry,
             {
                 style: function () {
                     return {
@@ -469,11 +475,6 @@ BAP.prototype.toggleSimplifiedFeature = function () {
                 },
                 pane: 'featurePane'
             });
-    }
-
-    if (map.hasLayer(this.simplifiedFeature)) {
-        this.simplifiedFeature.remove();
-    } else {
         this.simplifiedFeature.addTo(map);
         if (!this.hasZoomed) {
             this.hasZoomed = true;
@@ -484,6 +485,7 @@ BAP.prototype.toggleSimplifiedFeature = function () {
             }
         }
     }
+
 };
 
 BAP.prototype.setErrorMessage = function (message) {
