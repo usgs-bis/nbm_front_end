@@ -36,6 +36,8 @@ WidgetHelper.prototype.getWidget = function (config,bap) {
         return new HistogramWidget(config,bap);
     } else if (config.type === "smoothPlot") {
         return new SmoothPlotWidget(config,bap);
+    } else if (config.type === "comparePlot") {
+        return new CompareWidget(config,bap);
     }
 };
 
@@ -84,6 +86,104 @@ WidgetHelper.prototype.addTimeSlider = function(){
 
     this.timeSlider = true;
     return ts
+
+
+}
+
+WidgetHelper.prototype.getRasterData = function(inputFeature,layer,years,npnProperty){
+
+
+    return handleRequests(getDataRequests(inputFeature, years[0], years[1]))
+
+
+    function getDataRequests(inputFeature, minIdx, maxIdx) {
+        var geojsonString = JSON.stringify(inputFeature.geojson.geometry);
+        var requests = [];
+        var length = maxIdx - minIdx;
+        var featureBounds = inputFeature.getLeafetFeatureBounds();
+        var bounds = {
+            sw: featureBounds.getSouthWest(),
+            ne: featureBounds.getNorthEast()
+        };
+        var yearsPerRequest = 3;
+        var years = [];
+        var j = 0;
+        for (var i = 0; i <= length; i++) {
+            var year = (+minIdx + i).toString();
+            if (year.indexOf("-01-01") === -1) year += "-01-01T00:00:00.000Z";
+            years.push(year);
+            ++j;
+            if (j === yearsPerRequest || i === length) {
+                var request = getSendGeojsonRequest(years, geojsonString, bounds, npnProperty);
+                requests.push({ years: years, promise: request });
+                years = [];
+                j = 0;
+            }
+        }
+
+        return requests;
+    }
+    
+    function handleRequests(requests) {
+        let jsonData = {};
+        return requests.reduce(function (sequence, request) {
+            return sequence.then(function () {
+                return request.promise;
+            }).then(function (data) {
+                data.forEach(function(d, index) {
+                    jsonData[request.years[index].substr(0, 4)] = d;
+                })
+                return jsonData
+
+            }).catch(function (e) {
+                console.log(e.toString())
+                return e.toString()
+            });
+        }, Promise.resolve())
+            .catch(function (e) {
+                console.log(e.toString())
+                return e.toString()
+            });
+    };
+
+    function getSendGeojsonRequest(years, geojson, bounds, feature) {
+        if (geojson.length > WAF_LIMIT) {
+            var token = Math.random().toString();
+            var numChunks = Math.floor(geojson.length / WAF_LIMIT);
+            return sendGeojsonChunks(geojson, token)
+                .then(function () {
+                    geojson = geojson.substring(numChunks * WAF_LIMIT, geojson.length);
+                    var params = {
+                        chunkToken: token,
+                        layerName: layer.featureName,
+                        'years[]': years,
+                        geojson: geojson,
+                        south: bounds.sw.lat,
+                        west: bounds.sw.lng,
+                        north: bounds.ne.lat,
+                        east: bounds.ne.lng,
+                        npnToken: NPNTOKEN,
+                        npnProperty: feature
+                    };
+
+                    return sendPostRequest(myServer + '/main/sendData', params, true);
+                });
+        } else {
+            var params = {
+                layerName: layer.featureName,
+                'years[]': years,
+                geojson: geojson,
+                south: bounds.sw.lat,
+                west: bounds.sw.lng,
+                north: bounds.ne.lat,
+                east: bounds.ne.lng,
+                npnToken: NPNTOKEN,
+                npnProperty: feature
+            };
+
+            return sendPostRequest(myServer + '/main/sendData', params, true);
+        }
+    };
 
 
 }

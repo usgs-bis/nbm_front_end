@@ -125,6 +125,9 @@ var BoxAndWhiskerWidget = function(serverAP,bap) {
         $("#" + that.bap.id + "BAP").find("#"+that.bap.id+"BwSubTitle").hide();
         $("#" + that.bap.id + "BAP").find(".ridgeLinePlot").hide();
         $("#" + that.bap.id + "BAP").find(".histogramPlot").hide();
+        
+        // TODO: use widget helper version 
+        // widgetHelper.getRasterData(inputFeature, layer, [values[0], values[1]], that.bap.config.bapProperties.npnPropertyBloom)
         handleRequests(getDataRequests(inputFeature, values[0], values[1]))
             .then(function () {
                 that.bap.rawJson = jsonData;
