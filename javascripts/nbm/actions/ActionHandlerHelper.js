@@ -479,9 +479,6 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
     //$(`#${id}BAP #${id}Inputs`).show()
     $(`#${id}BAP .jsonDiv`).show()
     $(`#${id}BAP`).appendTo($(`#${id}BapCase`))
-
-    // moving the binwidth slider back up 
-    $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top","0px")
     
     // unbind any handlers on the popup 
     $(`#compareBapModal${id}`).off()
@@ -531,12 +528,7 @@ ActionHandlerHelper.prototype.expandBap = function (id){
 
     
     compareBapModal.resizable({
-        resize: function( event, ui ) {
-            let newHeight =(ui.size.height - 600) 
-            if(newHeight < 0){newHeight = (newHeight * 0.2)}
-            if(newHeight > 120){newHeight = 120}
-            $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", (newHeight) + "px")
-        }
+      
       });
 
     compareBapModal.draggable({});

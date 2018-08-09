@@ -85,7 +85,6 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
 
         widgetHelper.getRasterData(inputFeature, layer, [values[0], values[1]], that.bap.config.bapProperties.npnProperty)
             .then(function (data) {
-                console.log(data)
                 that.bap.rawJson = data;
                 let missingYears = []
 

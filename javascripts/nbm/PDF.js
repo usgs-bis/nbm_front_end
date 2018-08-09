@@ -254,8 +254,8 @@ PDF.prototype.getTitlePage = function(mapImageDataUrl) {
     });
     info.push({
         text: [
-            {text: 'Generated ' + formatLocalDateToISO8601() + '. This pdf was generated from the data available at '},
-            {text: window.location.href, link: window.location.href, style: 'link'},
+            {text: 'This pdf was generated at ' + formatLocalDateToISO8601() + ' from the data available '},
+            {text: 'here', link: window.location.href, style: 'link'},
             {text: ' in the USGS National Biogeographic Map. ' + 'For questions or comments please contact: ' + supportEmail}
         ],
         margin: [0,10,0,0],

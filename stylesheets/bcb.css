@@ -1116,8 +1116,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     width: 100%;
 }
 .ridgeLinePlot svg {
-    /* margin-bottom: -50px; */
-    overflow: visible
+    overflow: visible;
+    width: 100%;
 }
 
 .ridgeLinePlot .domain {
@@ -1485,7 +1485,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 .nfhpBapHeader{
     width: 80%;
     font-size: 15px;
-    color: rgb(243, 243, 243);
+    color: rgb(204, 204, 204);
     font-weight: bold;
     line-height: 20px;
     margin-left: 15%;
