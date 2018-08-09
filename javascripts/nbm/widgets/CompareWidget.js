@@ -167,35 +167,21 @@ function CompareWidget(config, bap) {
 
         try {
 
-            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="1000" style="position: fixed;"></canvas>`)
-            d3.select(`#comparePlotChart${id}`).selectAll("svg").attr("height", 80)
-            d3.select(`#comparePlotChart${id}`).selectAll("svg").attr("width", 500)
+            let svg = $(`#comparePlotChart${id}`)
+
+            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
+
             let c = document.getElementById(`myCanvas${id}`);
             let ctx = c.getContext('2d');
-
-
-            let maxIndex = 0
-            $(`#comparePlotChart${id} .svg-container-smoothPlot`).each(function (index) {
-                ctx.drawSvg($(this).html(), 0, 80 * index, 500, 80);
-                maxIndex = index
-            })
-
-            $("#canvasHolder").append(`<canvas id="myCanvasCrop${id}" width="500" height="${80 + (35 * maxIndex)}" style="position: fixed;"></canvas>`)
-            let cCrop = document.getElementById(`myCanvasCrop${id}`);
-            let ctxCrop = cCrop.getContext('2d');
-            ctxCrop.drawImage(c, 0, 0);
-
-
-            // clean up
-            d3.select(`#comparePlotChart${id}`).selectAll("svg").attr("height", null)
-            d3.select(`#comparePlotChart${id}`).selectAll("svg").attr("width", null)
-            $("#canvasHolder").html("") // could have problem here? erase other baps drawing
+            ctx.drawSvg(svg.html(), 0, 0, 500, svg.height());
+    
+            $("#canvasHolder").html("")
 
             return {
                 content: [
                     { text: $(selector).find("#histogramTitle").text(), style: ['titleChart'], pageBreak: 'before' },
                     { text: $(selector).find("#histogramSubTitle").text(), style: ['subTitleChart'] },
-                    { image: cCrop.toDataURL(), alignment: 'center', width: 500 }
+                    { image: c.toDataURL(), alignment: 'center', width: 500 }
                 ],
                 charts: []
             }
@@ -262,7 +248,7 @@ function CompareWidget(config, bap) {
 
             d3.select(`#comparePlot${id}`).transition()
 
-            d3.select(`#comparePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
+            d3.select(`#comparePlot${id}`).selectAll("svg").remove()
 
             let ridgelineplot = d3.select(`#comparePlot${id}`)
 
@@ -279,22 +265,22 @@ function CompareWidget(config, bap) {
             ridgelineplot.select("#comparePlotSubTitle").append("text")
                 .text(`Annual ${config.title} by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
-            $(selector).find(`#comparePlotChart${id}`).height(80 + (35 * dataNest.length))
 
-            let svg = ridgelineplot.select(`#comparePlotChart${id}`).selectAll(".svg-container-smoothPlot")
-                .data(dataNest)
-                .enter()
-                .append("div")
-                .classed("svg-container-smoothPlot", true)
-                .append("svg")
+            let svgContainer = ridgelineplot.select(`#comparePlotChart${id}`)
+            .append("svg")   
                 .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", function (d, i) { return "0 " + parseInt(i * 50) + " " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom) })
+                .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (80 + parseInt(dataNest.length * 35)))
                 .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")
                 .attr("xmlns", "http://www.w3.org/2000/svg")
+
+            let svg = svgContainer.selectAll("smooth")
+                .data(dataNest)
+                .enter()
                 .append("g")
-                .attr("transform", "translate(" + margin.left + ",2)")
+                .attr("transform",function (d, i) { return "translate(" + margin.left + "," + parseInt(i *30 ) + ")"})
+               // .attr("transform", "translate(" + margin.left + ",2)")
                 .each(function (year) {
                     year.y = d3.scaleLinear()
                         .domain([0, 50])
@@ -323,31 +309,7 @@ function CompareWidget(config, bap) {
                         .y(function (d) { return year.y(d.value); })
                         (year.values)
                 })
-                .on('mouseover', function (d) {
-                    var xPos, yPos;
-                    //Get this bar's x/y values, the augment for the tooltip
-                    try {
-                        xPos = event.clientX
-                        yPos = event.clientY - 50
-                    }
-                    catch (error) {
-                        xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                        yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
-                    }
-                    ridgelineplot.select('.tooltipValues')
-                        .style('left', xPos + 'px')
-                        .style('top', yPos + 'px')
-                        .select('#value')
-                        .html(getToolTipHTML(d));
-
-                    //Show the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', false);
-                })
-                .on('mouseout', function () {
-                    //Remove the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', true);
-                });
-
+                
             // Add the scatterplot
             svg.append("circle")
                 .attr("r", 8)
@@ -389,6 +351,7 @@ function CompareWidget(config, bap) {
                 })
                 .attr("cy", 37)
                 .attr("fill", "green")
+             
                 .on('mouseover', function (d) {
                     var xPos, yPos;
                     //Get this bar's x/y values, the augment for the tooltip
