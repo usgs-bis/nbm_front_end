@@ -93,7 +93,7 @@ function HistogramWidget(config, bap) {
 
             let xAxis = d3.axisBottom(x)
                 .ticks(5)
-                .tickFormat(x => { return dateFromDay(2018, x * buk) })
+                .tickFormat(x => { return dateFromDay(2018, (x) * buk) })
 
             let yAxis = d3.axisLeft(y)
 
@@ -145,8 +145,9 @@ function HistogramWidget(config, bap) {
 
             let div =  histogram
                 .append("div")	
-                .attr("class", "chartTooltip")				
-                .style("opacity", 0);
+                .attr("class", "chartTooltip histogramToolTip")		
+                .style("opacity", 0)
+                .style("border", "3px solid rgb(56, 155, 198)");
 
             svg.selectAll(".bar")
                 .data(data)
@@ -319,7 +320,7 @@ function HistogramWidget(config, bap) {
                 return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
             }
             else {
-                return `<p> Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label><br />${count} </p>`
+                return `<p> Days: <label> ${dateFromDay(2018, d.day * buk )} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
             }
         }
 

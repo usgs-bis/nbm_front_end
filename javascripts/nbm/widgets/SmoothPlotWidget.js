@@ -151,7 +151,7 @@ function SmoothPlotWidget(config, bap) {
                 .append("rect")
                 .attr("width", width)
                 .attr("height", height);
-
+            
 
             // set the gradient
             svg.append("linearGradient")
@@ -186,8 +186,9 @@ function SmoothPlotWidget(config, bap) {
 
             let div =  ridgelineplot
             .append("div")	
-            .attr("class", "chartTooltip")				
-            .style("opacity", 0);
+            .attr("class", "chartTooltip smoothPlotToolTip")				
+            .style("opacity", 0)
+            .style("border", "3px solid #d9f0a3");
 
             // area fill
             svg.append("path")

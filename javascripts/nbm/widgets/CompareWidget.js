@@ -311,10 +311,20 @@ function CompareWidget(config, bap) {
                 })
                 
 
-            let div = comparePlot
+            let tooltip1 = comparePlot
                 .append("div")	
-                .attr("class", "chartTooltip")				
-                .style("opacity", 0);
+                .attr("class", "chartTooltip comparePlotToolTipRed")				
+                .style("opacity", 0)
+                .style("border", "3px solid red");
+
+            
+            let tooltip2 = comparePlot
+                .append("div")	
+                .attr("class", "chartTooltip comparePlotToolTipGreen")				
+                .style("opacity", 0)
+                .style("border", "3px solid green");
+
+
 
             // Add the scatterplot
             svg.append("circle")
@@ -325,15 +335,15 @@ function CompareWidget(config, bap) {
                 .attr("cy", 37)
                 .attr("fill", "red")
                 .on("mouseover", function(d) {		
-                    div.transition()		
+                    tooltip1.transition()		
                         .duration(200)		
                         .style("opacity", .9);
-                    div	.html(getToolTipHTML(d,"BLOOM"))	
+                        tooltip1	.html(getToolTipHTML(d,"BLOOM"))	
                         .style("left", (d3.event.layerX) + "px")
                         .style("top", (d3.event.pageY - 65) + "px")
                     })					
                 .on("mouseout", function(d) {		
-                    div.transition()		
+                    tooltip1.transition()		
                         .duration(500)		
                         .style("opacity", 0);	
                 });
@@ -347,15 +357,15 @@ function CompareWidget(config, bap) {
                 .attr("cy", 37)
                 .attr("fill", "green")
                 .on("mouseover", function(d) {		
-                    div.transition()		
+                    tooltip2.transition()		
                         .duration(200)		
                         .style("opacity", .9);		
-                    div	.html(getToolTipHTML(d,"LEAF"))	
+                        tooltip2	.html(getToolTipHTML(d,"LEAF"))	
                         .style("left", (d3.event.layerX) + "px")		
                         .style("top", (d3.event.pageY - 65) + "px");	
                     })					
                 .on("mouseout", function(d) {		
-                    div.transition()		
+                    tooltip2.transition()		
                         .duration(500)		
                         .style("opacity", 0);	
                 });
