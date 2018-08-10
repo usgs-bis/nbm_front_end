@@ -250,23 +250,23 @@ function CompareWidget(config, bap) {
 
             d3.select(`#comparePlot${id}`).selectAll("svg").remove()
 
-            let ridgelineplot = d3.select(`#comparePlot${id}`)
+            let comparePlot = d3.select(`#comparePlot${id}`)
 
 
             // Remove old titles on change
-            ridgelineplot.selectAll("text").remove()
+            comparePlot.selectAll("text").remove()
 
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
-            ridgelineplot.select("#comparePlotTitle").append("text")
+            comparePlot.select("#comparePlotTitle").append("text")
                 .text(`${config.title} ${location ? location : ""}`);
 
             // Subtitle    
-            ridgelineplot.select("#comparePlotSubTitle").append("text")
+            comparePlot.select("#comparePlotSubTitle").append("text")
                 .text(`Annual ${config.title} by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
 
-            let svgContainer = ridgelineplot.select(`#comparePlotChart${id}`)
+            let svgContainer = comparePlot.select(`#comparePlotChart${id}`)
             .append("svg")   
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (80 + parseInt(dataNest.length * 35)))
@@ -310,6 +310,22 @@ function CompareWidget(config, bap) {
                         (year.values)
                 })
                 
+
+            let tooltip1 = comparePlot
+                .append("div")	
+                .attr("class", "chartTooltip comparePlotToolTipRed")				
+                .style("opacity", 0)
+                .style("border", "3px solid red");
+
+            
+            let tooltip2 = comparePlot
+                .append("div")	
+                .attr("class", "chartTooltip comparePlotToolTipGreen")				
+                .style("opacity", 0)
+                .style("border", "3px solid green");
+
+
+
             // Add the scatterplot
             svg.append("circle")
                 .attr("r", 8)
@@ -318,29 +334,18 @@ function CompareWidget(config, bap) {
                 })
                 .attr("cy", 37)
                 .attr("fill", "red")
-                .on('mouseover', function (d) {
-                    var xPos, yPos;
-                    //Get this bar's x/y values, the augment for the tooltip
-                    try {
-                        xPos = event.clientX
-                        yPos = event.clientY - 50
-                    }
-                    catch (error) {
-                        xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                        yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
-                    }
-                    ridgelineplot.select('.tooltipValues')
-                        .style('left', xPos + 'px')
-                        .style('top', yPos + 'px')
-                        .select('#value')
-                        .html(getToolTipHTML(d));
-
-                    //Show the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', false);
-                })
-                .on('mouseout', function () {
-                    //Remove the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', true);
+                .on("mouseover", function(d) {		
+                    tooltip1.transition()		
+                        .duration(200)		
+                        .style("opacity", .9);
+                        tooltip1	.html(getToolTipHTML(d,"BLOOM"))	
+                        .style("left", (d3.event.layerX) + "px")
+                        .style("top", (d3.event.pageY - 65) + "px")
+                    })					
+                .on("mouseout", function(d) {		
+                    tooltip1.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
                 });
 
 
@@ -351,33 +356,21 @@ function CompareWidget(config, bap) {
                 })
                 .attr("cy", 37)
                 .attr("fill", "green")
-             
-                .on('mouseover', function (d) {
-                    var xPos, yPos;
-                    //Get this bar's x/y values, the augment for the tooltip
-                    try {
-                        xPos = event.clientX
-                        yPos = event.clientY - 50
-                    }
-                    catch (error) {
-                        xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                        yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
-                    }
-                    ridgelineplot.select('.tooltipValues')
-                        .style('left', xPos + 'px')
-                        .style('top', yPos + 'px')
-                        .select('#value')
-                        .html(getToolTipHTML(d));
-
-                    //Show the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', false);
-                })
-                .on('mouseout', function () {
-                    //Remove the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', true);
+                .on("mouseover", function(d) {		
+                    tooltip2.transition()		
+                        .duration(200)		
+                        .style("opacity", .9);		
+                        tooltip2	.html(getToolTipHTML(d,"LEAF"))	
+                        .style("left", (d3.event.layerX) + "px")		
+                        .style("top", (d3.event.pageY - 65) + "px");	
+                    })					
+                .on("mouseout", function(d) {		
+                    tooltip2.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
                 });
-
-
+             
+                
             // year label
             svg.append("g")
                 .append("text")
@@ -497,13 +490,15 @@ function CompareWidget(config, bap) {
             return 1
         }
 
-        function getToolTipHTML(d) {
+        function getToolTipHTML(d,type) {
+
+            let detail = type == "BLOOM" ? `Bloom Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label> <br>` : `Leaf Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label>`
+
             let html =
-                `
-            <div>Year: <label>${d.key}</label> </div>
-            <div>Bloom Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label></div>
-            <div>Leaf Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label> </div>
-            `
+            `<p>
+                Year: <label>${d.key}</label> <br>
+                ${detail}
+            </p>`
             return html
         }
 

@@ -93,7 +93,7 @@ function HistogramWidget(config, bap) {
 
             let xAxis = d3.axisBottom(x)
                 .ticks(5)
-                .tickFormat(x => { return dateFromDay(2018, x * buk) })
+                .tickFormat(x => { return dateFromDay(2018, (x) * buk) })
 
             let yAxis = d3.axisLeft(y)
 
@@ -142,6 +142,13 @@ function HistogramWidget(config, bap) {
                 .attr("font-size", "11px")
                 .call(yAxis)
 
+
+            let div =  histogram
+                .append("div")	
+                .attr("class", "chartTooltip histogramToolTip")		
+                .style("opacity", 0)
+                .style("border", "3px solid rgb(56, 155, 198)");
+
             svg.selectAll(".bar")
                 .data(data)
                 .enter().append("rect")
@@ -152,31 +159,20 @@ function HistogramWidget(config, bap) {
                 .attr("width", width / (1 + (domain.xMax - domain.xMin)))
                 .attr("y", function (d) { return y(d.count); })
                 .attr("height", function (d) { return height - y(d.count); })
-                .on('mouseover', function (d) {
-                    var xPos, yPos;
-                    //Get this bar's x/y values, then augment for the tooltip
-                    try{
-                        xPos = event.clientX
-                        yPos = event.clientY - 50 
-                    }
-                    catch(error){
-                        xPos = parseFloat(d3.select(this).attr("x")) + 2 * buk;
-                        yPos = (height / 3) + pos.top;
-                    }
-
-                    histogram.select('.tooltipValues')
-                        .style('left', xPos + 'px')
-                        .style('top', yPos + 'px')
-                        .select('#value')
-                        .html(toolTipLabel(d, buk));
-
-                    //Show the tooltip
-                    histogram.select('.tooltipValues').classed('hidden', false);
-                })
-                .on('mouseout', function () {
-                    //Remove the tooltip
-                    histogram.select('.tooltipValues').classed('hidden', true);
+                .on("mouseover", function(d) {		
+                    div.transition()		
+                        .duration(200)		
+                        .style("opacity", .9);		
+                    div	.html(toolTipLabel(d, buk))	
+                        .style("left", (d3.event.layerX) + "px")		
+                        .style("top", (d3.event.layerY + 50) + "px");	
+                    })					
+                .on("mouseout", function(d) {		
+                    div.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
                 });
+
 
 
             // // set the gradient
@@ -321,10 +317,10 @@ function HistogramWidget(config, bap) {
 
             let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Count = values that occur ${dateFromDay(2018, d.day * buk - buk)} to ${dateFromDay(2018, d.day * buk - 1)} <br /> for all selected years (${startYear} to ${endYear}). <br />`
             if (buk == 1) {
-                return `  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count}`
+                return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
             }
             else {
-                return ` Days: <label> ${dateFromDay(2018, d.day * buk - buk)} </label> to <label> ${dateFromDay(2018, d.day * buk - 1)} </label><br />${count} `
+                return `<p> Days: <label> ${dateFromDay(2018, (d.day * buk) +1)} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
             }
         }
 
