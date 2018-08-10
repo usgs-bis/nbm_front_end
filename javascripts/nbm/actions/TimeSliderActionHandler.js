@@ -53,7 +53,7 @@ GlobalTimeSlider.prototype.initialize = function () {
 
     var sliderTooltip = function (event, ui) {
         var curValue = ui.value || time.defaultDate;
-        var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip = '<div class="gts-tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
         that.ts.find('.ui-slider-handle').html(tooltip);
     };
 
@@ -67,7 +67,7 @@ GlobalTimeSlider.prototype.initialize = function () {
 
 
     var curValue = time.defaultDate;
-    var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+    var tooltip = '<div class="gts-tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
     that.ts.find('.ui-slider-handle').html(tooltip);
 
     that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass( "glyphicon glyphicon-tag customSliderHandle" );
@@ -139,7 +139,7 @@ GlobalTimeSlider.prototype.initialize = function () {
                 }
             })
             var curValue = ui.value || time.defaultDate;
-            var tooltip = '<div class="tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+            var tooltip = '<div class="gts-tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
             that.ts.find('.ui-slider-handle').html(tooltip);
             bioScape.updateState()
         }

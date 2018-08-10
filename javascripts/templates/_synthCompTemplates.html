@@ -187,20 +187,20 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
 </div>
 {{/if}}
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
+        {{if !leaveOutJson}}
+        <div id="{{:id}}JsonDiv" class ="jsonDiv">
+                <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
+                class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
+                    <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
+                </button>
+                <button onclick="actionHandlerHelper.expandBap('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
+                class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="Compare charts in a new window.">
+                    <span class="glyphicon glyphicon-resize-full bootstrapGlyph" aria-hidden="true"></span>
+                </button>
+        </div>
+    {{/if}}
         {{if hasInputs}}
             <div id="{{:id}}Inputs">
-                {{if !leaveOutJson}}
-                    <div id="{{:id}}JsonDiv" class ="jsonDiv">
-                            <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
-                            class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
-                                <span class="glyphicon glyphicon glyphicon-console bootstrapGlyph" aria-hidden="true"></span>
-                            </button>
-                            <button onclick="actionHandlerHelper.expandBap('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
-                            class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="Compare charts in a new window.">
-                                <span class="glyphicon glyphicon-resize-full bootstrapGlyph" aria-hidden="true"></span>
-                            </button>
-                    </div>
-                {{/if}}
                 
                 <div style="cursor: pointer;" id="{{:id}}AnalysisInputsSection" class="contextHeader inputExpander AnalysisInputsSection" data-section="{{:id}}AnalysisInputs">
                     <span id="{{:id}}AnalysisInputsControl">&#9658;</span>
@@ -279,7 +279,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 <script id="boxAndWhiskerTemplate" type="text/x-jsrender">
     <div class="bapChart">
         <div class="bapHeader">
-            <div class="row" style="margin-top: 15px;">
+            <div class="row" style="margin-top: 35px;">
                     <div class="col col-md-12 ">
                         <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
                         <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
@@ -331,7 +331,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 
 <script id="comparePlotTemplate" type="text/x-jsrender">
     <div class="bapChart">
-        <div class="row" style="margin-top: 15px;">
+        <div class="row" style="margin-top: 35px;">
                 <div class="col col-md-12 ">
                     <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
                     <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>

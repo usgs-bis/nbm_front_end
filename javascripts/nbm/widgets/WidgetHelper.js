@@ -64,8 +64,8 @@ WidgetHelper.prototype.addTimeSlider = function () {
             t2Value = ui.values[1]
         }
 
-        var tooltip1 = '<div class="tooltip"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
-        var tooltip2 = '<div class="tooltip"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip1 = '<div class="gts-tooltip"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip2 = '<div class="gts-tooltip"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
         ts.find('span:eq( 0 )').html(tooltip1);
         ts.find('span:eq( 1 )').html(tooltip2);
     };

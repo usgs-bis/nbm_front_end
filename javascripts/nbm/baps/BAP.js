@@ -213,13 +213,13 @@ BAP.prototype.bindClicks = function () {
         var id = $(this).data('section');
         let toggle = toggleContainer(id);
         if (!that.priority) {
-            $(`#${that.id}AnalysisInputsSection`).hide()
+            $(`#${that.id}Inputs`).hide()
         }
         that.updateState(toggle)
     });
     $("#" + this.config.id + "BapCase div.inputExpander").on('click', function () {
         var id = $(this).data('section');
-        let toggle = toggleContainer(id);
+        toggleContainer(id);
     });
 
     $("#" + this.config.id).on('click', function (e) {
@@ -408,7 +408,7 @@ BAP.prototype.loadBapState = function () {
                 }, 1000)
             }
             else {
-                $(`#${that.id}AnalysisInputsSection`).hide()
+                $(`#${that.id}Inputs`).hide()
 
                 // was getting a weird svg render in the colapsed contaner
                // if (initBap.enabled) {
@@ -581,10 +581,10 @@ BAP.prototype.setPriorityBap = function (checked) {
             }
             catch (error) { }
             if (bap != that.id) {
-                //$(`#${bap}Inputs`).hide()
-                $(`#${bap}AnalysisInputsSection`).hide()
-
-                
+               // $(`#${that.id}AnalysisInputsSection`).hide()
+                $(`#${bap}Inputs`).hide()
+            
+ 
             }
         })
 
@@ -593,8 +593,8 @@ BAP.prototype.setPriorityBap = function (checked) {
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
 
         showContainer(that.id + "BAP")
-        //$(`#${that.id}Inputs`).show()
-        $(`#${that.id}AnalysisInputsSection`).show()
+        $(`#${that.id}Inputs`).show()
+        //$(`#${that.id}AnalysisInputsSection`).show()
         
         that.updateState(true)
 
