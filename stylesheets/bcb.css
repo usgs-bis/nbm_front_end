@@ -1218,21 +1218,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     stroke: rgb(10,10,15,.2);
     stroke-width: 1;
 }
-.tooltipValues {
 
-    background: rgb(204, 204, 204);
-    font-size: 11px;
-    color: black;
-    border-radius: 4px;
-    padding: .25em;
-    pointer-events: none;
-    position: fixed;
-    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
-}
-.tooltipValues p{
-    margin: 5px;
-}
 .hidden {
     display: none;
 }
@@ -1792,3 +1778,23 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
   .comparePlot g g path{
     stroke-width: 1;
   }
+
+  div.chartTooltip {	
+    position: absolute;
+    background: rgb(204, 204, 204);
+    font-size: 11px;
+    color: black;
+    border-radius: 4px;
+    padding: .25em;
+    pointer-events: none;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+}
+
+div.chartTooltip label {	
+    font-weight: 700;
+}
+
+div.chartTooltip p{
+    margin: 5px;
+}

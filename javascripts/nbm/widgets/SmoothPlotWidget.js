@@ -184,6 +184,11 @@ function SmoothPlotWidget(config, bap) {
             .attr("stop-color", function (d) { return d.color; });
 
 
+            let div =  ridgelineplot
+            .append("div")	
+            .attr("class", "chartTooltip")				
+            .style("opacity", 0);
+
             // area fill
             svg.append("path")
                 //.attr("fill", "rgb(56, 155, 198)")
@@ -199,31 +204,19 @@ function SmoothPlotWidget(config, bap) {
                         .y0(height)
                         (year.values)
                 })
-                .on('mouseover', function (d) {
-                    var xPos, yPos;
-                    //Get this bar's x/y values, the augment for the tooltip
-                    try{
-                        xPos = event.clientX
-                        yPos = event.clientY - 50 
-                    }
-                    catch(error){
-                        xPos = parseFloat(d3.select(this).attr("x")) + ((width + margin.left + margin.right) * 0.5);
-                        yPos = pos.top + (hoverYPostionFactor(d, dataNest) * 32) + 50;
-                    }
-                    ridgelineplot.select('.tooltipValues')
-                        .style('left', xPos + 'px')
-                        .style('top', yPos + 'px')
-                        .select('#value')
-                        .html(d.key);
-
-                    //Show the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', false);
-                })
-                .on('mouseout', function () {
-                    //Remove the tooltip
-                    ridgelineplot.select('.tooltipValues').classed('hidden', true);
-                });;
-
+                .on("mouseover", function(d) {		
+                    div.transition()		
+                        .duration(200)		
+                        .style("opacity", .9);		
+                    div	.html(toolTipLabel(d, buk))	
+                        .style("left", (d3.event.layerX) + "px")		
+                        .style("top", (d3.event.layerY + 50) + "px");	
+                    })					
+                .on("mouseout", function(d) {		
+                    div.transition()		
+                        .duration(500)		
+                        .style("opacity", 0);	
+                });
 
             // year label
             svg.append("g")
@@ -361,6 +354,10 @@ function SmoothPlotWidget(config, bap) {
                 }
             }
             return 1
+        }
+
+        function toolTipLabel(d, buk) {
+            return "<p>Year: <label>" + d.key + "</label></p>"
         }
 
         updateChart(chartData, bucketSize)
