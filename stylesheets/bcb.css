@@ -1781,7 +1781,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 
   div.chartTooltip {	
     position: absolute;
-    background: rgb(204, 204, 204);
+    background: rgb(255, 255, 255);
     font-size: 11px;
     color: black;
     border-radius: 4px;
