@@ -320,7 +320,7 @@ function HistogramWidget(config, bap) {
                 return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
             }
             else {
-                return `<p> Days: <label> ${dateFromDay(2018, d.day * buk )} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
+                return `<p> Days: <label> ${dateFromDay(2018, (d.day * buk) +1)} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
             }
         }
 
