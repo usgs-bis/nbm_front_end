@@ -477,7 +477,7 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
 
     // put html back in left container
     //$(`#${id}BAP #${id}Inputs`).show()
-    $(`#${id}BAP .jsonDiv`).show()
+    //$(`#${id}BAP .jsonDiv`).show()
     $(`#${id}BAP`).appendTo($(`#${id}BapCase`))
     
     // unbind any handlers on the popup 
@@ -501,42 +501,46 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
 ActionHandlerHelper.prototype.expandBap = function (id){
 
     $("#" + id + 'BAPControl').html('&#9658;');
-    $(`.tooltip`).hide()
-    $(`#GlobalTimeControl .tooltip`).show()
+    $(`.tooltip`).remove()
 
-    $(`#${id}BAP .jsonDiv`).hide()
+    //$(`#${id}BAP .jsonDiv`).hide()
     //$(`#${id}BapCase .layerExpander`).css("pointer-events", "none")
+    if(!$(`#compareBapModal${id}`).length){
+        
+        $("#compareBapModalHolder").append(`<div id="compareBapModal${id}" class="compareBapModal-container"></div>`)
 
-    $("#compareBapModalHolder").append(`<div id="compareBapModal${id}" class="compareBapModal-container"></div>`)
-
-    let compareBapModal = $(`#compareBapModal${id}`)
-    let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
-    compareBapModal.html(modalHtml)
-   
-    //$(`#${id}BAP #${id}Inputs`).hide()
-    $(`#${id}BAP`).appendTo($(".compareBap"))
-    compareBapModal.find(".compareModalTitle").text($(`#${id}BapCase .bapTitle`).text())
-
-
-    compareBapModal.resizable({
-        aspectRatio: true,
-        maxWidth: 700,
-        maxHeight: 933,
-        minHeight:400,
-        minWidth:300
-      });
-
+        let compareBapModal = $(`#compareBapModal${id}`)
     
-    compareBapModal.resizable({
-      
-      });
+        compareBapModal.css("left",`${screen.width - (500 + parseInt(Math.random()*100)) }px`)
+        let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
+        compareBapModal.html(modalHtml)
+       
+        //$(`#${id}BAP #${id}Inputs`).hide()
+        $(`#${id}BAP`).appendTo($(".compareBap"))
+        compareBapModal.find(".compareModalTitle").text($(`#${id}BapCase .bapTitle`).text())
+    
+    
+        compareBapModal.resizable({
+            aspectRatio: true,
+            maxWidth: 700,
+            maxHeight: 933,
+            minHeight:400,
+            minWidth:300
+          });
+    
+        
+        compareBapModal.resizable({
+          
+          });
+    
+        compareBapModal.draggable({});
+    
+        $("#buildReportPdf").prop("disabled",true);
+    
+        compareBapModal.show()
+        $(`#${id}BAP`).show()
+    }
 
-    compareBapModal.draggable({});
-
-    $("#buildReportPdf").prop("disabled",true);
-
-    compareBapModal.show()
-    $(`#${id}BAP`).show()
     
 }
 
