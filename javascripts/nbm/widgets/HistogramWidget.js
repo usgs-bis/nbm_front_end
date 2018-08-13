@@ -315,7 +315,7 @@ function HistogramWidget(config, bap) {
                 percentage = percentage.toString();
             }
 
-            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Count = values that occur ${dateFromDay(2018, d.day * buk - buk)} to ${dateFromDay(2018, d.day * buk - 1)} <br /> for all selected years (${startYear} to ${endYear}). <br />`
+            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Count = values that occur ${dateFromDay(2018, d.day * buk - buk)} to ${dateFromDay(2018, d.day * buk - 1)} for all selected years (${startYear} to ${endYear}). <br />`
             if (buk == 1) {
                 return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
             }

@@ -75,6 +75,9 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
             bap.initializeBAP(headerBapId);
             that.addHeaderBaptoSC(bap);
             return Promise.resolve();
+        })
+        .catch(function(ex) {
+            console.log("Getting an error", ex);
         });
 };
 

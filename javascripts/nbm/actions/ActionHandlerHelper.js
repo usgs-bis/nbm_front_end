@@ -602,6 +602,7 @@ ActionHandlerHelper.prototype.initializeAllBaps = function () {
                             title: myJson.title
                         };
                     }).catch(function(ex) {
+                        console.log("error initilizing bap")
                     }));
             });
         }
