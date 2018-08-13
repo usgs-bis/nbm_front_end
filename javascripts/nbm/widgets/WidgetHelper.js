@@ -102,6 +102,9 @@ WidgetHelper.prototype.getBufferedFeature = function (feature) {
                 actionHandlerHelper.bufferedFeature = bufferedFeature
                 return bufferedFeature
             });
+        })
+        .catch(function(ex) {
+            console.log("Getting an error", ex);
         });
 };
 

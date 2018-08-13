@@ -1790,6 +1790,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     pointer-events: none;
     -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
     box-shadow: 4px 4px 10px rgba(0, 0, 0, .4);
+    z-index: 9999;
 }
 
 div.chartTooltip label {	
