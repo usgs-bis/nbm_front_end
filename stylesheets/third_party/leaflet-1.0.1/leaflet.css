@@ -321,6 +321,11 @@
 .leaflet-touch .leaflet-control-zoom-out {
 	font-size: 24px;
 	}
+.leaflet-control-zoom{
+		position: fixed;
+		top: 55px;
+		right: 20px
+	}
 
 
 /* layers control */
