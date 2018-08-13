@@ -164,7 +164,7 @@ function HistogramWidget(config, bap) {
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(toolTipLabel(d, buk))	
-                        .style("left", (d3.event.layerX) + "px")		
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX : d3.event.layerX - 100  ) + "px")		
                         .style("top", (d3.event.layerY + 50) + "px");	
                     })					
                 .on("mouseout", function(d) {		
