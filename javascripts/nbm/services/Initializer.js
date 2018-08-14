@@ -229,10 +229,10 @@ var Initializer = (function(initializer) {
             $("#userHelpLink").attr("data-target", "#disclaimerModal").show();
         }
 
-        if (bioscapeJson.elevationSource){
-            let timeout = bioscapeJson.elevationTimeout
+        if (bioscapeJson.elevation.elevationSource){
+            let timeout = bioscapeJson.elevation.elevationTimeout
             timeout = timeout ? timeout : 1000
-            startElevationService(bioscapeJson.elevationSource,timeout)
+            startElevationService(bioscapeJson.elevation.elevationSource,timeout)
         }
 
         loadBioScape(bioscapeJson, state);
