@@ -107,7 +107,7 @@ function CompareWidget(config, bap) {
                         alreadySentBuffer = true;
                         widgetHelper.getBufferedFeature(inputFeature)
                             .then(function (bufferedFeature) {
-                                if (!bufferedFeature.geometry) {
+                                if (!bufferedFeature || !bufferedFeature.geometry) {
                                     setError(' An error has occured. If the problem continues, please contact site admin.');
                                 }
                                 else {

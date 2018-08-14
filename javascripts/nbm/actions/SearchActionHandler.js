@@ -60,6 +60,9 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
     bap.showSpinner();
     return sendJsonAjaxRequest(myServer + "/bap/get", myMap)
         .then(function (myJson) {
+            if (myJson.error) {
+                console.log("Got an error: ", myJson);
+            }
             that.spinner.remove();
             bap.config = myJson;
             bap.sbId = myJson.id;
@@ -155,6 +158,13 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                                 myMap.featureValue = myMap.featureValue.substring(numChunks * WAF_LIMIT, myMap.featureValue.length);
                                 return that.sendPostRequest(myServer + "/bap/get", myMap)
                                     .then(function (data) {
+                                        if (data.error) {
+                                            console.log("Got an error: ", data);
+                                            showErrorDialog('There was an error analysing this Area of Interest. ' + 
+                                            'Reselct the A.O.I to reload all analysis packages. ', false);
+                                            bioScape.bapLoading(data.requestParams.id,false)
+                                            return Promise.resolve();
+                                        }
                                         if(data.error) return Promise.resolve();
                                         var bap = that.getBapValue(data.id);
                                         bap.reconstruct(data, false);
@@ -183,6 +193,13 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                     if (DEBUG_MODE) console.log("Sending 1 request");
                     promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
                         .then(function(data) {
+                            if (data.error) {
+                                console.log("Got an error: ", data);
+                                showErrorDialog('There was an error analysing this Area of Interest. ' + 
+                                'Reselct the A.O.I to reload all analysis packages. ', false);
+                                bioScape.bapLoading(data.requestParams.id,false)
+                                return Promise.resolve();
+                            }
                             var bap = that.getBapValue(data.id);
                             bap.reconstruct(data, false);
 

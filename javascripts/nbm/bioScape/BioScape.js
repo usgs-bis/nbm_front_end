@@ -11,7 +11,7 @@
  *  summarization layers to use for this bioScape
  * @constructor
  */
-var BioScape = function (id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams, initBapState) {
+var BioScape = function (id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams, initBapState,defaultPriority) {
     this.id = id;
     this.title = title;
     this.summary = summary;
@@ -27,6 +27,7 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
     this.additionalParams = additionalParams;
     this.pendingLayers=[]
     this.loadingBaps = []
+    this.defaultPriority = defaultPriority
 
     /**
      * Send a json request to ScienceBase for the definition of 'Bioscape'. Set the definition if there is a
