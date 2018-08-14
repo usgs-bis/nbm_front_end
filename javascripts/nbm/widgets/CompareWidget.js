@@ -96,7 +96,7 @@ function CompareWidget(config, bap) {
             if (data.length != 2 || !data[0] || !data[1]) {
                 setError(' An error has occured. If the problem continues, please contact site admin.');
             }
-            else{
+            else {
                 for (let i = values[0]; i <= values[1]; i++) {
                     if (!data[0][i] || !data[1][i]) {
                         missingYears.push(i)
@@ -174,7 +174,7 @@ function CompareWidget(config, bap) {
             let c = document.getElementById(`myCanvas${id}`);
             let ctx = c.getContext('2d');
             ctx.drawSvg(svg.html(), 0, 0, 500, svg.height());
-    
+
             $("#canvasHolder").html("")
 
             return {
@@ -267,7 +267,7 @@ function CompareWidget(config, bap) {
 
 
             let svgContainer = comparePlot.select(`#comparePlotChart${id}`)
-            .append("svg")   
+                .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (80 + parseInt(dataNest.length * 35)))
                 .classed("svg-content-responsive", true)
@@ -279,8 +279,8 @@ function CompareWidget(config, bap) {
                 .data(dataNest)
                 .enter()
                 .append("g")
-                .attr("transform",function (d, i) { return "translate(" + margin.left + "," + parseInt(i *30 ) + ")"})
-               // .attr("transform", "translate(" + margin.left + ",2)")
+                .attr("transform", function (d, i) { return "translate(" + margin.left + "," + parseInt(i * 30) + ")" })
+                // .attr("transform", "translate(" + margin.left + ",2)")
                 .each(function (year) {
                     year.y = d3.scaleLinear()
                         .domain([0, 50])
@@ -309,18 +309,18 @@ function CompareWidget(config, bap) {
                         .y(function (d) { return year.y(d.value); })
                         (year.values)
                 })
-                
 
-            let tooltip1 = comparePlot
-                .append("div")	
-                .attr("class", "chartTooltip comparePlotToolTipRed")				
+
+            let tooltip1 = comparePlot.select(`#comparePlotChart${id}`)
+                .append("div")
+                .attr("class", "chartTooltip comparePlotToolTipRed")
                 .style("opacity", 0)
                 .style("border", "3px solid red");
 
-            
-            let tooltip2 = comparePlot
-                .append("div")	
-                .attr("class", "chartTooltip comparePlotToolTipGreen")				
+
+            let tooltip2 = comparePlot.select(`#comparePlotChart${id}`)
+                .append("div")
+                .attr("class", "chartTooltip comparePlotToolTipGreen")
                 .style("opacity", 0)
                 .style("border", "3px solid green");
 
@@ -334,18 +334,18 @@ function CompareWidget(config, bap) {
                 })
                 .attr("cy", 37)
                 .attr("fill", "red")
-                .on("mouseover", function(d) {		
-                    tooltip1.transition()		
-                        .duration(200)		
+                .on("mouseover", function (d) {
+                    tooltip1.transition()
+                        .duration(200)
                         .style("opacity", .9);
-                        tooltip1	.html(getToolTipHTML(d,"BLOOM"))	
-                        .style("left", (d3.event.layerX) + "px")
-                        .style("top", (d3.event.pageY - 65) + "px")
-                    })					
-                .on("mouseout", function(d) {		
-                    tooltip1.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                    tooltip1.html(getToolTipHTML(d, "BLOOM"))
+                        .style("left", (d3.event.layerX < 325 ? d3.event.layerX : d3.event.layerX - 125) + "px")
+                        .style("top", (d3.event.layerY) + "px");
+                })
+                .on("mouseout", function (d) {
+                    tooltip1.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
 
 
@@ -356,21 +356,30 @@ function CompareWidget(config, bap) {
                 })
                 .attr("cy", 37)
                 .attr("fill", "green")
-                .on("mouseover", function(d) {		
-                    tooltip2.transition()		
-                        .duration(200)		
-                        .style("opacity", .9);		
-                        tooltip2	.html(getToolTipHTML(d,"LEAF"))	
-                        .style("left", (d3.event.layerX) + "px")		
-                        .style("top", (d3.event.pageY - 65) + "px");	
-                    })					
-                .on("mouseout", function(d) {		
-                    tooltip2.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                .on("mouseover", function (d) {
+                    tooltip2.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip2.html(getToolTipHTML(d, "LEAF"))
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX : d3.event.layerX - 125) + "px")
+                        .style("top", (d3.event.layerY) + "px");
+                })
+                .on("mouseout", function (d) {
+                    tooltip2.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
-             
-                
+
+            svg.append("text")
+                .attr("x", function (d) {
+                    return x(((d.values[1].DOY + d.values[0].DOY) / 2) - 4);
+                })
+                .attr("y", 27)
+                .attr("dy", ".35em")
+                .attr("font-size", "12px")
+                .text(function (d) { return parseInt((d.values[1].DOY - d.values[0].DOY)) + " Days" });
+
+
             // year label
             svg.append("g")
                 .append("text")
@@ -490,12 +499,12 @@ function CompareWidget(config, bap) {
             return 1
         }
 
-        function getToolTipHTML(d,type) {
+        function getToolTipHTML(d, type) {
 
             let detail = type == "BLOOM" ? `Bloom Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label> <br>` : `Leaf Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label>`
 
             let html =
-            `<p>
+                `<p>
                 Year: <label>${d.key}</label> <br>
                 ${detail}
             </p>`

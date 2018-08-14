@@ -161,7 +161,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                                         if (data.error) {
                                             console.log("Got an error: ", data);
                                             showErrorDialog('There was an error analysing this Area of Interest. ' + 
-                                            'Reselct the A.O.I to reload all analysis packages. ', false);
+                                            'Reselect the A.O.I. to reload all analysis packages. ', false);
                                             bioScape.bapLoading(data.requestParams.id,false)
                                             return Promise.resolve();
                                         }
@@ -196,7 +196,7 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                             if (data.error) {
                                 console.log("Got an error: ", data);
                                 showErrorDialog('There was an error analysing this Area of Interest. ' + 
-                                'Reselct the A.O.I to reload all analysis packages. ', false);
+                                'Reselect the A.O.I. to reload all analysis packages. ', false);
                                 bioScape.bapLoading(data.requestParams.id,false)
                                 return Promise.resolve();
                             }
