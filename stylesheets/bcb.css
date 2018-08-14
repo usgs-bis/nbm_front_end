@@ -1114,6 +1114,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .ridgeLinePlot {
     width: 100%;
+    position: relative;
 }
 .ridgeLinePlot svg {
     overflow: visible;
@@ -1799,4 +1800,8 @@ div.chartTooltip label {
 
 div.chartTooltip p{
     margin: 5px;
+}
+
+.comparePlotChart{
+    position: relative;
 }
