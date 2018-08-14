@@ -348,7 +348,8 @@ BAP.prototype.initializeBAP = function () {
         if (this.loadBapState()) { } // bap state loaded successfully 
         else {
             // bap state did not load or there is no state to load 
-            if (((that.actionRef || {}).config || {}).priority == this.id) {
+            const p = ((that.actionRef || {}).config || {}).priority
+            if (p == this.id || (!p && bioScape.defaultPriority == this.id)) {
                 $(`#${that.id}BapCase #priorityBap${that.id}`).click()
             }
             else {
