@@ -34,7 +34,7 @@ var BioScapeParser = (function(bioScapeParser) {
                 showErrorDialog('Unable to load the captured state. ', false);
             }
         }
-        return new BioScape(state.bioscape ? state.bioscape : data.id, data.title, data.summary, data.rightPanelMessage, groups, summarizationLayers, state.customBioscape, additionalParams, bap, data.defaultPriority);
+        return new BioScape(state.bioscape ? state.bioscape : data.id, data, groups, summarizationLayers, state.customBioscape, additionalParams, bap);
 
 }
 

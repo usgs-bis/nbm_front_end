@@ -11,15 +11,15 @@
  *  summarization layers to use for this bioScape
  * @constructor
  */
-var BioScape = function (id, title, summary, rightPanelMessage, sections, summarizationLayers, customBioscape, additionalParams, initBapState,defaultPriority) {
+var BioScape = function (id, data, sections, summarizationLayers, customBioscape, additionalParams, initBapState) {
     this.id = id;
-    this.title = title;
-    this.summary = summary;
+    this.title = data.title;
+    this.summary = data.summary;
     this.sections = sections;
     this.summarizationLayers = summarizationLayers;
     this.definitionUrl = 'https://www.sciencebase.gov/catalog/item/5667124be4b06a3ea36c8be6';
     this.definition = 'There is no definition available currently, ScienceBase was unreachable.';
-    this.rightPanelMessage = rightPanelMessage;
+    this.rightPanelMessage = data.rightPanelMessage;
     this.customBioscape = customBioscape;
     setDefinition(this);
     this.state = {baps:[],layers:[]}
@@ -27,7 +27,7 @@ var BioScape = function (id, title, summary, rightPanelMessage, sections, summar
     this.additionalParams = additionalParams;
     this.pendingLayers=[]
     this.loadingBaps = []
-    this.defaultPriority = defaultPriority
+    this.defaultPriority = data.defaultPriority
 
     /**
      * Send a json request to ScienceBase for the definition of 'Bioscape'. Set the definition if there is a
