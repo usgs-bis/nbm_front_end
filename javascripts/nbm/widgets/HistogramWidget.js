@@ -25,7 +25,7 @@ function HistogramWidget(config, bap) {
             
             let c = document.getElementById(`myCanvas${id}`);
             let ctx = c.getContext('2d');
-            ctx.drawSvg($(`#histogramChart${id} .svg-container-histogramPlot`).html(), 0, 0, 800, 800);
+            ctx.drawSvg($(`#histogramChart${id} .svg-container-plot`).html(), 0, 0, 800, 800);
             
             // clean up
             d3.select(`#histogramPlot${id}`).select("svg").attr("height",null)
@@ -60,7 +60,7 @@ function HistogramWidget(config, bap) {
         $(selector).find(".ridgeLinePlotRangeValue").html(3);
         $(selector).find(".ridgeLinePlotRange").val(3);
 
-        d3.select(`#histogramPlot${id}`).select(".svg-container-histogramPlot").remove()
+        d3.select(`#histogramPlot${id}`).select(".svg-container-plot").remove()
 
 
         let margin = { top: 20, right: 20, bottom: 25, left: 60 },
@@ -115,11 +115,11 @@ function HistogramWidget(config, bap) {
 
             histogram.transition()
 
-            histogram.select(".svg-container-histogramPlot").remove()
+            histogram.select(".svg-container-plot").remove()
 
             var svg = histogram.select(`#histogramChart${id}`)
                 .append("div")
-                .classed("svg-container-histogramPlot", true)
+                .classed("svg-container-plot", true)
                 .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
