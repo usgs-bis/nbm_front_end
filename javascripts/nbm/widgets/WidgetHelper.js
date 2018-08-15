@@ -10,7 +10,7 @@ WidgetHelper.prototype.getWidget = function (config, bap) {
         return new HierarchyByPixelWidget(config);
     } else if (config.type === "hierarchyTable") {
         return new HierarchyTableWidget(config);
-    } else if (config.type === "eco") {
+    } else if (config.type === "eco_v2") {
         return new EcosystemProtectionWidget(config);
     } else if (config.type === "species") {
         return new SpeciesProtectionWidget(config);

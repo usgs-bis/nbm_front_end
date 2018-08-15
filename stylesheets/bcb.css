@@ -1656,7 +1656,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     padding: 10px;
 }
 .inputExpander{
-    display: inline-block;
+    display: flex;
     color: white !important;
     font-size: 16px;
 }
