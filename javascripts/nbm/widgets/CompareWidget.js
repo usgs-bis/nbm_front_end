@@ -175,7 +175,7 @@ function CompareWidget(config, bap) {
 
             let c = document.getElementById(`myCanvas${id}`);
             let ctx = c.getContext('2d');
-            ctx.drawSvg(svg.html(), 0, 0, 500, svg.height());
+            ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
 
             $("#canvasHolder").html("")
 
@@ -269,6 +269,8 @@ function CompareWidget(config, bap) {
 
 
             let svgContainer = comparePlot.select(`#comparePlotChart${id}`)
+                .append("div")
+                .classed("svg-container-plot", true)
                 .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (80 + parseInt(dataNest.length * 35)))
