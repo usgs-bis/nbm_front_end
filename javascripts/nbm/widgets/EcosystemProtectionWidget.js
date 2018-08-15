@@ -16,6 +16,7 @@ var EcosystemProtectionWidget = function (chartData) {
     };
 
     this.initializeWidget = function() {
+        return
         initializeEcoProtectionChart();
         initializeGapCharts();
         initializeCoverageChart();
