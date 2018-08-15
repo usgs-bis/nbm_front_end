@@ -38,6 +38,12 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
         });
 
         let checkRange = function (min, max) {
+
+            if ((max - min) <= 0) {
+                $(selector).find('#bapRangeSlider').html('Please select a range to analyze.');
+                button.hide()
+            }
+
             if (time.startDate > min || time.endDate < max) {
                 $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate);
                 button.hide()
@@ -53,10 +59,6 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
             if (ui) {
                 var min = ui.values[0];
                 var max = ui.values[1];
-
-                if ((max - min) < 0) {
-                    return false;
-                }
 
                 checkRange(min, max)
             }

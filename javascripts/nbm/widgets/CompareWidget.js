@@ -40,7 +40,7 @@ function CompareWidget(config, bap) {
             }
           
             else if (time.startDate > min || time.endDate < max) {
-                $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate + '<br> Available Range: ' + min + ' to ' + max);
+                $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate);
                 button.hide()
             }
             else {

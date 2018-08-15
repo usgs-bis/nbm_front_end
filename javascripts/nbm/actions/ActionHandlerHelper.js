@@ -476,8 +476,7 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
     if(! $(`#compareBapModal${id}`).length) return false
 
     // put html back in left container
-    //$(`#${id}BAP #${id}Inputs`).show()
-    //$(`#${id}BAP .jsonDiv`).show()
+    $(`#${id}BAP .bap-expand-button`).show()
     $(`#${id}BAP`).appendTo($(`#${id}BapCase`))
     
     // unbind any handlers on the popup 
@@ -492,7 +491,6 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
 
     // switch colapse icon 
     $("#" + id + 'BAPControl').html('&#9660;');
-    //$(`#${id}BapCase .layerExpander`).css("pointer-events", "unset")
    
     return true
 }
@@ -503,8 +501,7 @@ ActionHandlerHelper.prototype.expandBap = function (id){
     $("#" + id + 'BAPControl').html('&#9658;');
     $(`.tooltip`).remove()
 
-    //$(`#${id}BAP .jsonDiv`).hide()
-    //$(`#${id}BapCase .layerExpander`).css("pointer-events", "none")
+    $(`#${id}BAP .bap-expand-button`).hide()
     if(!$(`#compareBapModal${id}`).length){
         
         $("#compareBapModalHolder").append(`<div id="compareBapModal${id}" class="compareBapModal-container"></div>`)
@@ -515,7 +512,6 @@ ActionHandlerHelper.prototype.expandBap = function (id){
         let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
         compareBapModal.html(modalHtml)
        
-        //$(`#${id}BAP #${id}Inputs`).hide()
         $(`#${id}BAP`).appendTo($(".compareBap"))
         compareBapModal.find(".compareModalTitle").text($(`#${id}BapCase .bapTitle`).text())
     
@@ -527,8 +523,7 @@ ActionHandlerHelper.prototype.expandBap = function (id){
             minHeight:400,
             minWidth:300
           });
-    
-        
+
         compareBapModal.resizable({
           
           });
