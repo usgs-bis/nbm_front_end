@@ -184,7 +184,7 @@ function SmoothPlotWidget(config, bap) {
             .attr("stop-color", function (d) { return d.color; });
 
 
-            let div =  ridgelineplot
+            let div =  ridgelineplot.select(`#ridgeLinePlotChart${id}`)
             .append("div")	
             .attr("class", "chartTooltip smoothPlotToolTip")				
             .style("opacity", 0)
@@ -194,7 +194,8 @@ function SmoothPlotWidget(config, bap) {
             svg.append("path")
                 //.attr("fill", "rgb(56, 155, 198)")
                 .attr("fill",`url(#area-gradient${id})`)
-                .attr("stroke", "rgb(0, 0, 0)")
+                .attr("stroke", "rgb(0, 0, 0,.2)")
+                .attr("stroke-width", "1")
                 .attr("class", "area")
                 .attr("clip-path", "url(#cut-off-path)")
                 .attr("d", function (year) {
@@ -205,15 +206,21 @@ function SmoothPlotWidget(config, bap) {
                         .y0(height)
                         (year.values)
                 })
-                .on("mouseover", function(d) {		
+                .on("mouseover", function(d) {
+                    d3.select(this)
+                    .attr("stroke-width", "2")
+                    .attr("stroke", "rgb(0, 0, 0,1)");
                     div.transition()		
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(toolTipLabel(d, buk))	
                         .style("left", (d3.event.layerX) + "px")		
-                        .style("top", (d3.event.layerY + 50) + "px");	
+                        .style("top", (d3.event.layerY + 25) + "px");	
                     })					
-                .on("mouseout", function(d) {		
+                .on("mouseout", function(d) {
+                    d3.select(this)
+                    .attr("stroke-width", "1")
+                    .attr("stroke", "rgb(0, 0, 0,.2)");
                     div.transition()		
                         .duration(500)		
                         .style("opacity", 0);	

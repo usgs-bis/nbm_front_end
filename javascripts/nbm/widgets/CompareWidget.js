@@ -33,8 +33,14 @@ function CompareWidget(config, bap) {
         });
 
         let checkRange = function (min, max) {
-            if (time.startDate > min || time.endDate < max) {
-                $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate);
+
+            if ((max - min) <= 0) {
+                $(selector).find('#bapRangeSlider').html('Please select a range to analyze.');
+                button.hide()
+            }
+          
+            else if (time.startDate > min || time.endDate < max) {
+                $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate + '<br> Available Range: ' + min + ' to ' + max);
                 button.hide()
             }
             else {
@@ -48,10 +54,6 @@ function CompareWidget(config, bap) {
             if (ui) {
                 var min = ui.values[0];
                 var max = ui.values[1];
-
-                if ((max - min) < 0) {
-                    return false;
-                }
 
                 checkRange(min, max)
             }
@@ -335,14 +337,16 @@ function CompareWidget(config, bap) {
                 .attr("cy", 37)
                 .attr("fill", "red")
                 .on("mouseover", function (d) {
+                    d3.select(this).attr("r", 10)
                     tooltip1.transition()
                         .duration(200)
                         .style("opacity", .9);
                     tooltip1.html(getToolTipHTML(d, "BLOOM"))
-                        .style("left", (d3.event.layerX < 325 ? d3.event.layerX : d3.event.layerX - 125) + "px")
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
                 .on("mouseout", function (d) {
+                    d3.select(this).attr("r", 8)
                     tooltip1.transition()
                         .duration(500)
                         .style("opacity", 0);
@@ -357,14 +361,16 @@ function CompareWidget(config, bap) {
                 .attr("cy", 37)
                 .attr("fill", "green")
                 .on("mouseover", function (d) {
+                    d3.select(this).attr("r", 10)
                     tooltip2.transition()
                         .duration(200)
                         .style("opacity", .9);
                     tooltip2.html(getToolTipHTML(d, "LEAF"))
-                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX : d3.event.layerX - 125) + "px")
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
                 .on("mouseout", function (d) {
+                    d3.select(this).attr("r", 8)
                     tooltip2.transition()
                         .duration(500)
                         .style("opacity", 0);
