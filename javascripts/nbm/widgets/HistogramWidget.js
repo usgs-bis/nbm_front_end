@@ -143,7 +143,7 @@ function HistogramWidget(config, bap) {
                 .call(yAxis)
 
 
-            let div =  histogram
+            let div =  histogram.select(`#histogramChart${id}`)
                 .append("div")	
                 .attr("class", "chartTooltip histogramToolTip")		
                 .style("opacity", 0)
@@ -159,15 +159,18 @@ function HistogramWidget(config, bap) {
                 .attr("width", width / (1 + (domain.xMax - domain.xMin)))
                 .attr("y", function (d) { return y(d.count); })
                 .attr("height", function (d) { return height - y(d.count); })
-                .on("mouseover", function(d) {		
+                .on("mouseover", function(d) {
+                    d3.select(this)
+                    .attr("fill", "rgb(45, 125, 159)");		
                     div.transition()		
                         .duration(200)		
                         .style("opacity", .9);		
                     div	.html(toolTipLabel(d, buk))	
-                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX : d3.event.layerX - 100  ) + "px")		
-                        .style("top", (d3.event.layerY + 50) + "px");	
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX + 10 : d3.event.layerX - 185  ) + "px")		
+                        .style("top", (d3.event.layerY) + "px");	
                     })					
-                .on("mouseout", function(d) {		
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("fill", "rgb(56, 155, 198)");
                     div.transition()		
                         .duration(500)		
                         .style("opacity", 0);	
