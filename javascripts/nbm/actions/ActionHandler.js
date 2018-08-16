@@ -457,6 +457,7 @@ ActionHandler.prototype.getSimplifiedGeojson = function(geojson) {
                     console.log("p: ", p);
                 }
                 geojson = getSimplifiedGeojsonObject(geojson, p);
+                actionHandlerHelper.bufferedFeature = geojson
                 geojsonLength = JSON.stringify(geojson.geometry).length;
             }
 

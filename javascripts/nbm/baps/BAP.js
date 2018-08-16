@@ -26,7 +26,6 @@ var BAP = function (serverAP, leaveOutJson, actionRef) {
     this.htmlElement = undefined;
     this.simplified = false;
     this.simplifiedFeature = undefined;
-    this.hasZoomed = false;
     this.rawJson = {};
     this.actionRef = actionRef;
     this.state = {}
@@ -453,41 +452,6 @@ BAP.prototype.cleanUp = function () {
     this.simplifiedFeature = undefined;
 };
 
-BAP.prototype.toggleSimplifiedFeature = function () {
-
-    let feature = actionHandlerHelper.bufferedFeature ? actionHandlerHelper.bufferedFeature: null;
-
-
-    if (!feature && (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry)) {
-        return;
-    }
-
-    if (map.hasLayer(this.simplifiedFeature)) {
-        this.simplifiedFeature.remove();
-    } else {
-        this.simplifiedFeature = L.geoJson( feature ? feature : this.feature.geojson.geometry,
-            {
-                style: function () {
-                    return {
-                        color: '#0000FF',
-                        fillOpacity: .2,
-                        weight: 1
-                    };
-                },
-                pane: 'featurePane'
-            });
-        this.simplifiedFeature.addTo(map);
-        if (!this.hasZoomed) {
-            this.hasZoomed = true;
-            if (!isVerticalOrientation()) {
-                centerMapRight(this.simplifiedFeature.getBounds());
-            } else {
-                centerMapBottom(this.simplifiedFeature.getBounds());
-            }
-        }
-    }
-
-};
 
 BAP.prototype.setErrorMessage = function (message) {
     var that = this;
@@ -582,10 +546,7 @@ BAP.prototype.setPriorityBap = function (checked) {
             }
             catch (error) { }
             if (bap != that.id) {
-               // $(`#${that.id}AnalysisInputsSection`).hide()
                 $(`#${bap}Inputs`).hide()
-            
- 
             }
         })
 
@@ -595,13 +556,21 @@ BAP.prototype.setPriorityBap = function (checked) {
 
         showContainer(that.id + "BAP")
         $(`#${that.id}Inputs`).show()
-        //$(`#${that.id}AnalysisInputsSection`).show()
         
+        if (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry) {
+            setTimeout(function(){ $(".modifiedPoly").hide() }, 1000);
+        }
+        else{
+            actionHandlerHelper.bufferedFeature = this.feature.geojson.geometry
+            setTimeout(function(){ $(".modifiedPoly").show() }, 1000);
+        }
+
         that.updateState(true)
 
     }
     else {
         this.priority = false
+        $(".modifiedPoly").hide()
         this.updateState(true)
     }
 };

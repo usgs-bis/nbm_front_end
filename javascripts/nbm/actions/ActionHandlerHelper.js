@@ -459,10 +459,34 @@ ActionHandlerHelper.prototype.viewSynthCompJson = function () {
 };
 
 ActionHandlerHelper.prototype.showSimplifiedJson = function (id) {
-    let bap = this.sc.baps[Object.getOwnPropertyNames(this.sc.baps)[0]];
-    if(id) bap = this.sc.baps[id];
 
-    bap.toggleSimplifiedFeature();
+    if (map.hasLayer(this.simplifiedFeature)) {
+        this.simplifiedFeature.remove();
+    }
+    else if (!this.bufferedFeature){
+        return
+    }
+    else {
+        this.simplifiedFeature = L.geoJson( this.bufferedFeature,
+            {
+                style: function () {
+                    return {
+                        color: '#0000FF',
+                        fillOpacity: .2,
+                        weight: 1
+                    };
+                },
+                pane: 'featurePane'
+            });
+        this.simplifiedFeature.addTo(map);
+
+        if (!isVerticalOrientation()) {
+            centerMapRight(this.simplifiedFeature.getBounds());
+        } else {
+            centerMapBottom(this.simplifiedFeature.getBounds());
+        }
+    }
+    
 };
 
 ActionHandlerHelper.prototype.showRawJson = function (id) {
