@@ -40,11 +40,30 @@ Copy the project files to an Apache web server.
 
 Application uses semantic versioning - http://semver.org/
 
+Before deploying to a Beta or Prod environment run this script to update the version
+and push the resulting version increase in its own commit.  
+
+```
+python version-helper.py -h
+usage: version-helper.py [-h] [-j] [-m] [-p] [-f FILE]
+
+Update an applications semantic versioning XX.XX.XX
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -j, --major           major version increase. XX.xx.xx
+  -m, --minor           major version increase. xx.XX.xx
+  -p, --patch           patch version increase. xx.xx.XX
+  -f FILE, --file FILE  path to file containing the application version string
+
+  ```
+
 ## Authors
 
 Jake Juszak  
 Ben Lohre  
 Scott Dawson
+Ben Gotthold
 
 ## Acknowledgments
 
@@ -55,5 +74,3 @@ https://github.com/UW-Macrostrat/burwell-app
 
 This USGS product is considered to be in the U.S. public domain, and is licensed under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0 1.0</a>.
 Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
-
-
