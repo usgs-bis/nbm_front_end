@@ -1,7 +1,7 @@
 'use strict';
 
 var Widget = function (config) {
-    this.bap = undefined;
+    // this.bap = undefined;
 };
 
 Widget.prototype.getTableBody = function(rows) {
