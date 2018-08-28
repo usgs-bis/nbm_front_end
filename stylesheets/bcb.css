@@ -1806,3 +1806,29 @@ div.chartTooltip p{
 .comparePlotChart{
     position: relative;
 }
+
+.ObisPlot{
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.ObisPlot text {
+    color: rgb(204, 204, 204);
+    fill: rgb(204, 204, 204);
+}
+
+.ObisPlot line {
+    stroke: rgb(204, 204, 204,.1) !important;
+    stroke-dasharray: 5,5;
+}
+
+.ObisPlot .domain, .ObisPlot .axis line{
+    stroke: rgb(204, 204, 204);
+}
+.obisToolTip{
+    max-width: 185px;
+}
+
+.obisPlotTitle{
+    margin-top: 50px;
+}

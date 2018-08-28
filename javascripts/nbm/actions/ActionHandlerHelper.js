@@ -117,6 +117,13 @@ ActionHandlerHelper.prototype.initializeSubmitButton = function () {
     });
 };
 
+ActionHandlerHelper.prototype.getSearhActionHandler = function () {
+
+    let searchAH = actionHandlers.filter(ah => ah.type == "searchPoi" )
+    if(searchAH.length) return searchAH[0]
+    return null
+}
+
 /**
  * When a polygon is submitted, trigger the actions for all enabled "drawPolygon" action handlers
  */

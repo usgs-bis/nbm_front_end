@@ -178,16 +178,16 @@
 
 </div>
 </div>
-{{if !hasInputs && !leaveOutJson}}
+<!-- {{if !hasInputs && !leaveOutJson}}
 <div style='width: 100%;'>
 <button onclick="actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: -25px; left: calc(100% - 45px);'
 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
                 <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
             </button>
 </div>
-{{/if}}
+{{/if}} -->
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
-        {{if !leaveOutJson}}
+        <!-- {{if !leaveOutJson}} -->
         <div id="{{:id}}JsonDiv" class ="jsonDiv">
                 <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
                 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
@@ -198,7 +198,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
                     <span class="glyphicon glyphicon-resize-full bootstrapGlyph" aria-hidden="true"></span>
                 </button>
         </div>
-    {{/if}}
+    <!-- {{/if}} -->
         {{if hasInputs}}
             <div id="{{:id}}Inputs">
                 
