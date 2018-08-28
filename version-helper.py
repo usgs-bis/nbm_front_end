@@ -5,6 +5,8 @@
 
 import argparse
 import re
+import subprocess
+
 
 parser = argparse.ArgumentParser(description='Update an applications semantic versioning XX.XX.XX')
 
@@ -53,7 +55,11 @@ try:
         appProperties.write(newfileContents)
         appProperties.truncate()
         appProperties.close()
-        print ('Updated application version from {} to {}.{}.{}'.format(oldVersion, versionArray[0],versionArray[1],versionArray[2]))
+        updateString = 'Updated application version from {} to {}.{}.{}'.format(oldVersion, versionArray[0],versionArray[1],versionArray[2])
+        print (updateString)
+        subprocess.call(["git", "add", defaultFilePath])
+        subprocess.call(["git", "commit", "-m","\" {} \"".format(updateString)])
+
 
 except AttributeError as e:
     print("No application version found")
