@@ -536,7 +536,7 @@ BAP.prototype.setPriorityBap = function (checked) {
     if (checked && !this.priority) {
         this.priority = true
         let thisLayer = this.GetBapLayers()[0]
-        if (!thisLayer) return
+       
         this.turnOffOtherLayers()
         $.each(bioScape.getAllBaps(), function (index, bap) {
             try {
@@ -550,12 +550,16 @@ BAP.prototype.setPriorityBap = function (checked) {
             }
         })
 
+        showContainer(that.id + "BAP")
+        $(`#${that.id}Inputs`).show()
+
+        if (!thisLayer) return
+        
         $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked = false;
         $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
 
-        showContainer(that.id + "BAP")
-        $(`#${that.id}Inputs`).show()
+       
         
         if (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry) {
             setTimeout(function(){ $(".modifiedPoly").hide() }, 1000);

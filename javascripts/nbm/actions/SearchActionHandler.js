@@ -12,6 +12,7 @@ var SearchActionHandler = function (config, layer) {
     this.poi = new PlaceOfInterestSearch(config, this);
     this.poi.initialize();
     this.clickToSearch = true
+    this.retry = true;
 
     $("#unit_info_search").show().prepend(this.poi.getSearchButton());
     if(config.actionConfig.clickToSearch){
@@ -30,6 +31,11 @@ var SearchActionHandler = function (config, layer) {
 
 
 inherit(ActionHandler, SearchActionHandler);
+
+SearchActionHandler.prototype.getPOI = function () {
+    return this.poi
+}
+
 
 /**
  * The "header BAP" is treated a bit differently than the other BAPs since it is more basic data about a specified region

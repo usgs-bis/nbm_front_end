@@ -10,8 +10,10 @@ WidgetHelper.prototype.getWidget = function (config, bap) {
         return new HierarchyByPixelWidget(config);
     } else if (config.type === "hierarchyTable") {
         return new HierarchyTableWidget(config);
+    } else if (config.type === "eco") {
+        return new EcosystemProtectionWidget(config,bap);
     } else if (config.type === "eco_v2") {
-        return new EcosystemProtectionWidget(config);
+        return new AOIProtectionWidget(config,bap);
     } else if (config.type === "species") {
         return new SpeciesProtectionWidget(config);
     } else if (config.type === "richness") {
@@ -38,7 +40,9 @@ WidgetHelper.prototype.getWidget = function (config, bap) {
         return new SmoothPlotWidget(config, bap);
     } else if (config.type === "comparePlot") {
         return new CompareWidget(config, bap);
-    }
+    } else if (config.type === "obis") {
+        return new ObisWidget(config, bap);
+}
 };
 
 WidgetHelper.prototype.addTimeSlider = function () {
