@@ -521,7 +521,7 @@ BAP.prototype.updateState = function (enabled) {
 
 BAP.prototype.showTimeSlider = function (show) {
 
-    try { actionHandlerHelper.globalTimeSlider().showTimeSlider(show) }
+    try { actionHandlerHelper.globalTimeSlider().showTimeSlider(show !=undefined ? show:false) }
     catch (error) { }
 }
 

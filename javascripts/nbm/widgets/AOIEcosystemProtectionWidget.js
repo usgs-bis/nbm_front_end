@@ -1,6 +1,6 @@
 'use strict';
 
-var AOIProtectionWidget = function (bapConfig, bap) {
+var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
     let that = this;
 
 
@@ -49,6 +49,8 @@ var AOIProtectionWidget = function (bapConfig, bap) {
                     let helpers = { format: formatStatusPercentage };
                     let html = getHtmlFromJsRenderTemplate('#ecosystemProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
+                    $(`#${bap.id}Chart`).find('#regionProtectionSubtitle').html(`Protection Status of ${placeName} Compared to the Continental United States`)
+                    $(`#${bap.id}Chart`).find('#ecoProtectionSubtitle').html(`Protection Status of ${placeName}`)
 
                     initializeEcoProtectionChart(chartData.ecoregion_protection);
                     initializeGapCharts(chartData.gap1_2, chartData.gap1_2_3);
@@ -612,23 +614,5 @@ var AOIProtectionWidget = function (bapConfig, bap) {
         ecoCoverageChart.write("ecoCoverageChart");
     }
 
-    this.getTableBody = function (rows) {
-        var tableBody = [];
-        $.each(rows, function (idx, row) {
-            var tableRow = [];
-            var cols = $(row).children();
-            $.each(cols, function (i, col) {
-                var colObj = $(col);
-                if (colObj.hasClass('hiddenTd')) return;
-                var colValue = colObj.text();
-                if (idx == 0) {
-                    //if this is the first row add the header styling
-                    colValue = { text: colValue, style: 'tableHeader' };
-                }
-                tableRow.push(colValue);
-            });
-            tableBody.push(tableRow);
-        });
-        return tableBody;
-    }
 };
+inherit(Widget, AOIEcosystemProtectionWidget);
