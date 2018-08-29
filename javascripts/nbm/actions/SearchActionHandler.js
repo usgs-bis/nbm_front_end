@@ -439,12 +439,12 @@ PlaceOfInterestSearch.prototype.getSavedPOI = function (text) {
         "query": {
             "bool": {
                 "must": [
-                    { "match": {} },
+                    { "match_phrase": {} },
                 ]
             }
         }
     }
-        elasticQuery.query.bool.must[0].match['properties.feature_id'] = text
+        elasticQuery.query.bool.must[0].match_phrase['properties.feature_id'] = text
         
         
     var that = this;
