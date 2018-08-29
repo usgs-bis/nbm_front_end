@@ -49,6 +49,8 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
                     let helpers = { format: formatStatusPercentage };
                     let html = getHtmlFromJsRenderTemplate('#ecosystemProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
+                    $(`#${bap.id}Chart`).find('#regionProtectionSubtitle').html(`Protection Status of ${placeName} Compared to the Continental United States`)
+                    $(`#${bap.id}Chart`).find('#ecoProtectionSubtitle').html(`Protection Status of ${placeName}`)
 
                     initializeEcoProtectionChart(chartData.ecoregion_protection);
                     initializeGapCharts(chartData.gap1_2, chartData.gap1_2_3);

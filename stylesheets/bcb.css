@@ -359,10 +359,16 @@ select option {
     text-align: center;
     font-weight: bold;
     padding: .5em;
+    color: rgb(204, 204, 204);
 }
 
 .subHeaderTitle {
-    font-size: 18px;
+    color: rgb(204, 204, 204);
+    line-height: 20px;
+    font-size: 17px;
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .layerSection {
@@ -672,6 +678,7 @@ label input:hover ~ .fa-custom-checkbox-class:before {
 .dropDownContainer form {
     position: relative;
     margin-left: 170px;
+    color: rgb(204, 204, 204);
 }
 
 /*End Form Stuff*/

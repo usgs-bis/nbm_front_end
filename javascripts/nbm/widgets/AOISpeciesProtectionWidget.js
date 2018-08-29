@@ -51,7 +51,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     var helpers = {format: escapeSingleQuotesInString};
                     let html = getHtmlFromJsRenderTemplate('#speciesProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
-
+                    $(`#${bap.id}Chart`).find('#speciesBAPSubtitle').html(`Protection Status of Species in ${placeName}`)
 
                     initializeSpeciesCharts(chartData);
                     $("input[name='taxaType']").on('change', function() {
@@ -69,7 +69,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                 })
         }
         else {
-            //$(`#${bap.id}BapCase`).hide()
+            $(`#${bap.id}BapCase`).hide()
         }
     };
 
@@ -199,6 +199,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
                 }
                 else {
+                    $(`#${bap.id}BapCase`).hide()
                     console.log(searchResult)
                 }
 

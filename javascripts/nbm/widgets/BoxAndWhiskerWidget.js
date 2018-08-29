@@ -18,6 +18,13 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
 
     this.initializeWidget = function (feature) {
 
+
+        let AOI = bap.gid;
+        if(AOI.includes('OBIS_Areas:')) {
+            $(`#${bap.id}BapCase`).hide()
+            return
+        }
+
         let movehtml = $(selector).find(".bapHeader").html()
         $(selector).find(".bapHeader").html("")
         $("#" + that.bap.id + "Inputs").after(movehtml)

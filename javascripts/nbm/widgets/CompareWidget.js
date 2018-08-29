@@ -17,6 +17,12 @@ function CompareWidget(config, bap) {
 
     this.initializeWidget = function (feature) {
 
+        let AOI = bap.gid;
+        if(AOI.includes('OBIS_Areas:')) {
+            $(`#${bap.id}BapCase`).hide()
+            return
+        }
+
         if (that.bap.GetBapLayers().length) {
             layer = that.bap.GetBapLayers()[0]
         }
