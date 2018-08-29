@@ -1,9 +1,9 @@
 'use strict';
-var LAT_MAX = 85;
+var LAT_MAX = 180;
 var LAT_MIN = -60;
 var MAP_COORDINATES_WIDTH = 360;
 var MAP_OFFSET = 180;
-var EDGE_OF_MAP_THRESHOLD = 55;
+var EDGE_OF_MAP_THRESHOLD = 500;
 var MAP_ITITIAL_CENTER = [40,-86];
 var MAP_INITIAL_ZOOM = 5;
 
@@ -219,7 +219,7 @@ var Marker = function(latLng, overrideTranslationToMainMap) {
 var Feature = function(geojson, latLng, color, displayFeatureNegative) {
     color = getValueOrDefault(color, '#FF0000');
     if (!latLng) latLng = L.geoJSON(geojson).getBounds().getCenter();
-    if(latLng.lng == 0){
+    if(latLng.lng > -.01 &&  latLng.lng < .01 ){
         latLng.lng = -180;
     }
     this.geojson = geojson;
@@ -367,7 +367,7 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
      * @returns {Object} - L.GeoJSON
      */
     function getLeafletFeature(geojson, latLng, color, displayFeatureNegative) {
-        geojson.geometry.coordinates = convertCoordinatesToSpan180degrees(geojson.geometry.coordinates, latLng);
+        //geojson.geometry.coordinates = convertCoordinatesToSpan180degrees(geojson.geometry.coordinates, latLng);
         if (displayFeatureNegative) {
             return getLGeoJson(geojson, 3, '#eee');
         }
@@ -405,6 +405,9 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
             });
     }
 
+
+  
+
     /**
      * Updates coordinates on the opposite side of the international dateline of the latLng to display next to
      *  the coordinates on the same side of the international dateline.
@@ -441,6 +444,7 @@ var Feature = function(geojson, latLng, color, displayFeatureNegative) {
      * @returns {boolean}
      */
     function featureIsCloseToAPole(coordinates) {
+        //return false
         for (var j = 0; j < coordinates.length; j++) {
             var a0 = coordinates[j];
             for (var i = 0; i < a0.length; i++) {

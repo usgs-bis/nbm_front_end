@@ -1587,7 +1587,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
 .synthesisCompositionTitle {
 
     position: relative;
-    width: 500px;
+    width: 490px;
 
 }
 
