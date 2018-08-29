@@ -75,6 +75,8 @@ let NFHPWidget = function (chartConfig) {
                 if (data.error) {
                     $("#" + config.id + "noData").replaceWith(html);
                     $("#" + config.id + "noData").show();
+                    $(`#${bap.id}BapCase`).hide()
+
                 }
                 else if (data.hits.hits.length) {
                     buildChart(data.hits.hits[0])
@@ -92,6 +94,8 @@ let NFHPWidget = function (chartConfig) {
                 else {
                     $("#" + config.id + "noData").replaceWith(html);
                     $("#" + config.id + "noData").show();
+                    $(`#${bap.id}BapCase`).hide()
+
                 }
 
 
@@ -99,6 +103,8 @@ let NFHPWidget = function (chartConfig) {
             .fail(function () {
                 $("#" + config.id + "noData").replaceWith(html);
                 $("#" + config.id + "noData").show();
+                $(`#${bap.id}BapCase`).hide()
+
             });
 
 

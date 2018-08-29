@@ -308,10 +308,8 @@ var PlaceOfInterestClick = function (latlng, that) {
   
     $(".googleResults").remove();
     that.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
-    //that.clearSearchButton.show();
     that.searchButton.focus()
     $.getJSON(that.elasticEndpoint + query, function (data) {
-        //that.clearSearchButton.show();
         that.poisearching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
@@ -364,12 +362,10 @@ var PlaceOfInterestSearch = function (config, parent) {
     this.noResults = $('<a href="#" class="list-group-item list-group-item-danger googleResults">No Results</a>');
     this.searching = false;
     this.elasticEndpoint = config.elasticEndpoint;
-    this.sqlEndpoint = config.sqlEndpoint;
+    this.elasticGeomPrefix = config.elasticGeomPrefix;
     this.polygon = undefined;
     this.selectedId = undefined;
     this.selectedName = undefined;
-    // this.geojson = undefined;
-    // this.featureGroup = undefined;
 };
 
 PlaceOfInterestSearch.prototype.initialize = function () {
@@ -435,23 +431,46 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
 };
 
 
-// hit sql endpoint
-PlaceOfInterestSearch.prototype.getSelectedUnit = function (id) {
-    var selectShape = "" + this.sqlEndpoint + id
+PlaceOfInterestSearch.prototype.getSavedPOI = function (text) {
+    var elasticQuery = 
+    {
+        "from" : 0, "size" : 1,
+        "_source": "properties.*",
+        "query": {
+            "bool": {
+                "must": [
+                    { "match": {} },
+                ]
+            }
+        }
+    }
+        elasticQuery.query.bool.must[0].match['properties.feature_id'] = text
+        
+        
+    var that = this;
+    var url = this.elasticEndpoint + JSON.stringify(elasticQuery);
+    $.getJSON(url, function (data) {
+       that.getSelectedGeometry(data.hits.hits[0])
+    })
+}
+
+
+// Get the geometry from the index directly
+PlaceOfInterestSearch.prototype.getSelectedGeometry = function (result) {
+    var selectShape = "" + this.elasticGeomPrefix + result._index + "/" + result._type + "/" + result._id
     let that = this;
     $.getJSON(selectShape, function (data) {
-        that.selectedId = id;
-        that.selectedName = data.features[0].properties.place_name;
-        that.selectedType = data.features[0].properties.ftype.replace("_", " ");;
-        that.selectedArea = parseInt(data.features[0].properties.st_area) * 0.000247105;
-        that.polygon = data.features[0];
+        that.selectedId = data._source.properties.feature_id;
+        that.selectedName = data._source.properties.feature_name;
+        that.selectedType = data._source.properties.feature_class
+        that.selectedArea =  0 //parseInt(data.features[0].properties.st_area) * 0.000247105;
+        that.polygon = data._source;
         actionHandlerHelper.handleSearchActions();
         bioScape.resetState()
         updateUrlWithState();
     })
 
 }
-// This will need to be rewritten to look at the right gc2 db and maybe make elastic search.
 PlaceOfInterestSearch.prototype.lookup = function (text) {
     var elasticQuery = 
         {
@@ -466,10 +485,9 @@ PlaceOfInterestSearch.prototype.lookup = function (text) {
         
         
     var that = this;
-    //this.clearSearchButton.show();
     $(".googleResults").remove();
-    var testElastic = this.elasticEndpoint + JSON.stringify(elasticQuery);
-    $.getJSON(testElastic, function (data) {
+    var url = this.elasticEndpoint + JSON.stringify(elasticQuery);
+    $.getJSON(url, function (data) {
         if (that.searchButton.val() !== text) return;
         that.searching = false;
         that.clearSearchButton.text("Clear Search");
@@ -477,17 +495,9 @@ PlaceOfInterestSearch.prototype.lookup = function (text) {
         if (data.hits ) {
             var added = [];
             data.hits.hits.sort(function (a, b) {return b._score-a._score}); //sort by best match
-            // data.hits.hits.sort(function (a, b) {
-            //      if(a._source.properties.place_name < b._source.properties.place_name) return -1
-            //      if(a._source.properties.place_name > b._source.properties.place_name) return 1
-            //      return 0
-            //     }); // sort alpha
             $.each (data.hits.hits, function (index, obj) {
-                // if (added.indexOf(obj._source.properties.unit_nm) === -1) {
                 var result = new SearchResult(obj, that);
                 that.resultsElement.append(result.htmlElement);
-                // added.push(obj._source.properties.unit_nm);
-                // }
             });
         } else {
             that.resultsElement.append(that.noResults);
@@ -508,25 +518,23 @@ var SearchResult = function (result, searchParent) {
     $(".searchRessultsBox").show()
     this.id = result._source.properties.gid;
     this.name = result._source.properties[searchParent.lookupProperty];
-    this.type = result._source.properties.ftype.replace('_',' ');
+    this.type = result._source.properties.feature_class
     this.searchParent = searchParent;
     this.htmlElement = $('<a href="#" class="list-group-item googleResults">\n' +
         '    <h6 class="list-group-item-heading">' + this.name + '  (' + this.type + ')'+'</h6>\n'
         +
         '  </a>');
-    this.initialize();
+    this.initialize(result);
 };
 
-SearchResult.prototype.initialize = function () {
+SearchResult.prototype.initialize = function (result) {
     var that = this;
     this.htmlElement.on("click", function (event) {
-        //var elem = that.htmlElement[0];
-        //var query = elem.firstElementChild.innerText;
+  
         event.preventDefault();
         $(".list-group-item").removeClass("active");
         that.htmlElement.addClass("active");
-        that.searchParent.getSelectedUnit(that.id);
-        //    that.panTo();
+        that.searchParent.getSelectedGeometry(result);
     });
 };
 

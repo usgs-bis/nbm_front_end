@@ -158,7 +158,7 @@ ActionHandlerHelper.prototype.initPOISearch = function (search){
     let searchHandler = actionHandlers.filter(h =>{
         return h.type == "searchPoi"
     })[0]
-    searchHandler.poi.getSelectedUnit(search)
+    searchHandler.poi.getSavedPOI(search)
 }
 
 /**
@@ -674,7 +674,7 @@ ActionHandlerHelper.prototype.getState = function() {
     })[0]
 
     try {
-        result.search = searchHandler.result.geojson.properties.gid
+        result.search = searchHandler.result.geojson.properties.feature_id
     }
     catch(error) {}
     var marker = this.marker;
