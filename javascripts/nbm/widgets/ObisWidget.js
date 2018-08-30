@@ -106,7 +106,7 @@ var ObisWidget = function (bapConfig, bap) {
         };
 
         let width = 450 - margin.left - margin.right
-        let height = 600 - margin.top - margin.bottom;
+        let height = 25 * data.length;
 
 
         var svg = obis
@@ -127,7 +127,7 @@ var ObisWidget = function (bapConfig, bap) {
 
 
 
-        x.domain([-200, d3.max(data, function (d) { return d.value; })]);
+        x.domain([-200, 200 + d3.max(data, function (d) { return d.value; })]);
         y.domain(data.map(function (d) { return d.name; })).padding(0.1);
 
         svg.append("g")
