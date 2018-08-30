@@ -532,12 +532,12 @@ BAP.prototype.showTimeSlider = function (show) {
  */
 BAP.prototype.setPriorityBap = function (checked) {
     let that = this
+    let layers = this.GetBapLayers()
 
     if (checked && !this.priority) {
         this.priority = true
-        let thisLayer = this.GetBapLayers()[0]
+        let thisLayer = layers[0]
        
-        this.turnOffOtherLayers()
         $.each(bioScape.getAllBaps(), function (index, bap) {
             try {
                 if (bap != that.id && $(`#priorityBap${bap}`)[0].checked) {
@@ -545,9 +545,6 @@ BAP.prototype.setPriorityBap = function (checked) {
                 }
             }
             catch (error) { }
-            if (bap != that.id) {
-                $(`#${bap}Inputs`).hide()
-            }
         })
 
         showContainer(that.id + "BAP")
@@ -573,6 +570,19 @@ BAP.prototype.setPriorityBap = function (checked) {
 
     }
     else {
+        $.each(layers, function (index, layer) {
+            
+    
+            if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
+                $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
+            }
+            else {
+                layer.turnOffLayer(true)
+                layer.section.layerHtmlControl.handleTurnOff(layer.id)
+            }
+            
+        })
+        $(`#${that.config.id}Inputs`).hide()
         this.priority = false
         $(".modifiedPoly").hide()
         this.updateState(true)
