@@ -15,11 +15,11 @@ var SearchActionHandler = function (config, layer) {
     this.retry = true;
 
     $("#unit_info_search").show().prepend(this.poi.getSearchButton());
-    if(config.actionConfig.clickToSearch){
+    if (config.actionConfig.clickToSearch) {
         let that = this
         //$("#unit_info_click_search_div").show()
-        $('#unit_info_click_search').click(function(){
-            if($(this).is(':checked')){
+        $('#unit_info_click_search').click(function () {
+            if ($(this).is(':checked')) {
                 that.clickToSearch = true
             } else {
                 that.clickToSearch = false
@@ -52,16 +52,16 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
     myMap.featureValue = {};//gj;
 
     if (this.synthesisComposition) {
-        actionHandlerHelper.sc.featureValue =  this.poi.selectedName;//that.result.geojson.properties[that.lookupProperty];
+        actionHandlerHelper.sc.featureValue = this.poi.selectedName;//that.result.geojson.properties[that.lookupProperty];
     }
 
-    $.each (additionalParams, function (index, obj) {
+    $.each(additionalParams, function (index, obj) {
         $.each(obj, function (key, value) {
             myMap[key] = value;
         });
     });
 
-    var bap = new HeaderBAP({},headerBapId);
+    var bap = new HeaderBAP({}, headerBapId);
     bap.requestOptions = myMap;
     bap.showSpinner();
     return sendJsonAjaxRequest(myServer + "/bap/get", myMap)
@@ -74,7 +74,7 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
             bap.sbId = myJson.id;
             bap.featureValue = myJson.featureValue;
 
-            if(myJson.featureInfoBap) {
+            if (myJson.featureInfoBap) {
                 //that.bestGuessFields(bap);
                 bap.config.title = that.poi.selectedName;
                 bap.config.acres = that.poi.selectedArea;
@@ -85,7 +85,7 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
             that.addHeaderBaptoSC(bap);
             return Promise.resolve();
         })
-        .catch(function(ex) {
+        .catch(function (ex) {
             console.log("Getting an error", ex);
         });
 };
@@ -95,7 +95,7 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
  * used at this point with the BoxAndWhiskerWidget.
  */
 SearchActionHandler.prototype.processBaps = function (additionalParams) {
-    var gj = {geometry: this.geojson};
+    var gj = { geometry: this.geojson };
     var that = this;
 
     var promises = [];
@@ -112,13 +112,13 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                 if (tempBap) {
                     tempBap.setEmptyBap();
                 } else {
-                    tempBap = new BAP({id: bapId}, false, that);
+                    tempBap = new BAP({ id: bapId }, false, that);
                     that.setBapValue(bapId, tempBap);
                 }
 
                 var myMap = {};
                 myMap.id = bapId;
-                $.each (additionalParams, function (index, obj) {
+                $.each(additionalParams, function (index, obj) {
                     $.each(obj, function (key, value) {
                         myMap[key] = value;
                     });
@@ -166,12 +166,12 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                                     .then(function (data) {
                                         if (data.error) {
                                             console.log("Got an error: ", data);
-                                            showErrorDialog('There was an error analysing this Area of Interest. ' + 
-                                            'Reselect the A.O.I. to reload all analysis packages. ', false);
-                                            bioScape.bapLoading(data.requestParams.id,false)
+                                            showErrorDialog('There was an error analysing this Area of Interest. ' +
+                                                'Reselect the A.O.I. to reload all analysis packages. ', false);
+                                            bioScape.bapLoading(data.requestParams.id, false)
                                             return Promise.resolve();
                                         }
-                                        if(data.error) return Promise.resolve();
+                                        if (data.error) return Promise.resolve();
                                         var bap = that.getBapValue(data.id);
                                         bap.reconstruct(data, false);
 
@@ -198,12 +198,12 @@ SearchActionHandler.prototype.processBaps = function (additionalParams) {
                 } else {
                     if (DEBUG_MODE) console.log("Sending 1 request");
                     promises.push(that.sendPostRequest(myServer + "/bap/get", myMap)
-                        .then(function(data) {
+                        .then(function (data) {
                             if (data.error) {
                                 console.log("Got an error: ", data);
-                                showErrorDialog('There was an error analysing this Area of Interest. ' + 
-                                'Reselect the A.O.I. to reload all analysis packages. ', false);
-                                bioScape.bapLoading(data.requestParams.id,false)
+                                showErrorDialog('There was an error analysing this Area of Interest. ' +
+                                    'Reselect the A.O.I. to reload all analysis packages. ', false);
+                                bioScape.bapLoading(data.requestParams.id, false)
                                 return Promise.resolve();
                             }
                             var bap = that.getBapValue(data.id);
@@ -239,30 +239,119 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
     var that = this;
     var promises = [];
 
-    if(this.config.clickToSearch && isHeader.lat && isHeader.lng){
-        if(this.clickToSearch){
-            PlaceOfInterestClick(isHeader,this.poi)
+    if (this.config.clickToSearch && isHeader.lat && isHeader.lng) {
+        if (this.clickToSearch) {
+            PlaceOfInterestClick(isHeader, this.poi)
         }
         return Promise.resolve();
     }
 
     this.geojson = this.poi.polygon.geometry;
-    this.geojson.crs = {"type":"name","properties":{"name":"EPSG:4326"}};
+    this.geojson.crs = { "type": "name", "properties": { "name": "EPSG:4326" } };
 
-    this.result = {geojson:this.poi.polygon};
+    this.result = { geojson: this.poi.polygon };
 
     if (this.geojson.coordinates[0].length === 0) return Promise.resolve();
 
-    this.feature = new Feature(this.poi.polygon, undefined, "", undefined);
-    this.feature.show();
+    // WAY WHERE WE WERE SPLITTING GEOM ON THE 180
+    // this.feature = new Feature(this.poi.polygon, undefined, "", undefined);
+    // this.feature.show();
+    
+    let polyLineCollection = [];
+    let polyLineCollectionOtherWorld = [];
+    let edgeOfMap = 10
+    let leftEdge=false // close to left edge
+    let rightEdge = false // close to right edge
+
+    this.geojson.coordinates.forEach(feature => {
+        feature.forEach(polygon => {
+            let lineCoord = {
+                "type": "LineString",
+                "coordinates": []
+            }
+            let lineCoordCopy = {
+                "type": "LineString",
+                "coordinates": []
+            }
+            let crossed22 = false
+            polygon.forEach(coordinates => {
+                if ((coordinates[0] < -179.9 || coordinates[0] > 179.9) && lineCoord.coordinates.length) {
+                    polyLineCollection.push(lineCoord)
+                    if (crossed22) {
+                        lineCoordCopy = {
+                            "type": "LineString",
+                            "coordinates": []
+                        }
+                        lineCoord.coordinates.forEach(coordinates => {
+                            lineCoordCopy.coordinates.push([coordinates[0] - 360, coordinates[1]])
+                        })
+                        polyLineCollectionOtherWorld.push(lineCoordCopy)
+
+                    }
+                    lineCoord = {
+                        "type": "LineString",
+                        "coordinates": []
+                    }
+                }
+                if (coordinates[0] > -179.9 && coordinates[0] < 179.9) {
+                    lineCoord.coordinates.push(coordinates)
+                    if (coordinates[0] > 22.5) crossed22 = true
+                    if (coordinates[0] > 180 - edgeOfMap) rightEdge = true
+                    if (coordinates[0] < -180 + edgeOfMap) leftEdge = true
+                }
+            })
+            polyLineCollection.push(lineCoord)
+            if (crossed22) {
+                lineCoordCopy = {
+                    "type": "LineString",
+                    "coordinates": []
+                }
+                lineCoord.coordinates.forEach(coordinates => {
+                    lineCoordCopy.coordinates.push([coordinates[0] - 360, coordinates[1]])
+                })
+                polyLineCollectionOtherWorld.push(lineCoordCopy)
+
+            }
+        })
+    });
+
+        if(rightEdge && leftEdge){ // if its close to both edges draw on both sides of map
+        polyLineCollectionOtherWorld.forEach(line =>{
+            polyLineCollection.push(line)
+        })
+    }
+
+    var featureStyle = {
+        "color": "black",
+        "weight": 4,
+        "opacity": 1,
+    };
+    var featureCopyStyle = {
+        "color": "red",
+        "weight": 2,
+        "opacity": 1,
+    };
+
+    this.feature = L.geoJSON(polyLineCollection, {
+        style: featureStyle
+    })
+
+    this.featureCopy = L.geoJSON(polyLineCollection, {
+        style: featureCopyStyle
+    })
+
+    this.feature.addTo(map);
+    this.featureCopy.addTo(map);
+
+
 
     try {
         if (!isVerticalOrientation()) {
-            centerMapRight(that.feature.getLeafetFeatureBounds());
+            centerMapRight(that.feature.getBounds());
         } else {
-            centerMapBottom(that.feature.getLeafetFeatureBounds());
+            centerMapBottom(that.feature.getBounds());
         }
-    } catch(ex) {
+    } catch (ex) {
         console.log("Error zooming to feature", ex);
     }
 
@@ -283,7 +372,9 @@ SearchActionHandler.prototype.cleanUp = function () {
     this.geojson = undefined;
     if (this.feature) {
         this.feature.remove();
+        this.featureCopy.remove();
         this.feature = undefined;
+        this.featureCopy = undefined;
     }
 
     if (this.result) {
@@ -299,13 +390,13 @@ SearchActionHandler.prototype.cleanUp = function () {
 var PlaceOfInterestClick = function (latlng, that) {
 
     ///clicking west most alaska
-    if(latlng.lng < - 180){
+    if (latlng.lng < - 180) {
         latlng.lng += 360
     }
     let query = getElasticGeoQuery(latlng)
 
     //do the lookup then put the results in the drop down
-  
+
     $(".googleResults").remove();
     that.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
     that.searchButton.focus()
@@ -313,10 +404,10 @@ var PlaceOfInterestClick = function (latlng, that) {
         that.poisearching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
-        if (data.hits ) {
+        if (data.hits) {
             var added = [];
-            data.hits.hits.sort(function (a, b) {return b._score-a._score});
-            $.each (data.hits.hits, function (index, obj) {
+            data.hits.hits.sort(function (a, b) { return b._score - a._score });
+            $.each(data.hits.hits, function (index, obj) {
                 var result = new SearchResult(obj, that);
                 that.resultsElement.append(result.htmlElement);
             });
@@ -325,11 +416,11 @@ var PlaceOfInterestClick = function (latlng, that) {
         }
     });
 
-    function  getElasticGeoQuery(latLng) {
+    function getElasticGeoQuery(latLng) {
         var qJson = {
             "from": 0, "size": 15,
             "_source": "properties.*",
-            "query":{
+            "query": {
                 "bool": {
                     "must": {
                         "match_all": {}
@@ -339,7 +430,7 @@ var PlaceOfInterestClick = function (latlng, that) {
                             "geometry": {
                                 "shape": {
                                     "type": "point",
-                                    "coordinates" : [latLng.lng, latLng.lat]
+                                    "coordinates": [latLng.lng, latLng.lat]
                                 },
                                 "relation": "intersects"
                             }
@@ -348,7 +439,7 @@ var PlaceOfInterestClick = function (latlng, that) {
                 }
             }
         };
-    
+
         return JSON.stringify(qJson)
     }
 }
@@ -374,7 +465,7 @@ PlaceOfInterestSearch.prototype.initialize = function () {
         that.onKeyPress(event);
     });
 
-    this.searchButton.on("keyup", function(event){
+    this.searchButton.on("keyup", function (event) {
         that.onKeyUp(event);
     });
 
@@ -387,7 +478,7 @@ PlaceOfInterestSearch.prototype.initialize = function () {
         event.preventDefault();
     });
 
-    this.resultsElement.append(this.clearSearchButton);    
+    this.resultsElement.append(this.clearSearchButton);
 };
 
 PlaceOfInterestSearch.prototype.onKeyPress = function (event) {
@@ -397,11 +488,11 @@ PlaceOfInterestSearch.prototype.onKeyPress = function (event) {
     }
 };
 
-PlaceOfInterestSearch.prototype.onKeyUp = function(event){
+PlaceOfInterestSearch.prototype.onKeyUp = function (event) {
     var s = this.searchButton[0];
-    if (s){
+    if (s) {
         var cs = s.value.length;
-        if (cs > 3){
+        if (cs > 3) {
             this.submitSearch();
         } else if (cs === 0) {
             this.clearSearch();
@@ -432,9 +523,9 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
 
 
 PlaceOfInterestSearch.prototype.getSavedPOI = function (text) {
-    var elasticQuery = 
+    var elasticQuery =
     {
-        "from" : 0, "size" : 1,
+        "from": 0, "size": 1,
         "_source": "properties.*",
         "query": {
             "bool": {
@@ -444,13 +535,13 @@ PlaceOfInterestSearch.prototype.getSavedPOI = function (text) {
             }
         }
     }
-        elasticQuery.query.bool.must[0].match_phrase['properties.feature_id'] = text
-        
-        
+    elasticQuery.query.bool.must[0].match_phrase['properties.feature_id'] = text
+
+
     var that = this;
     var url = this.elasticEndpoint + JSON.stringify(elasticQuery);
     $.getJSON(url, function (data) {
-       that.getSelectedGeometry(data.hits.hits[0])
+        that.getSelectedGeometry(data.hits.hits[0])
     })
 }
 
@@ -463,7 +554,7 @@ PlaceOfInterestSearch.prototype.getSelectedGeometry = function (result) {
         that.selectedId = data._source.properties.feature_id;
         that.selectedName = data._source.properties.feature_name;
         that.selectedType = data._source.properties.feature_class
-        that.selectedArea =  0 //parseInt(data.features[0].properties.st_area) * 0.000247105;
+        that.selectedArea = 0 //parseInt(data.features[0].properties.st_area) * 0.000247105;
         that.polygon = data._source;
         actionHandlerHelper.handleSearchActions();
         bioScape.resetState()
@@ -472,18 +563,18 @@ PlaceOfInterestSearch.prototype.getSelectedGeometry = function (result) {
 
 }
 PlaceOfInterestSearch.prototype.lookup = function (text) {
-    var elasticQuery = 
-        {
-            "from": 0, "size": 100,
-            "_source": "properties.*",
-            "query": {
-                "match_phrase_prefix" : {
-                }
+    var elasticQuery =
+    {
+        "from": 0, "size": 100,
+        "_source": "properties.*",
+        "query": {
+            "match_phrase_prefix": {
             }
         }
-        elasticQuery.query.match_phrase_prefix[`properties.${this.lookupProperty}`] = {"query":text,'max_expansions':100};
-        
-        
+    }
+    elasticQuery.query.match_phrase_prefix[`properties.${this.lookupProperty}`] = { "query": text, 'max_expansions': 100 };
+
+
     var that = this;
     $(".googleResults").remove();
     var url = this.elasticEndpoint + JSON.stringify(elasticQuery);
@@ -492,10 +583,10 @@ PlaceOfInterestSearch.prototype.lookup = function (text) {
         that.searching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
-        if (data.hits ) {
+        if (data.hits) {
             var added = [];
-            data.hits.hits.sort(function (a, b) {return b._score-a._score}); //sort by best match
-            $.each (data.hits.hits, function (index, obj) {
+            data.hits.hits.sort(function (a, b) { return b._score - a._score }); //sort by best match
+            $.each(data.hits.hits, function (index, obj) {
                 var result = new SearchResult(obj, that);
                 that.resultsElement.append(result.htmlElement);
             });
@@ -521,7 +612,7 @@ var SearchResult = function (result, searchParent) {
     this.type = result._source.properties.feature_class
     this.searchParent = searchParent;
     this.htmlElement = $('<a href="#" class="list-group-item googleResults">\n' +
-        '    <h6 class="list-group-item-heading">' + this.name + '  (' + this.type + ')'+'</h6>\n'
+        '    <h6 class="list-group-item-heading">' + this.name + '  (' + this.type + ')' + '</h6>\n'
         +
         '  </a>');
     this.initialize(result);
@@ -530,7 +621,7 @@ var SearchResult = function (result, searchParent) {
 SearchResult.prototype.initialize = function (result) {
     var that = this;
     this.htmlElement.on("click", function (event) {
-  
+
         event.preventDefault();
         $(".list-group-item").removeClass("active");
         that.htmlElement.addClass("active");
