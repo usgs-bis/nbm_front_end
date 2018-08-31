@@ -16,6 +16,9 @@ var ObisWidget = function (bapConfig, bap) {
                 return
             }
             AOI = parseInt(AOI.split(':')[1])
+            $(`#priorityBap${bap.id}`).click()
+            // Temp
+            bap.turnOffOtherLayers()
     
         }
         catch(error){
