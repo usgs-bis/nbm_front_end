@@ -169,7 +169,6 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
 
         let q = {
             "from": 0, "size": 500,
-            //"min_score": 9.0,
             "query": {
                 "bool": {
                     "must": [

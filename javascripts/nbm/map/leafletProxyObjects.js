@@ -92,16 +92,16 @@ var LeafletMapService = (function (leafletMapService){
                 updateLatLngDisplay(e.latlng);
             });
 
-        map.createPane('180Line');
-        map.getPane('180Line').style.zIndex = 9999;
-        var longitude180Line = L.WMS.overlay('https://my-beta.usgs.gov/geoserver/bcb/wms', {
-            "format":"image/png",
-            "layers":"long180",
-            "transparent":true,
-            "opacity": 1,
-            "pane":"180Line"
-        });
-        map.addLayer(longitude180Line);
+        // map.createPane('180Line');
+        // map.getPane('180Line').style.zIndex = 9999;
+        // var longitude180Line = L.WMS.overlay('https://my-beta.usgs.gov/geoserver/bcb/wms', {
+        //     "format":"image/png",
+        //     "layers":"long180",
+        //     "transparent":true,
+        //     "opacity": 1,
+        //     "pane":"180Line"
+        // });
+        // map.addLayer(longitude180Line);
         // var pointA = new L.LatLng(85.00, -180.0);
         // var pointB = new L.LatLng(-85.00, -180.0);
         // var pointList = [pointA, pointB];
