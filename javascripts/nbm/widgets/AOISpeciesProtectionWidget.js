@@ -27,6 +27,21 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
     this.initializeWidget = function () {
 
+        // enable or disable the raster raido buttons based on analysis input
+        $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
+        let Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Protection Status of Terrestrial Vertebrate Species"})
+        if(Spplayer.length){
+            Spplayer = Spplayer[0]
+            $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () {   
+                if($(`#${bap.id}Chart .species-layer-raido`).attr('disabled')){
+                    $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',false)
+                }
+                else{
+                    $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
+                }
+            })
+        }
+
         const poi = actionHandlerHelper.getSearhActionHandler().getPOI()
 
         if (poi && this.bap.config.charts[0].lookupColumns.filter(type => type.type == poi.selectedType).length) {
@@ -164,7 +179,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                         let c = {
                             common_name: row.spp_comname ? row.spp_comname : "",
                             scientific_name: row.spp_sciname? row.spp_sciname : "",
-                            status_1_2: row.gapstat123perc,
+                            status_1_2: row.gapstat12perc,
                             status_1_2_3: row.gapstat123perc,
                             taxaletter: row.taxa,
                             sppcode: row.sppcode
@@ -213,10 +228,12 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
     }
 
-    function updateSpeciesLayer(SppCode){
-        var visibleLayers = bioScape.getVisibleLayers(false);
-        console.log(visibleLayers)
-
+    function toggleEcoregionSpeciesLayer(sciname) {
+        let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Protection Status of Terrestrial Vertebrate Species"})
+        if(!Spplayer.length) return 
+        Spplayer = Spplayer[0]
+        Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sciname}'`})
+      
     }
 
     /**

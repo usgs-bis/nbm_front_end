@@ -139,7 +139,7 @@
             </tr>
             {{for species}}
                 <tr id="{{:scientific_name}}"  class="spRow tableRow">
-                    <td><input type="radio" name="layer" value={{:scientific_name}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')"></td>
+                    <td><input type="radio" name="layer" value={{:sppcode}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" class="species-layer-raido"></td>
                     <td onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">{{:common_name ? common_name : "No common name recorded"}}</td>
                     <td onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
                 </tr>
@@ -157,7 +157,7 @@
         </tr>
         {{for species}}
             <tr class="spRow tableRow" >
-                <td><input type="radio" name="layer" value={{:scientific_name}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')"></td>
+                <td><input type="radio" name="layer" value={{:sppcode}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" class="species-layer-raido"></td>
                 <td class="spCommonName shownTd" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:common_name}}</td>
                 <td class="spScientificName hiddenTd" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:scientific_name}}</td>
                 <td style="text-align: right;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:~format(percent)}}</td>
