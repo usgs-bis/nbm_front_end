@@ -677,8 +677,10 @@ label input:hover ~ .fa-custom-checkbox-class:before {
 
 .dropDownContainer form {
     position: relative;
-    margin-left: 170px;
+    margin: auto;
     color: rgb(204, 204, 204);
+    max-width: 32%;
+    text-align: left;
 }
 
 /*End Form Stuff*/
@@ -1838,4 +1840,10 @@ div.chartTooltip p{
 
 .obisPlotTitle{
     margin-top: 50px;
+}
+
+.raw-json-body{
+    margin-top: 15px;
+    overflow-y: scroll;
+    max-height: 75vh;
 }

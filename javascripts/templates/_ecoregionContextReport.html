@@ -133,13 +133,15 @@
     <div class="table">
         <table id="spTable" style="width:100%">
             <tr class="even" style="font-weight: bold; color: lightblue;">
+                <th></th>
                 <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
                 <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">Scientific Name</th>
             </tr>
             {{for species}}
-                <tr id="{{:scientific_name}}" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');" class="spRow tableRow">
-                    <td>{{:common_name ? common_name : "No common name recorded"}}</td>
-                    <td>{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
+                <tr id="{{:scientific_name}}"  class="spRow tableRow">
+                    <td><input type="radio" name="layer" value={{:scientific_name}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')"></td>
+                    <td onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">{{:common_name ? common_name : "No common name recorded"}}</td>
+                    <td onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
                 </tr>
             {{/for}}
         </table>
@@ -149,14 +151,16 @@
 <script id="updateSpeciesProtectionTableTemplate" type="text/x-jsrender">
     <tbody>
         <tr class="even" style="font-weight: bold; color: lightblue;">
+            <th></th>
             <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
             <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">% Protected</th>
         </tr>
         {{for species}}
-            <tr class="spRow tableRow" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');" >
-                <td class="spCommonName shownTd">{{:common_name}}</td>
-                <td class="spScientificName hiddenTd">{{:scientific_name}}</td>
-                <td style="text-align: right;">{{:~format(percent)}}</td>
+            <tr class="spRow tableRow" >
+                <td><input type="radio" name="layer" value={{:scientific_name}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')"></td>
+                <td class="spCommonName shownTd" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:common_name}}</td>
+                <td class="spScientificName hiddenTd" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:scientific_name}}</td>
+                <td style="text-align: right;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:~format(percent)}}</td>
             </tr>
         {{/for}}
     </tbody>

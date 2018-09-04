@@ -5,6 +5,14 @@ function openEcoregionSpeciesJson(sciname, commonName) {
     openSpeciesJson(sciname, commonName, url);
 }
 
+function toggleEcoregionSpeciesLayer(sciname) {
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Protection Status of Terrestrial Vertebrate Species"})
+    if(!Spplayer.length) return 
+    Spplayer = Spplayer[0]
+    Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sciname}'`})
+  
+}
+
 function openLmeSpeciesJson(sciname, commonName) {
     var url = myServer + '/lmetir/item?identifier=';
     openSpeciesJson(sciname, commonName, url);

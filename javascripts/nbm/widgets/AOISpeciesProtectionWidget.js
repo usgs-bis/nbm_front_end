@@ -166,7 +166,8 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                             scientific_name: row.spp_sciname? row.spp_sciname : "",
                             status_1_2: row.gapstat123perc,
                             status_1_2_3: row.gapstat123perc,
-                            taxaletter: row.taxa
+                            taxaletter: row.taxa,
+                            sppcode: row.sppcode
                         }
                         chunk.species.all.push(c)
                         if(c.taxaletter == 'A') chunk.species.amphibian_species.push(c)
@@ -209,6 +210,12 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
             .catch(function (err) {
                 console.log(err.message);
             });
+
+    }
+
+    function updateSpeciesLayer(SppCode){
+        var visibleLayers = bioScape.getVisibleLayers(false);
+        console.log(visibleLayers)
 
     }
 
@@ -260,7 +267,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
             var value = mySp[gapStatusProperty];
 
             if (value >= bounds.lower && value < bounds.higher) {
-                myList.push({ common_name: mySp['common_name'], scientific_name: mySp['scientific_name'], percent: value });
+                myList.push({ common_name: mySp['common_name'], scientific_name: mySp['scientific_name'], percent: value, sppcode:mySp['sppcode'] });
             }
         }
 
@@ -305,11 +312,11 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
         var viewData = {
             speciesType: speciesTitleMap[currentSpeciesTaxaType],
-            species: currentSpeciesData
+            species: currentSpeciesData,
         };
         var helpers = { format: escapeSingleQuotesInString };
         var html = getHtmlFromJsRenderTemplate('#speciesTableContainerTemplate', viewData, helpers);
-
+        toggleEcoregionSpeciesLayer("")
         $("#speciesTableContainer").html(html);
     }
 
