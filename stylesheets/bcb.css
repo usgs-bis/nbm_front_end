@@ -1847,3 +1847,7 @@ div.chartTooltip p{
     overflow-y: scroll;
     max-height: 75vh;
 }
+
+.text-chart-left{
+    text-align: left;
+}
