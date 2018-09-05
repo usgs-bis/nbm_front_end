@@ -264,7 +264,6 @@ var Initializer = (function(initializer) {
      */
     function startElevationService(source, timeout) {
         timeout = parseInt(timeout)
-        $("#elevationValueDiv").show()
         var identifiedElevationValue;
         var pane = $('#elevationValue');
 

@@ -28,7 +28,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
     this.initializeWidget = function () {
 
         // enable or disable the raster raido buttons based on analysis input
-        let Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Protection Status of Terrestrial Vertebrate Species"})
+        let Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Range"})
         if(Spplayer.length){
             Spplayer = Spplayer[0]
             $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () { 
@@ -43,11 +43,9 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
         const poi = actionHandlerHelper.getSearhActionHandler().getPOI()
 
-        if (poi && this.bap.config.charts[0].lookupColumns.filter(type => type.type == poi.selectedType).length) {
-            const config = this.bap.config.charts[0].lookupColumns.filter(type => type.type == poi.selectedType)[0]
+        if (poi && poi.selectedId) {
             const placeName = poi.selectedName
-            let dataPromise = []
-            this.getSpeciesProtection(placeName, config)
+            this.getSpeciesProtection(poi.selectedId)
                 .then(function (data) {
                     chartData = data
                     currentSpeciesData = data.species.all
@@ -80,7 +78,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     $("#spNameCheckbox").on('click', function () {
                         toggleSpeciesName(this);
                     });
-                    if(!bap.priority) $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
+                    if(!($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked ) $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
                 })
         }
         else {
@@ -131,7 +129,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
 
 
-    this.getSpeciesProtection = function (placeName, config) {
+    this.getSpeciesProtection = function (place) {
 
         let chunk = {
             status_1_2: [
@@ -157,24 +155,15 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
             }
         }
 
-        // get data for region selected
-        let q = {
-            "from": 0, "size": 2000,
-            "query": {
-                "match_phrase": {}
-            }
-        };
-        q['query']['match_phrase'][`properties.${config.configuration.lookupColumn}`] = placeName
 
-        let url = this.bap.config.charts[0].elasticStub + config.configuration.protection + JSON.stringify(q);
+        let url = this.bap.config.charts[0].apiEndpoint + place
 
         return $.getJSON(url).then(function (searchResult) {
-                if (searchResult.error) {
-                    console.log(searchResult.error)
+                if (!searchResult.success) {
+                    console.log(searchResult)
                 }
-                else if (searchResult.hits.hits.length) {
-                    searchResult.hits.hits.forEach(row => {
-                        row = row._source.properties
+                else if (searchResult.result.length) {
+                    searchResult.result.forEach(row => {
                         
                         let c = {
                             common_name: row.spp_comname ? row.spp_comname : "",
@@ -190,7 +179,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                         if(c.taxaletter == 'M') chunk.species.mammal_species.push(c)
                         if(c.taxaletter == 'R') chunk.species.reptile_species.push(c)
 
-                        let total = searchResult.hits.hits.length
+                        let total = searchResult.result.length
 
                         if (row.gapstat12group == '<1') chunk.status_1_2[0].count += 1
                         else if (row.gapstat12group == '1-10') chunk.status_1_2[1].count += 1
@@ -229,7 +218,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
     }
 
     function toggleEcoregionSpeciesLayer(sciname) {
-        let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Protection Status of Terrestrial Vertebrate Species"})
+        let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
         if(!Spplayer.length) return 
         Spplayer = Spplayer[0]
         Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sciname}'`})

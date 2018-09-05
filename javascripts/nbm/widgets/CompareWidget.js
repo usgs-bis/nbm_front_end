@@ -18,7 +18,7 @@ function CompareWidget(config, bap) {
     this.initializeWidget = function (feature) {
 
         let AOI = bap.gid;
-        if(AOI.includes('OBIS_Areas:')) {
+        if(AOI && AOI.includes('OBIS_Areas:')) {
             $(`#${bap.id}BapCase`).hide()
             return
         }
@@ -196,7 +196,7 @@ function CompareWidget(config, bap) {
         }
 
         catch (error) {
-            showErrorDialog("Error printing one or more charts to report.", false);
+            //showErrorDialog("Error printing one or more charts to report.", false);
             return { content: [], charts: [] }
         }
     }

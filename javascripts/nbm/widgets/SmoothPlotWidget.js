@@ -41,7 +41,7 @@ function SmoothPlotWidget(config, bap) {
         }
         
         catch(error){
-            showErrorDialog("Error printing one or more charts to report.",false);
+            //showErrorDialog("Error printing one or more charts to report.",false);
             return {content:[],charts:[]}
         }
     }

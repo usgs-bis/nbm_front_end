@@ -20,7 +20,7 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
 
 
         let AOI = bap.gid;
-        if(AOI.includes('OBIS_Areas:')) {
+        if(AOI && AOI.includes('OBIS_Areas:')) {
             $(`#${bap.id}BapCase`).hide()
             return
         }
