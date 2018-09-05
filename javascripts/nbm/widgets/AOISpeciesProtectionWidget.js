@@ -28,12 +28,11 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
     this.initializeWidget = function () {
 
         // enable or disable the raster raido buttons based on analysis input
-        $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
         let Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Protection Status of Terrestrial Vertebrate Species"})
         if(Spplayer.length){
             Spplayer = Spplayer[0]
-            $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () {   
-                if($(`#${bap.id}Chart .species-layer-raido`).attr('disabled')){
+            $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () { 
+                if(($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked ){
                     $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',false)
                 }
                 else{
@@ -81,6 +80,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     $("#spNameCheckbox").on('click', function () {
                         toggleSpeciesName(this);
                     });
+                    if(!bap.priority) $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
                 })
         }
         else {

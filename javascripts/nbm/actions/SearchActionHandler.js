@@ -253,7 +253,7 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
 
     if (this.geojson.coordinates[0].length === 0) return Promise.resolve();
 
-    // WAY WHERE WE WERE SPLITTING GEOM ON THE 180
+    // OLD WAY, SPLITTING GEOM ON THE 180
     // this.feature = new Feature(this.poi.polygon, undefined, "", undefined);
     // this.feature.show();
     
@@ -263,6 +263,7 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
     let leftEdge=false // close to left edge
     let rightEdge = false // close to right edge
 
+    // convert 
     this.geojson.coordinates.forEach(feature => {
         feature.forEach(polygon => {
             let lineCoord = {
@@ -286,7 +287,6 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
                             lineCoordCopy.coordinates.push([coordinates[0] - 360, coordinates[1]])
                         })
                         polyLineCollectionOtherWorld.push(lineCoordCopy)
-
                     }
                     lineCoord = {
                         "type": "LineString",
@@ -310,7 +310,6 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
                     lineCoordCopy.coordinates.push([coordinates[0] - 360, coordinates[1]])
                 })
                 polyLineCollectionOtherWorld.push(lineCoordCopy)
-
             }
         })
     });
