@@ -392,19 +392,16 @@ var PlaceOfInterestClick = function (latlng, that) {
     if (latlng.lng < - 180) {
         latlng.lng += 360
     }
-    let query = getElasticGeoQuery(latlng)
-
-    //do the lookup then put the results in the drop down
 
     $(".googleResults").remove();
     that.clearSearchButton.html('Searching...<i style="float:right;"class="fa fa-spinner fa-pulse"></i>');
     that.searchButton.focus()
-    $.getJSON(that.elasticEndpoint + query, function (data) {
+    let url = that.sfrPoint + `lat=${latlng.lat}&lng=${latlng.lng}`
+    $.getJSON(url, function (data) {
         that.poisearching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
-        if (data.hits) {
-            var added = [];
+        if (data.hits.hits.length) {
             data.hits.hits.sort(function (a, b) { return b._score - a._score });
             $.each(data.hits.hits, function (index, obj) {
                 var result = new SearchResult(obj, that);
@@ -415,32 +412,6 @@ var PlaceOfInterestClick = function (latlng, that) {
         }
     });
 
-    function getElasticGeoQuery(latLng) {
-        var qJson = {
-            "from": 0, "size": 15,
-            "_source": "properties.*",
-            "query": {
-                "bool": {
-                    "must": {
-                        "match_all": {}
-                    },
-                    "filter": {
-                        "geo_shape": {
-                            "geometry": {
-                                "shape": {
-                                    "type": "point",
-                                    "coordinates": [latLng.lng, latLng.lat]
-                                },
-                                "relation": "intersects"
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        return JSON.stringify(qJson)
-    }
 }
 
 var PlaceOfInterestSearch = function (config, parent) {
@@ -451,8 +422,9 @@ var PlaceOfInterestSearch = function (config, parent) {
     this.clearSearchButton = $('<a style="display: none;" href="#" class="list-group-item">Clear Search</a>');
     this.noResults = $('<a href="#" class="list-group-item list-group-item-danger googleResults">No Results</a>');
     this.searching = false;
-    this.elasticEndpoint = config.elasticEndpoint;
-    this.elasticGeomPrefix = config.elasticGeomPrefix;
+    this.sfrPoint = config.sfrPoint;
+    this.sfrText = config.sfrText;
+    this.sfrFeature = config.sfrFeature;
     this.polygon = undefined;
     this.selectedId = undefined;
     this.selectedName = undefined;
@@ -521,68 +493,38 @@ PlaceOfInterestSearch.prototype.clearSearch = function () {
 };
 
 
-PlaceOfInterestSearch.prototype.getSavedPOI = function (text) {
-    var elasticQuery =
-    {
-        "from": 0, "size": 1,
-        "_source": "properties.*",
-        "query": {
-            "bool": {
-                "must": [
-                    { "match_phrase": {} },
-                ]
-            }
-        }
-    }
-    elasticQuery.query.bool.must[0].match_phrase['properties.feature_id'] = text
-
-
-    var that = this;
-    var url = this.elasticEndpoint + JSON.stringify(elasticQuery);
-    $.getJSON(url, function (data) {
-        that.getSelectedGeometry(data.hits.hits[0])
-    })
-}
-
-
 // Get the geometry from the index directly
-PlaceOfInterestSearch.prototype.getSelectedGeometry = function (result) {
-    var selectShape = "" + this.elasticGeomPrefix + result._index + "/" + result._type + "/" + result._id
+PlaceOfInterestSearch.prototype.getSelectedGeometry = function (feature_id) {
+    
+    var selectShape = "" + this.sfrFeature + feature_id
     let that = this;
+
     $.getJSON(selectShape, function (data) {
-        that.selectedId = data._source.properties.feature_id;
-        that.selectedName = data._source.properties.feature_name;
-        that.selectedType = data._source.properties.feature_class
-        that.selectedArea = 0 //parseInt(data.features[0].properties.st_area) * 0.000247105;
-        that.polygon = data._source;
-        actionHandlerHelper.handleSearchActions();
-        bioScape.resetState()
-        updateUrlWithState();
-    })
-
-}
-PlaceOfInterestSearch.prototype.lookup = function (text) {
-    var elasticQuery =
-    {
-        "from": 0, "size": 100,
-        "_source": "properties.*",
-        "query": {
-            "match_phrase_prefix": {
-            }
+        if(data.hits.hits.length){
+            data = data.hits.hits[0]
+            that.selectedId = data._source.properties.feature_id;
+            that.selectedName = data._source.properties.feature_name;
+            that.selectedType = data._source.properties.feature_class
+            that.selectedArea = 0 //parseInt(data.features[0].properties.st_area) * 0.000247105;
+            that.polygon = data._source;
+            actionHandlerHelper.handleSearchActions();
+            bioScape.resetState()
+            updateUrlWithState();
         }
-    }
-    elasticQuery.query.match_phrase_prefix[`properties.${this.lookupProperty}`] = { "query": text, 'max_expansions': 100 };
+    })
+}
 
+PlaceOfInterestSearch.prototype.lookup = function (text) {
 
     var that = this;
-    $(".googleResults").remove();
-    var url = this.elasticEndpoint + JSON.stringify(elasticQuery);
+    var url = this.sfrText + text
+
     $.getJSON(url, function (data) {
         if (that.searchButton.val() !== text) return;
         that.searching = false;
         that.clearSearchButton.text("Clear Search");
         $(".googleResults").remove();
-        if (data.hits) {
+        if (data.hits.hits.length) {
             var added = [];
             data.hits.hits.sort(function (a, b) { return b._score - a._score }); //sort by best match
             $.each(data.hits.hits, function (index, obj) {
@@ -624,7 +566,7 @@ SearchResult.prototype.initialize = function (result) {
         event.preventDefault();
         $(".list-group-item").removeClass("active");
         that.htmlElement.addClass("active");
-        that.searchParent.getSelectedGeometry(result);
+        that.searchParent.getSelectedGeometry(result._source.properties.feature_id);
     });
 };
 

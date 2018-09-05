@@ -17,9 +17,9 @@ var PDF = function(bioScape, title, type, acres, summary, webLinks, definition, 
     this.MAX_WIDTH = 500;
 };
 PDF.prototype.buildAndDownload = function(marker) {
+    showSpinner();
     var self = this;
     $(`.tooltip`).remove()
-    showSpinner();
     this.getMapImage(marker)
         .then(function(data) {
             return self.createLayoutAndGetCharts(data);

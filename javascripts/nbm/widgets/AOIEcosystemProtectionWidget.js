@@ -2,8 +2,6 @@
 
 var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
     let that = this;
-
-
     let chartData = {
         ecoregion_protection: {},
         ecosystem_coverage: [],
@@ -24,21 +22,10 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
 
         const poi = actionHandlerHelper.getSearhActionHandler().getPOI()
 
-        if (poi && this.bap.config.charts[0].lookupColumns.filter(type => type.type == poi.selectedType).length) {
-            const config = this.bap.config.charts[0].lookupColumns.filter(type => type.type == poi.selectedType)[0]
+        if (poi && poi.selectedId) {
             const placeName = poi.selectedName
-            let dataPromise = []
-            dataPromise.push(this.getEcoregionProtection(placeName, config))
-            dataPromise.push(this.getEcoregionCoverage(placeName, config))
-            dataPromise.push(this.getEcologicalSystems(placeName, config))
-
-            Promise.all(dataPromise)
-                .then(function (data) {
-                    chartData.ecoregion_protection = data[0]
-                    chartData.ecosystem_coverage = data[1]
-                    chartData.ecological_systems = data[2].ecological_systems
-                    chartData.gap1_2 = data[2].gap1_2
-                    chartData.gap1_2_3 = data[2].gap1_2_3
+            this.getData(poi.selectedId, placeName)
+                .then(function () {
 
                     that.bap.rawJson = chartData
 
@@ -111,257 +98,177 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
         };
     };
 
-    this.getEcoregionCoverage = function (placeName, config) {
+    this.getEcoregionCoverage = function (coverage) {
 
+        let coverageData = []
 
-        let q = {
-            "from": 0, "size": 500,
-            "query": {
-                "bool": {
-                    "must": [
-                        { "term": { "properties.nvc_level": "class" } },
-                    ]
+        coverage.forEach(row => {
+            if (!row.eco_code || !row.eco_code.includes('.')) {
+                let c = {
+                    color: that.getColorFromName(row.nvc_name),
+                    name: row.nvc_name,
+                    percent: row.percent_nvcs_cover
                 }
+                coverageData.push(c)
             }
-        }
-        let lookup = {}
-        lookup[`properties.${config.configuration.lookupColumn}`] = placeName
-        q['query']['bool']['must'].push({ "match_phrase": lookup })
-
-        let url = this.bap.config.charts[0].elasticStub + config.configuration.coverage + JSON.stringify(q);
-
-        return $.getJSON(url).then(function (searchResult) {
-            let coverageData = []
-            if (searchResult.error) {
-                console.log(searchResult.error)
-            }
-            else if (searchResult.hits.hits.length) {
-                searchResult.hits.hits.forEach(row => {
-                    row = row._source.properties
-                    if (!row.eco_code || !row.eco_code.includes('.')) {
-
-                        let c = {
-                            color: that.getColorFromName(row.nvc_name),
-                            name: row.nvc_name,
-                            percent: row.percent_nvcs_cover
-                        }
-                        coverageData.push(c)
-                    }
-                })
-            }
-            else {
-                console.log(searchResult)
-            }
-
-            return coverageData.sort(function (a, b) {
-                if (a.percent > b.percent) return -1;
-                if (a.percent < b.percent) return 1;
-                return 0;
-            })
         })
-            .catch(function (err) {
-                console.log(err.message);
-            });
+
+        return coverageData.sort(function (a, b) {
+            if (a.percent > b.percent) return -1;
+            if (a.percent < b.percent) return 1;
+            return 0;
+        })
     }
 
 
-    this.getEcologicalSystems = function (placeName, config) {
+    this.getEcologicalSystems = function (systems) {
 
-        let q = {
-            "from": 0, "size": 500,
-            "query": {
-                "bool": {
-                    "must": [
-                        { "match_phrase": { "properties.nvc_level": "ecosystem" } }
-                    ]
+        let systemsData = []
+        let gap1_2 = [
+            { color: '#660000', count: 0, name: '< 1%', },
+            { color: '#FF0000', count: 0, name: '1 - 10%', },
+            { color: '#EDCB62', count: 0, name: '10 - 17%', },
+            { color: '#9CCB19', count: 0, name: '17 - 50%', },
+            { color: '#228B22', count: 0, name: '> 50%', },
+        ]
+        let gap1_2_3 = [
+            { color: '#660000', count: 0, name: '< 1%', },
+            { color: '#FF0000', count: 0, name: '1 - 10%', },
+            { color: '#EDCB62', count: 0, name: '10 - 17%', },
+            { color: '#9CCB19', count: 0, name: '17 - 50%', },
+            { color: '#228B22', count: 0, name: '> 50%', },
+        ]
+
+        systems.forEach(row => {
+
+            if (!row.eco_code || !row.eco_code.includes('.')) {
+                let c = {
+                    acres: row.totalac,
+                    name: row.nvc_name,
+                    code: row.nvc_code,
+                    status_1_2: row.gapstat12perc,
+                    status_1_2_3: row.gapstat123perc,
                 }
-            }
-        }
-        let lookup = {}
-        lookup[`properties.${config.configuration.lookupColumn}`] = placeName
-        q['query']['bool']['must'].push({ "match_phrase": lookup })
+                systemsData.push(c)
 
-        let url = this.bap.config.charts[0].elasticStub + config.configuration.systems + JSON.stringify(q);
+                let total = systems.length
 
-        return $.getJSON(url).then(function (searchResult) {
-            let systemsData = []
-            let gap1_2 = [
-                { color: '#660000', count: 0, name: '< 1%', },
-                { color: '#FF0000', count: 0, name: '1 - 10%', },
-                { color: '#EDCB62', count: 0, name: '10 - 17%', },
-                { color: '#9CCB19', count: 0, name: '17 - 50%', },
-                { color: '#228B22', count: 0, name: '> 50%', },
-            ]
-            let gap1_2_3 = [
-                { color: '#660000', count: 0, name: '< 1%', },
-                { color: '#FF0000', count: 0, name: '1 - 10%', },
-                { color: '#EDCB62', count: 0, name: '10 - 17%', },
-                { color: '#9CCB19', count: 0, name: '17 - 50%', },
-                { color: '#228B22', count: 0, name: '> 50%', },
-            ]
+                if (row.gapstat12group == '<1') gap1_2[0].count += 1
+                else if (row.gapstat12group == '1-10') gap1_2[1].count += 1
+                else if (row.gapstat12group == '1-17') gap1_2[2].count += 1
+                else if (row.gapstat12group == '17-50') gap1_2[3].count += 1
+                else if (row.gapstat12group == '>50') gap1_2[4].count += 1
 
-            if (searchResult.error) {
-                console.log(searchResult.error)
-            }
-            else if (searchResult.hits.hits.length) {
-                searchResult.hits.hits.forEach(row => {
-                    row = row._source.properties
-                    if (!row.eco_code || !row.eco_code.includes('.')) {
-                        let c = {
-                            acres: row.totalac,
-                            name: row.nvc_name,
-                            code: row.nvc_code,
-                            status_1_2: row.gapstat12perc,
-                            status_1_2_3: row.gapstat123perc,
-                        }
-                        systemsData.push(c)
+                if (row.gapstat123group == '<1') gap1_2_3[0].count += 1
+                else if (row.gapstat123group == '1-10') gap1_2_3[1].count += 1
+                else if (row.gapstat123group == '1-17') gap1_2_3[2].count += 1
+                else if (row.gapstat123group == '17-50') gap1_2_3[3].count += 1
+                else if (row.gapstat123group == '>50') gap1_2_3[4].count += 1
 
-                        let total = searchResult.hits.hits.length
-
-                        if (row.gapstat12group == '<1') gap1_2[0].count += 1
-                        else if (row.gapstat12group == '1-10') gap1_2[1].count += 1
-                        else if (row.gapstat12group == '1-17') gap1_2[2].count += 1
-                        else if (row.gapstat12group == '17-50') gap1_2[3].count += 1
-                        else if (row.gapstat12group == '>50') gap1_2[4].count += 1
-
-                        if (row.gapstat123group == '<1') gap1_2_3[0].count += 1
-                        else if (row.gapstat123group == '1-10') gap1_2_3[1].count += 1
-                        else if (row.gapstat123group == '1-17') gap1_2_3[2].count += 1
-                        else if (row.gapstat123group == '17-50') gap1_2_3[3].count += 1
-                        else if (row.gapstat123group == '>50') gap1_2_3[4].count += 1
-
-                        gap1_2.forEach(x => {
-                            x.percent = parseFloat(x.count / total) * 100
-                        })
-                        gap1_2_3.forEach(x => {
-                            x.percent = parseFloat(x.count / total) * 100
-                        })
-                    }
-
+                gap1_2.forEach(x => {
+                    x.percent = parseFloat(x.count / total) * 100
+                })
+                gap1_2_3.forEach(x => {
+                    x.percent = parseFloat(x.count / total) * 100
                 })
             }
-            else {
-                console.log(searchResult)
-            }
-            systemsData = systemsData.sort(function (a, b) {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
-                return 0;
-            })
-            return {
-                ecological_systems: systemsData,
-                gap1_2: gap1_2,
-                gap1_2_3: gap1_2_3
-            }
         })
-            .catch(function (err) {
-                console.log(err.message);
-            });
+
+        systemsData = systemsData.sort(function (a, b) {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        })
+        return {
+            ecological_systems: systemsData,
+            gap1_2: gap1_2,
+            gap1_2_3: gap1_2_3
+        }
+
     }
 
-    this.getEcoregionProtection = function (placeName, config) {
+    this.getEcoregionProtection = function (protection, placeName) {
 
         let chunk = {
-            conus_data: {
+            CONUS_data: {
                 name: "CONUS",
                 chart_data: []
             },
             ecoregion_data: {
-                name: "Ecoregion",
+                name: placeName,
                 chart_data: []
             }
         }
 
-        // get data for region selected
-        let q1 = {
-            "query": {
-                "match_phrase": {}
+        if (protection.CONUS) {
+            let total = parseFloat(protection.CONUS.gapstat1ac)
+                + parseFloat(protection.CONUS.gapstat2ac)
+                + parseFloat(protection.CONUS.gapstat3ac)
+                + parseFloat(protection.CONUS.gapstat4ac);
+            let temp = [
+                {
+                    id: "Status12",
+                    value: numberWithCommas(parseInt(protection.CONUS.gapstat1ac + protection.CONUS.gapstat2ac)),
+                    percent: ((protection.CONUS.gapstat1ac + protection.CONUS.gapstat2ac) / total) * 100
+                },
+                {
+                    id: "Status3",
+                    value: numberWithCommas(parseInt(protection.CONUS.gapstat3ac)),
+                    percent: (protection.CONUS.gapstat3ac / total) * 100
+                },
+                {
+                    id: "Status4",
+                    value: numberWithCommas(parseInt(protection.CONUS.gapstat4ac)),
+                    percent: (protection.CONUS.gapstat4ac / total) * 100
+                }
+            ]
+            chunk.CONUS_data.chart_data = temp
+        }
+        if (protection[placeName]) {
+            let total = parseFloat(protection[placeName].gapstat1ac)
+                + parseFloat(protection[placeName].gapstat2ac)
+                + parseFloat(protection[placeName].gapstat3ac)
+                + parseFloat(protection[placeName].gapstat4ac);
+            let temp = [
+                {
+                    id: "Status12",
+                    value: numberWithCommas(parseInt(protection[placeName].gapstat1ac + protection[placeName].gapstat2ac)),
+                    percent: ((protection[placeName].gapstat1ac + protection[placeName].gapstat2ac) / total) * 100
+                },
+                {
+                    id: "Status3",
+                    value: numberWithCommas(parseInt(protection[placeName].gapstat3ac)),
+                    percent: (protection[placeName].gapstat3ac / total) * 100
+                },
+                {
+                    id: "Status4",
+                    value: numberWithCommas(parseInt(protection[placeName].gapstat4ac)),
+                    percent: (protection[placeName].gapstat4ac / total) * 100
+                }
+            ]
+            chunk.ecoregion_data.chart_data = temp
+        }
+
+        return chunk
+    }
+
+    this.getData = function (feature_id, placeName) {
+        let url = this.bap.config.charts[0].apiEndpoint + feature_id
+        return $.getJSON(url).then(function (data) {
+            if (!data.success) {
+                console.log(data)
             }
-        };
-        q1['query']['match_phrase'][`properties.${config.configuration.lookupColumn}`] = placeName
-
-        // get data for CONUS
-        let q2 = {
-            "query": {
-                "match_phrase": {}
+            else {
+                chartData.ecoregion_protection = that.getEcoregionProtection(data.result.protection, placeName)
+                chartData.ecosystem_coverage = that.getEcoregionCoverage(data.result.coverage)
+                let ecologicalSystems = that.getEcologicalSystems(data.result.systems)
+                chartData.ecological_systems = ecologicalSystems.ecological_systems
+                chartData.gap1_2 = ecologicalSystems.gap1_2
+                chartData.gap1_2_3 = ecologicalSystems.gap1_2_3
             }
-        };
-        q2['query']['match_phrase'][`properties.${config.configuration.lookupColumn}`] = "CONUS"
-
-        let promises = []
-        let url = []
-        url.push(this.bap.config.charts[0].elasticStub + config.configuration.protection + JSON.stringify(q1));
-        url.push(this.bap.config.charts[0].elasticStub + config.configuration.protection + JSON.stringify(q2));
-
-        url.forEach(function (url) {
-            promises.push($.getJSON(url))
-        });
-
-        return Promise.all(promises).then(function (data) {
-            data.forEach(searchResult => {
-                if (searchResult.error) {
-                    console.log(searchResult.error)
-                }
-                else if (searchResult.hits.hits.length) {
-                    if (searchResult.hits.hits[0]._source.properties[config.configuration.lookupColumn] === "CONUS") {
-                        let total = parseFloat(searchResult.hits.hits[0]._source.properties.gapstat1ac)
-                            + parseFloat(searchResult.hits.hits[0]._source.properties.gapstat2ac)
-                            + parseFloat(searchResult.hits.hits[0]._source.properties.gapstat3ac)
-                            + parseFloat(searchResult.hits.hits[0]._source.properties.gapstat4ac);
-                        let temp = [
-                            {
-                                id: "Status12",
-                                value: numberWithCommas(parseInt(searchResult.hits.hits[0]._source.properties.gapstat1ac + searchResult.hits.hits[0]._source.properties.gapstat2ac)),
-                                percent: ((searchResult.hits.hits[0]._source.properties.gapstat1ac + searchResult.hits.hits[0]._source.properties.gapstat2ac) / total) * 100
-                            },
-                            {
-                                id: "Status3",
-                                value: numberWithCommas(parseInt(searchResult.hits.hits[0]._source.properties.gapstat3ac)),
-                                percent: (searchResult.hits.hits[0]._source.properties.gapstat3ac / total) * 100
-                            },
-                            {
-                                id: "Status4",
-                                value: numberWithCommas(parseInt(searchResult.hits.hits[0]._source.properties.gapstat4ac)),
-                                percent: (searchResult.hits.hits[0]._source.properties.gapstat4ac / total) * 100
-                            }
-                        ]
-                        chunk.conus_data.chart_data = temp
-                    }
-                    else if (searchResult.hits.hits[0]._source.properties[config.configuration.lookupColumn] == placeName) {
-                        let total = parseFloat(searchResult.hits.hits[0]._source.properties.gapstat1ac)
-                            + parseFloat(searchResult.hits.hits[0]._source.properties.gapstat2ac)
-                            + parseFloat(searchResult.hits.hits[0]._source.properties.gapstat3ac)
-                            + parseFloat(searchResult.hits.hits[0]._source.properties.gapstat4ac);
-                        let temp = [
-                            {
-                                id: "Status12",
-                                value: numberWithCommas(parseInt(searchResult.hits.hits[0]._source.properties.gapstat1ac + searchResult.hits.hits[0]._source.properties.gapstat2ac)),
-                                percent: ((searchResult.hits.hits[0]._source.properties.gapstat1ac + searchResult.hits.hits[0]._source.properties.gapstat2ac) / total) * 100
-                            },
-                            {
-                                id: "Status3",
-                                value: numberWithCommas(parseInt(searchResult.hits.hits[0]._source.properties.gapstat3ac)),
-                                percent: (searchResult.hits.hits[0]._source.properties.gapstat3ac / total) * 100
-                            },
-                            {
-                                id: "Status4",
-                                value: numberWithCommas(parseInt(searchResult.hits.hits[0]._source.properties.gapstat4ac)),
-                                percent: (searchResult.hits.hits[0]._source.properties.gapstat4ac / total) * 100
-                            }
-                        ]
-                        chunk.ecoregion_data.chart_data = temp
-                    }
-                }
-                else {
-                    console.log(searchResult)
-                }
-
-            })
-            return chunk
+            return
         })
-            .catch(function (err) {
-                console.log(err.message);
-            });
+
     }
 
     this.getColorFromName = function (name) {
@@ -393,13 +300,13 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
     var protectionChart;
     function initializeEcoProtectionChart(chartData) {
         var ecoregionData = chartData.ecoregion_data;
-        var conusData = chartData.conus_data;
+        var CONUSData = chartData.CONUS_data;
         var ecoregionChartData = AmChartsHelper.getChartDataFromJsonArray(ecoregionData.chart_data, 2);
-        var conusChartData = AmChartsHelper.getChartDataFromJsonArray(conusData.chart_data, 2);
+        var CONUSChartData = AmChartsHelper.getChartDataFromJsonArray(CONUSData.chart_data, 2);
 
         var dataProviders = [
             getDataProvider(ecoregionData.name, ecoregionChartData),
-            getDataProvider(conusData.name, conusChartData)
+            getDataProvider(CONUSData.name, CONUSChartData)
         ];
 
         var chartColor = AmChartsHelper.getChartColor();

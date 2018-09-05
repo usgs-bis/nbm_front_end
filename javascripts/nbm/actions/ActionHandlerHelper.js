@@ -68,7 +68,12 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
 
             drawnItems.addLayer(layer);
 
-            that.showTempPopup("Click the \"Submit\" button at the top to submit this polygon for analysis.");
+            //that.showTempPopup("Click the \"Submit\" button at the top to submit this polygon for analysis.");
+            that.canDownloadPdf = false;
+            that.handleDrawPolygonActions()
+                .then(function () {
+                    that.canDownloadPdf = true;
+                });
         });
 
         map.on(L.Draw.Event.DRAWSTART, function () {
@@ -158,7 +163,7 @@ ActionHandlerHelper.prototype.initPOISearch = function (search){
     let searchHandler = actionHandlers.filter(h =>{
         return h.type == "searchPoi"
     })[0]
-    searchHandler.poi.getSavedPOI(search)
+    searchHandler.poi.getSelectedGeometry(search)
 }
 
 /**

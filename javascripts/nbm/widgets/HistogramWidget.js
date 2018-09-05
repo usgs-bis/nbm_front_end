@@ -43,7 +43,7 @@ function HistogramWidget(config, bap) {
            
         }
         catch(error){
-            showErrorDialog("Error printing one or more charts to report.",false);
+            //showErrorDialog("Error printing one or more charts to report.",false);
             return {content:[],charts:[]}
         }
     }
@@ -231,7 +231,7 @@ function HistogramWidget(config, bap) {
                 .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
-                .text("Count");
+                .text("Number of Grid Cells");
 
            
 
@@ -318,7 +318,7 @@ function HistogramWidget(config, bap) {
                 percentage = percentage.toString();
             }
 
-            let count = `Count: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Count = values that occur ${dateFromDay(2018, (d.day * buk) + 1)} to ${dateFromDay(2018, (d.day * buk) + buk)} for all selected years (${startYear} to ${endYear}). <br />`
+            let count = `Number of Grid Cells: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Number of Grid Cells = values that occur ${dateFromDay(2018, (d.day * buk) + 1)} to ${dateFromDay(2018, (d.day * buk) + buk)} for all selected years (${startYear} to ${endYear}). <br />`
             if (buk == 1) {
                 return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
             }
