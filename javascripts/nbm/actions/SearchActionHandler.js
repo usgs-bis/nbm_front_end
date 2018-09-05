@@ -259,7 +259,7 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
     
     let polyLineCollection = [];
     let polyLineCollectionOtherWorld = [];
-    let edgeOfMap = 10
+    let edgeOfMap = 10 
     let leftEdge=false // close to left edge
     let rightEdge = false // close to right edge
 
@@ -276,7 +276,7 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
             }
             let crossed22 = false
             polygon.forEach(coordinates => {
-                if ((coordinates[0] < -179.9 || coordinates[0] > 179.9) && lineCoord.coordinates.length) {
+                if ((coordinates[0] < -179.99 || coordinates[0] > 179.99) && lineCoord.coordinates.length) {
                     polyLineCollection.push(lineCoord)
                     if (crossed22) {
                         lineCoordCopy = {
@@ -293,7 +293,7 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
                         "coordinates": []
                     }
                 }
-                if (coordinates[0] > -179.9 && coordinates[0] < 179.9) {
+                if (coordinates[0] > -179.99 && coordinates[0] < 179.99) {
                     lineCoord.coordinates.push(coordinates)
                     if (coordinates[0] > 22.5) crossed22 = true
                     if (coordinates[0] > 180 - edgeOfMap) rightEdge = true
