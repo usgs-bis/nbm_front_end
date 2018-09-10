@@ -217,14 +217,6 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
     }
 
-    function toggleEcoregionSpeciesLayer(sciname) {
-        let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
-        if(!Spplayer.length) return 
-        Spplayer = Spplayer[0]
-        Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sciname}'`})
-      
-    }
-
     /**
      * Create the species GAP status charts.
      */
