@@ -155,13 +155,13 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
 
                 if (row.gapstat12group == '<1') gap1_2[0].count += 1
                 else if (row.gapstat12group == '1-10') gap1_2[1].count += 1
-                else if (row.gapstat12group == '1-17') gap1_2[2].count += 1
+                else if (row.gapstat12group == '10-17') gap1_2[2].count += 1
                 else if (row.gapstat12group == '17-50') gap1_2[3].count += 1
                 else if (row.gapstat12group == '>50') gap1_2[4].count += 1
 
                 if (row.gapstat123group == '<1') gap1_2_3[0].count += 1
                 else if (row.gapstat123group == '1-10') gap1_2_3[1].count += 1
-                else if (row.gapstat123group == '1-17') gap1_2_3[2].count += 1
+                else if (row.gapstat123group == '10-17') gap1_2_3[2].count += 1
                 else if (row.gapstat123group == '17-50') gap1_2_3[3].count += 1
                 else if (row.gapstat123group == '>50') gap1_2_3[4].count += 1
 
