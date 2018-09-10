@@ -103,14 +103,14 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
         let coverageData = []
 
         coverage.forEach(row => {
-            if (!row.eco_code || !row.eco_code.includes('.')) {
-                let c = {
-                    color: that.getColorFromName(row.nvc_name),
-                    name: row.nvc_name,
-                    percent: row.percent_nvcs_cover
-                }
-                coverageData.push(c)
+            
+            let c = {
+                color: that.getColorFromName(row.nvc_name),
+                name: row.nvc_name,
+                percent: row.percent_nvcs_cover
             }
+            coverageData.push(c)
+            
         })
 
         return coverageData.sort(function (a, b) {
