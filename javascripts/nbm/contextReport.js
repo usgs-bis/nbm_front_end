@@ -8,7 +8,16 @@ function openEcoregionSpeciesJson(sciname, commonName) {
 function toggleEcoregionSpeciesLayer(sciname) {
     showSpinner();
     let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
-    if(!Spplayer.length) return 
+    if(!Spplayer.length) {
+        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Range"})
+        if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
+            hideSpinner();
+            return 
+        }
+        let id = Spplayer[0].actionConfig.baps[0]
+        $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
+        
+    }
     Spplayer = Spplayer[0]
     Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sciname}'`})
     Spplayer.mapLayer.leafletLayer.on("load",function() { 
