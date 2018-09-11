@@ -256,6 +256,8 @@ var Initializer = (function(initializer) {
         return updateObjectProperties(bioscapeJson, json);
     }
 
+    
+
       /**
      * display the elevation on the map at the point of the mouse
      * @param {*} source - the api source
@@ -275,15 +277,18 @@ var Initializer = (function(initializer) {
                 var currentTime = new Date().getTime();
                 if (currentTime - lastTimeMouseMoved >= timeout) {
                      pane.html('Loading');
-                    $.getJSON(`${source}x=${e.latlng.lng}&y=${e.latlng.lat}&units=Meters&output=json`, function (data) {
+                    $.getJSON(`${source}x=${e.latlng.lng}&y=${e.latlng.lat}&units=Feet&output=json`, function (data) {
                         identifiedElevationValue = data.USGS_Elevation_Point_Query_Service
                         let elev = identifiedElevationValue.Elevation_Query.Elevation;
-                        elev = elev > -20 ? parseInt(elev)  + 'm' : "No Data"
+                        elev = elev > -20 ? numberWithCommas(parseInt(elev))  + 'ft' : "No Data"
                         pane.html(elev);
                     });
                 }
             }, timeout)
         });
+        const numberWithCommas = (x) => {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
     }
 
     /**
@@ -382,6 +387,10 @@ var Initializer = (function(initializer) {
         $('.layerMoreInfo').on('click', function() {
             displayInfo($(this).data('layer'));
         });
+
+        // hide the info icon on the base baps
+        $("#baseMapSelector .hideBaseMapLayer").hide()
+
         //when the user changes the opacity slider
         $('.opacitySlider').on("change mousemove", function() {
             updateLayerOpacity(this.parentElement.parentElement.id, this.parentElement.parentElement.parentElement.id, $(this).val());

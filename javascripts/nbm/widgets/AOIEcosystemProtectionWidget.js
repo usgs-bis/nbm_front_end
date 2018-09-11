@@ -257,6 +257,7 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
         return $.getJSON(url).then(function (data) {
             if (!data.success) {
                 console.log(data)
+                $(`#${bap.id}BapCase`).hide()
             }
             else {
                 chartData.ecoregion_protection = that.getEcoregionProtection(data.result.protection, placeName)

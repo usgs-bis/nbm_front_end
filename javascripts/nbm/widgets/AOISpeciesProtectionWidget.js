@@ -87,7 +87,6 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     $("#spNameCheckbox").on('click', function () {
                         toggleSpeciesName(this);
                     });
-                    //if(!($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked ) $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
                 })
         }
         else {
@@ -170,6 +169,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         return $.getJSON(url).then(function (searchResult) {
             if (!searchResult.success) {
                 console.log(searchResult)
+                $(`#${bap.id}BapCase`).hide()
             }
             else if (searchResult.result.length) {
                 searchResult.result.forEach(row => {
@@ -216,8 +216,6 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                 $(`#${bap.id}BapCase`).hide()
                 console.log(searchResult)
             }
-
-
             return chunk
         })
             .catch(function (err) {
