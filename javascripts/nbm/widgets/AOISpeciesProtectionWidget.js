@@ -1,7 +1,7 @@
 'use strict';
 
 var AOISpeciesProtectionWidget = function (bapConfig, bap) {
- 
+
     let that = this;
 
     let chartData = {}
@@ -14,6 +14,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         'r': 'Reptiles',
         'all': 'Species'
     };
+    let Specieslayer = []
 
 
     const numberWithCommas = (x) => {
@@ -25,18 +26,22 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         return `<div id='${bap.id + 'Chart'}'></div>`
     };
 
+    this.turnOffSpecies = function(){
+        if (Specieslayer.length) {
+            $(`#${bap.id}Chart .species-layer-raido`).prop('checked', false);
+            Specieslayer[0].mapLayer.leafletLayer.setParams({ CQL_FILTER: `SppCode='none'` })
+        }
+    }
+
     this.initializeWidget = function () {
 
         // enable or disable the raster raido buttons based on analysis input
-        let Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Range"})
-        if(Spplayer.length){
-            Spplayer = Spplayer[0]
-            $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () { 
-                if(($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked ){
-                    $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',false)
-                }
-                else{
-                    $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
+        Specieslayer = bioScape.getAllLayers(false).filter(layer => { return layer.title == "Species Range" })
+        if (Specieslayer.length) {
+            let Spplayer = Specieslayer[0]
+            $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () {
+                if (!($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked) {
+                   that.turnOffSpecies()
                 }
             })
         }
@@ -60,25 +65,29 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                         totalReptiles: chartData.species.reptile_species.length,
                         species: chartData.species.all
                     };
-                    var helpers = {format: escapeSingleQuotesInString};
+                    var helpers = { format: escapeSingleQuotesInString };
                     let html = getHtmlFromJsRenderTemplate('#speciesProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
                     $(`#${bap.id}Chart`).find('#speciesBAPSubtitle').html(`Protection Status of Species in ${placeName}`)
 
                     initializeSpeciesCharts(chartData);
-                    $("input[name='taxaType']").on('change', function() {
+                    $("input[name='taxaType']").on('change', function () {
                         currentSpeciesTaxaType = this.value;
                         currentSpeciesData = getSpeciesListForTaxaType();
                         resetSpeciesTable();
                         updateSpeciesCharts();
+                        that.turnOffSpecies()
+
                     });
-                    $("#resetSpeciesTable").on('click', function() {
+                    $("#resetSpeciesTable").on('click', function () {
                         resetSpeciesTable();
+                        that.turnOffSpecies()
+
                     });
                     $("#spNameCheckbox").on('click', function () {
                         toggleSpeciesName(this);
                     });
-                    if(!($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked ) $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
+                    //if(!($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked ) $(`#${bap.id}Chart .species-layer-raido`).attr('disabled',true)
                 })
         }
         else {
@@ -151,7 +160,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                 amphibian_species: [],
                 bird_species: [],
                 mammal_species: [],
-                reptile_species:[]
+                reptile_species: []
             }
         }
 
@@ -159,56 +168,56 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         let url = this.bap.config.charts[0].apiEndpoint + place
 
         return $.getJSON(url).then(function (searchResult) {
-                if (!searchResult.success) {
-                    console.log(searchResult)
-                }
-                else if (searchResult.result.length) {
-                    searchResult.result.forEach(row => {
-                        
-                        let c = {
-                            common_name: row.spp_comname ? row.spp_comname : "",
-                            scientific_name: row.spp_sciname? row.spp_sciname : "",
-                            status_1_2: row.gapstat12perc,
-                            status_1_2_3: row.gapstat123perc,
-                            taxaletter: row.taxa,
-                            sppcode: row.sppcode
-                        }
-                        chunk.species.all.push(c)
-                        if(c.taxaletter == 'A') chunk.species.amphibian_species.push(c)
-                        if(c.taxaletter == 'B') chunk.species.bird_species.push(c)
-                        if(c.taxaletter == 'M') chunk.species.mammal_species.push(c)
-                        if(c.taxaletter == 'R') chunk.species.reptile_species.push(c)
+            if (!searchResult.success) {
+                console.log(searchResult)
+            }
+            else if (searchResult.result.length) {
+                searchResult.result.forEach(row => {
 
-                        let total = searchResult.result.length
+                    let c = {
+                        common_name: row.spp_comname ? row.spp_comname : "",
+                        scientific_name: row.spp_sciname ? row.spp_sciname : "",
+                        status_1_2: row.gapstat12perc,
+                        status_1_2_3: row.gapstat123perc,
+                        taxaletter: row.taxa,
+                        sppcode: row.sppcode
+                    }
+                    chunk.species.all.push(c)
+                    if (c.taxaletter == 'A') chunk.species.amphibian_species.push(c)
+                    if (c.taxaletter == 'B') chunk.species.bird_species.push(c)
+                    if (c.taxaletter == 'M') chunk.species.mammal_species.push(c)
+                    if (c.taxaletter == 'R') chunk.species.reptile_species.push(c)
 
-                        if (row.gapstat12group == '<1') chunk.status_1_2[0].count += 1
-                        else if (row.gapstat12group == '1-10') chunk.status_1_2[1].count += 1
-                        else if (row.gapstat12group == '1-17') chunk.status_1_2[2].count += 1
-                        else if (row.gapstat12group == '17-50') chunk.status_1_2[3].count += 1
-                        else if (row.gapstat12group == '>50') chunk.status_1_2[4].count += 1
+                    let total = searchResult.result.length
 
-                        if (row.gapstat123group == '<1') chunk.status_1_2_3[0].count += 1
-                        else if (row.gapstat123group == '1-10') chunk.status_1_2_3[1].count += 1
-                        else if (row.gapstat123group == '1-17') chunk.status_1_2_3[2].count += 1
-                        else if (row.gapstat123group == '17-50') chunk.status_1_2_3[3].count += 1
-                        else if (row.gapstat123group == '>50') chunk.status_1_2_3[4].count += 1
+                    if (row.gapstat12group == '<1') chunk.status_1_2[0].count += 1
+                    else if (row.gapstat12group == '1-10') chunk.status_1_2[1].count += 1
+                    else if (row.gapstat12group == '1-17') chunk.status_1_2[2].count += 1
+                    else if (row.gapstat12group == '17-50') chunk.status_1_2[3].count += 1
+                    else if (row.gapstat12group == '>50') chunk.status_1_2[4].count += 1
 
-                        chunk.status_1_2.forEach(x => {
-                            x.percent = parseFloat(x.count / total) * 100
-                        })
-                        chunk.status_1_2_3.forEach(x => {
-                            x.percent = parseFloat(x.count / total) * 100
-                        })
+                    if (row.gapstat123group == '<1') chunk.status_1_2_3[0].count += 1
+                    else if (row.gapstat123group == '1-10') chunk.status_1_2_3[1].count += 1
+                    else if (row.gapstat123group == '1-17') chunk.status_1_2_3[2].count += 1
+                    else if (row.gapstat123group == '17-50') chunk.status_1_2_3[3].count += 1
+                    else if (row.gapstat123group == '>50') chunk.status_1_2_3[4].count += 1
 
+                    chunk.status_1_2.forEach(x => {
+                        x.percent = parseFloat(x.count / total) * 100
+                    })
+                    chunk.status_1_2_3.forEach(x => {
+                        x.percent = parseFloat(x.count / total) * 100
                     })
 
-                }
-                else {
-                    $(`#${bap.id}BapCase`).hide()
-                    console.log(searchResult)
-                }
+                })
 
-            
+            }
+            else {
+                $(`#${bap.id}BapCase`).hide()
+                console.log(searchResult)
+            }
+
+
             return chunk
         })
             .catch(function (err) {
@@ -230,6 +239,8 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         sp12chart.addListener('clickSlice', function (event) {
             sp12chart.validateData();
             updateSpeciesTable(sp12Title, event.dataItem);
+            that.turnOffSpecies()
+
         });
 
         var sp123Title = 'GAP Status 1,2 & 3';
@@ -238,6 +249,8 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         sp123chart.addListener('clickSlice', function (event) {
             sp123chart.validateData();
             updateSpeciesTable(sp123Title, event.dataItem);
+            that.turnOffSpecies()
+
         });
 
         // WRITE
@@ -265,7 +278,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
             var value = mySp[gapStatusProperty];
 
             if (value >= bounds.lower && value < bounds.higher) {
-                myList.push({ common_name: mySp['common_name'], scientific_name: mySp['scientific_name'], percent: value, sppcode:mySp['sppcode'] });
+                myList.push({ common_name: mySp['common_name'], scientific_name: mySp['scientific_name'], percent: value, sppcode: mySp['sppcode'] });
             }
         }
 

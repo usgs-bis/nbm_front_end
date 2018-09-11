@@ -275,18 +275,21 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
                 "coordinates": []
             }
             let crossed22 = false
-            polygon.forEach(coordinates => {
+            for(let i=0; i < polygon.length; i++){
+                let coordinates = polygon[i]
                 if ((coordinates[0] < -179.99 || coordinates[0] > 179.99) && lineCoord.coordinates.length) {
-                    polyLineCollection.push(lineCoord)
-                    if (crossed22) {
-                        lineCoordCopy = {
-                            "type": "LineString",
-                            "coordinates": []
+                    if(lineCoord.coordinates.length > 1){
+                        polyLineCollection.push(lineCoord)
+                        if (crossed22) {
+                            lineCoordCopy = {
+                                "type": "LineString",
+                                "coordinates": []
+                            }
+                            lineCoord.coordinates.forEach(coordinates => {
+                                lineCoordCopy.coordinates.push([coordinates[0] - 360, coordinates[1]])
+                            })
+                            polyLineCollectionOtherWorld.push(lineCoordCopy)
                         }
-                        lineCoord.coordinates.forEach(coordinates => {
-                            lineCoordCopy.coordinates.push([coordinates[0] - 360, coordinates[1]])
-                        })
-                        polyLineCollectionOtherWorld.push(lineCoordCopy)
                     }
                     lineCoord = {
                         "type": "LineString",
@@ -299,7 +302,13 @@ SearchActionHandler.prototype.sendTriggerAction = function (isHeader, headerBapI
                     if (coordinates[0] > 180 - edgeOfMap) rightEdge = true
                     if (coordinates[0] < -180 + edgeOfMap) leftEdge = true
                 }
-            })
+                else{
+                    if(i+1 < polygon.length && polygon[i+1][0] > -179.99 && polygon[i+1][0] < 179.99){
+                        lineCoord.coordinates.push(coordinates)
+                    }
+                }
+    
+            }
             polyLineCollection.push(lineCoord)
             if (crossed22) {
                 lineCoordCopy = {
