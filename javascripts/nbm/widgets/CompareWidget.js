@@ -7,7 +7,8 @@ function CompareWidget(config, bap) {
     let selector = "#" + id + "BAP";
     let timeSlider = null;
     let button = null;
-    let layer = null;
+    let layer1 = null;
+    let layer2 = null;
     let alreadySentBuffer = false
 
 
@@ -23,15 +24,17 @@ function CompareWidget(config, bap) {
             return
         }
 
-        if (that.bap.GetBapLayers().length) {
-            layer = that.bap.GetBapLayers()[0]
+        if (that.bap.GetBapLayers().length > 1) {
+            layer1 = that.bap.GetBapLayers()[0]
+            layer2 = that.bap.GetBapLayers()[1]
         }
         else {
             return;
         }
 
         timeSlider = widgetHelper.addTimeSlider();
-        let time = layer.getTimeInfo();
+        let time1 = layer1.getTimeInfo();
+        let time2 = layer2.getTimeInfo();
 
         button = $(selector).find('#getData');
         button.on('click', function () {
@@ -39,14 +42,19 @@ function CompareWidget(config, bap) {
         });
 
         let checkRange = function (min, max) {
+            let maxTime = time1.endDate
+            if(time2.endDate < maxTime) maxTime = time2.endDate
+
+            let minTime = time1.startDate
+            if(time2.startDate > minTime) minTime = time2.startDate
 
             if ((max - min) <= 0) {
                 $(selector).find('#bapRangeSlider').html('Please select a range to analyze.');
                 button.hide()
             }
           
-            else if (time.startDate > min || time.endDate < max) {
-                $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + time.startDate + ' to ' + time.endDate);
+            else if (minTime > min || maxTime < max) {
+                $(selector).find('#bapRangeSlider').html('OUT OF RANGE: ' + minTime + ' to ' + maxTime);
                 button.hide()
             }
             else {
