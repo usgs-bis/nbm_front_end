@@ -273,6 +273,9 @@ select option {
 }
 
 .spRow {
+    /* cursor: pointer; */
+}
+.species-layer-raido{
     cursor: pointer;
 }
 
