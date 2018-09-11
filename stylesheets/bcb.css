@@ -1738,6 +1738,7 @@ input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
     overflow: scroll;
     height: calc(100% - 80px);
     position: relative;
+    overflow-x: hidden;
 }
 
 .compareBapModal .modal-header{
@@ -1851,4 +1852,7 @@ div.chartTooltip p{
 
 .text-chart-left{
     text-align: left;
+}
+.amcharts-chart-div{
+    overflow: visible !important;
 }
