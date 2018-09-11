@@ -1,8 +1,8 @@
 'use strict';
 
 function openEcoregionSpeciesJson(sciname, commonName) {
-    var url = myServer + '/ecotir/item?identifier=';
-    openSpeciesJson(sciname, commonName, url);
+    // var url = myServer + '/ecotir/item?identifier=';
+    // openSpeciesJson(sciname, commonName, url);
 }
 
 function toggleEcoregionSpeciesLayer(sciname) {
