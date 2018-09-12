@@ -25,7 +25,7 @@ WidgetHelper.prototype.getWidget = function (config, bap) {
     } else if (config.type === "vectorQuery") {
         return new BarChartWidget(config);
     } else if (config.type === "nfhp") {
-        return new NFHPWidget(config);
+        return new NFHPWidget(config,bap);
     } else if (config.type === "nfhp_disturbance") {
         return new NFHPDisturbanceWidget(config);
     } else if (config.type === "hierarchyByPixelElastic") {
@@ -40,6 +40,8 @@ WidgetHelper.prototype.getWidget = function (config, bap) {
         return new CompareWidget(config, bap);
     } else if (config.type === "obis") {
         return new ObisWidget(config, bap);
+    } else if (config.type === "Phenocasts") {
+        return new PhenocastsWidget(config, bap);
 }
 };
 
