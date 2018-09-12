@@ -4,10 +4,10 @@ var NFHPDisturbanceWidget = function (chart) {
     let that = this
     let config = chart;
     let rows = [];
-   
+
 
     this.initializeWidget = function () {
-        
+
         let elasticQuery = {
             "from": 0, "size": 500,
             "sort": [
@@ -15,7 +15,7 @@ var NFHPDisturbanceWidget = function (chart) {
             ],
             "query": { "match_all": {} }
         };
-        let url = config.elasticEndpointDistVariables  + JSON.stringify(elasticQuery);
+        let url = config.elasticEndpointDistVariables + JSON.stringify(elasticQuery);
         $.getJSON(url)
             .done(function (data) {
                 if (data.error) {
@@ -25,7 +25,7 @@ var NFHPDisturbanceWidget = function (chart) {
                     data = data.success.hits.hits
                     let allRows = {}
                     data.map(d => {
-                        allRows[d._source.properties.super_category] = {tempRow:[],row:[]}
+                        allRows[d._source.properties.super_category] = { tempRow: [], row: [] }
                     })
 
                     data.map(d => {
@@ -43,40 +43,45 @@ var NFHPDisturbanceWidget = function (chart) {
 
                     let locationData = getLocation()
                     locationData.then(function (loc) {
-                        loc = loc.success.hits.hits[0]._source.properties
-                        that.placeName = loc.place_name
-                        data.map(d => {
-                            let scale = d._source.properties.scale.replace(/ /g, "_");
-                            let dist = d._source.properties.disturbance
-                            let cat = d._source.properties.super_category
-                             allRows[cat].tempRow[dist][scale] = d._source.properties.tested ? "" : "NT"
-                            if (scale == 'local_catchment') {
-                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.lc_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
-                            }
-                            else if (scale == 'network_catchment') {
-                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.nc_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
-                            }
-                            else if (scale == 'local_buffer') {
-                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.lb_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
-                            }
-                            else if (scale == 'network_buffer') {
-                                 allRows[cat].tempRow[dist][scale] = cleanData(loc.nb_list_dist).includes(dist) ? 'Significant' :  allRows[cat].tempRow[dist][scale]
-                            }
+                        if (loc.success.hits.hits.length) {
+                            loc = loc.success.hits.hits[0]._source.properties
+                            that.placeName = loc.place_name
+                            data.map(d => {
+                                let scale = d._source.properties.scale.replace(/ /g, "_");
+                                let dist = d._source.properties.disturbance
+                                let cat = d._source.properties.super_category
+                                allRows[cat].tempRow[dist][scale] = d._source.properties.tested ? "" : "NT"
+                                if (scale == 'local_catchment') {
+                                    allRows[cat].tempRow[dist][scale] = cleanData(loc.lc_list_dist).includes(dist) ? 'Significant' : allRows[cat].tempRow[dist][scale]
+                                }
+                                else if (scale == 'network_catchment') {
+                                    allRows[cat].tempRow[dist][scale] = cleanData(loc.nc_list_dist).includes(dist) ? 'Significant' : allRows[cat].tempRow[dist][scale]
+                                }
+                                else if (scale == 'local_buffer') {
+                                    allRows[cat].tempRow[dist][scale] = cleanData(loc.lb_list_dist).includes(dist) ? 'Significant' : allRows[cat].tempRow[dist][scale]
+                                }
+                                else if (scale == 'network_buffer') {
+                                    allRows[cat].tempRow[dist][scale] = cleanData(loc.nb_list_dist).includes(dist) ? 'Significant' : allRows[cat].tempRow[dist][scale]
+                                }
 
-                        })
-
-                        Object.getOwnPropertyNames(allRows).map(r => {
-                            Object.getOwnPropertyNames(allRows[r].tempRow).map(tr => {
-                                if(tr != "length") allRows[r].row.push(allRows[r].tempRow[tr])
                             })
-                            rows.push(allRows[r])
-                        })
-                        rows.sort(function(a, b) {
-                            if(a.category < b.category) return -1;
-                            if(a.category > b.category) return 1;
-                            return 0;
-                        });
-                        buildChart(chart)
+
+                            Object.getOwnPropertyNames(allRows).map(r => {
+                                Object.getOwnPropertyNames(allRows[r].tempRow).map(tr => {
+                                    if (tr != "length") allRows[r].row.push(allRows[r].tempRow[tr])
+                                })
+                                rows.push(allRows[r])
+                            })
+                            rows.sort(function (a, b) {
+                                if (a.category < b.category) return -1;
+                                if (a.category > b.category) return 1;
+                                return 0;
+                            });
+                            buildChart(chart)
+                        }
+                        else{
+                            console.log("Unable to determine location")
+                        }
                     })
 
                 }
@@ -93,7 +98,7 @@ var NFHPDisturbanceWidget = function (chart) {
 
 
 
-     this.getHtml = function () {
+    this.getHtml = function () {
         let e = {
             error: "There is no analysis data for the chosen geometry.",
             title: "Disturbances Influencing Risk to Fish Habitat Condition",
@@ -197,28 +202,28 @@ var NFHPDisturbanceWidget = function (chart) {
                             alignment: "left",
                             width: "20%",
                             text: rows[j].row[k].local_catchment,
-                            bold: rows[j].row[k].local_catchment == "Significant" ? true: false,
+                            bold: rows[j].row[k].local_catchment == "Significant" ? true : false,
                             fontSize: 12
                         },
                         {
                             alignment: "left",
                             width: "20%",
                             text: rows[j].row[k].network_catchment,
-                            bold: rows[j].row[k].network_catchment == "Significant" ? true: false,
+                            bold: rows[j].row[k].network_catchment == "Significant" ? true : false,
                             fontSize: 12
                         },
                         {
                             alignment: "left",
                             width: "20%",
                             text: rows[j].row[k].local_buffer,
-                            bold: rows[j].row[k].local_buffer == "Significant" ? true: false,
+                            bold: rows[j].row[k].local_buffer == "Significant" ? true : false,
                             fontSize: 12
                         },
                         {
                             alignment: "left",
                             width: "20%",
                             text: rows[j].row[k].network_buffer,
-                            bold: rows[j].row[k].network_buffer == "Significant" ? true: false,
+                            bold: rows[j].row[k].network_buffer == "Significant" ? true : false,
                             fontSize: 12
                         }
 
@@ -250,13 +255,13 @@ var NFHPDisturbanceWidget = function (chart) {
         let html = getHtmlFromJsRenderTemplate('#NFHPTableTemplate', that.viewModel)
         $("#" + that.bap.id + "NFHPDerror").remove()
         $("#" + that.bap.id + "BAP").append(html)
-        var tableRows =  $("#" + that.bap.id + "BAP").find('.NFHPTable > tbody > tr > td')
-        for (let tRow of tableRows){
-            if(tRow.innerText=="Significant"){
-                tRow.style.color = 'rgb(243, 243, 243)'; 
+        var tableRows = $("#" + that.bap.id + "BAP").find('.NFHPTable > tbody > tr > td')
+        for (let tRow of tableRows) {
+            if (tRow.innerText == "Significant") {
+                tRow.style.color = 'rgb(243, 243, 243)';
             }
         }
-        
+
     }
 
 
@@ -347,11 +352,11 @@ var NFHPDisturbanceWidget = function (chart) {
         for (var i = 0; i < splitStr.length; i++) {
             // You do not need to check if i is larger than splitStr length, as your for does that for you
             // Assign it back to the array
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
         }
         // Directly return the joined string
-        return splitStr.join(' '); 
-     }
-     
+        return splitStr.join(' ');
+    }
+
 
 };
