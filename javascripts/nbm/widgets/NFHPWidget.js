@@ -1,6 +1,6 @@
 'use strict';
 
-let NFHPWidget = function (chartConfig) {
+let NFHPWidget = function (chartConfig,bap) {
    
     let that = this;
     let config = chartConfig;
@@ -44,6 +44,14 @@ let NFHPWidget = function (chartConfig) {
     let NFHPChart;
     let chartData = []
     this.initializeWidget = function () {
+
+
+        let AOI = bap.gid;
+        if(AOI && AOI.includes('OBIS_Areas:')) {
+            $(`#${bap.id}BapCase`).hide()
+            return
+        }
+
         $("#" + config.id + "json").hide();
         $("#" + config.id + "NFHPChart").hide();
         $("#" + config.id + "noData").hide();
