@@ -3,7 +3,8 @@ version: '3.5'
 services:
   nbm-front-end:
     container_name: nbm-front-end
-    image: httpd:2.4
+    image: nbm-front-end
+    build: .
     volumes:
       - '.:/usr/local/apache2/htdocs/biogeography/'
       - '.:/usr/local/apache2/htdocs/phenology/'
