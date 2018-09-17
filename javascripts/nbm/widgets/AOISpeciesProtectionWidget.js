@@ -141,18 +141,18 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
         let chunk = {
             status_1_2: [
-                { color: '#660000', count: 0, name: '< 1%', },
-                { color: '#FF0000', count: 0, name: '1 - 10%', },
-                { color: '#EDCB62', count: 0, name: '10 - 17%', },
-                { color: '#9CCB19', count: 0, name: '17 - 50%', },
-                { color: '#228B22', count: 0, name: '> 50%', },
+                { color: '#660000', count: 0, name: '< 1%', percent: 0.0},
+                { color: '#FF0000', count: 0, name: '1 - 10%', percent: 0.0},
+                { color: '#EDCB62', count: 0, name: '10 - 17%', percent: 0.0},
+                { color: '#9CCB19', count: 0, name: '17 - 50%', percent: 0.0},
+                { color: '#228B22', count: 0, name: '> 50%', percent: 0.0},
             ],
             status_1_2_3: [
-                { color: '#660000', count: 0, name: '< 1%', },
-                { color: '#FF0000', count: 0, name: '1 - 10%', },
-                { color: '#EDCB62', count: 0, name: '10 - 17%', },
-                { color: '#9CCB19', count: 0, name: '17 - 50%', },
-                { color: '#228B22', count: 0, name: '> 50%', },
+                { color: '#660000', count: 0, name: '< 1%', percent: 0.0},
+                { color: '#FF0000', count: 0, name: '1 - 10%', percent: 0.0},
+                { color: '#EDCB62', count: 0, name: '10 - 17%', percent: 0.0},
+                { color: '#9CCB19', count: 0, name: '17 - 50%', percent: 0.0},
+                { color: '#228B22', count: 0, name: '> 50%', percent: 0.0},
             ],
             species: {
                 all: [],
@@ -168,7 +168,6 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
         return $.getJSON(url).then(function (searchResult) {
             if (!searchResult.success) {
-                console.log(searchResult)
                 $(`#${bap.id}BapCase`).hide()
             }
             else if (searchResult.result.length) {
