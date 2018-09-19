@@ -17,7 +17,6 @@ var PDF = function(bioScape, title, type, acres, summary, webLinks, definition, 
     this.MAX_WIDTH = 500;
 };
 PDF.prototype.buildAndDownload = function(marker) {
-    showSpinner();
     var self = this;
     $(`.tooltip`).remove()
     this.getMapImage(marker)
@@ -485,7 +484,13 @@ PDF.prototype.getSynthesisCompositionSection = function() {
 PDF.prototype.getAnalysisPackageContent = function() {
     var content = [];
     var that = this;
-    this.analysisPackages.forEach(function(ap) {
+    let lastVisible = 0;
+    this.analysisPackages.forEach(function (ap, idx) {
+        if (ap.isVisible()){
+            lastVisible = idx;
+        }
+    });
+    this.analysisPackages.forEach(function(ap, idx) {
     
         if(ap.isVisible()) {
             content.push(getGeneralAnalysisPackageContent(ap, that.getParsedHtml));
@@ -495,6 +500,13 @@ PDF.prototype.getAnalysisPackageContent = function() {
                     content.push(widget.getPdfLayout());
 
                 });
+                if (idx !== lastVisible) {
+                    content.push({
+                        text: "",
+                        pageBreak: 'after'
+                    });
+                    console.log("Adding new line", idx, lastVisible)
+                }
             } else {
                 content.push( ap.getPdfLayout());
 
@@ -533,7 +545,9 @@ PDF.prototype.getAnalysisPackageContent = function() {
         var scienceBaseData = ap.getInfoDivInfo();
         content.push({text: 'Description', bold: true, margin: [5,0,0,5]});
         content.push(parser(scienceBaseData.description, {margin: [10,0,0,0]}));
-        content.push({text: 'Science base item', bold: true, margin: [7,10,0,5]}, {text: scienceBaseData.bapReference, link: scienceBaseData.bapReference, style: 'link', margin: [10,0,0,0]});
+        content.push({text: 'Science base item', bold: true, margin: [7,10,0,5]},
+            {text: scienceBaseData.bapReference, link: scienceBaseData.bapReference,
+                style: 'link', margin: [10,0,0,0], });
         return content;
     }
 };
