@@ -99,7 +99,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         var spBody = this.getTableBody(spRows);
         return {
             content: [
-                { text: $('#speciesBAPSubtitle').text(), style: ['bapContent', 'subtitle'] },
+                { text: $('#speciesBAPSubtitle').text(), style: ['bapContent', 'subtitle'], pageBreak: 'before' },
                 {
                     alignment: 'center',
                     columns: [

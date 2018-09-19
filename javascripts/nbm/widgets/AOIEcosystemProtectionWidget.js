@@ -58,7 +58,7 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
 
         return {
             content: [
-                { text: $('#regionProtectionSubtitle').text(), style: ['bapContent', 'subtitle'] },
+                { text: $('#regionProtectionSubtitle').text(), style: ['bapContent', 'subtitle'], pageBreak: 'before' },
                 { image: protectionChart.div.id, alignment: 'center', width: 300 },
                 { text: $('#ecoProtectionSubtitle').text(), style: ['bapContent', 'subtitle'] },
                 {
