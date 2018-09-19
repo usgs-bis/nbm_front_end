@@ -505,7 +505,6 @@ PDF.prototype.getAnalysisPackageContent = function() {
                         text: "",
                         pageBreak: 'after'
                     });
-                    console.log("Adding new line", idx, lastVisible)
                 }
             } else {
                 content.push( ap.getPdfLayout());
