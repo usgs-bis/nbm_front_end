@@ -248,7 +248,7 @@ PDF.prototype.getTitlePage = function(mapImageDataUrl) {
     });
     info.push({
         text: this.bioScape.title + '\nSummary Report: ' + this.title + (this.type ? '\n' + this.type : ''),
-        style: 'titlePageHeader'
+        style: 'titlePageHeader', alignment: 'center'
     });
     info.push({
         image: mapImageDataUrl,
@@ -268,7 +268,7 @@ PDF.prototype.getTitlePage = function(mapImageDataUrl) {
             {text: 'link', link: window.location.href, style: 'link'},
             // {text: '.\n\nTo cite this report: '},
             // {text: window.location.href, link: window.location.href, style: 'link'},
-            {text: '.\n\nFor questions or comments please contact: ' + supportEmail + '. Please include the provided link ' +
+            {text: '.\n\nFor questions or comments contact: ' + supportEmail + '. Please include the provided link ' +
             'with all correspondence.'}
         ],
         margin: [0,10,0,0],
