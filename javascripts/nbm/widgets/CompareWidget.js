@@ -195,8 +195,8 @@ function CompareWidget(config, bap) {
 
             return {
                 content: [
-                    { text: $(selector).find("#histogramTitle").text(), style: ['titleChart'], pageBreak: 'before' },
-                    { text: $(selector).find("#histogramSubTitle").text(), style: ['subTitleChart'] },
+                    { text: $(selector).find("#comparePlotTitle").text(), style: ['titleChart'], pageBreak: 'before' },
+                    { text: $(selector).find("#comparePlotSubTitle").text(), style: ['subTitleChart'] },
                     { image: c.toDataURL(), alignment: 'center', width: 500 }
                 ],
                 charts: []
