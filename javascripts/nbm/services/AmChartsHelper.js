@@ -16,9 +16,9 @@ var AmChartsHelper = (function(helper) {
      * Gets the default chart color.
      * @returns {string} '#CCCCCC'
      */
-    function getChartColor() {
-        var chartColor = '#CCCCCC';
-        return chartColor;
+    function getChartColor(black) {
+        if (black) return "#000000";
+        else return "#CCCCCC";
     }
 
     /**
@@ -252,15 +252,15 @@ var AmChartsHelper = (function(helper) {
         return keepOrder ? jsonArray : sortedArray;
     }
 
-    function getBoxAndWhiskerChart(data) {
+    function getBoxAndWhiskerChart(data, black) {
         var chart = new AmCharts.AmSerialChart();
         chart.theme = 'light';
-        chart.color = getChartColor();
+        chart.color = getChartColor(black);
         chart.dataDateFormat = "MM-DD";
         chart.valueAxes = [{
             type: 'date',
             position: 'left',
-            axisColor: getChartColor(),
+            axisColor: getChartColor(black),
             title: 'Day of Year',
             boldPeriodBeginning: false,
             // minimumDate: "01-01",
@@ -273,7 +273,7 @@ var AmChartsHelper = (function(helper) {
             "closeField": "lowerHinge",
             "fillColors": "#389bc6",
             "highField": "highThreshold",
-            "lineColor": getChartColor(),
+            "lineColor": getChartColor(black),
             "lineAlpha": 1,
             "lowField": "lowThreshold",
             "fillAlphas": 0.9,
@@ -295,7 +295,7 @@ var AmChartsHelper = (function(helper) {
             "title": "Max/min values",
             "valueField": "highThreshold",
             "noStepRisers": true,
-            "lineColor": getChartColor(),
+            "lineColor": getChartColor(black),
             "lineThickness": 2,
             "showBalloon": false,
             "columnWidth": 0.3
@@ -303,7 +303,7 @@ var AmChartsHelper = (function(helper) {
             "type": "step",
             "valueField": "lowThreshold",
             "noStepRisers": true,
-            "lineColor": getChartColor(),
+            "lineColor": getChartColor(black),
             "lineThickness": 2,
             "showBalloon": false,
             "columnWidth": 0.3,
@@ -339,7 +339,7 @@ var AmChartsHelper = (function(helper) {
         chart.categoryAxis = {
             "tickLength": 0,
             "axisAlpha": 1,
-            "axisColor": getChartColor(),
+            "axisColor": getChartColor(black),
             "tickLength": 5,
             "labelFunction": function(valueText) {
                 return new Date(valueText).getUTCFullYear().toString();
@@ -366,7 +366,7 @@ var AmChartsHelper = (function(helper) {
         }
     }
 
-    function getNewBoxAndWhiskerGraphsAndData(data, lastGraph) {
+    function getNewBoxAndWhiskerGraphsAndData(data, lastGraph, black) {
         var graphs = [];
         data.outliers.forEach(function(outlier, index) {
             var key = '' + index;
@@ -376,7 +376,7 @@ var AmChartsHelper = (function(helper) {
                     "title": "Outlier",
                     "bulletSize": 4,
                     "valueField": key,
-                    "lineColor": getChartColor(),
+                    "lineColor": getChartColor(black),
                     "lineAlpha": 0,
                     "bullet": "round",
                     "showBalloon": false

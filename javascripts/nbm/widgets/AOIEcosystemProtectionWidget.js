@@ -25,8 +25,8 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
         if (poi && poi.selectedId) {
             const placeName = poi.selectedName
             this.getData(poi.selectedId, placeName)
-                .then(function () {
-
+                .then(function (flag) {
+                    if (!flag) return;
                     that.bap.rawJson = chartData
 
                     let viewData = {
@@ -58,7 +58,7 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
 
         return {
             content: [
-                { text: $('#regionProtectionSubtitle').text(), style: ['bapContent', 'subtitle'] },
+                { text: $('#regionProtectionSubtitle').text(), style: ['bapContent', 'subtitle'], pageBreak: 'before' },
                 { image: protectionChart.div.id, alignment: 'center', width: 300 },
                 { text: $('#ecoProtectionSubtitle').text(), style: ['bapContent', 'subtitle'] },
                 {
@@ -256,8 +256,8 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
         let url = this.bap.config.charts[0].apiEndpoint + feature_id
         return $.getJSON(url).then(function (data) {
             if (!data.success) {
-                console.log(data)
                 $(`#${bap.id}BapCase`).hide()
+                return false;
             }
             else {
                 chartData.ecoregion_protection = that.getEcoregionProtection(data.result.protection, placeName)
@@ -266,8 +266,8 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
                 chartData.ecological_systems = ecologicalSystems.ecological_systems
                 chartData.gap1_2 = ecologicalSystems.gap1_2
                 chartData.gap1_2_3 = ecologicalSystems.gap1_2_3
+                return true
             }
-            return
         })
 
     }

@@ -58,18 +58,10 @@ let NFHPWidget = function (chartConfig,bap) {
         $("#" + config.id + "BapTitle").hide();
 
 
-        let lookUpProp = that.bap.actionRef.placeNameProperty ? that.bap.actionRef.placeNameProperty : that.bap.actionRef.lookupProperty;
-        let placeName = that.bap.actionRef.result.geojson.properties[lookUpProp];
-        let lookupColumn = `properties.${config.charts[0].lookupColumn}`;
+        let featureId = that.bap.actionRef.result.geojson.properties["feature_id"];
 
-        let q = {
-            "query": {
-                "match_phrase": {}
-            }
-        };
-        q['query']['match_phrase'][lookupColumn] = placeName
+        let url = config.charts[0].elasticEndpoint + featureId;
 
-        let url = config.charts[0].elasticEndpoint + JSON.stringify(q);
         let e = {
             error: "There is no analysis data for the chosen geometry.",
             title: "Risk To Fish Habitat Degradation",
@@ -92,6 +84,8 @@ let NFHPWidget = function (chartConfig,bap) {
                     $("#" + config.id + "NFHPChart").show();
                     $("#" + config.id + "BapTitle").show();
                     let d = data.hits.hits[0]._source.properties
+                    d.scored_km = parseFloat(d.scored_km);
+                    d.not_scored_km = parseFloat(d.not_scored_km)
                     let val1 = numberWithCommas((d.scored_km).toFixed(0))
                     let val2 = numberWithCommas((d.scored_km + d.not_scored_km).toFixed(0))
                     $("#" + config.id + "BapTitle").html(`Fish habitat condition was scored on ${val1} of ${val2} NHDPlusV1 stream kilometers within ${d.place_name}.`)
@@ -126,6 +120,7 @@ let NFHPWidget = function (chartConfig,bap) {
         let placeName = data.place_name
         let scored_km = data.scored_km
         function getPercent(value) {
+            value = parseFloat(value)
             return ((value / scored_km) * 100).toFixed(1)
         }
         chartData = [

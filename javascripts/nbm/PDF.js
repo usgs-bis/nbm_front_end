@@ -17,7 +17,6 @@ var PDF = function(bioScape, title, type, acres, summary, webLinks, definition, 
     this.MAX_WIDTH = 500;
 };
 PDF.prototype.buildAndDownload = function(marker) {
-    showSpinner();
     var self = this;
     $(`.tooltip`).remove()
     this.getMapImage(marker)
@@ -54,11 +53,11 @@ PDF.prototype.getMapImage = function(marker) {
     var featureCanvas = document.createElement('canvas');
     featureCanvas.setAttribute("width", featureWidth);
     featureCanvas.setAttribute("height", featureHeight);
-    canvg(
-        featureCanvas,
-        $('<div>').append($(featureLayer).clone()).html(), //gets the svg element as a string
-        { offsetX: mapPaneTransforms.x, offsetY: mapPaneTransforms.y}
-    );
+    // canvg(
+    //     featureCanvas,
+    //     $('<div>').append($(featureLayer).clone()).html(), //gets the svg element as a string
+    //     { offsetX: mapPaneTransforms.x, offsetY: mapPaneTransforms.y}
+    // );
 
      // var self = this;
     var promise = html2canvas(this.map.getContainer(), { useCORS: true,  logging: false })
@@ -224,14 +223,18 @@ PDF.prototype.getPdfInfoContent = function(mapImageDataUrl) {
     return this.getSynthesisCompositionSection()
     .then(function (synthComp) {
         info = info.concat(synthComp.content);
-        return that.getAppendix()
-            .then(function (data) {
-                info = info.concat(data);
-                return {
-                    content: info,
-                    charts: synthComp.charts
-                };
-            });
+        return {
+            content: info,
+            charts: synthComp.charts
+        };
+        // return that.getAppendix()
+        //     .then(function (data) {
+        //         info = info.concat(data);
+        //         return {
+        //             content: info,
+        //             charts: synthComp.charts
+        //         };
+        //     });
     })
 };
 PDF.prototype.getTitlePage = function(mapImageDataUrl) {
@@ -244,8 +247,8 @@ PDF.prototype.getTitlePage = function(mapImageDataUrl) {
         marginTop: -24
     });
     info.push({
-        text: this.bioScape.title + ' Summary Report: ' + this.title + (this.type ? ', ' + this.type : ''),
-        style: 'titlePageHeader'
+        text: this.bioScape.title + '\nSummary Report: ' + this.title + (this.type ? '\n' + this.type : ''),
+        style: 'titlePageHeader', alignment: 'center'
     });
     info.push({
         image: mapImageDataUrl,
@@ -253,11 +256,20 @@ PDF.prototype.getTitlePage = function(mapImageDataUrl) {
         width: this.MAX_WIDTH * 0.8,
         margin: [0,20,0,20]
     });
+    let fullDate = formatLocalDateToISO8601().split(",");
+    let time = fullDate[0]
+    let date = fullDate[1]
     info.push({
         text: [
-            {text: 'This pdf was generated at ' + formatLocalDateToISO8601() + ' from the data available '},
-            {text: 'here', link: window.location.href, style: 'link'},
-            {text: ' in the USGS National Biogeographic Map. ' + 'For questions or comments please contact: ' + supportEmail}
+            {text: 'This summary report was generated on ' + date + ' at ' + time + ' using USGS National ' +
+            'Biogeographic Map analytics and data assets. The analysis packages and data sources used for this ' +
+            'synthesis are documented below. To recreate the synthesis with current data and analytical methods, ' +
+            'click this '},
+            {text: 'link', link: window.location.href, style: 'link'},
+            // {text: '.\n\nTo cite this report: '},
+            // {text: window.location.href, link: window.location.href, style: 'link'},
+            {text: '.\n\nFor questions or comments contact: ' + supportEmail + '. Please include the provided link ' +
+            'with all correspondence.'}
         ],
         margin: [0,10,0,0],
         fontSize: 10,
@@ -268,31 +280,31 @@ PDF.prototype.getTitlePage = function(mapImageDataUrl) {
 };
 PDF.prototype.getBioScapeSection = function(mapImageDataUrl) {
     var info = [];
-    info.push({text: 'Bioscape Section', style: 'sectionHeader'});
-    info.push({image: mapImageDataUrl, alignment: 'center', width: this.MAX_WIDTH});
-    info.push({text: $('.coordinates').text()});
+    // info.push({text: 'Bioscape Section', style: 'sectionHeader'});
+    // info.push({image: mapImageDataUrl, alignment: 'center', width: this.MAX_WIDTH});
+    // info.push({text: $('.coordinates').text()});
     info.push(this.getLegendContent());
     info.push({text: this.bioScape.title, style: ['header','title']});
-    info.push(
-        {text: 'Definition', bold: true},
-        this.getParsedHtml(this.bioScape.definition, {style: 'bapContent', italics: true}),
-        {
-            text: [
-                {text: 'See the ScienceBase item for more information: '},
-                {text: this.bioScape.definitionUrl, link: this.bioScape.definitionUrl, style: 'link'}
-            ],
-            style: 'bapContent'
-        }
-    );
+    // info.push(
+    //     {text: 'Definition', bold: true},
+    //     this.getParsedHtml(this.bioScape.definition, {style: 'bapContent', italics: true}),
+    //     {
+    //         text: [
+    //             {text: 'See the ScienceBase item for more information: '},
+    //             {text: this.bioScape.definitionUrl, link: this.bioScape.definitionUrl, style: 'link'}
+    //         ],
+    //         style: 'bapContent'
+    //     }
+    // );
     info.push({text: 'Summary', bold: true});
     info.push(this.getParsedHtml(this.bioScape.summary,{style:'bapContent'}));
-    info.push({text: 'Sections', bold: true});
-    this.bioScape.getAllSections().forEach(function(section) {
-        info.push({text: section.title, style: ['bapContent', 'subtitle']});
-        section.getLayers().forEach(function(layer) {
-            info.push({text: layer.title, margin: [15,5,0,5]});
-        });
-    });
+    // info.push({text: 'Sections', bold: true});
+    // this.bioScape.getAllSections().forEach(function(section) {
+    //     info.push({text: section.title, style: ['bapContent', 'subtitle']});
+    //     section.getLayers().forEach(function(layer) {
+    //         info.push({text: layer.title, margin: [15,5,0,5]});
+    //     });
+    // });
 
     return info;
 };
@@ -399,10 +411,10 @@ PDF.prototype.getLegendContent = function() {
         if(contentObj.hasOwnProperty(prop)) {
             var legend = contentObj[prop];
             legend.table.body = [
-                [{
-                    text: prop,
-                    fontSize: 12
-                }]
+                // [{
+                //     text: "",
+                //     fontSize: 12
+                // }]
             ].concat(legend.table.body);
             content = content.concat(legend);
         }
@@ -437,29 +449,29 @@ PDF.prototype.getLegendContent = function() {
 };
 PDF.prototype.getSynthesisCompositionSection = function() {
     var info = [];
-    info.push({text: 'Synthesis Composition Section', style: 'sectionHeader', pageBreak: 'before'});
+    info.push({text: 'Analysis', style: 'sectionHeader', pageBreak: 'before'});
     if (this.title) info.push({text: this.title, style: ['header','title']});
     if (this.type) info.push({text: this.type, style: 'bapContent'});
-    if (this.definitionUrl) {
-        info.push({text: 'Definition', bold: true},
-            this.getParsedHtml(this.definition, {style: 'bapContent', italics: true}),
-            {
-                text: [
-                    {text: 'See the ScienceBase item for more information: '},
-                    {text: this.definitionUrl, link: this.definitionUrl, style: 'link'}
-                ],
-                style: 'bapContent'
-            }
-        );
-    }
+    // if (this.definitionUrl) {
+    //     info.push({text: 'Definition', bold: true},
+    //         this.getParsedHtml(this.definition, {style: 'bapContent', italics: true}),
+    //         {
+    //             text: [
+    //                 {text: 'See the ScienceBase item for more information: '},
+    //                 {text: this.definitionUrl, link: this.definitionUrl, style: 'link'}
+    //             ],
+    //             style: 'bapContent'
+    //         }
+    //     );
+    // }
     if (this.acres) info.push({text: 'Area', bold: true}, {text: this.acres + ' acres', style: 'bapContent'});
     if (this.summary) info.push({text: 'Summary', bold: true}, {text: this.summary, italics: true, style: 'bapContent'});
-    if(this.webLinks) {
-        info.push({text: "Web Links", bold: true, margin: [0,10,0,0]});
-        this.webLinks.forEach(function (webLink) {
-            info.push({text: webLink.title, link: webLink.uri, italics: true, style: ['link', 'bapContent']});
-        });
-    }
+    // if(this.webLinks) {
+    //     info.push({text: "Web Links", bold: true, margin: [0,10,0,0]});
+    //     this.webLinks.forEach(function (webLink) {
+    //         info.push({text: webLink.title, link: webLink.uri, italics: true, style: ['link', 'bapContent']});
+    //     });
+    // }
     return this.getAnalysisPackageContent()
     .then(function(analysisPackageContent){
         info = info.concat(analysisPackageContent.content);
@@ -472,7 +484,13 @@ PDF.prototype.getSynthesisCompositionSection = function() {
 PDF.prototype.getAnalysisPackageContent = function() {
     var content = [];
     var that = this;
-    this.analysisPackages.forEach(function(ap) {
+    let lastVisible = 0;
+    this.analysisPackages.forEach(function (ap, idx) {
+        if (ap.isVisible()){
+            lastVisible = idx;
+        }
+    });
+    this.analysisPackages.forEach(function(ap, idx) {
     
         if(ap.isVisible()) {
             content.push(getGeneralAnalysisPackageContent(ap, that.getParsedHtml));
@@ -482,6 +500,12 @@ PDF.prototype.getAnalysisPackageContent = function() {
                     content.push(widget.getPdfLayout());
 
                 });
+                if (idx !== lastVisible) {
+                    content.push({
+                        text: "",
+                        pageBreak: 'after'
+                    });
+                }
             } else {
                 content.push( ap.getPdfLayout());
 
@@ -520,7 +544,9 @@ PDF.prototype.getAnalysisPackageContent = function() {
         var scienceBaseData = ap.getInfoDivInfo();
         content.push({text: 'Description', bold: true, margin: [5,0,0,5]});
         content.push(parser(scienceBaseData.description, {margin: [10,0,0,0]}));
-        content.push({text: 'Science base item', bold: true, margin: [7,10,0,5]}, {text: scienceBaseData.bapReference, link: scienceBaseData.bapReference, style: 'link', margin: [10,0,0,0]});
+        content.push({text: 'Science base item', bold: true, margin: [7,10,0,5]},
+            {text: scienceBaseData.bapReference, link: scienceBaseData.bapReference,
+                style: 'link', margin: [10,0,0,0], });
         return content;
     }
 };
@@ -648,7 +674,6 @@ PDF.prototype.download = function(pdfInfo, onCompletion) {
 
     function addChart() {
         // Export to PNG
-        console.log("Adding chart");
         this.toPNG({}, function (data) {
             completedCharts++;
             pdfLayout.images[this.setup.chart.div.id] = data;

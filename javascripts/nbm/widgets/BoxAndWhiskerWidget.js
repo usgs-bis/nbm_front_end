@@ -9,6 +9,7 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
     let layer = null;
     let alreadySentBuffer = false
     let chart = undefined;
+    let chartCopy = undefined;
 
 
     this.getHtml = function () {
@@ -162,11 +163,24 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
                 chart.write(chartdiv);
                 $(selector).find("#boxPlotTitle").show();
                 $(selector).find("#boxPlotSubTitle").show();
+
+                // $('<div id="boxPlotChartCopy' + that.bap.id +
+                //     '" style="position: absolute; top: -10000px; left: -10000px; width: 500px; height: 500px;"></div>')
+                //     .appendTo('#boxPlot'+that.bap.id);
+                // let copyDiv = "boxPlotChartCopy" + that.bap.id;
+                // chartCopy = AmChartsHelper.getBoxAndWhiskerChart(bWData, true);
+                // chartCopy.write(copyDiv)
             } else {
                 var graphsAndData = AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length - 1].valueField);
                 chart.dataProvider.push(graphsAndData.data);
                 chart.graphs = chart.graphs.concat(graphsAndData.graphs);
                 chart.validateData();
+
+                // var graphsAndDataCopy =
+                //     AmChartsHelper.getNewBoxAndWhiskerGraphsAndData(bWData, chart.graphs[chart.graphs.length - 1].valueField);
+                // chartCopy.dataProvider.push(graphsAndDataCopy.data);
+                // chartCopy.graphs = chartCopy.graphs.concat(graphsAndDataCopy.graphs);
+                // chartCopy.validateData();
             }
         })
 
@@ -191,8 +205,8 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
         }
         return {
             content: [
-                { text: $(selector).find("#" + that.bap.id + "BwTitle").text(), style: ['titleChart'], pageBreak: 'before' },
-                { text: $(selector).find("#" + that.bap.id + "BwSubTitle").text(), style: ['subTitleChart'] },
+                { text: $(selector).find("#boxPlotTitle").text(), style: ['titleChart'], pageBreak: 'before' },
+                { text: $(selector).find("#boxPlotSubTitle").text(), style: ['subTitleChart'] },
                 { image: chart.div.id, alignment: 'center', width: 500, }
             ],
             charts: [chart]
