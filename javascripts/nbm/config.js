@@ -12,7 +12,8 @@ if (myServer.indexOf("igskbac") !== -1) {
     myServer = "https://dev-api.sciencebase.gov/bcb"
     myEnv = "dev"
 } else {
-    myServer = "https://www.sciencebase.gov/bcb"
+    myServer = "https://my-beta.usgs.gov/bcb"
+    myEnv = "beta"
 }
 
 // FOR DEVELOPMENT 
