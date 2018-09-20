@@ -36,7 +36,6 @@ strong {
     cursor: default;
     padding: 0;
     margin: 0;
-    width: calc(100% - 500px);
     left: 500px;
 }
 

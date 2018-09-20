@@ -10,18 +10,191 @@ function PhenocastsWidget(config, bap) {
     // Class level variables for mouseover tooltip.
     var startYear;
     var endYear;
+
+    let chartData = {
+        "agdd":{
+            "Apple Maggot": {
+                "Not Approaching Treatment Window": {
+                    "range": [0,650],
+                    "Current": 0,
+                    "Six-Day": 0
+                },
+                "Approaching Treatment Window": {
+                    "range": [650,900],
+                    "Current": 0,
+                    "Six-Day": 0
+                },
+                "Treatment Window": {
+                    "range": [900,2000],
+                    "Current": 0,
+                    "Six-Day": 0
+                },
+                "Treatment Window Passed": {
+                    "range": [2000],
+                    "Current": 0,
+                    "Six-Day": 0
+                },
+            }
+        },
+        // "agdd_50f": {
+        //
+        // },
+        // "Emerald Ash Borer": {
+        //     "Current": [0,0,0,0],
+        //     "Six-Day": [0,0,0,0],
+        //     "buckets": {
+        //         "Not Approaching Treatment Window": [0,650],
+        //         "Approaching Treatment Window": [650,900],
+        //         "Treatment Window": [900,2000],
+        //         "Treatment Window Passed": [2000]
+        //     }
+        // },
+        // "Hemlock Woolly Adelgid": {
+        //     "Current": [0,0,0,0],
+        //     "Six-Day": [0,0,0,0],
+        //     "buckets": {
+        //         "Not Approaching Treatment Window": [0,650],
+        //         "Approaching Treatment Window": [650,900],
+        //         "Treatment Window": [900,2000],
+        //         "Treatment Window Passed": [2000]
+        //     }
+        // },
+        // "Lilac Borer": {
+        //     "Current": [0,0,0,0],
+        //     "Six-Day": [0,0,0,0],
+        //     "buckets": {
+        //         "Not Approaching Treatment Window": [0,650],
+        //         "Approaching Treatment Window": [650,900],
+        //         "Treatment Window": [900,2000],
+        //         "Treatment Window Passed": [2000]
+        //     }
+        // },
+        // "Winter Moth": {
+        //     "Current": [0,0,0,0],
+        //     "Six-Day": [0,0,0,0],
+        //     "buckets": {
+        //         "Not Approaching Treatment Window": [0,650],
+        //         "Approaching Treatment Window": [650,900],
+        //         "Treatment Window": [900,2000],
+        //         "Treatment Window Passed": [2000]
+        //     }
+        // }
+    }
+
+    let rawData = {
+        "agdd": {
+            "Current": [],
+            "Six-Day": []
+        },
+        "agdd_50f": {
+            "Current": [],
+            "Six-Day": []
+        }
+    }
+
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
     this.initializeWidget = function () {
-        widgetHelper.getSingleRasterData(
+        let that = this;
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        if(dd<10) {
+            dd = '0'+dd
+        }
+
+        if(mm<10) {
+            mm = '0'+mm
+        }
+
+        var futureDate = new Date();
+        var numberOfDaysToAdd = 6;
+        futureDate.setDate(futureDate.getDate() + numberOfDaysToAdd);
+        var fdd = futureDate.getDate();
+        var fmm = futureDate.getMonth()+1; //January is 0!
+        var fyyyy = futureDate.getFullYear();
+
+        if(fdd<10) {
+            fdd = '0'+fdd
+        }
+
+        if(fmm<10) {
+            fmm = '0'+fmm
+        }
+
+        today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000Z';
+        futureDate = fyyyy + '-' + fmm + '-' + fdd + 'T00:00:00.000Z';
+        console.log(today);
+        console.log(futureDate)
+        this.getData(today, futureDate)
+            .then(function (data) {
+                that.createChartData(data)
+            });
+    }
+
+    this.inRange = function(num, bucket) {
+        if (bucket.length === 1) {
+            return num >= bucket[0]
+        } else {
+            return num >= bucket[0] && bucket <= bucket[1]
+        }
+    };
+
+    this.createChartData = function () {
+        let that = this;
+        rawData["agdd"]["Current"].forEach(function(num) {
+            $.each(chartData["agdd"], function (speciesName, dataObj) {
+                $.each(dataObj, function(bucketName, bucketData) {
+                    if (that.inRange(num, bucketData["range"])) {
+                        bucketData["Current"] = bucketData["Current"] + 1
+                    }
+                })
+            })
+        })
+
+        console.log(chartData);
+    };
+
+    this.getData = function(today, futureDate) {
+        let requests = []
+        requests.push(widgetHelper.getSingleRequest(
             that.bap.feature,
             {featureName:"agdd"},
-            "2018-09-19T00:00:00.000Z",
-            "AGDD"/*that.bap.config.bapProperties.npnProperty*/)
+            today,
+            "AGDD")
             .then(function(data) {
-                console.log(data)
-            })
+                rawData["agdd"]["Current"] = data
+            }));
+
+        requests.push(widgetHelper.getSingleRequest(
+            that.bap.feature,
+            {featureName:"agdd"},
+            futureDate,
+            "AGDD")
+            .then(function(data) {
+                rawData["agdd"]["Six-Day"] = data
+            }));
+
+        requests.push(widgetHelper.getSingleRequest(
+            that.bap.feature,
+            {featureName:"agdd_50f"},
+            today,
+            "AGDD")
+            .then(function(data) {
+                rawData["agdd_50f"]["Current"] = data
+            }));
+        requests.push(widgetHelper.getSingleRequest(
+            that.bap.feature,
+            {featureName:"agdd_50f"},
+            futureDate,
+            "AGDD")
+            .then(function(data) {
+                rawData["agdd_50f"]["Six-Day"] = data
+            }));
+
+        return Promise.all(requests)
     }
 
     this.getPdfLayout = function() {
@@ -30,11 +203,11 @@ function PhenocastsWidget(config, bap) {
             $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="800" height="800" style="position: fixed;"></canvas>`)
             d3.select(`#histogramPlot${id}`).select("svg").attr("height",500)
             d3.select(`#histogramPlot${id}`).select("svg").attr("width",500)
-            
+
             let c = document.getElementById(`myCanvas${id}`);
             let ctx = c.getContext('2d');
             ctx.drawSvg($(`#histogramChart${id} .svg-container-plot`).html(), 0, 0, 800, 800);
-            
+
             // clean up
             d3.select(`#histogramPlot${id}`).select("svg").attr("height",null)
             d3.select(`#histogramPlot${id}`).select("svg").attr("width",null)
@@ -48,7 +221,7 @@ function PhenocastsWidget(config, bap) {
                 ],
                 charts: []
             }
-           
+
         }
         catch(error){
             //showErrorDialog("Error printing one or more charts to report.",false);
@@ -62,7 +235,7 @@ function PhenocastsWidget(config, bap) {
 
     this.buildChart = function (chartData, id) {
 
-        
+
 
         $(selector).find(`#histogramPlot${id}`).show()
         $(selector).find(".ridgeLinePlotRangeValue").html(3);
@@ -138,7 +311,7 @@ function PhenocastsWidget(config, bap) {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
-          
+
             svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -152,8 +325,8 @@ function PhenocastsWidget(config, bap) {
 
 
             let div =  histogram.select(`#histogramChart${id}`)
-                .append("div")	
-                .attr("class", "chartTooltip histogramToolTip")		
+                .append("div")
+                .attr("class", "chartTooltip histogramToolTip")
                 .style("opacity", 0)
                 .style("border", "3px solid rgb(56, 155, 198)");
 
@@ -169,19 +342,19 @@ function PhenocastsWidget(config, bap) {
                 .attr("height", function (d) { return height - y(d.count); })
                 .on("mouseover", function(d) {
                     d3.select(this)
-                    .attr("fill", "rgb(45, 125, 159)");		
-                    div.transition()		
-                        .duration(200)		
-                        .style("opacity", .9);		
-                    div	.html(toolTipLabel(d, buk))	
-                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX + 10 : d3.event.layerX - 185  ) + "px")		
-                        .style("top", (d3.event.layerY) + "px");	
-                    })					
+                        .attr("fill", "rgb(45, 125, 159)");
+                    div.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    div	.html(toolTipLabel(d, buk))
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX + 10 : d3.event.layerX - 185  ) + "px")
+                        .style("top", (d3.event.layerY) + "px");
+                })
                 .on("mouseout", function(d) {
                     d3.select(this).attr("fill", "rgb(56, 155, 198)");
-                    div.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                    div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
 
 
@@ -241,11 +414,11 @@ function PhenocastsWidget(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Number of Grid Cells");
 
-           
+
 
         }
 
-      
+
         function type(d) {
             d.count = d.count;
             d.day = +d.day;

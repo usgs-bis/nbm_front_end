@@ -160,11 +160,17 @@ WidgetHelper.prototype.getSingleRequest = function(inputFeature, layer, timeStri
         sw: featureBounds.getSouthWest(),
         ne: featureBounds.getNorthEast()
     };
-    var years = [timeString]
-    var request = this.getSendGeojsonRequest(layer, years, geojsonString, bounds, npnProperty);
-    console.log("What now...");
-    return [{ years: years, promise: request }];
-}
+
+    return this.getSendGeojsonRequest(layer, [timeString], geojsonString, bounds, npnProperty)
+        .then (function (data) {
+            // var obj = {};
+            // let key = layer.featureName + "," + timeString
+            // obj[key] = data[0];
+            // return obj
+
+            return data[0]
+        });
+};
 
 WidgetHelper.prototype.handleRequests = function (requests) {
     let jsonData = {};
