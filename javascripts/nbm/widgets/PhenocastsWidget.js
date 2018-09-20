@@ -6,6 +6,7 @@ function PhenocastsWidget(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
     let dataURI = ""
+    let that = this;
     // Class level variables for mouseover tooltip.
     var startYear;
     var endYear;
@@ -13,7 +14,14 @@ function PhenocastsWidget(config, bap) {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
     this.initializeWidget = function () {
-     
+        widgetHelper.getSingleRasterData(
+            that.bap.feature,
+            {featureName:"agdd"},
+            "2018-09-19T00:00:00.000Z",
+            "AGDD"/*that.bap.config.bapProperties.npnProperty*/)
+            .then(function(data) {
+                console.log(data)
+            })
     }
 
     this.getPdfLayout = function() {
