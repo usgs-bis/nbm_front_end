@@ -30,7 +30,8 @@ var BAP = function (serverAP, leaveOutJson, actionRef) {
     this.actionRef = actionRef;
     this.state = {}
     this.initConfig = {}
-    this.priority = false
+    this.priority = false;
+    this.isNpn = false;
 
     if (!$(`#${this.id}BAP`).length) $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', { id: this.id }));
     this.htmlElement = $("#" + this.id + "BapCase");
@@ -61,6 +62,7 @@ BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
     this.widgets = [];
     this.feature = undefined;
     this.leaveOutJson = leaveOutJson;
+    this.isNpn = serverAP.isNpn;
 
     this.htmlElement = $("#" + this.id + "BapCase");
 };
@@ -135,6 +137,13 @@ BAP.prototype.getFullHtml = function () {
     let layerInputs = this.GetBapLayers().filter(l => {
         return !l.summarizationRegion
     })
+
+    let attribution = "";
+    if (this.isNpn) {
+        attribution = this.title + "data were provided by the USA National Phenology Network " +
+            "(www.usanpn.org, data retrieved <yyyy-mm-dd>"
+        attribution = "https://geoserver-dev.usanpn.org/geoserver/si-x/wms?service=WMS&version=1.3.0&request=getcapabilities"
+    }
 
     var apViewModel = {
         id: this.config.id,

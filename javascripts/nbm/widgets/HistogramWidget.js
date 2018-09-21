@@ -105,11 +105,11 @@ function HistogramWidget(config, bap) {
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
             histogram.select("#histogramTitle").append("text")
-                .text(`${config.title} ${location ? location : ""}`);
+                .text(`${config.title} ${location ? "for " + location : ""}`);
 
             // Subtitle    
             histogram.select("#histogramSubTitle").append("text")
-                .text(`Annual ${config.title} for the Period ${years[0]} to ${years[years.length - 1]}`);
+                .text(`All Years for the Period ${years[0]} to ${years[years.length - 1]}`);
             startYear = years[0];
             endYear = years[years.length-1];
 
