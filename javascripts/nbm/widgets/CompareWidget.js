@@ -275,11 +275,11 @@ function CompareWidget(config, bap) {
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
             comparePlot.select("#comparePlotTitle").append("text")
-                .text(`${config.title} ${location ? location : ""}`);
+                .text(`${config.title} ${location ? "for " + location : ""}`);
 
             // Subtitle    
             comparePlot.select("#comparePlotSubTitle").append("text")
-                .text(`Annual ${config.title} by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
+                .text(`By Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
 
             let svgContainer = comparePlot.select(`#comparePlotChart${id}`)

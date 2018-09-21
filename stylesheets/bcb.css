@@ -687,6 +687,17 @@ label input:hover ~ .fa-custom-checkbox-class:before {
     text-align: left;
 }
 
+.attributionClass {
+    padding: 15px;
+}
+
+.attributionClass a {
+    /*color: rgb(204, 204, 204);*/
+    color: white;
+    font-style: italic;
+    /*font-weight: bold;*/
+}
+
 /*End Form Stuff*/
 
 /*Custom slider styles*/

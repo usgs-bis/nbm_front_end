@@ -233,6 +233,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
             </div>
         {{/if}}
         {{:sectionHtml}}
+        {{:attribution}}
     </div>
 </div>
 </script>
@@ -314,6 +315,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 
 <script id="smoothPlotTemplate" type="text/x-jsrender">
     <div class="bapChart">
+    <div>
         <div id="ridgeLinePlot{{:id}}" class="ridgeLinePlot" style="display:none;">
        
             <div id="ridgeLinePlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
@@ -331,6 +333,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 
 <script id="comparePlotTemplate" type="text/x-jsrender">
     <div class="bapChart">
+    <div>
         <div class="row" style="margin-top: 35px;">
                 <div class="col col-md-12 ">
                     <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
