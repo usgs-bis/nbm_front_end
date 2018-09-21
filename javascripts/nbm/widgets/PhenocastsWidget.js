@@ -11,74 +11,99 @@ function PhenocastsWidget(config, bap) {
     var startYear;
     var endYear;
 
+    let charts = [];
+
     let chartData = {
         "agdd":{
             "Apple Maggot": {
                 "Not Approaching Treatment Window": {
                     "range": [0,650],
-                    "Current": 0,
-                    "Six-Day": 0
+                    "color": "#999999"
                 },
                 "Approaching Treatment Window": {
                     "range": [650,900],
-                    "Current": 0,
-                    "Six-Day": 0
+                    "color": "#FFED6F"
                 },
                 "Treatment Window": {
                     "range": [900,2000],
-                    "Current": 0,
-                    "Six-Day": 0
+                    "color": "#41AB5D"
                 },
                 "Treatment Window Passed": {
                     "range": [2000],
-                    "Current": 0,
-                    "Six-Day": 0
+                    "color": "#C19A6B"
+                },
+            },
+            "Emerald Ash Borer": {
+                "Not Approaching Treatment Window": {
+                    "range": [0,350],
+                    "color": "#999999"
+                },
+                "Approaching Treatment Window": {
+                    "range": [350,450],
+                    "color": "#FFED6F"
+                },
+                "Treatment Window": {
+                    "range": [450,1500],
+                    "color": "#41AB5D"
+                },
+                "Treatment Window Passed": {
+                    "range": [1500],
+                    "color": "#C19A6B"
+                },
+            },
+            "Lilac Borer": {
+                "Not Approaching Treatment Window": {
+                    "range": [0,350],
+                    "color": "#999999"
+                },
+                "Approaching Treatment Window": {
+                    "range": [350,500],
+                    "color": "#FFED6F"
+                },
+                "Treatment Window": {
+                    "range": [500,1300],
+                    "color": "#41AB5D"
+                },
+                "Treatment Window Passed": {
+                    "range": [1300],
+                    "color": "#C19A6B"
+                },
+            },
+            "Winter Moth": {
+                "Not Approaching Treatment Window": {
+                    "range": [0,20],
+                    "color": "#999999"
+                },
+                "Approaching Treatment Window": {
+                    "range": [20,350],
+                    "color": "#FFED6F"
+                },
+                "Treatment Window Passed": {
+                    "range": [350],
+                    "color": "#C19A6B"
                 },
             }
         },
-        // "agdd_50f": {
-        //
-        // },
-        // "Emerald Ash Borer": {
-        //     "Current": [0,0,0,0],
-        //     "Six-Day": [0,0,0,0],
-        //     "buckets": {
-        //         "Not Approaching Treatment Window": [0,650],
-        //         "Approaching Treatment Window": [650,900],
-        //         "Treatment Window": [900,2000],
-        //         "Treatment Window Passed": [2000]
-        //     }
-        // },
-        // "Hemlock Woolly Adelgid": {
-        //     "Current": [0,0,0,0],
-        //     "Six-Day": [0,0,0,0],
-        //     "buckets": {
-        //         "Not Approaching Treatment Window": [0,650],
-        //         "Approaching Treatment Window": [650,900],
-        //         "Treatment Window": [900,2000],
-        //         "Treatment Window Passed": [2000]
-        //     }
-        // },
-        // "Lilac Borer": {
-        //     "Current": [0,0,0,0],
-        //     "Six-Day": [0,0,0,0],
-        //     "buckets": {
-        //         "Not Approaching Treatment Window": [0,650],
-        //         "Approaching Treatment Window": [650,900],
-        //         "Treatment Window": [900,2000],
-        //         "Treatment Window Passed": [2000]
-        //     }
-        // },
-        // "Winter Moth": {
-        //     "Current": [0,0,0,0],
-        //     "Six-Day": [0,0,0,0],
-        //     "buckets": {
-        //         "Not Approaching Treatment Window": [0,650],
-        //         "Approaching Treatment Window": [650,900],
-        //         "Treatment Window": [900,2000],
-        //         "Treatment Window Passed": [2000]
-        //     }
-        // }
+        "agdd_50f": {
+            "Apple Maggot": {
+                "Not Approaching Treatment Window": {
+                    "range": [0,25],
+                    "color": "#999999"
+                },
+                "Approaching Treatment Window": {
+                    "range": [25,1000],
+                    "color": "#FFED6F"
+                },
+                "Treatment Window": {
+                    "range": [1000,2200],
+                    "color": "#41AB5D"
+                },
+                "Treatment Window Passed": {
+                    "range": [2200],
+                    "color": "#C19A6B"
+                },
+            }
+        }
     }
 
     let rawData = {
@@ -91,6 +116,8 @@ function PhenocastsWidget(config, bap) {
             "Six-Day": []
         }
     }
+
+    let dateStrings = {}
 
     this.getHtml = function () {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
@@ -124,10 +151,11 @@ function PhenocastsWidget(config, bap) {
             fmm = '0'+fmm
         }
 
+        dateStrings["Current"] = yyyy + '-' + mm + '-' + dd
+        dateStrings["Six-Day"] = fyyyy + '-' + fmm + '-' + fdd
+
         today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000Z';
         futureDate = fyyyy + '-' + fmm + '-' + fdd + 'T00:00:00.000Z';
-        console.log(today);
-        console.log(futureDate)
         this.getData(today, futureDate)
             .then(function (data) {
                 that.createChartData(data)
@@ -144,18 +172,103 @@ function PhenocastsWidget(config, bap) {
 
     this.createChartData = function () {
         let that = this;
-        rawData["agdd"]["Current"].forEach(function(num) {
-            $.each(chartData["agdd"], function (speciesName, dataObj) {
-                $.each(dataObj, function(bucketName, bucketData) {
-                    if (that.inRange(num, bucketData["range"])) {
-                        bucketData["Current"] = bucketData["Current"] + 1
-                    }
-                })
-            })
-        })
+
+        console.log("RAW", rawData)
+
+        $.each(rawData, function (layer, times) {
+            $.each(times, function(time, list) {
+                list.forEach(function(num) {
+                    $.each(chartData[layer], function (speciesName, dataObj) {
+                        $.each(dataObj, function(bucketName, bucketData) {
+                            if (!bucketData[time]) bucketData[time] = 0;
+                            if (that.inRange(num, bucketData["range"])) {
+                                bucketData[time] = bucketData[time] + 1
+                            }
+                        })
+                    })
+                });
+            });
+        });
 
         console.log(chartData);
+        this.buildCharts(chartData)
     };
+
+    this.buildCharts = function(chartData) {
+        let count = 0;
+        let that = this;
+        $.each(chartData, function (key, pestDatas) {
+            $.each(pestDatas, function(pestName, pestData) {
+                count++
+                that.buildBarChart(pestName, pestData, count)
+            });
+        });
+    };
+
+    this.buildBarChart = function(pestName, pestData, num) {
+
+        let currentList = [];
+        let futureList = [];
+
+        $.each(pestData, function(category, data) {
+            currentList.push({"helper": "", "Category": category, "Count": data["Current"], "color": data["color"]})
+            futureList.push({"helper": "", "Category": category, "Count": data["Six-Day"], "color": data["color"]})
+        });
+
+        let curId = id + "PhenocastCurrent" + num;
+        let sixId = id + "PhenocastSixDay" + num;
+        $("#"+id+"BAP").append('<div style="width: 90%; height: 200px;" id="' + curId + '"></div>')
+        $("#"+id+"BAP").append('<div style="width: 90%; height: 200px;" id="' + sixId + '"></div>')
+        charts.push(this.getChart(currentList, curId, pestName, "Current"))
+        charts.push(this.getChart(futureList, sixId, pestName, "Six-Day"))
+
+    }
+
+    this.getChart = function(data, id, name, forecast) {
+        return AmCharts.makeChart(id, {
+            // "numberFormatter": formatter,
+            "theme": 'light',
+            "borderAlpha": 0,
+            "creditsPosition": "top-right",
+            "color": AmChartsHelper.getChartColor(),
+            "rotate": true,
+            "marginLeft": 10,
+            "marginRight": 15,
+            "type": "serial",
+            "dataProvider": data,
+            "categoryField": "helper",
+            "autoWrap": true,
+            "graphs": [{
+                "valueField": "Count",
+                "type": "column",
+                "balloonText": "<b>[[category]]: [[Count]]" + "</b>",
+                "fillColorsField": "color",
+                "fillAlphas": .9,
+                "lineAlpha": 0.3,
+                "alphaField": "opacity",
+
+            }],
+            "categoryAxis": {
+                "axisAlpha": 1,
+                "axisColor": AmChartsHelper.getChartColor(),
+                "autoGridCount": false,
+                "gridCount": data.length,
+                "gridPosition": "start",
+                "title": name + "\n" + dateStrings[forecast]
+            },
+            "valueAxes": [
+                {
+                    "title": "Cell Count",
+                    "axisColor": AmChartsHelper.getChartColor(),
+                    "axisAlpha": 1,
+                }
+            ],
+            "export": {
+                "enabled": true,
+                "menu": []
+            }
+        });
+    }
 
     this.getData = function(today, futureDate) {
         let requests = []
