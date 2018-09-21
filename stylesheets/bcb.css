@@ -68,7 +68,7 @@ strong {
     -o-transform: rotate(-20deg);
     filter: alpha(opacity=80);
     -moz-opacity: .80;
-    opacity: .80;
+    opacity: .00;
     cursor: help;
 }
 
