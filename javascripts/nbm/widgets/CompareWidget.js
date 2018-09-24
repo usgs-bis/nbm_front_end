@@ -351,13 +351,13 @@ function CompareWidget(config, bap) {
                     return x(d.values[0].DOY);
                 })
                 .attr("cy", 37)
-                .attr("fill", "red")
+                .attr("fill", "green")
                 .on("mouseover", function (d) {
                     d3.select(this).attr("r", 10)
                     tooltip1.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    tooltip1.html(getToolTipHTML(d, "BLOOM"))
+                    tooltip1.html(getToolTipHTML(d, "LEAF"))
                         .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
@@ -375,13 +375,13 @@ function CompareWidget(config, bap) {
                     return x(d.values[1].DOY);
                 })
                 .attr("cy", 37)
-                .attr("fill", "green")
+                .attr("fill", "yellow")
                 .on("mouseover", function (d) {
                     d3.select(this).attr("r", 10)
                     tooltip2.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    tooltip2.html(getToolTipHTML(d, "LEAF"))
+                    tooltip2.html(getToolTipHTML(d, "BLOOM"))
                         .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
