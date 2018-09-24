@@ -333,14 +333,14 @@ function CompareWidget(config, bap) {
                 .append("div")
                 .attr("class", "chartTooltip comparePlotToolTipRed")
                 .style("opacity", 0)
-                .style("border", "3px solid red");
+                .style("border", "3px solid green");
 
 
             let tooltip2 = comparePlot.select(`#comparePlotChart${id}`)
                 .append("div")
                 .attr("class", "chartTooltip comparePlotToolTipGreen")
                 .style("opacity", 0)
-                .style("border", "3px solid green");
+                .style("border", "3px solid yellow");
 
 
 
