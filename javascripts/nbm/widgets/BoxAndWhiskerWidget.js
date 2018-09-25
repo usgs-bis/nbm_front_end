@@ -87,6 +87,8 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
         this.bap.updateState(true)
         actionHandlerHelper.showTempPopup(message);
 
+        $(selector).find('.afterSubmitAttribution').show();
+
         button.hide();
         $(selector).find('#boxAndWhiskerError').html('');
         toggleSpinner();
