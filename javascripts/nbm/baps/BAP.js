@@ -32,6 +32,7 @@ var BAP = function (serverAP, leaveOutJson, actionRef) {
     this.initConfig = {}
     this.priority = false;
     this.isNpn = false;
+    this.attribution = "";
 
     if (!$(`#${this.id}BAP`).length) $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', { id: this.id }));
     this.htmlElement = $("#" + this.id + "BapCase");
@@ -143,7 +144,7 @@ BAP.prototype.getNpnAttribution = function() {
     let url = "https://geoserver-dev.usanpn.org/geoserver/si-x/wms?service=WMS&version=1.3.0&" +
         "request=GetCapabilities&layers=" + layers.join(",")
 
-    return '<div class="dropDownContainer attributionClass">' +
+    return '<div class="dropDownContainer afterSubmitAttribution">' +
         this.title + " data were provided by the " +
         "<a target='_blank' href='https://www.usanpn.org'>USA National Phenology Network</a>, data retrieved " + today +
         "<br><br>" +
@@ -170,9 +171,8 @@ BAP.prototype.getFullHtml = function () {
 
     let layerInputs = this.getLayerInputs();
 
-    let attribution = "";
     if (this.isNpn) {
-        attribution = this.getNpnAttribution()
+        this.attribution = this.getNpnAttribution()
     }
 
     var apViewModel = {
@@ -186,7 +186,7 @@ BAP.prototype.getFullHtml = function () {
         layerInputs: layerInputs,
         sectionHtml: widgetHtml,
         imagePath: "", // <-- what is this for?
-        attribution: attribution
+        attribution: this.attribution
     };
 
     createAndPushInfoDiv(infoDivModel);

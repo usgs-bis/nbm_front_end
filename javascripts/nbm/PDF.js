@@ -547,9 +547,9 @@ PDF.prototype.getAnalysisPackageContent = function() {
         content.push({text: 'ScienceBase Item', bold: true, margin: [7,10,0,5]},
             {text: scienceBaseData.bapReference, link: scienceBaseData.bapReference,
                 style: 'link', margin: [10,0,0,0], });
-        if (ap.isNpn) {
+        if (ap.attribution) {
             content.push({text: 'Attribution', bold: true, margin: [7,10,0,5]});
-            content.push(parser(ap.getNpnAttribution(), {margin: [10,0,0,0]}));
+            content.push(parser(ap.attribution, {margin: [10,0,0,0]}));
         }
         return content;
     }

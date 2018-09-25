@@ -687,15 +687,14 @@ label input:hover ~ .fa-custom-checkbox-class:before {
     text-align: left;
 }
 
-.attributionClass {
+.afterSubmitAttribution {
+    display: none;
     padding: 15px;
 }
 
-.attributionClass a {
-    /*color: rgb(204, 204, 204);*/
+.afterSubmitAttribution a {
     color: white;
     font-style: italic;
-    /*font-weight: bold;*/
 }
 
 /*End Form Stuff*/

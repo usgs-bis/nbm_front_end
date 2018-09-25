@@ -88,6 +88,8 @@ function CompareWidget(config, bap) {
         this.bap.updateState(true)
         actionHandlerHelper.showTempPopup(message);
 
+        $(selector).find('.afterSubmitAttribution').show();
+
         button.hide();
         $(selector).find('#comparePlotError').html('');
         toggleSpinner();
