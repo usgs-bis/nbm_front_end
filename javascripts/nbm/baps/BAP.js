@@ -123,7 +123,8 @@ BAP.prototype.getWidgetHtml = function () {
     return html;
 };
 
-BAP.prototype.getNpnAttribution = function(layerInputs) {
+BAP.prototype.getNpnAttribution = function() {
+    let layerInputs = this.getLayerInputs();
     let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth()+1; //January is 0!
@@ -145,9 +146,15 @@ BAP.prototype.getNpnAttribution = function(layerInputs) {
     return '<div class="dropDownContainer attributionClass">' +
         this.title + " data were provided by the " +
         "<a target='_blank' href='https://www.usanpn.org'>USA National Phenology Network</a>, data retrieved " + today +
-        "<br/><br/>" +
+        "<br><br>" +
         "<a target='_blank' href='" + url + "'>" + url + "</a>" +
         '</div>'
+}
+
+BAP.prototype.getLayerInputs = function() {
+    return this.GetBapLayers().filter(l => {
+        return !l.summarizationRegion
+    })
 }
 
 BAP.prototype.getFullHtml = function () {
@@ -161,13 +168,11 @@ BAP.prototype.getFullHtml = function () {
         title = altTitle[0];
     }
 
-    let layerInputs = this.GetBapLayers().filter(l => {
-        return !l.summarizationRegion
-    })
+    let layerInputs = this.getLayerInputs();
 
     let attribution = "";
     if (this.isNpn) {
-        attribution = this.getNpnAttribution(layerInputs)
+        attribution = this.getNpnAttribution()
     }
 
     var apViewModel = {
