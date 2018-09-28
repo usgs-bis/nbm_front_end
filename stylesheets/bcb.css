@@ -36,7 +36,6 @@ strong {
     cursor: default;
     padding: 0;
     margin: 0;
-    width: calc(100% - 500px);
     left: 500px;
 }
 
@@ -1509,15 +1508,17 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 span.clickSearch-target {
     font-family: FontAwesome;    
 }
-input[type='checkbox'].clickSearch {     
+input[type='checkbox'].clickSearch, input[type='radio'].clickSearch {
     position: relative;
     left: -999em; 
 }
 
-input[type='checkbox'].clickSearch + span.clickSearch-target:after {
+input[type='checkbox'].clickSearch + span.clickSearch-target:after,
+input[type='radio'].clickSearch + span.clickSearch-target:after {
     content: "\f1db"; 
 }
-input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
+input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after,
+input[type='radio'].clickSearch:checked + span.clickSearch-target:after{
     content: "\f05d"; 
 }
 

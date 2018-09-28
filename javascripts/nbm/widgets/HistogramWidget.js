@@ -336,3 +336,5 @@ function HistogramWidget(config, bap) {
 
     }
 }
+
+inherit(Widget, HistogramWidget);

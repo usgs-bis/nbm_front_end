@@ -380,3 +380,5 @@ function SmoothPlotWidget(config, bap) {
     }
 
 }
+
+inherit(Widget, SmoothPlotWidget);

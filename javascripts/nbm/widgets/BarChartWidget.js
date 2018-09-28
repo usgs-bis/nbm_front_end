@@ -77,3 +77,5 @@ var BarChartWidget = function (chartConfig) {
         // });
     }
 };
+
+inherit(Widget, BarChartWidget);

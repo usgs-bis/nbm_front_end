@@ -204,3 +204,5 @@ var ObisWidget = function (bapConfig, bap) {
 
 
 }
+
+inherit(Widget, ObisWidget);

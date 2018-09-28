@@ -360,3 +360,5 @@ var NFHPDisturbanceWidget = function (chart) {
 
 
 };
+
+inherit(Widget, NFHPDisturbanceWidget);

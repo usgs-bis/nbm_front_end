@@ -75,3 +75,6 @@ var SpeciesRichnessWidget = function (chartConfig) {
         });
     }
 };
+
+inherit(Widget, SpeciesRichnessWidget);
+

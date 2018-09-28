@@ -173,3 +173,5 @@ var HBPElasticWidget = function (chartData, bap) {
     }
 
 };
+
+inherit(Widget, HBPElasticWidget);

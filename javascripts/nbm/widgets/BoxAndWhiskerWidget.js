@@ -94,7 +94,6 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
         toggleSpinner();
         timeSlider.slider('disable');
         $(selector).find(".boxPlot").hide();
-
         widgetHelper.getRasterData(inputFeature, layer, [values[0], values[1]], that.bap.config.bapProperties.npnProperty)
             .then(function (data) {
                 that.bap.rawJson = data;

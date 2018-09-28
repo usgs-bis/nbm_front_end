@@ -180,3 +180,5 @@ var HierarchyTableWidgetElastic = function (chart, bap) {
         return title
     }
 };
+
+inherit(Widget, HierarchyTableWidgetElastic);

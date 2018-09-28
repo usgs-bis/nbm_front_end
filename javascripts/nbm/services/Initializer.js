@@ -256,8 +256,6 @@ var Initializer = (function(initializer) {
         return updateObjectProperties(bioscapeJson, json);
     }
 
-    
-
       /**
      * display the elevation on the map at the point of the mouse
      * @param {*} source - the api source

@@ -118,6 +118,12 @@ WidgetHelper.prototype.getRasterData = function (inputFeature, layer, years, npn
 
 }
 
+WidgetHelper.prototype.getSingleRasterData = function (inputFeature, layer, timeString, npnProperty) {
+
+    return this.handleRequests(this.getSingleRequest(inputFeature, layer, timeString, npnProperty))
+
+}
+
 
 WidgetHelper.prototype.getDataRequests = function (inputFeature, layer, minIdx, maxIdx, npnProperty) {
     var geojsonString = JSON.stringify(inputFeature.geojson.geometry);
@@ -146,6 +152,25 @@ WidgetHelper.prototype.getDataRequests = function (inputFeature, layer, minIdx, 
 
     return requests;
 }
+
+WidgetHelper.prototype.getSingleRequest = function(inputFeature, layer, timeString, npnProperty) {
+    var geojsonString = JSON.stringify(inputFeature.geojson.geometry);
+    var featureBounds = inputFeature.getLeafetFeatureBounds();
+    var bounds = {
+        sw: featureBounds.getSouthWest(),
+        ne: featureBounds.getNorthEast()
+    };
+
+    return this.getSendGeojsonRequest(layer, [timeString], geojsonString, bounds, npnProperty)
+        .then (function (data) {
+            // var obj = {};
+            // let key = layer.featureName + "," + timeString
+            // obj[key] = data[0];
+            // return obj
+
+            return data[0]
+        });
+};
 
 WidgetHelper.prototype.handleRequests = function (requests) {
     let jsonData = {};
