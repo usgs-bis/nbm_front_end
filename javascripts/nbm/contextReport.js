@@ -5,24 +5,62 @@ function openEcoregionSpeciesJson(sciname, commonName) {
     // openSpeciesJson(sciname, commonName, url);
 }
 
-function toggleEcoregionSpeciesLayer(sciname) {
+function highlightRow(sppCode) {
+    $(".speciesTableRow").css({color: "white"})
+    $("#"+sppCode+"Row").css({color: "yellow"})
+}
+
+function toggleEcoregionSpeciesLayer(sppcode) {
     showSpinner();
     let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
     if(!Spplayer.length) {
         Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Range"})
         if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
             hideSpinner();
-            return 
+            return
         }
         let id = Spplayer[0].actionConfig.baps[0]
         $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
-        
+
     }
     Spplayer = Spplayer[0]
-    Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sciname}'`})
-    Spplayer.mapLayer.leafletLayer.on("load",function() { 
+    if (Spplayer.mapLayer.leafletLayer.wmsParams.CQL_FILTER !== `SppCode='${sppcode}'`) {
+        Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sppcode}'`})
+        Spplayer.mapLayer.leafletLayer.on("load",function() {
+            hideSpinner();
+        });
+    } else {
         hideSpinner();
-    });
+    }
+
+    highlightRow(sppcode);
+}
+
+function toggleSpeciesHabitatLayer(sppcode) {
+    showSpinner();
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
+    if(!Spplayer.length) {
+        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
+        if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
+            hideSpinner();
+            return
+        }
+        let id = Spplayer[0].actionConfig.baps[0]
+        $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
+
+    }
+    Spplayer = Spplayer[0]
+
+    if (Spplayer.mapLayer.leafletLayer.wmsParams.layers !== sppcode) {
+        Spplayer.mapLayer.leafletLayer.setParams({layers:sppcode})
+        Spplayer.mapLayer.leafletLayer.on("load",function() {
+            hideSpinner();
+        });
+    } else {
+        hideSpinner();
+    }
+
+    highlightRow(sppcode);
 }
 
 function openLmeSpeciesJson(sciname, commonName) {
