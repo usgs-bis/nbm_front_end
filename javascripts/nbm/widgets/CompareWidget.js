@@ -88,6 +88,8 @@ function CompareWidget(config, bap) {
         this.bap.updateState(true)
         actionHandlerHelper.showTempPopup(message);
 
+        $(selector).find('.afterSubmitAttribution').show();
+
         button.hide();
         $(selector).find('#comparePlotError').html('');
         toggleSpinner();
@@ -275,11 +277,11 @@ function CompareWidget(config, bap) {
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
             comparePlot.select("#comparePlotTitle").append("text")
-                .text(`${config.title} ${location ? location : ""}`);
+                .text(`${config.title} ${location ? "for " + location : ""}`);
 
             // Subtitle    
             comparePlot.select("#comparePlotSubTitle").append("text")
-                .text(`Annual ${config.title} by Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
+                .text(`By Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
 
             let svgContainer = comparePlot.select(`#comparePlotChart${id}`)
@@ -331,16 +333,16 @@ function CompareWidget(config, bap) {
 
             let tooltip1 = comparePlot.select(`#comparePlotChart${id}`)
                 .append("div")
-                .attr("class", "chartTooltip comparePlotToolTipRed")
+                .attr("class", "chartTooltip comparePlotToolTipGreen")
                 .style("opacity", 0)
-                .style("border", "3px solid red");
+                .style("border", "3px solid green");
 
 
             let tooltip2 = comparePlot.select(`#comparePlotChart${id}`)
                 .append("div")
-                .attr("class", "chartTooltip comparePlotToolTipGreen")
+                .attr("class", "chartTooltip comparePlotToolTipYellow")
                 .style("opacity", 0)
-                .style("border", "3px solid green");
+                .style("border", "3px solid yellow");
 
 
 
@@ -351,13 +353,13 @@ function CompareWidget(config, bap) {
                     return x(d.values[0].DOY);
                 })
                 .attr("cy", 37)
-                .attr("fill", "red")
+                .attr("fill", "green")
                 .on("mouseover", function (d) {
                     d3.select(this).attr("r", 10)
                     tooltip1.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    tooltip1.html(getToolTipHTML(d, "BLOOM"))
+                    tooltip1.html(getToolTipHTML(d, "LEAF"))
                         .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
@@ -375,13 +377,13 @@ function CompareWidget(config, bap) {
                     return x(d.values[1].DOY);
                 })
                 .attr("cy", 37)
-                .attr("fill", "green")
+                .attr("fill", "yellow")
                 .on("mouseover", function (d) {
                     d3.select(this).attr("r", 10)
                     tooltip2.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    tooltip2.html(getToolTipHTML(d, "LEAF"))
+                    tooltip2.html(getToolTipHTML(d, "BLOOM"))
                         .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
@@ -523,7 +525,7 @@ function CompareWidget(config, bap) {
 
         function getToolTipHTML(d, type) {
 
-            let detail = type == "BLOOM" ? `Bloom Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label> <br>` : `Leaf Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label>`
+            let detail = type == "LEAF" ? `Leaf Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label> <br>` : `Bloom Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label>`
 
             let html =
                 `<p>

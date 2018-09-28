@@ -209,10 +209,11 @@ function toggleUnitInfoBar(bounds) {
  * @param {Object} bounds - L.Bounds
  */
 function centerMapRight(bounds) {
-    bounds._northEast.lng += 1
-    bounds._northEast.lat += 1
-    bounds._southWest.lng -= 1
-    bounds._southWest.lat -= 1
+    let buffer = .25;
+    bounds._northEast.lng += buffer;
+    bounds._northEast.lat += buffer;
+    bounds._southWest.lng -= buffer;
+    bounds._southWest.lat -= buffer;
 
     if (bounds._northEast.lng > 180) {
         bounds._northEast.lng -= 360;

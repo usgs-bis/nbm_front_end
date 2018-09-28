@@ -87,6 +87,8 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
         this.bap.updateState(true)
         actionHandlerHelper.showTempPopup(message);
 
+        $(selector).find('.afterSubmitAttribution').show();
+
         button.hide();
         $(selector).find('#boxAndWhiskerError').html('');
         toggleSpinner();
@@ -188,8 +190,8 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
     this.updateTitle = function (data) {
         let years = Object.getOwnPropertyNames(data)
         let location = ((actionHandlerHelper.sc.headerBap || {}).config || {}).title
-        $(selector).find("#boxPlotTitle").html(`${serverAP.title} ${location ? location : ""}`)
-        $(selector).find("#boxPlotSubTitle").html(`Annual ${serverAP.title} for the Period ${years[0]} to ${years[years.length - 1]}`)
+        $(selector).find("#boxPlotTitle").html(`${serverAP.title} ${location ? "for " + location : ""}`)
+        $(selector).find("#boxPlotSubTitle").html(`By Year for the Period ${years[0]} to ${years[years.length - 1]}`)
 
     }
 

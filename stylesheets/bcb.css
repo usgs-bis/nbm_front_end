@@ -67,7 +67,7 @@ strong {
     -o-transform: rotate(-20deg);
     filter: alpha(opacity=80);
     -moz-opacity: .80;
-    opacity: .80;
+    opacity: .00;
     cursor: help;
 }
 
@@ -684,6 +684,16 @@ label input:hover ~ .fa-custom-checkbox-class:before {
     color: rgb(204, 204, 204);
     max-width: 32%;
     text-align: left;
+}
+
+.afterSubmitAttribution {
+    display: none;
+    padding: 15px;
+}
+
+.afterSubmitAttribution a {
+    color: white;
+    font-style: italic;
 }
 
 /*End Form Stuff*/
