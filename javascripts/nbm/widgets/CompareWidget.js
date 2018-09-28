@@ -537,3 +537,5 @@ function CompareWidget(config, bap) {
     }
 
 }
+
+inherit(Widget, CompareWidget);

@@ -88,3 +88,5 @@ var HierarchyByPixelWidget = function(chartData) {
     };
 
 };
+
+inherit(Widget, HierarchyByPixelWidget);

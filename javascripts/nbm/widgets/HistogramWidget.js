@@ -148,7 +148,7 @@ function HistogramWidget(config, bap) {
                 .attr("class", "chartTooltip histogramToolTip")		
                 .style("opacity", 0)
                 .style("border", "3px solid rgb(56, 155, 198)");
-            console.log(data);
+
             svg.selectAll(".bar")
                 .data(data)
                 .enter().append("rect")
@@ -336,3 +336,5 @@ function HistogramWidget(config, bap) {
 
     }
 }
+
+inherit(Widget, HistogramWidget);

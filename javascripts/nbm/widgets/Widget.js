@@ -23,3 +23,5 @@ Widget.prototype.getTableBody = function(rows) {
     });
     return tableBody;
 };
+
+Widget.prototype.togglePriority = function(priority) {};

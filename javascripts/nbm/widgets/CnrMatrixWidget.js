@@ -133,3 +133,5 @@ var CnrMatrixWidget = function (config) {
         });
     }
 };
+
+inherit(Widget, CnrMatrixWidget);

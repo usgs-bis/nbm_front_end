@@ -181,3 +181,5 @@ let NFHPWidget = function (chartConfig,bap) {
 
 
 };
+
+inherit(Widget, NFHPWidget);

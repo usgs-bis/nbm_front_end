@@ -301,6 +301,27 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
 
 </script>
 
+<script id="phenocastTemplate" type="text/x-jsrender">
+    <div class="bapChart">
+        <div class="bapHeader">
+            <div class="row" style="margin-top: 35px;">
+                    <div class="col col-md-12 ">
+                        <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Get Phenocast Forecast </div>
+                        <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
+                    </div>
+                </div>
+
+                <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+                <div id="boxAndWhiskerError"></div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script id="phenocastChartTemplate" type="text/x-jsrender">
+</script>
+
 <script id="histogramTemplate" type="text/x-jsrender">
     <div class="bapChart">
         <div id="histogramPlot{{:id}}" class="histogramPlot" style="display:none;">        

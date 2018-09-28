@@ -83,3 +83,5 @@ var HierarchyTableWidget = function (chart) {
         return area >= 1 ? formatAcres(Math.round(area)) : (area > 0 ? '< 1' : 0);
     }
 };
+
+inherit(Widget, HierarchyTableWidget);

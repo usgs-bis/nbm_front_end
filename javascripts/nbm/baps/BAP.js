@@ -61,6 +61,7 @@ BAP.prototype.reconstruct = function (serverAP, leaveOutJson) {
     this.widgets = [];
     this.feature = undefined;
     this.leaveOutJson = leaveOutJson;
+    this.hideInputs = this.config.bapProperties && this.config.bapProperties.hideAnalysisInputs;
 
     this.htmlElement = $("#" + this.id + "BapCase");
 };
@@ -143,7 +144,8 @@ BAP.prototype.getFullHtml = function () {
         simplified: this.simplified,
         openByDefault: this.config.openByDefault,
         leaveOutJson: this.leaveOutJson,
-        hasInputs: layerInputs.length ? true : false,
+        hasInputs: layerInputs.length,
+        hideInputs: this.hideInputs,
         layerInputs: layerInputs,
         sectionHtml: widgetHtml,
         imagePath: "", // <-- what is this for?
@@ -328,6 +330,9 @@ BAP.prototype.initializeBAP = function () {
     this.initializeWidgets();
     this.htmlElement = $("#" + this.id + "BapCase");
     this.htmlElement.removeClass().html(this.getFullHtml());
+    if (this.hideInputs) {
+        $("#"+this.id+"Inputs").hide();
+    }
     this.initializeChartLibraries();
 
     this.bindClicks();
@@ -383,7 +388,7 @@ BAP.prototype.loadBapState = function () {
                         let layer = bioScape.getLayer(l.id)
                         if (!layer.summarizationRegion && !layer.baseMap) {
                             try {
-                                if (!$(`#${that.id}BAP #toggleLayer${layer.id}`)[0].checked) {
+                                if (!$(`#${that.id}BAP #toggleLayer${layer.id}`)[0].checked && !that.hideInputs) {
                                     $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
                                 }
                             }
@@ -548,16 +553,32 @@ BAP.prototype.setPriorityBap = function (checked) {
         })
 
         showContainer(that.id + "BAP")
-        $(`#${that.id}Inputs`).show()
+        $.each(that.widgets, function (index, widget) {
+            widget.togglePriority(true);
+        });
+
+        if (!that.hideInputs) {
+            $(`#${that.id}Inputs`).show()
+        }
 
         if (!thisLayer) return
         
         $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`)[0].checked = false;
-        $(`#${that.id}BAP #toggleLayer${thisLayer.id}`).click()
 
-       
-        
+        let helper = $(`#${that.id}BAP #toggleLayer${thisLayer.id}`);
+        if (helper) {
+            if (!this.hideInputs) {
+                if (helper[0]) {
+                    helper[0].checked = false;
+                }
+                helper.click()
+            } else {
+                if (helper[0]) {
+                    helper[0].checked = true;
+                }
+            }
+        }
+
         if (!this.feature || !this.feature.geojson || !this.feature.geojson.geometry) {
             setTimeout(function(){ $(".modifiedPoly").hide() }, 1000);
         }
@@ -582,6 +603,9 @@ BAP.prototype.setPriorityBap = function (checked) {
             }
             
         })
+        $.each(that.widgets, function (index, widget) {
+            widget.togglePriority(false);
+        });
         $(`#${that.config.id}Inputs`).hide()
         this.priority = false
         $(".modifiedPoly").hide()
