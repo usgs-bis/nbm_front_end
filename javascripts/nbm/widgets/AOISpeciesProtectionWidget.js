@@ -325,6 +325,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         var helpers = { format: escapeSingleQuotesInString };
         var html = getHtmlFromJsRenderTemplate('#speciesTableContainerTemplate', viewData, helpers);
         toggleEcoregionSpeciesLayer("")
+        toggleSpeciesHabitatLayer("")
         $("#speciesTableContainer").html(html);
     }
 

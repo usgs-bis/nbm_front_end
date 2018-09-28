@@ -133,15 +133,33 @@
     <div class="table">
         <table id="spTable" style="width:100%">
             <tr class="even" style="font-weight: bold; color: lightblue;">
-                <th></th>
-                <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
-                <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">Scientific Name</th>
+                <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Name</th>
+                <th style="width: 40px;"></th>
+                <th style="width: 40px;"></th>
             </tr>
             {{for species}}
-                <tr id="{{:scientific_name}}"  class="spRow tableRow">
-                    <td><input type="radio" name="layer" value={{:sppcode}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" class="species-layer-raido"></td>
-                    <td class="text-chart-left" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">{{:common_name ? common_name : "No common name recorded"}}</td>
-                    <td class="text-chart-left" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
+                <tr id="{{:sppcode}}Row"  class="spRow tableRow speciesTableRow">
+                    <td class="text-chart-left"
+                    onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">
+                    {{:common_name ? common_name : "No common name recorded"}} ({{:scientific_name ? scientific_name : "No scientific name recorded"}} )
+                    </td>
+
+                    <td style="vertical-align: middle;">
+                    <label class="clickSearch">
+                    <input type="radio" name="layer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
+                    <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
+                    title="Range Map">
+                    </span>
+                    </label>
+                    </td>
+
+                    <td style="vertical-align: middle;">
+                    <label class="clickSearch">
+                    <input type="radio" name="layer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
+                    <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
+                    title="Habitat Map"></span>
+                    </label>
+                    </td>
                 </tr>
             {{/for}}
         </table>
