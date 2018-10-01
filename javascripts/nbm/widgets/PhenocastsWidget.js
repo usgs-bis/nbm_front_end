@@ -243,13 +243,22 @@ function PhenocastsWidget(config, bap) {
         `
     };
 
+    this.convertToAcres = function(number) {
+        return number * 2522 * 2370 * 0.000247105
+    };
+
     this.buildBarChart = function(pestName, pestData, num, layerName) {
+        let that = this;
         let currentList = [];
         let futureList = [];
 
         $.each(pestData, function(category, data) {
-            currentList.push({"helper": "", "Category": category, "Count": data["Current"], "color": data["color"]})
-            futureList.push({"helper": "", "Category": category, "Count": data["Six-Day"], "color": data["color"]})
+            currentList.push({"helper": "", "Category": category,
+                "Count": Math.round(that.convertToAcres(data["Current"])),
+                "color": data["color"]});
+            futureList.push({"helper": "", "Category": category,
+                "Count": Math.round(that.convertToAcres(data["Six-Day"])),
+                "color": data["color"]});
         });
 
         let curId = id + "PhenocastCurrent" + num;
@@ -333,14 +342,18 @@ function PhenocastsWidget(config, bap) {
             "dataProvider": data,
             "categoryField": "helper",
             "autoWrap": true,
+            "numberFormatter": {precision:0, decimalSeparator:'.', thousandsSeparator:','},
             "graphs": [{
                 "valueField": "Count",
                 "type": "column",
-                "balloonText": "<b>[[Category]]: [[Count]]" + "</b>",
+                "balloonText": "<b>[[Category]]: [[Count]] acres" + "</b>",
                 "fillColorsField": "color",
                 "fillAlphas": .9,
                 "lineAlpha": 0.3,
                 "alphaField": "opacity",
+                "balloonFunction": function(item) {
+                    return `<b>${item.dataContext.Category}: ${item.dataContext.Count.toLocaleString()} acres</b>`
+                }
 
             }],
             "categoryAxis": {
@@ -353,7 +366,7 @@ function PhenocastsWidget(config, bap) {
             },
             "valueAxes": [
                 {
-                    "title": "Cell Count",
+                    "title": "Approximate Acreage",
                     "axisColor": AmChartsHelper.getChartColor(),
                     "axisAlpha": 1,
                 }
