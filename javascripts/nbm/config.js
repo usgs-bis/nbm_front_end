@@ -5,6 +5,9 @@ var myEnv = "prod"
 if (myServer.indexOf("igskbac") !== -1) {
     myServer = "http://" + myServer + ":8080/bcb";
     myEnv = "dev"
+} else if (myServer.indexOf("localhost") !== -1){
+    myServer = "https://dev-api.sciencebase.gov/bcb"
+    myEnv = "dev"
 } else if (myServer.indexOf("my-beta.usgs.gov") !== -1){
     myServer = "https://my-beta.usgs.gov/bcb"
     myEnv = "beta"
