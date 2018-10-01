@@ -276,6 +276,7 @@ function PhenocastsWidget(config, bap) {
                             time:val[1],
                             styles:val[2]
                         });
+                        layer.updateLegendUrl();
                     })
                 }
             }
@@ -297,6 +298,7 @@ function PhenocastsWidget(config, bap) {
             $("#" + bap.id + "Inputs").show();
         }
 
+        primaryLayer.updateLegendUrl();
         submitted = true;
     }
 
