@@ -63,6 +63,7 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
         //is currently drawing
         map.on(L.Draw.Event.CREATED, function (event) {
             drawing = false;
+            map.zoomControl.enable()
             controls.removeClass('open');//closes the dropdown options for drawing
             var layer = event.layer;
 
@@ -80,10 +81,12 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
             drawing = true;
             that.cleanUpDrawnPolygons();
             that.cleanUp(false);
+            map.zoomControl.disable()
         });
 
         map.on(L.Draw.Event.DRAWSTOP, function () {
             drawing = false;
+            map.zoomControl.enable()
         });
 
         this.initializeSubmitButton();
