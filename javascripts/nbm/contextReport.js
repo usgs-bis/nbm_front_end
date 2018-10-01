@@ -7,7 +7,11 @@ function openEcoregionSpeciesJson(sciname, commonName) {
 
 function highlightRow(sppCode) {
     $(".speciesTableRow").css({color: "white"})
-    $("#"+sppCode+"Row").css({color: "yellow"})
+    if(sppCode) {
+        $("#"+sppCode+"Row").css({color: "yellow"})
+    } else {
+        $("input[name='spLayer']").prop('checked', false);
+    }
 }
 
 function toggleEcoregionSpeciesLayer(sppcode) {
