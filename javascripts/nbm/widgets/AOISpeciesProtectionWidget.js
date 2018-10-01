@@ -87,6 +87,8 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     $("#spNameCheckbox").on('click', function () {
                         toggleSpeciesName(this);
                     });
+
+                    that.togglePriority(bap.priority)
                 })
         }
         else {
@@ -327,6 +329,15 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
         toggleEcoregionSpeciesLayer("")
         toggleSpeciesHabitatLayer("")
         $("#speciesTableContainer").html(html);
+    }
+
+    this.togglePriority = function(priority) {
+        if (priority) {
+            $(".spProtRadio").show();
+        } else {
+            highlightRow(null);
+            $(".spProtRadio").hide();
+        }
     }
 
     /**

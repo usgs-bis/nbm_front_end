@@ -163,6 +163,7 @@ function PhenocastsWidget(config, bap) {
 
         button = $(selector).find('#getData');
         button.on('click', function () {
+            $(selector).find('.afterSubmitAttribution').show();
             actionHandlerHelper.showTempPopup("Submitted polygon. Larger or more complex polygons will take longer to process");
             toggleSpinner();
             that.getData(today, futureDate)
@@ -256,9 +257,10 @@ function PhenocastsWidget(config, bap) {
         let curRadio = [layerName, today, pestName.toLowerCase().replace(/ /g, '_')].join(",")
         let sixRadio = [layerName, futureDate, pestName.toLowerCase().replace(/ /g, '_')].join(",")
 
-        $(selector).append('<div class="contextSubHeader subHeaderTitle">' + pestName + '</div>');
-        $(selector).append(this.getBlock(curId, curRadio, num ? "" : "checked"));
-        $(selector).append(this.getBlock(sixId, sixRadio, ""));
+        let chartHolder = $(selector).find(".chartHolder")
+        chartHolder.append('<div class="contextSubHeader subHeaderTitle">' + pestName + '</div>');
+        chartHolder.append(this.getBlock(curId, curRadio, num ? "" : "checked"));
+        chartHolder.append(this.getBlock(sixId, sixRadio, ""));
         charts.push(this.getChart(currentList, curId, pestName, "Current"));
         charts.push(this.getChart(futureList, sixId, pestName, "Six-Day"));
 

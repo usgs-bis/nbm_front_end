@@ -141,9 +141,8 @@ BAP.prototype.getNpnAttribution = function() {
 
     today = yyyy + '-' + mm + '-' + dd
 
-    let layers = layerInputs.map(a => a.featureName);
-    let url = "https://geoserver-dev.usanpn.org/geoserver/si-x/wms?service=WMS&version=1.3.0&" +
-        "request=GetCapabilities&layers=" + layers.join(",")
+    let layers = layerInputs.map(a => a.mapLayer.layers);
+    let url = layerInputs[0].mapLayer.serviceUrl + "&layers=" + layers.join(",");
 
     return '<div class="dropDownContainer afterSubmitAttribution">' +
         this.title + " data were provided by the " +

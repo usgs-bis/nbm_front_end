@@ -178,16 +178,8 @@
 
 </div>
 </div>
-<!-- {{if !hasInputs && !leaveOutJson}}
-<div style='width: 100%;'>
-<button onclick="actionHandlerHelper.viewBapJson('{{:id}}')" style='font-size: 10px; position: relative; top: -25px; left: calc(100% - 45px);'
-class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this Analysis Package as JSON.">
-                <span class="glyphicon glyphicon-th-list bootstrapGlyph" aria-hidden="true"></span>
-            </button>
-</div>
-{{/if}} -->
+
     <div id="{{:id}}BAP" class="dropDownContainer" style="{{if !openByDefault}}display:none;{{/if}}">
-        <!-- {{if !leaveOutJson}} -->
         <div id="{{:id}}JsonDiv" class ="jsonDiv">
                 <button onclick="actionHandlerHelper.showRawJson('{{:id}}')" style='font-size: 10px; display: inline-block; width: 27px; position: relative; left: 5px'
                 class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw JSON used for analysis.">
@@ -198,7 +190,7 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
                     <span class="glyphicon glyphicon-resize-full bootstrapGlyph" aria-hidden="true"></span>
                 </button>
         </div>
-    <!-- {{/if}} -->
+
         {{if hasInputs}}
             <div id="{{:id}}Inputs">
                 
@@ -210,13 +202,13 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View this An
                     {{for layerInputs}}
                     
                         <div style="display: flex; padding-left: 10px;">
-                            <span class="clickSearch" style="margin-right: 10px;">
+                            <span class="clickSearch" style="margin-right: 10px; {{if hideCheckbox}}display: none;{{/if}}">
                                 <label class="clickSearch" style="display: flex;">
                                     <input id="toggleLayer{{:id}}" type="checkbox" class="clickSearch" />
                                     <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top" title="Toggle Layer"></span>
                                 </label>
                             </span>
-                            <span>{{:title}}</span> 
+                            <span>{{:title}}</span>
                             <span id="{{:id}}layerMoreInfo" style="white-space:nowrap; margin-left: 5px;">
                                 <i class="fa fa-circle fa-first hideBaseMapLayer" aria-hidden="true" data-original-title></i>
                                 <i class="fa fa-info-circle fa-second layerMoreInfo hideBaseMapLayer" aria-hidden="true" data-layer="{{:divId}}"></i>
@@ -310,11 +302,13 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
                         <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Get Phenocast Forecast </div>
                         <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
                     </div>
-                </div>
 
                 <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
                 <div id="boxAndWhiskerError"></div>
             </div>
+        </div>
+
+        <div class="chartHolder">
         </div>
     </div>
 

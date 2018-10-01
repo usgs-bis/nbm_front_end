@@ -271,6 +271,10 @@ select option {
     border-bottom: 1px solid #737272;
 }
 
+.spProtRadio {
+    display: none;
+}
+
 .spRow {
     /* cursor: pointer; */
 }
