@@ -43,6 +43,18 @@ BioScapeLayer.prototype.turnOffLayer = function(keepSelected) {
     }
 };
 
+BioScapeLayer.prototype.updateLegendUrl = function() {
+    let imgDiv = $("#"+this.id+"Legend").find(".legendImg");
+    let url = this.legend.url.split("?")[0];
+    let layer = this.mapLayer.leafletLayer.wmsParams.layers;
+    let style = this.mapLayer.leafletLayer.wmsParams.styles;
+    url += `?service=wms&request=GetLegendGraphic&format=image%2Fpng&layer=${layer}`;
+    if (style) url += `&style=${style}`;
+    this.legend.url = url;
+
+    imgDiv.attr("src", url)
+};
+
 BioScapeLayer.prototype.turnOnLayer = function() {
     var that = this;
     this.enabled = true;

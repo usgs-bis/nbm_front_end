@@ -13,7 +13,7 @@ function PhenocastsWidget(config, bap) {
     let button = null;
     let submitted = false;
 
-    let charts = [];
+    let charts = {};
 
     let chartData = {
         "agdd_50f":{
@@ -127,6 +127,12 @@ function PhenocastsWidget(config, bap) {
         return getHtmlFromJsRenderTemplate('#phenocastTemplate', { id: id });
     }
     this.initializeWidget = function () {
+        let AOI = bap.gid;
+        if(AOI && AOI.includes('OBIS_Areas:')) {
+            $(`#${bap.id}BapCase`).hide()
+            return
+        }
+
         let that = this;
         today = new Date();
         var dd = today.getDate();
@@ -205,7 +211,6 @@ function PhenocastsWidget(config, bap) {
             });
         });
 
-        console.log(chartData);
         this.buildCharts()
     };
 
@@ -243,13 +248,22 @@ function PhenocastsWidget(config, bap) {
         `
     };
 
+    this.convertToAcres = function(number) {
+        return number * 2522 * 2370 * 0.000247105
+    };
+
     this.buildBarChart = function(pestName, pestData, num, layerName) {
+        let that = this;
         let currentList = [];
         let futureList = [];
 
         $.each(pestData, function(category, data) {
-            currentList.push({"helper": "", "Category": category, "Count": data["Current"], "color": data["color"]})
-            futureList.push({"helper": "", "Category": category, "Count": data["Six-Day"], "color": data["color"]})
+            currentList.push({"helper": "", "Category": category,
+                "Count": Math.round(that.convertToAcres(data["Current"])),
+                "color": data["color"]});
+            futureList.push({"helper": "", "Category": category,
+                "Count": Math.round(that.convertToAcres(data["Six-Day"])),
+                "color": data["color"]});
         });
 
         let curId = id + "PhenocastCurrent" + num;
@@ -261,8 +275,11 @@ function PhenocastsWidget(config, bap) {
         chartHolder.append('<div class="contextSubHeader subHeaderTitle">' + pestName + '</div>');
         chartHolder.append(this.getBlock(curId, curRadio, num ? "" : "checked"));
         chartHolder.append(this.getBlock(sixId, sixRadio, ""));
-        charts.push(this.getChart(currentList, curId, pestName, "Current"));
-        charts.push(this.getChart(futureList, sixId, pestName, "Six-Day"));
+
+        charts[pestName] = []
+
+        charts[pestName].push(this.getChart(currentList, curId, pestName, "Current"));
+        charts[pestName].push(this.getChart(futureList, sixId, pestName, "Six-Day"));
 
         $("#"+curId+"Radio" + "," + "#"+sixId+"Radio").on("change", function(){
             if ($(this).is(":checked")) {
@@ -276,6 +293,7 @@ function PhenocastsWidget(config, bap) {
                             time:val[1],
                             styles:val[2]
                         });
+                        layer.updateLegendUrl();
                     })
                 }
             }
@@ -297,6 +315,7 @@ function PhenocastsWidget(config, bap) {
             $("#" + bap.id + "Inputs").show();
         }
 
+        primaryLayer.updateLegendUrl();
         submitted = true;
     }
 
@@ -331,14 +350,18 @@ function PhenocastsWidget(config, bap) {
             "dataProvider": data,
             "categoryField": "helper",
             "autoWrap": true,
+            "numberFormatter": {precision:0, decimalSeparator:'.', thousandsSeparator:','},
             "graphs": [{
                 "valueField": "Count",
                 "type": "column",
-                "balloonText": "<b>[[Category]]: [[Count]]" + "</b>",
+                "balloonText": "<b>[[Category]]: [[Count]] acres" + "</b>",
                 "fillColorsField": "color",
                 "fillAlphas": .9,
                 "lineAlpha": 0.3,
                 "alphaField": "opacity",
+                "balloonFunction": function(item) {
+                    return `<b>${item.dataContext.Category}: ${item.dataContext.Count.toLocaleString()} acres</b>`
+                }
 
             }],
             "categoryAxis": {
@@ -351,7 +374,7 @@ function PhenocastsWidget(config, bap) {
             },
             "valueAxes": [
                 {
-                    "title": "Cell Count",
+                    "title": "Approximate Acreage",
                     "axisColor": AmChartsHelper.getChartColor(),
                     "axisAlpha": 1,
                 }
@@ -409,34 +432,21 @@ function PhenocastsWidget(config, bap) {
 
     this.getPdfLayout = function() {
 
-        try{
-            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="800" height="800" style="position: fixed;"></canvas>`)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("height",500)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("width",500)
-
-            let c = document.getElementById(`myCanvas${id}`);
-            let ctx = c.getContext('2d');
-            ctx.drawSvg($(`#histogramChart${id} .svg-container-plot`).html(), 0, 0, 800, 800);
-
-            // clean up
-            d3.select(`#histogramPlot${id}`).select("svg").attr("height",null)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("width",null)
-            $("#canvasHolder").html("")
-
-            return {
-                content: [
-                    {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                    {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
-                    {image: c.toDataURL(),  alignment: 'center', width:500}
-                ],
-                charts: []
-            }
-
+        let ret = {
+            content: [],
+            charts: []
         }
-        catch(error){
-            //showErrorDialog("Error printing one or more charts to report.",false);
-            return {content:[],charts:[]}
-        }
+
+        $.each(charts, function(pestName, pestCharts) {
+            ret["content"].push({text: pestName,style: ['subTitleChart'], pageBreak: 'before'})
+            ret["content"].push({ image: pestCharts[0].div.id, alignment: 'center', width: 500 })
+            ret["content"].push({ image: pestCharts[1].div.id, alignment: 'center', width: 500 })
+
+            ret["charts"].push(pestCharts[0])
+            ret["charts"].push(pestCharts[1])
+        });
+
+        return ret;
     }
 
 

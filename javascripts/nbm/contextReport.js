@@ -30,6 +30,7 @@ function toggleEcoregionSpeciesLayer(sppcode) {
     Spplayer = Spplayer[0]
     if (Spplayer.mapLayer.leafletLayer.wmsParams.CQL_FILTER !== `SppCode='${sppcode}'`) {
         Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sppcode}'`})
+        Spplayer.updateLegendUrl();
         Spplayer.mapLayer.leafletLayer.on("load",function() {
             hideSpinner();
         });
@@ -57,6 +58,7 @@ function toggleSpeciesHabitatLayer(sppcode) {
 
     if (Spplayer.mapLayer.leafletLayer.wmsParams.layers !== sppcode) {
         Spplayer.mapLayer.leafletLayer.setParams({layers:sppcode})
+        Spplayer.updateLegendUrl();
         Spplayer.mapLayer.leafletLayer.on("load",function() {
             hideSpinner();
         });
