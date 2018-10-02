@@ -189,13 +189,13 @@ function CompareWidget(config, bap) {
 
         try {
             let content = [
-                {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']}
+                {text: $(selector).find("#comparePlotTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                {text: $(selector).find("#comparePlotSubTitle").text(),style: ['subTitleChart']}
             ]
 
             let numPerPage = 2
-            for (let i = 0; i < that.dataNest.length; i+= numPerPage) {
-                let nest = that.dataNest.slice(i, numPerPage + i);
+            // for (let i = 0; i < that.dataNest.length; i+= numPerPage) {
+                let nest = that.dataNest.slice(0,3);
 
                 let divCopy = "cmpCopy";
                 let hiddenCopy = `<div id="${divCopy}Holder" style="position: absolute; width: 500px; height: 5000px; left: 10000px;"></div>`
@@ -207,23 +207,25 @@ function CompareWidget(config, bap) {
 
                 let svg = $(`#${divCopy}Chart${id}`)
 
+            console.log("Height:",svg.height())
+
                 $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
 
                 let c = document.getElementById(`myCanvas${id}`);
                 let ctx = c.getContext('2d');
                 ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
 
-                // var image = new Image();
-                // image.src = c.toDataURL();
-                //
-                // var w = window.open("");
-                // w.document.write(image.outerHTML);
+                var image = new Image();
+                image.src = c.toDataURL();
+
+                var w = window.open("");
+                w.document.write(image.outerHTML);
 
                 $("#canvasHolder").html("")
                 $(`#${divCopy}Holder`).remove();
 
                 content.push({image: c.toDataURL(),  alignment: 'center', width:500})
-            }
+            // }
 
             return {
                 content: content,
@@ -236,32 +238,6 @@ function CompareWidget(config, bap) {
             return {content:[],charts:[]}
         }
 
-        // try {
-        //
-        //     let svg = $(`#comparePlotChart${id}`)
-        //
-        //     $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
-        //
-        //     let c = document.getElementById(`myCanvas${id}`);
-        //     let ctx = c.getContext('2d');
-        //     ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
-        //
-        //     $("#canvasHolder").html("")
-        //
-        //     return {
-        //         content: [
-        //             { text: $(selector).find("#comparePlotTitle").text(), style: ['titleChart'], pageBreak: 'before' },
-        //             { text: $(selector).find("#comparePlotSubTitle").text(), style: ['subTitleChart'] },
-        //             { image: c.toDataURL(), alignment: 'center', width: 500 }
-        //         ],
-        //         charts: []
-        //     }
-        // }
-        //
-        // catch (error) {
-        //     //showErrorDialog("Error printing one or more charts to report.", false);
-        //     return { content: [], charts: [] }
-        // }
     }
 
 
@@ -269,6 +245,8 @@ function CompareWidget(config, bap) {
         if (!divId) divId = "comparePlot"
         let that = this
         that.chartData = chartData;
+
+        console.log(divId)
 
         $(selector).find("#" + divId + id).show()
 
@@ -302,6 +280,7 @@ function CompareWidget(config, bap) {
         };
 
         that.buildFromNest = function(dataNest, buk, divId) {
+            console.log(dataNest)
             let minMax = getMinMax(that.dataNest)
 
             x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);
