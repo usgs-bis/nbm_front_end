@@ -193,9 +193,9 @@ function CompareWidget(config, bap) {
                 {text: $(selector).find("#comparePlotSubTitle").text(),style: ['subTitleChart']}
             ]
 
-            let numPerPage = 2
-            // for (let i = 0; i < that.dataNest.length; i+= numPerPage) {
-                let nest = that.dataNest.slice(0,3);
+            let numPerPage = 15
+            for (let i = 0; i < that.dataNest.length; i+= numPerPage) {
+                let nest = that.dataNest.slice(i,numPerPage+i);
 
                 let divCopy = "cmpCopy";
                 let hiddenCopy = `<div id="${divCopy}Holder" style="position: absolute; width: 500px; height: 5000px; left: 10000px;"></div>`
@@ -206,8 +206,6 @@ function CompareWidget(config, bap) {
                 that.buildFromNest(nest, that.buk, divCopy)
 
                 let svg = $(`#${divCopy}Chart${id}`)
-
-            console.log("Height:",svg.height())
 
                 $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
 
@@ -225,7 +223,7 @@ function CompareWidget(config, bap) {
                 $(`#${divCopy}Holder`).remove();
 
                 content.push({image: c.toDataURL(),  alignment: 'center', width:500})
-            // }
+            }
 
             return {
                 content: content,
@@ -246,9 +244,7 @@ function CompareWidget(config, bap) {
         let that = this
         that.chartData = chartData;
 
-        console.log(divId)
-
-        $(selector).find("#" + divId + id).show()
+        $("#" + divId + id).show()
 
         d3.select(`#${divId}${id}`).selectAll(".svg-container-smoothPlot").remove()
         $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", "0px")
@@ -280,7 +276,6 @@ function CompareWidget(config, bap) {
         };
 
         that.buildFromNest = function(dataNest, buk, divId) {
-            console.log(dataNest)
             let minMax = getMinMax(that.dataNest)
 
             x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);

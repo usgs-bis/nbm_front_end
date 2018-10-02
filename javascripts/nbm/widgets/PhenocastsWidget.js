@@ -13,7 +13,7 @@ function PhenocastsWidget(config, bap) {
     let button = null;
     let submitted = false;
 
-    let charts = [];
+    let charts = {};
 
     let chartData = {
         "agdd_50f":{
@@ -211,7 +211,6 @@ function PhenocastsWidget(config, bap) {
             });
         });
 
-        console.log(chartData);
         this.buildCharts()
     };
 
@@ -276,8 +275,11 @@ function PhenocastsWidget(config, bap) {
         chartHolder.append('<div class="contextSubHeader subHeaderTitle">' + pestName + '</div>');
         chartHolder.append(this.getBlock(curId, curRadio, num ? "" : "checked"));
         chartHolder.append(this.getBlock(sixId, sixRadio, ""));
-        charts.push(this.getChart(currentList, curId, pestName, "Current"));
-        charts.push(this.getChart(futureList, sixId, pestName, "Six-Day"));
+
+        charts[pestName] = []
+
+        charts[pestName].push(this.getChart(currentList, curId, pestName, "Current"));
+        charts[pestName].push(this.getChart(futureList, sixId, pestName, "Six-Day"));
 
         $("#"+curId+"Radio" + "," + "#"+sixId+"Radio").on("change", function(){
             if ($(this).is(":checked")) {
@@ -430,34 +432,21 @@ function PhenocastsWidget(config, bap) {
 
     this.getPdfLayout = function() {
 
-        try{
-            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="800" height="800" style="position: fixed;"></canvas>`)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("height",500)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("width",500)
-
-            let c = document.getElementById(`myCanvas${id}`);
-            let ctx = c.getContext('2d');
-            ctx.drawSvg($(`#histogramChart${id} .svg-container-plot`).html(), 0, 0, 800, 800);
-
-            // clean up
-            d3.select(`#histogramPlot${id}`).select("svg").attr("height",null)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("width",null)
-            $("#canvasHolder").html("")
-
-            return {
-                content: [
-                    {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                    {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
-                    {image: c.toDataURL(),  alignment: 'center', width:500}
-                ],
-                charts: []
-            }
-
+        let ret = {
+            content: [],
+            charts: []
         }
-        catch(error){
-            //showErrorDialog("Error printing one or more charts to report.",false);
-            return {content:[],charts:[]}
-        }
+
+        $.each(charts, function(pestName, pestCharts) {
+            ret["content"].push({text: pestName,style: ['subTitleChart'], pageBreak: 'before'})
+            ret["content"].push({ image: pestCharts[0].div.id, alignment: 'center', width: 500 })
+            ret["content"].push({ image: pestCharts[1].div.id, alignment: 'center', width: 500 })
+
+            ret["charts"].push(pestCharts[0])
+            ret["charts"].push(pestCharts[1])
+        });
+
+        return ret;
     }
 
 
