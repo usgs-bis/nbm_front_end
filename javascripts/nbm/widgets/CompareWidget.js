@@ -213,12 +213,6 @@ function CompareWidget(config, bap) {
                 let ctx = c.getContext('2d');
                 ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
 
-                var image = new Image();
-                image.src = c.toDataURL();
-
-                var w = window.open("");
-                w.document.write(image.outerHTML);
-
                 $("#canvasHolder").html("")
                 $(`#${divCopy}Holder`).remove();
 
