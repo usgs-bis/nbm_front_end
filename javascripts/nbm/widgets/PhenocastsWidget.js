@@ -127,6 +127,12 @@ function PhenocastsWidget(config, bap) {
         return getHtmlFromJsRenderTemplate('#phenocastTemplate', { id: id });
     }
     this.initializeWidget = function () {
+        let AOI = bap.gid;
+        if(AOI && AOI.includes('OBIS_Areas:')) {
+            $(`#${bap.id}BapCase`).hide()
+            return
+        }
+
         let that = this;
         today = new Date();
         var dd = today.getDate();

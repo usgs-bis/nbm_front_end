@@ -11,9 +11,12 @@ function CompareWidget(config, bap) {
     let layer2 = null;
     let alreadySentBuffer = false
 
+    this.dataNest = [];
+    this.buk = null;
+    this.chartData = null;
 
     this.getHtml = function () {
-        return getHtmlFromJsRenderTemplate('#comparePlotTemplate', { id: id });
+        return getHtmlFromJsRenderTemplate('#comparePlotTemplate', { id: id, divId: "comparePlot" });
     }
 
     this.initializeWidget = function (feature) {
@@ -182,56 +185,108 @@ function CompareWidget(config, bap) {
 
 
     this.getPdfLayout = function () {
+        let that = this;
 
         try {
+            let content = [
+                {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']}
+            ]
 
-            let svg = $(`#comparePlotChart${id}`)
+            let numPerPage = 2
+            for (let i = 0; i < that.dataNest.length; i+= numPerPage) {
+                let nest = that.dataNest.slice(i, numPerPage + i);
 
-            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
+                let divCopy = "cmpCopy";
+                let hiddenCopy = `<div id="${divCopy}Holder" style="position: absolute; width: 500px; height: 5000px; left: 10000px;"></div>`
+                $('html, body').append(hiddenCopy);
+                $(`#${divCopy}Holder`).append(getHtmlFromJsRenderTemplate('#comparePlotTemplate', { id: id, divId: divCopy }))
 
-            let c = document.getElementById(`myCanvas${id}`);
-            let ctx = c.getContext('2d');
-            ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
+                that.buildChart(that.chartData, id, divCopy)
+                that.buildFromNest(nest, that.buk, divCopy)
 
-            $("#canvasHolder").html("")
+                let svg = $(`#${divCopy}Chart${id}`)
+
+                $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
+
+                let c = document.getElementById(`myCanvas${id}`);
+                let ctx = c.getContext('2d');
+                ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
+
+                // var image = new Image();
+                // image.src = c.toDataURL();
+                //
+                // var w = window.open("");
+                // w.document.write(image.outerHTML);
+
+                $("#canvasHolder").html("")
+                $(`#${divCopy}Holder`).remove();
+
+                content.push({image: c.toDataURL(),  alignment: 'center', width:500})
+            }
 
             return {
-                content: [
-                    { text: $(selector).find("#comparePlotTitle").text(), style: ['titleChart'], pageBreak: 'before' },
-                    { text: $(selector).find("#comparePlotSubTitle").text(), style: ['subTitleChart'] },
-                    { image: c.toDataURL(), alignment: 'center', width: 500 }
-                ],
+                content: content,
                 charts: []
             }
         }
 
-        catch (error) {
-            //showErrorDialog("Error printing one or more charts to report.", false);
-            return { content: [], charts: [] }
+        catch(error){
+            //showErrorDialog("Error printing one or more charts to report.",false);
+            return {content:[],charts:[]}
         }
+
+        // try {
+        //
+        //     let svg = $(`#comparePlotChart${id}`)
+        //
+        //     $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
+        //
+        //     let c = document.getElementById(`myCanvas${id}`);
+        //     let ctx = c.getContext('2d');
+        //     ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
+        //
+        //     $("#canvasHolder").html("")
+        //
+        //     return {
+        //         content: [
+        //             { text: $(selector).find("#comparePlotTitle").text(), style: ['titleChart'], pageBreak: 'before' },
+        //             { text: $(selector).find("#comparePlotSubTitle").text(), style: ['subTitleChart'] },
+        //             { image: c.toDataURL(), alignment: 'center', width: 500 }
+        //         ],
+        //         charts: []
+        //     }
+        // }
+        //
+        // catch (error) {
+        //     //showErrorDialog("Error printing one or more charts to report.", false);
+        //     return { content: [], charts: [] }
+        // }
     }
 
 
-    this.buildChart = function (chartData, id) {
+    this.buildChart = function (chartData, id, divId) {
+        if (!divId) divId = "comparePlot"
+        let that = this
+        that.chartData = chartData;
 
+        $(selector).find("#" + divId + id).show()
 
-        $(selector).find("#comparePlot" + id).show()
-
-        d3.select(`#comparePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
+        d3.select(`#${divId}${id}`).selectAll(".svg-container-smoothPlot").remove()
         $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", "0px")
 
 
         let bucketSize = 1
 
         let margin = { top: 2, right: 20, bottom: 25, left: 55 },
-            width = $(`#comparePlot${id}`).width() - margin.left - margin.right,
+            width = $(`#${divId}${id}`).width() - margin.left - margin.right,
             height = 80 - margin.top - margin.bottom;
 
         let x = d3.scaleLinear().range([0, width]);
         let y = d3.scaleLinear().rangeRound([height, 0]);
 
         let formatTime = d3.timeFormat("%b %d");
-        let pos = $(`#comparePlot${id}`).position()
+        let pos = $(`#${divId}${id}`).position()
 
         // defining a custom selectors to ge the last element
         // in a slect all.
@@ -246,29 +301,17 @@ function CompareWidget(config, bap) {
             return d3.select(this["_groups"][0][mid]);
         };
 
-
-        function updateChart(dta, buk) {
-
-
-
-            let data = processData(dta, buk)
-
-            let dataNest = d3.nest()
-                .key(function (d) { return d.year; })
-                .entries(data);
-
-            dataNest.reverse()
-
-            let minMax = getMinMax(dataNest)
+        that.buildFromNest = function(dataNest, buk, divId) {
+            let minMax = getMinMax(that.dataNest)
 
             x.domain([minMax.dayMin - 5, minMax.dayMax + 5]);
 
 
-            d3.select(`#comparePlot${id}`).transition()
+            d3.select(`#${divId}${id}`).transition()
 
-            d3.select(`#comparePlot${id}`).selectAll("svg").remove()
+            d3.select(`#${divId}${id}`).selectAll("svg").remove()
 
-            let comparePlot = d3.select(`#comparePlot${id}`)
+            let comparePlot = d3.select(`#${divId}${id}`)
 
 
             // Remove old titles on change
@@ -276,15 +319,15 @@ function CompareWidget(config, bap) {
 
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
-            comparePlot.select("#comparePlotTitle").append("text")
+            comparePlot.select(`#${divId}Title`).append("text")
                 .text(`${config.title} ${location ? "for " + location : ""}`);
 
-            // Subtitle    
-            comparePlot.select("#comparePlotSubTitle").append("text")
+            // Subtitle
+            comparePlot.select(`#${divId}SubTitle`).append("text")
                 .text(`By Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
 
-            let svgContainer = comparePlot.select(`#comparePlotChart${id}`)
+            let svgContainer = comparePlot.select(`#${divId}Chart${id}`)
                 .append("div")
                 .classed("svg-container-plot", true)
                 .append("svg")
@@ -331,14 +374,14 @@ function CompareWidget(config, bap) {
                 })
 
 
-            let tooltip1 = comparePlot.select(`#comparePlotChart${id}`)
+            let tooltip1 = comparePlot.select(`#${divId}Chart${id}`)
                 .append("div")
                 .attr("class", "chartTooltip comparePlotToolTipGreen")
                 .style("opacity", 0)
                 .style("border", "3px solid green");
 
 
-            let tooltip2 = comparePlot.select(`#comparePlotChart${id}`)
+            let tooltip2 = comparePlot.select(`#${divId}Chart${id}`)
                 .append("div")
                 .attr("class", "chartTooltip comparePlotToolTipYellow")
                 .style("opacity", 0)
@@ -415,7 +458,7 @@ function CompareWidget(config, bap) {
                 .attr("font-size", "11px")
                 .text(function (year) { return year.key; });
 
-            // y-axis 
+            // y-axis
             let yAxis = d3.axisLeft(y)
                 .tickSize(0)
                 .tickFormat("");
@@ -424,7 +467,7 @@ function CompareWidget(config, bap) {
                 .attr("transform", "translate(0,0)")
                 .call(yAxis)
 
-            // X-axis 
+            // X-axis
             let xAxis = d3.axisBottom(x)
                 .ticks(((minMax.dayMax - minMax.dayMin)) / 10)
                 .tickFormat(x => { return dateFromDay(2018, x) })
@@ -462,6 +505,19 @@ function CompareWidget(config, bap) {
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Year");
+        }
+
+        function updateChart(dta, buk) {
+            let data = processData(dta, buk);
+
+            that.dataNest = d3.nest()
+                .key(function (d) { return d.year; })
+                .entries(data);
+
+            that.dataNest.reverse();
+            that.buk = buk;
+
+            that.buildFromNest(that.dataNest, buk, "comparePlot")
 
         }
 
@@ -535,7 +591,9 @@ function CompareWidget(config, bap) {
             return html
         }
 
-        updateChart(chartData, bucketSize)
+        if (divId === "comparePlot") {
+            updateChart(chartData, bucketSize)
+        }
     }
 
 }
