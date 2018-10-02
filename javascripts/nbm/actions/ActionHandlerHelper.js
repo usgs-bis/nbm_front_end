@@ -86,6 +86,17 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
             drawing = false;
         });
 
+        let lastAdded = 1000;
+        map.on(L.Draw.Event.DRAWVERTEX, function () {
+            lastAdded = new Date();
+        });
+        $(".leaflet-control-zoom-in,.leaflet-control-zoom-out").on("click", function(e) {
+            let delta = new Date() - lastAdded;
+            if (delta < 500) {
+                $("#deletePoint").click();
+            }
+        });
+
         this.initializeSubmitButton();
     }
 };
