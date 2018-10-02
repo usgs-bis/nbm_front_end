@@ -63,7 +63,6 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
         //is currently drawing
         map.on(L.Draw.Event.CREATED, function (event) {
             drawing = false;
-            map.zoomControl.enable()
             controls.removeClass('open');//closes the dropdown options for drawing
             var layer = event.layer;
 
@@ -81,12 +80,21 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
             drawing = true;
             that.cleanUpDrawnPolygons();
             that.cleanUp(false);
-            map.zoomControl.disable()
         });
 
         map.on(L.Draw.Event.DRAWSTOP, function () {
             drawing = false;
-            map.zoomControl.enable()
+        });
+
+        let lastAdded = 1000;
+        map.on(L.Draw.Event.DRAWVERTEX, function () {
+            lastAdded = new Date();
+        });
+        $(".leaflet-control-zoom-in,.leaflet-control-zoom-out").on("click", function(e) {
+            let delta = new Date() - lastAdded;
+            if (delta < 500) {
+                $("#deletePoint").click();
+            }
         });
 
         this.initializeSubmitButton();
