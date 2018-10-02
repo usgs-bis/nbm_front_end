@@ -7,39 +7,64 @@ function SmoothPlotWidget(config, bap) {
     let selector = "#" + id + "BAP";
     let dataURI = ""
 
+    this.dataNest = [];
+    this.buk = null;
+    this.chartData = null;
 
     this.getHtml = function () {
-        return getHtmlFromJsRenderTemplate('#smoothPlotTemplate', { id: id });
+        return getHtmlFromJsRenderTemplate('#smoothPlotTemplate', { id: id, divId: "ridgeLinePlot" });
     }
 
     this.initializeWidget = function () { }
-    
+
     this.getPdfLayout = function() {
 
-        
-        
+        let that = this;
+
         try {
+            let content = [
+                {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
+                {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']}
+            ]
 
-            let svg = $(`#ridgeLinePlotChart${id}`)
+            let numPerPage = 15
+            for (let i = 0; i < that.dataNest.length; i+= numPerPage) {
+                let nest = that.dataNest.slice(i, numPerPage + i);
 
-            $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
+                let divCopy = "rlpCopy";
+                let hiddenCopy = `<div id="${divCopy}Holder" style="position: absolute; width: 500px; height: 5000px; left: 10000px;"></div>`
+                $('html, body').append(hiddenCopy);
+                $(`#${divCopy}Holder`).append(getHtmlFromJsRenderTemplate('#smoothPlotTemplate', { id: id, divId: divCopy }))
 
-            let c = document.getElementById(`myCanvas${id}`);
-            let ctx = c.getContext('2d');
-            ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
-    
-            $("#canvasHolder").html("")
+                that.buildChart(that.chartData, id, divCopy)
+                that.buildFromNest(nest, that.buk, divCopy)
+
+                let svg = $(`#${divCopy}Chart${id}`)
+
+                $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="500" height="${svg.height()}" style="position: fixed;"></canvas>`)
+
+                let c = document.getElementById(`myCanvas${id}`);
+                let ctx = c.getContext('2d');
+                ctx.drawSvg(svg.find(".svg-container-plot").html(), 0, 0, 500, svg.height());
+
+                // var image = new Image();
+                // image.src = c.toDataURL();
+                //
+                // var w = window.open("");
+                // w.document.write(image.outerHTML);
+
+                $("#canvasHolder").html("")
+                $(`#${divCopy}Holder`).remove();
+
+                content.push({image: c.toDataURL(),  alignment: 'center', width:500})
+            }
 
             return {
-                content: [
-                    {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                    {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
-                    {image: c.toDataURL(),  alignment: 'center', width:500}
-                ],
+                content: content,
                 charts: []
             }
         }
-        
+
         catch(error){
             //showErrorDialog("Error printing one or more charts to report.",false);
             return {content:[],charts:[]}
@@ -48,29 +73,29 @@ function SmoothPlotWidget(config, bap) {
 
     let ts = widgetHelper.addTimeSlider()
 
-    this.buildChart = function (chartData, id) {
-
+    this.buildChart = function (chartData, id, divId) {
+        if (!divId) divId = "ridgeLinePlot"
         let that = this
-        
+        that.chartData = chartData;
 
 
-        $(selector).find("#ridgeLinePlot" + id).show()
+        $("#"+divId + id).show()
 
-        d3.select(`#ridgeLinePlot${id}`).selectAll(".svg-container-smoothPlot").remove()
+        d3.select(`#${divId}${id}`).selectAll(".svg-container-smoothPlot").remove()
         $(`#${id}BAP .ridgeLinePlotNumberPickerDiv`).css("margin-top", "0px")
 
 
         let bucketSize = 3
 
         let margin = { top: 2, right: 20, bottom: 25, left: 55 },
-            width = $(`#ridgeLinePlot${id}`).width() - margin.left - margin.right,
+            width = $(`#${divId}${id}`).width() - margin.left - margin.right,
             height = 80 - margin.top - margin.bottom;
 
         let x = d3.scaleLinear().range([0, width]);
         let y = d3.scaleLinear().rangeRound([height, 0]);
 
         let formatTime = d3.timeFormat("%b %d");
-        let pos = $(`#ridgeLinePlot${id}`).position()
+        let pos = $(`#${divId}${id}`).position()
 
         // defining a custom selectors to ge the last element
         // in a slect all.
@@ -85,48 +110,36 @@ function SmoothPlotWidget(config, bap) {
             return d3.select(this["_groups"][0][mid]);
         };
 
+        that.buildFromNest = function(dataNest, buk, divId) {
 
-        function updateChart(dta, buk) {
-
-       
-
-            let data = processData(dta, buk)
-
-            let dataNest = d3.nest()
-                .key(function (d) { return d.year; })
-                .entries(data);
-
-            dataNest.reverse()
-
-            let minMax = getMinMax(dataNest)
+            let minMax = getMinMax(that.dataNest)
 
             x.domain([minMax.dayMin - 3, minMax.dayMax + 3]);
 
-            d3.select(`#ridgeLinePlot${id}`).transition()
+            d3.select(`#${divId}${id}`).transition()
 
-            d3.select(`#ridgeLinePlot${id}`).selectAll("svg").remove()
+            d3.select(`#${divId}${id}`).selectAll("svg").remove()
 
-            let ridgelineplot = d3.select(`#ridgeLinePlot${id}`)
-
+            let ridgelineplot = d3.select(`#${divId}${id}`)
 
             // Remove old titles on change
             ridgelineplot.selectAll("text").remove()
 
             // Title
             let location = actionHandlerHelper.sc.headerBap.config.title
-            ridgelineplot.select("#ridgeLinePlotTitle").append("text")
+            ridgelineplot.select(`#${divId}Title`).append("text")
                 .text(`${config.title} ${location ?  "for " + location : ""}`);
 
-            // Subtitle    
-            ridgelineplot.select("#ridgeLinePlotSubTitle").append("text")
+            // Subtitle
+            ridgelineplot.select(`#${divId}SubTitle`).append("text")
                 .text(`By Year for the Period ${dataNest[dataNest.length - 1].key} to ${dataNest[0].key}`);
 
-            
 
-            let svgContainer = ridgelineplot.select(`#ridgeLinePlotChart${id}`)
+
+            let svgContainer = ridgelineplot.select(`#${divId}Chart${id}`)
                 .append("div")
                 .classed("svg-container-plot", true)
-                .append("svg")   
+                .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (80 + parseInt(dataNest.length * 35)))
                 .classed("svg-content-responsive", true)
@@ -153,48 +166,48 @@ function SmoothPlotWidget(config, bap) {
                 .append("rect")
                 .attr("width", width)
                 .attr("height", height);
-            
+
 
             // set the gradient
             svg.append("linearGradient")
-            .attr("id", `area-gradient${id}`)
-            .attr("gradientUnits", "userSpaceOnUse")
-            .attr("x1", x(0)).attr("y1", 0)
-            .attr("x2", x(365 / buk)).attr("y2", 0)
-            .selectAll("stop")
-            .data([
-                { offset: "0.000000000%", color: "#cc4c03" }, // Jan 1
-                { offset: "4.166666700%", color: "#ec6f14" },
-                { offset: "8.333333400%", color: "#f8982b" }, // Feb 1
-                { offset: "12.50000010%", color: "#fac450" },
-                { offset: "16.66666680%", color: "#fce490" }, // Mar 1
-                { offset: "20.83333350%", color: "#fdf7bc" },
-                { offset: "25.00000020%", color: "#edf8b2" }, // Apr 1
-                { offset: "29.16666690%", color: "#d9f0a3" },
-                { offset: "33.33333360%", color: "#addd8e" }, // May 1
-                { offset: "37.50000030%", color: "#78c678" },
-                { offset: "41.66666700%", color: "#41ab5d" }, // Jun 1
-                { offset: "45.83333370%", color: "#7accc4" },
-                { offset: "50.00000040%", color: "#41b6c5" }, // Jly 1
-                { offset: "54.16666710%", color: "#3090c0" },
-                { offset: "58.33333380%", color: "#225ea8" }, // Aug 1
-                { offset: "62.50000050%", color: "#253494" },
-                { offset: "66.66666720%", color: "#091e58" }  // Sep 1
-            ])
-            .enter().append("stop")
-            .attr("offset", function (d) { return d.offset; })
-            .attr("stop-color", function (d) { return d.color; });
+                .attr("id", `area-gradient${id}`)
+                .attr("gradientUnits", "userSpaceOnUse")
+                .attr("x1", x(0)).attr("y1", 0)
+                .attr("x2", x(365 / buk)).attr("y2", 0)
+                .selectAll("stop")
+                .data([
+                    { offset: "0.000000000%", color: "#cc4c03" }, // Jan 1
+                    { offset: "4.166666700%", color: "#ec6f14" },
+                    { offset: "8.333333400%", color: "#f8982b" }, // Feb 1
+                    { offset: "12.50000010%", color: "#fac450" },
+                    { offset: "16.66666680%", color: "#fce490" }, // Mar 1
+                    { offset: "20.83333350%", color: "#fdf7bc" },
+                    { offset: "25.00000020%", color: "#edf8b2" }, // Apr 1
+                    { offset: "29.16666690%", color: "#d9f0a3" },
+                    { offset: "33.33333360%", color: "#addd8e" }, // May 1
+                    { offset: "37.50000030%", color: "#78c678" },
+                    { offset: "41.66666700%", color: "#41ab5d" }, // Jun 1
+                    { offset: "45.83333370%", color: "#7accc4" },
+                    { offset: "50.00000040%", color: "#41b6c5" }, // Jly 1
+                    { offset: "54.16666710%", color: "#3090c0" },
+                    { offset: "58.33333380%", color: "#225ea8" }, // Aug 1
+                    { offset: "62.50000050%", color: "#253494" },
+                    { offset: "66.66666720%", color: "#091e58" }  // Sep 1
+                ])
+                .enter().append("stop")
+                .attr("offset", function (d) { return d.offset; })
+                .attr("stop-color", function (d) { return d.color; });
 
 
-            let div =  ridgelineplot.select(`#ridgeLinePlotChart${id}`)
-            .append("div")	
-            .attr("class", "chartTooltip smoothPlotToolTip")				
-            .style("opacity", 0)
-            .style("border", "3px solid #d9f0a3");
+            let div =  ridgelineplot.select(`#${divId}Chart${id}`)
+                .append("div")
+                .attr("class", "chartTooltip smoothPlotToolTip")
+                .style("opacity", 0)
+                .style("border", "3px solid #d9f0a3");
 
             // area fill
             svg.append("path")
-                //.attr("fill", "rgb(56, 155, 198)")
+            //.attr("fill", "rgb(56, 155, 198)")
                 .attr("fill",`url(#area-gradient${id})`)
                 .attr("stroke", "rgb(0, 0, 0,.2)")
                 .attr("stroke-width", "1")
@@ -210,22 +223,22 @@ function SmoothPlotWidget(config, bap) {
                 })
                 .on("mouseover", function(d) {
                     d3.select(this)
-                    .attr("stroke-width", "2")
-                    .attr("stroke", "rgb(0, 0, 0,1)");
-                    div.transition()		
-                        .duration(200)		
-                        .style("opacity", .9);		
-                    div	.html(toolTipLabel(d, buk))	
-                        .style("left", (d3.event.layerX) + "px")		
-                        .style("top", (d3.event.layerY + 25) + "px");	
-                    })					
+                        .attr("stroke-width", "2")
+                        .attr("stroke", "rgb(0, 0, 0,1)");
+                    div.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    div	.html(toolTipLabel(d, buk))
+                        .style("left", (d3.event.layerX) + "px")
+                        .style("top", (d3.event.layerY + 25) + "px");
+                })
                 .on("mouseout", function(d) {
                     d3.select(this)
-                    .attr("stroke-width", "1")
-                    .attr("stroke", "rgb(0, 0, 0,.2)");
-                    div.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                        .attr("stroke-width", "1")
+                        .attr("stroke", "rgb(0, 0, 0,.2)");
+                    div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
 
             // year label
@@ -239,7 +252,7 @@ function SmoothPlotWidget(config, bap) {
                 .attr("font-size", "11px")
                 .text(function (year) { return year.key; });
 
-            // y-axis 
+            // y-axis
             let yAxis = d3.axisLeft(y)
                 .tickSize(0)
                 .tickFormat("");
@@ -248,13 +261,13 @@ function SmoothPlotWidget(config, bap) {
                 .attr("transform", "translate(0,0)")
                 .call(yAxis)
 
-            // X-axis 
+            // X-axis
             let xAxis = d3.axisBottom(x)
                 .ticks(5)
                 .tickFormat(x => { return dateFromDay(2018, x * buk) })
 
             let last = svg.last()
-             
+
             last.append("g")
                 .attr("transform", "translate(0," + (height) + ")")
                 .attr("class", "axis-label")
@@ -262,7 +275,7 @@ function SmoothPlotWidget(config, bap) {
                 .attr("fill", "rgb(0, 0, 0)")
                 .call(xAxis)
 
-                last.append("g")
+            last.append("g")
                 .attr("transform", "translate(0," + (33) + ")")
                 .append("text")
                 .attr("y",  60)
@@ -271,9 +284,9 @@ function SmoothPlotWidget(config, bap) {
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Day of Year");
-    
 
-            
+
+
             let mid = svg.middle()
 
             mid.append("g")
@@ -286,9 +299,22 @@ function SmoothPlotWidget(config, bap) {
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
                 .text("Year");
+        }
 
-         }
-      
+
+        function updateChart(dta, buk) {
+            let data = processData(dta, buk);
+
+            that.dataNest = d3.nest()
+                .key(function (d) { return d.year; })
+                .entries(data);
+
+            that.dataNest.reverse();
+            that.buk = buk;
+
+            that.buildFromNest(that.dataNest, buk, "ridgeLinePlot")
+        }
+
 
         function type(d) {
             d.value = +d.value;
@@ -370,13 +396,14 @@ function SmoothPlotWidget(config, bap) {
             return "<p>Year: <label>" + d.key + "</label></p>"
         }
 
-        updateChart(chartData, bucketSize)
-        
-        $(selector).find(".ridgeLinePlotRange").change(function () {
-            bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
-            $(selector).find(".ridgeLinePlotRangeValue").html(bucketSize);
+        if (divId === "ridgeLinePlot") {
             updateChart(chartData, bucketSize)
-        });
+            $(selector).find(".ridgeLinePlotRange").change(function () {
+                bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
+                $(selector).find(".ridgeLinePlotRangeValue").html(bucketSize);
+                updateChart(chartData, bucketSize)
+            });
+        }
     }
 
 }
