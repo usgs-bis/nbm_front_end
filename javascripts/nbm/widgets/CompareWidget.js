@@ -176,7 +176,7 @@ function CompareWidget(config, bap) {
     function setError(message) {
         $(selector).find('#comparePlotError').html(
             '<div style="font-size: 16px; line-height: 20px;" class="myNpnInfo">' +
-            '<span class="fa fa-circle fa-first" aria-hidden="true" style="margin-right: -14px;color: red; opacity: .8; font-size: 14px;"></span>' +
+            '<span class="fa fa-circle fa-first" aria-hidden="true" style="color: red; opacity: .8; font-size: 14px;"></span>' +
             '<span class="glyphicon glyphicon-exclamation-sign exclamation" aria-hidden="true"></span>'
             + '<span>' + message + '</span>' +
             '</div>'

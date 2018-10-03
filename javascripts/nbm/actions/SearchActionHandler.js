@@ -426,7 +426,7 @@ var PlaceOfInterestClick = function (latlng, that) {
 var PlaceOfInterestSearch = function (config, parent) {
     this.parent = parent;
     this.lookupProperty = config.actionConfig.lookupProperty;
-    this.searchButton = $('<input type="text" style="position: relative; top: 0;" class="form-control" placeholder="Search for Place of Interest" />');
+    this.searchButton = $('<input type="text" style="position: relative; top: 0;" class="form-control" placeholder="Search for a place of interest or click on the map" />');
     this.resultsElement = $('#searchResults');
     this.clearSearchButton = $('<a style="display: none;" href="#" class="list-group-item">Clear Search</a>');
     this.noResults = $('<a href="#" class="list-group-item list-group-item-danger googleResults">No Results</a>');
