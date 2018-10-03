@@ -570,10 +570,6 @@ ActionHandlerHelper.prototype.expandBap = function (id){
             minHeight:400,
             minWidth:300
           });
-
-        compareBapModal.resizable({
-          
-          });
     
         compareBapModal.draggable({});
     
