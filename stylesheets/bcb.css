@@ -67,7 +67,7 @@ strong {
     -o-transform: rotate(-20deg);
     filter: alpha(opacity=80);
     -moz-opacity: .80;
-    opacity: .00;
+    opacity: 1;
     cursor: help;
 }
 
@@ -1061,10 +1061,10 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .fa-first, .fa-second {
-    font-size: 13px;
+    font-size: 16px;
 }
 .fa-first {
-    margin-right: -15px;
+    margin-right: -18.5px;
     color: white;
 }
 .fa-second {
