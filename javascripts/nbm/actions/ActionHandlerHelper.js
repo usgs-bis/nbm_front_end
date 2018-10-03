@@ -564,15 +564,11 @@ ActionHandlerHelper.prototype.expandBap = function (id){
     
     
         compareBapModal.resizable({
-            aspectRatio: true,
+            aspectRatio: false,
             maxWidth: 700,
             maxHeight: 933,
             minHeight:400,
             minWidth:300
-          });
-
-        compareBapModal.resizable({
-          
           });
     
         compareBapModal.draggable({});

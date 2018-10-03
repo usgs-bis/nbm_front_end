@@ -1,6 +1,10 @@
 # The National Biogeographic Map
 
-This project consists of a lightweight, Leaflet-based map viewer. The main goal of this mapping application is to give the user more capabilities than the standard 'viewing' and 'identify' capabilities. The National Biogeographic Map allows the user to construct different maps via a JSON configuration file. With little development effort, the webapp can be tailered to allow different analysis packages to be viewed. The resulting analysis reports will help managers make informed decisions based on summarizations, calculations, graphs, and PDFs. The main functionalities of The National Geograghic Map are:  
+This project consists of a lightweight, Leaflet-based map viewer. The main goal of this mapping application is to give the 
+user more capabilities than the standard 'viewing' and 'identify' capabilities. The National Biogeographic Map allows the user to 
+construct different maps via a JSON configuration file. With little development effort, the webapp can be tailored to allow 
+different analysis packages to be viewed. The resulting analysis reports will help managers make informed decisions based on 
+summarizations, calculations, graphs, and PDFs. The main functionalities of The National Geograghic Map are:  
 - Table of contents containing map 'layers' whose origin can be ArcGIS, WMS or other brand.
 - Changeable table of contents via JSON configuration file without the need for separate deploy.
 - Dynamic GIS Service metadata visualization (ArcGIS and open source).
@@ -62,7 +66,7 @@ optional arguments:
 
 Jake Juszak  
 Ben Lohre  
-Scott Dawson
+Scott Dawson   
 Ben Gotthold
 
 ## Acknowledgments
