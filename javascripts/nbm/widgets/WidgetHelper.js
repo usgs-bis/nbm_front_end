@@ -58,8 +58,13 @@ WidgetHelper.prototype.addTimeSlider = function () {
 
     let min = globalTs.slider("option", "min");
     let max = globalTs.slider("option", "max");
-    let t1Value = (min + .25 * (max - min)).toFixed(0)
-    let t2Value = (min + .5 * (max - min)).toFixed(0)
+
+    let t1Value = widgetHelper.initialTsConfig.rangeMinStart ?
+        widgetHelper.initialTsConfig.rangeMinStart :
+        (min + .25 * (max - min)).toFixed(0)
+    let t2Value = widgetHelper.initialTsConfig.rangeMaxStart ?
+        widgetHelper.initialTsConfig.rangeMaxStart :
+        (min + .5 * (max - min)).toFixed(0)
 
     var sliderTooltip = function (event, ui) {
 

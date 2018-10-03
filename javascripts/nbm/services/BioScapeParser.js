@@ -113,6 +113,7 @@ var BioScapeParser = (function(bioScapeParser) {
             actionHandlers.push(new SearchActionHandler(data.placeOfInterestSearch, {}));
         }
         if (data.globalTimeSlider) {
+            widgetHelper.initialTsConfig = data.globalTimeSlider
             actionHandlers.push(new TimeSliderActionHandler(data.globalTimeSlider, {}));
         }
     }
