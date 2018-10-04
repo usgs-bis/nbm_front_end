@@ -249,7 +249,7 @@ function PhenocastsWidget(config, bap) {
     };
 
     this.convertToAcres = function(number) {
-        return number * 2522 * 2370 * 0.000247105
+        return number * 2000 * 2370 * 0.000247105
     };
 
     this.buildBarChart = function(pestName, pestData, num, layerName) {
