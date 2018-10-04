@@ -565,8 +565,8 @@ ActionHandlerHelper.prototype.expandBap = function (id){
     
         compareBapModal.resizable({
             aspectRatio: false,
-            maxWidth: 700,
-            maxHeight: 933,
+            // maxWidth: 700,
+            // maxHeight: 933,
             minHeight:400,
             minWidth:300
           });

@@ -24,6 +24,33 @@ td {
     padding: .4em;
 }
 
+.table-fixed tbody {
+    height: 430px;
+    overflow-y: auto;
+    width: 100%;
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr {
+/*.table-fixed td,*/
+/*.table-fixed th {*/
+    display: block;
+}
+.table-fixed td,
+.table-fixed th {
+display: inline-block;
+}
+.table-fixed tr:after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.table-fixed tbody td,
+.table-fixed thead > tr > th {
+    float: left;
+}
+
 a {
     overflow-wrap: break-word;
 }
@@ -1873,4 +1900,10 @@ div.chartTooltip p{
 }
 .amcharts-chart-div{
     overflow: visible !important;
+}
+
+/* zoom control */
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    z-index: 1000 !important;
 }

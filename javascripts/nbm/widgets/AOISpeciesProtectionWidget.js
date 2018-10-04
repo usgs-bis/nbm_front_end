@@ -69,6 +69,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     let html = getHtmlFromJsRenderTemplate('#speciesProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
                     $(`#${bap.id}Chart`).find('#speciesBAPSubtitle').html(`Protection Status of Species in ${placeName}`)
+                    $(`#${bap.id}Chart`).find('#speciesTableTitle').html(`${viewData.speciesType} in ${placeName} (${viewData.totalSpecies})`)
 
                     initializeSpeciesCharts(chartData);
                     $("input[name='taxaType']").on('change', function () {
