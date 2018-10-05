@@ -32,13 +32,7 @@ td {
 .table-fixed thead,
 .table-fixed tbody,
 .table-fixed tr {
-/*.table-fixed td,*/
-/*.table-fixed th {*/
     display: block;
-}
-.table-fixed td,
-.table-fixed th {
-display: inline-block;
 }
 .table-fixed tr:after {
     content: "";
@@ -49,6 +43,12 @@ display: inline-block;
 .table-fixed tbody td,
 .table-fixed thead > tr > th {
     float: left;
+}
+
+.table-fixed thead > tr {
+    border-bottom-color: #0b97c4;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
 }
 
 a {
@@ -305,7 +305,7 @@ select option {
 .spRow {
     /* cursor: pointer; */
 }
-.species-layer-raido{
+.species-layer-radio{
     cursor: pointer;
 }
 
@@ -1539,18 +1539,32 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 span.clickSearch-target {
     font-family: FontAwesome;    
 }
-input[type='checkbox'].clickSearch, input[type='radio'].clickSearch {
+input[type='checkbox'].clickSearch,
+input[type='radio'].clickSearch,
+input[type='checkbox'].clickSearchRadio {
     position: relative;
     left: -999em; 
 }
 
-input[type='checkbox'].clickSearch + span.clickSearch-target:after,
+input[type='checkbox'].clickSearch + span.clickSearch-target:after {
+    content: "\f096";
+}
+input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
+    content: "\f046";
+}
+
 input[type='radio'].clickSearch + span.clickSearch-target:after {
     content: "\f1db"; 
 }
-input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after,
 input[type='radio'].clickSearch:checked + span.clickSearch-target:after{
     content: "\f05d"; 
+}
+
+input[type='checkbox'].clickSearchRadio + span.clickSearch-target:after {
+    content: "\f1db";
+}
+input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
+    content: "\f05d";
 }
 
 #bioScapeDetailsLink{

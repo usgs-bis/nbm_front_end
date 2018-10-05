@@ -28,7 +28,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
     this.turnOffSpecies = function(){
         if (Specieslayer.length) {
-            $(`#${bap.id}Chart .species-layer-raido`).prop('checked', false);
+            $(`#${bap.id}Chart .species-layer-radio`).prop('checked', false);
             Specieslayer[0].mapLayer.leafletLayer.setParams({ CQL_FILTER: `SppCode='none'` })
         }
     }

@@ -243,7 +243,7 @@ BAP.prototype.initializeChartLibraries = function () {
 /**
  * initiate logic when an element in the bap is clicked
  * layer inputs, priority switch, show json ect
- * clicking on charts is handeled in the widget
+ * clicking on charts is handled in the widget
  */
 BAP.prototype.bindClicks = function () {
     var that = this;
@@ -528,7 +528,7 @@ BAP.prototype.GetBapLayers = function () {
 
 /**
  * turn off all layers asociated with baps
- * skips things like basemaps, sumerization regions ect.
+ * skips things like basemaps, summerization regions ect.
  * by providing the false flag to getVisableLayers()
  */
 BAP.prototype.turnOffOtherLayers = function (skipID) {
@@ -538,11 +538,11 @@ BAP.prototype.turnOffOtherLayers = function (skipID) {
 
     $.each(visibleLayers, function (index, layer) {
         if (!layer.summarizationRegion && layer.id != skipID) {
-
-            if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
+            if ((!String(layer.title).startsWith("PAD-US") && !String(layer.title).startsWith("GAP"))
+                && (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked)) {
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
             }
-            else {
+            else if (!String(layer.title).startsWith("PAD-US") && !String(layer.title).startsWith("GAP")) {
                 layer.turnOffLayer(true)
                 layer.section.layerHtmlControl.handleTurnOff(layer.id)
             }
@@ -631,8 +631,7 @@ BAP.prototype.setPriorityBap = function (checked) {
     }
     else {
         $.each(layers, function (index, layer) {
-            
-    
+
             if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
             }
