@@ -30,15 +30,21 @@ jsrender - https://www.jsviews.com
 pdfmake - http://pdfmake.org/index.html  
 proj4js - http://proj4js.org/ 
 
-## Installing
+## Install and Run Locally
 
-1. Clone The National Biogeographic Map front-end repository project: https://bitbucket/scm/bcb/nbm_front_end.git
-2. Copy the project files to a local Apache web server.
+`git clone https://github.com/usgs-bis/nbm_front_end.git`
+
+- With Docker: Run from the command line: `bash run.sh`
+- Without Docker: Copy the project files to a local apache web server.
 
 
 ## Deployment
 
-Copy the project files to an Apache web server.
+Copy the project files into an Apache web server.
+
+Note: The out-of-the box version comes with the free version of amcharts. 
+To use the commercial version, you will have to overwrite the existing
+amcharts libraries with your own licensed version.
 
 ## Versioning
 
@@ -68,6 +74,7 @@ Jake Juszak
 Ben Lohre  
 Scott Dawson   
 Ben Gotthold
+Michael Runnels
 
 ## Acknowledgments
 
