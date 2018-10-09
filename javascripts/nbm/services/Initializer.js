@@ -15,6 +15,36 @@ var Initializer = (function(initializer) {
         element: undefined
     };
 
+    let bioscapeMap = {
+        "biogeography": "bioscapes/nbm_config.json",
+        "terrestrial-ecosystems-2011": "bioscapes/nvcs_class_config.json"
+    }
+
+    function getConfig(bioscape, state) {
+        let path = bioscapeMap[bioscape]
+        let bioscapeJson = {}
+
+        return $.getJSON(myServer + "/bioscape/config/" + bioscape + "/" + myEnv)
+            .then(function (apiConfig) {
+                bioscapeJson = {
+                    id: apiConfig.sbItem.id,
+                    title: apiConfig.sbItem.title,
+                    summary: apiConfig.sbItem.body,
+                    lastUpdated: apiConfig.sbItem.provenance ? apiConfig.sbItem.provenance.lastUpdated : new Date()
+                };
+
+                document.title = apiConfig.sbItem.title;
+
+                if (path) {
+                    return $.getJSON(path, function(config) {
+                        setupPage(bioscapeJson, config, state)
+                    })
+                } else {
+                    setupPage(bioscapeJson, apiConfig.config, state);
+                }
+            })
+    }
+
     function initialize() {
         displayBetaBanner();
         var state = {};
@@ -45,73 +75,7 @@ var Initializer = (function(initializer) {
 
         disclaimerModal.element = $('#disclaimerModal');
 
-        var bioscapeJson = {};
-
-        $.getJSON(myServer + "/bioscape/config/" + bioscapeName + "/" + myEnv)
-            .then(function(response) {
-                bioscapeJson = {
-                    id: response.sbItem.id,
-                    title: response.sbItem.title,
-                    summary: response.sbItem.body,
-                    lastUpdated: response.sbItem.provenance ? response.sbItem.provenance.lastUpdated : new Date()
-                };
-       
-                document.title = response.sbItem.title;
-
-                return response.config;
-            })
-            .then(function(data) {
-                setupPage(bioscapeJson, data, state);
-            })
-            .catch(function(err) {
-                showErrorDialog('The Sciencebase data repository is currently not responding, some features of the mapper may not work correctly.', 'Warning');
-                // console.log('There was an error trying to receive information from ScienceBase: ', err, '. The default National Biogeographic Map will be loaded.');
-                var bbBioScape;   //Bitbucket bioScape
-                switch(bioscapeName){
-                    case 'biogeography':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
-                        break;
-                    case 'nbm_front_end':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
-                        break;
-                    case 'cnr':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/cnr_config.json' ;
-                        break;
-                    case 'npn':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json' ;
-                        break;
-                    case 'phenology':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/npn_prototype.json' ;
-                        break;
-                    case 'nvcs':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
-                        break;
-                    case 'terrestrial-ecosystems-2011':
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nvcs_class_config.json' ;
-                        break;
-                    default:    // Probably not needed, but just in case
-                        bbBioScape = 'https://my.usgs.gov/bitbucket/projects/BCB/repos/bioscapes/browse/v2/nbm_config.json' ;
-                }
-
-                $.getJSON(bbBioScape)
-                    .done(function(data) {
-                        if (data.isLastPage) {
-                            var json = parseConfigFromBitBucket(data.lines);
-                            setupPage(bioscapeJson, json, state);
-                        } else {
-                            //Bitbucket only delivers the first 500 lines for calls like this. If we try to get the
-                            //raw file, we get a CORS issue. Here's the solution for now... If we have files over 1000
-                            //lines, we'll have to make this a loop rather than a single check.
-                            $.getJSON(bbBioScape + "?start="+data.size)
-                                .done (function (newData) {
-                                    data.lines = data.lines.concat(newData.lines);
-                                    var json = parseConfigFromBitBucket(data.lines);
-
-                                    setupPage(bioscapeJson, json, state);
-                                });
-                        }
-                    });
-            });
+        getConfig(bioscapeName, state);
     }
 
     /**
