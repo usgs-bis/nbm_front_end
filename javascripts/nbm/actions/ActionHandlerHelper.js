@@ -62,7 +62,6 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
         //The 'drawing' boolean is a global variable used to prevent the click from propagating to the map if the user
         //is currently drawing
         map.on(L.Draw.Event.CREATED, function (event) {
-            drawing = false;
             controls.removeClass('open');//closes the dropdown options for drawing
             var layer = event.layer;
 
@@ -83,7 +82,9 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
         });
 
         map.on(L.Draw.Event.DRAWSTOP, function () {
-            drawing = false;
+            setTimeout(function() {
+                drawing = false;
+            }, 500);
         });
 
         let lastAdded = 1000;
