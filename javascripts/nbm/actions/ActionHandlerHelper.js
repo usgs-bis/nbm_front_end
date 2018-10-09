@@ -555,7 +555,7 @@ ActionHandlerHelper.prototype.expandBap = function (id){
 
         let compareBapModal = $(`#compareBapModal${id}`)
     
-        compareBapModal.css("left",`${window.innerWidth - (500 + parseInt(Math.random()*100)) }px`)
+        compareBapModal.css("left",`${window.innerWidth - (550 + parseInt(Math.random()*100)) }px`)
         let modalHtml = getHtmlFromJsRenderTemplate('#compareBapTemplate',{id:id});
         compareBapModal.html(modalHtml)
        
@@ -565,8 +565,8 @@ ActionHandlerHelper.prototype.expandBap = function (id){
     
         compareBapModal.resizable({
             aspectRatio: false,
-            maxWidth: 700,
-            maxHeight: 933,
+            // maxWidth: 700,
+            // maxHeight: 933,
             minHeight:400,
             minWidth:300
           });

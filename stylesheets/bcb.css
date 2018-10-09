@@ -24,6 +24,33 @@ td {
     padding: .4em;
 }
 
+.table-fixed tbody {
+    height: 430px;
+    overflow-y: auto;
+    width: 100%;
+}
+.table-fixed thead,
+.table-fixed tbody,
+.table-fixed tr {
+    display: block;
+}
+.table-fixed tr:after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+.table-fixed tbody td,
+.table-fixed thead > tr > th {
+    float: left;
+}
+
+.table-fixed thead > tr {
+    border-bottom-color: #0b97c4;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
 a {
     overflow-wrap: break-word;
 }
@@ -278,7 +305,7 @@ select option {
 .spRow {
     /* cursor: pointer; */
 }
-.species-layer-raido{
+.species-layer-radio{
     cursor: pointer;
 }
 
@@ -1512,18 +1539,32 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 span.clickSearch-target {
     font-family: FontAwesome;    
 }
-input[type='checkbox'].clickSearch, input[type='radio'].clickSearch {
+input[type='checkbox'].clickSearch,
+input[type='radio'].clickSearch,
+input[type='checkbox'].clickSearchRadio {
     position: relative;
     left: -999em; 
 }
 
-input[type='checkbox'].clickSearch + span.clickSearch-target:after,
+input[type='checkbox'].clickSearch + span.clickSearch-target:after {
+    content: "\f096";
+}
+input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after {
+    content: "\f046";
+}
+
 input[type='radio'].clickSearch + span.clickSearch-target:after {
     content: "\f1db"; 
 }
-input[type='checkbox'].clickSearch:checked + span.clickSearch-target:after,
 input[type='radio'].clickSearch:checked + span.clickSearch-target:after{
     content: "\f05d"; 
+}
+
+input[type='checkbox'].clickSearchRadio + span.clickSearch-target:after {
+    content: "\f1db";
+}
+input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
+    content: "\f05d";
 }
 
 #bioScapeDetailsLink{
@@ -1731,7 +1772,7 @@ input[type='radio'].clickSearch:checked + span.clickSearch-target:after{
     z-index: 9;
     text-align: center;
     height: 600px;
-    width: 450px;
+    width: 500px;
     top: 125px;
     display: none;
 }
@@ -1873,4 +1914,10 @@ div.chartTooltip p{
 }
 .amcharts-chart-div{
     overflow: visible !important;
+}
+
+/* zoom control */
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    z-index: 1000 !important;
 }

@@ -37,35 +37,41 @@
         All Ecological Systems ({{:ecosystems.length}})
     </div>
     <div class="table">
-        <table id="ecosTable">
-            <tr style="font-weight: bold; color: lightblue;">
-                <th>Ecological System</th>
-                <th id="middleColTitle" style="width: 25%;">GAP 1 & 2 Protection (%)</th>
-                <th id="rightColTitle" style="width: 25%;">GAP 1, 2 & 3 Protection (%)</th>
-            </tr>
-            {{for ecosystems}}
-                <tr class="ecosRow tableRow">
-                    <td class="text-chart-left">{{:name}}</td>
-                    <td style="text-align: right;">{{:~format(status_1_2)}}</td>
-                    <td style="text-align: right;">{{:~format(status_1_2_3)}}</td>
+        <table id="ecosTable" class="table-fixed">
+            <thead>
+                <tr style="font-weight: bold; color: lightblue;">
+                    <th style="width:50%;text-align:left;padding-left:.4em;">Ecological System</th>
+                    <th id="middleColTitle" style="width:25%;">GAP 1 & 2 Protection (%)</th>
+                    <th id="rightColTitle" style="width:25%;">GAP 1, 2 & 3 Protection (%)</th>
                 </tr>
-            {{/for}}
+            </thead>
+            <tbody>
+                {{for ecosystems}}
+                    <tr class="ecosRow tableRow">
+                        <td style="width:50%;text-align:left;" class="text-chart-left">{{:name}}</td>
+                        <td style="width:25%;text-align:right;">{{:~format(status_1_2)}}</td>
+                        <td style="width:25%;text-align:right;padding-right:.4em;">{{:~format(status_1_2_3)}}</td>
+                    </tr>
+                {{/for}}
+            </tbody>
         </table>
     </div>
 </script>
 
 <script id="updateEcosTableTemplate" type="text/x-jsrender">
-    <tbody>
+    <thead>
         <tr style="font-weight: bold; color: lightblue;">
-            <th>Ecological System</th>
-            <th id="middleColTitle" style="width: 25%;">Acres Protected</th>
-            <th id="rightColTitle" style="width: 25%;">% Protected</th>
+            <th style="width:50%;text-align:left;padding-left:.4em;">Ecological System</th>
+            <th id="middleColTitle" style="width:25%;">Acres Protected</th>
+            <th id="rightColTitle" style="width:25%;">% Protected</th>
         </tr>
+    </thead>
+    <tbody>
         {{for ecosystems}}
             <tr class="ecosRow tableRow">
-                <td>{{:name}}</td>
-                <td style="text-align: right;">{{:~acresFormat(acres, percent)}}</td>
-                <td style="text-align: right;">{{:~format(percent)}}</td>
+                <td style="width:50%;text-align:left;">{{:name}}</td>
+                <td style="width:25%;text-align:right;">{{:~acresFormat(acres, percent)}}</td>
+                <td style="width:25%;text-align:right;padding-right:.4em;">{{:~format(percent)}}</td>
             </tr>
         {{/for}}
     </tbody>
@@ -113,7 +119,6 @@
     <div id="speciesReset" class="tableReset">
         <button id="resetSpeciesTable" class="btn-xs">Clear chart selection</button>
     </div>
-    <div class="contextSubHeader" style="padding:0;">(Click on a row for individual species information.)</div>
     <div id="spNameToggle" style="display:none;">
         <label id="spNameLabel" for="spNameCheckbox" style="font-weight:normal;font-size:12px;margin-bottom:0px;margin-left:20px;">Show Scientific Name
             <input id="spNameCheckbox" type="checkbox" style="vertical-align:sub;" />
@@ -131,54 +136,61 @@
         {{:speciesType}} in this Ecoregion ({{:species.length}})
     </div>
     <div class="table">
-        <table id="spTable" style="width:100%">
-            <tr class="even" style="font-weight: bold; color: lightblue;">
-                <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Name</th>
-                <th style="width: 40px;"></th>
-                <th style="width: 40px;"></th>
-            </tr>
+        <table id="spTable" class="table-fixed" style="width:100%">
+            <thead>
+                <tr class="even" style="font-weight: bold; color: lightblue;">
+                    <th style="width:11%;text-align:left;padding-left:.3em;">Range</th>
+                    <th style="width:11%;text-align:left;">Habitat</th>
+                    <th id="spLeftColTitle" style="text-align:left;width:78%;padding-left:.3em;">Name</th>
+                </tr>
+            </thead>
+            <tbody>
             {{for species}}
                 <tr id="{{:sppcode}}Row"  class="spRow tableRow speciesTableRow">
-                    <td class="text-chart-left"
-                    onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">
-                    {{:common_name ? common_name : "No common name recorded"}} ({{:scientific_name ? scientific_name : "No scientific name recorded"}} )
+                    <td style="vertical-align:middle;width:11%;text-align:middle;">
+                        <label class="clickSearch spProtRadio">
+                            <input type="radio" name="spLayer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
+                            <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
+                            title="Range Map">
+                            </span>
+                        </label>
                     </td>
 
-                    <td style="vertical-align: middle;">
-                    <label class="clickSearch spProtRadio">
-                    <input type="radio" name="spLayer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
-                    <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
-                    title="Range Map">
-                    </span>
-                    </label>
+                    <td style="vertical-align:middle;width:11%;text-align:middle;">
+                        <label class="clickSearch spProtRadio">
+                            <input type="radio" name="spLayer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
+                            <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
+                            title="Habitat Map">
+                            </span>
+                        </label>
                     </td>
 
-                    <td style="vertical-align: middle;">
-                    <label class="clickSearch spProtRadio">
-                    <input type="radio" name="spLayer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
-                    <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
-                    title="Habitat Map"></span>
-                    </label>
+                    <td class="text-chart-left" style="vertical-align:middle;width:78%;"
+                        onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~format(common_name)}}');">
+                        {{:common_name ? common_name : "No common name recorded"}} ({{:scientific_name ? scientific_name : "No scientific name recorded"}} )
                     </td>
                 </tr>
             {{/for}}
+            </tbody>
         </table>
     </div>
 </script>
 
 <script id="updateSpeciesProtectionTableTemplate" type="text/x-jsrender">
-    <tbody>
+    <thead>
         <tr class="even" style="font-weight: bold; color: lightblue;">
-            <th></th>
-            <th id="spLeftColTitle" style="text-align:left;padding-left:.4em;">Common Name</th>
-            <th id="spRightColTitle" style="text-align:left;padding-left:.4em;">% Protected</th>
+            <th style="width:10%;text-align:left;padding-left:.3em;">&nbsp;</th>
+            <th id="spLeftColTitle" style="width:70%;text-align:left;">Common Name</th>
+            <th id="spRightColTitle" style="width:20%;text-align:left;">% Protected</th>
         </tr>
+    </thead>
+    <tbody>
         {{for species}}
             <tr class="spRow tableRow" >
-                <td><input type="radio" name="layer" value={{:sppcode}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" class="species-layer-raido"></td>
+                <td style="vertical-align:middle;width:10%;text-align:middle;"><input type="radio" name="layer" value={{:sppcode}} onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" class="species-layer-radio"></td>
                 <td class="spCommonName shownTd text-chart-left" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:common_name}}</td>
                 <td class="spScientificName hiddenTd text-chart-left" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:scientific_name}}</td>
-                <td style="text-align: right;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:~format(percent)}}</td>
+                <td style="text-align:right;float:right;padding-right:.8em;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:~format(percent)}}</td>
             </tr>
         {{/for}}
     </tbody>

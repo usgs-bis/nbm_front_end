@@ -28,7 +28,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
 
     this.turnOffSpecies = function(){
         if (Specieslayer.length) {
-            $(`#${bap.id}Chart .species-layer-raido`).prop('checked', false);
+            $(`#${bap.id}Chart .species-layer-radio`).prop('checked', false);
             Specieslayer[0].mapLayer.leafletLayer.setParams({ CQL_FILTER: `SppCode='none'` })
         }
     }
@@ -69,6 +69,7 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
                     let html = getHtmlFromJsRenderTemplate('#speciesProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
                     $(`#${bap.id}Chart`).find('#speciesBAPSubtitle').html(`Protection Status of Species in ${placeName}`)
+                    $(`#${bap.id}Chart`).find('#speciesTableTitle').html(`${viewData.speciesType} in ${placeName} (${viewData.totalSpecies})`)
 
                     initializeSpeciesCharts(chartData);
                     $("input[name='taxaType']").on('change', function () {
