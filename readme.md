@@ -73,7 +73,7 @@ optional arguments:
 Jake Juszak  
 Ben Lohre  
 Scott Dawson   
-Ben Gotthold
+Ben Gotthold    
 Michael Runnels
 
 ## Acknowledgments
