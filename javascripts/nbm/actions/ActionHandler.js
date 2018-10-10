@@ -296,7 +296,7 @@ ActionHandler.prototype.cleanUpBaps = function () {
  * This is used in a couple of cases. The drawPolygon actions use this to create a feature to store in their
  * associated baps.
  * The other case it is used in is when the getFeatureGeojson action has a very complex polygon.
- * The pseudo flag is set to true so the BoxAndWhiskerWidget won't try to simplify this feature.
+ * The pseudo flag is set to true so the BoxAndWhiskerAnalysis won't try to simplify this feature.
  * @param gj
  * @returns {{geojson: {geometry: *, pseudo: boolean}, layer: (Object|*), getLeafetFeatureBounds: getLeafetFeatureBounds}}
  */

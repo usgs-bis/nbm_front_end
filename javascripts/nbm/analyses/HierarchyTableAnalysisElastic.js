@@ -1,6 +1,6 @@
 'use strict';
 
-var HierarchyTableWidgetElastic = function (chart, bap) {
+var HierarchyTableAnalysisElastic = function (chart, bap) {
 
     chart.data = {}
     this.bap = bap
@@ -181,4 +181,4 @@ var HierarchyTableWidgetElastic = function (chart, bap) {
     }
 };
 
-inherit(Widget, HierarchyTableWidgetElastic);
+inherit(Analysis, HierarchyTableAnalysisElastic);

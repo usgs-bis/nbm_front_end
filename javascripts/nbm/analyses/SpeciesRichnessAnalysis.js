@@ -1,6 +1,6 @@
 'use strict';
 
-var SpeciesRichnessWidget = function (chartConfig) {
+var SpeciesRichnessAnalysis = function (chartConfig) {
     var speciesRichness = chartConfig;
 
     this.getHtml = function() {
@@ -76,5 +76,5 @@ var SpeciesRichnessWidget = function (chartConfig) {
     }
 };
 
-inherit(Widget, SpeciesRichnessWidget);
+inherit(Analysis, SpeciesRichnessAnalysis);
 

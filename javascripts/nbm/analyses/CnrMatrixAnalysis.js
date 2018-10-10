@@ -1,6 +1,6 @@
 'use strict';
 
-var CnrMatrixWidget = function (config) {
+var CnrMatrixAnalysis = function (config) {
     var chart = config;
 
     this.getHtml = function() {
@@ -134,4 +134,4 @@ var CnrMatrixWidget = function (config) {
     }
 };
 
-inherit(Widget, CnrMatrixWidget);
+inherit(Analysis, CnrMatrixAnalysis);

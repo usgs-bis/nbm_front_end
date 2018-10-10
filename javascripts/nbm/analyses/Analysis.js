@@ -1,10 +1,10 @@
 'use strict';
 
-var Widget = function (config) {
+var Analysis = function (config) {
     // this.bap = undefined;
 };
 
-Widget.prototype.getTableBody = function(rows) {
+Analysis.prototype.getTableBody = function(rows) {
     var tableBody = [];
     $.each(rows, function(idx, row) {
         var tableRow = [];
@@ -24,4 +24,4 @@ Widget.prototype.getTableBody = function(rows) {
     return tableBody;
 };
 
-Widget.prototype.togglePriority = function(priority) {};
+Analysis.prototype.togglePriority = function(priority) {};

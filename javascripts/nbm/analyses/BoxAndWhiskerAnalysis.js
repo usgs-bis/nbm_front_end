@@ -1,6 +1,6 @@
 'use strict';
 
-var BoxAndWhiskerWidget = function (serverAP, bap) {
+var BoxAndWhiskerAnalysis = function (serverAP, bap) {
     let that = this
     let id = bap.id;
     let selector = "#" + id + "BAP";
@@ -323,4 +323,4 @@ var BoxAndWhiskerWidget = function (serverAP, bap) {
         return AmCharts.formatDate(newDate, "MM-DD");
     }
 };
-inherit(Widget, BoxAndWhiskerWidget);
+inherit(Analysis, BoxAndWhiskerAnalysis);

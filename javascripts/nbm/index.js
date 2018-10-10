@@ -6,7 +6,7 @@ var RightPanelBar;
 var MenuPanel;
 var actionHandlers = [];
 var actionHandlerHelper = new ActionHandlerHelper();
-var widgetHelper = new WidgetHelper();
+var widgetHelper = new AnalysisHelper();
 var NPNTOKEN = "";
 let noPW = true // setting the backend password to fixed value and sending that in without user interaction
 

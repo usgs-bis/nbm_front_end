@@ -92,7 +92,7 @@ SearchActionHandler.prototype.processHeaderBap = function (additionalParams, hea
 
 /**
  * Creates the BAPs associated with this action, and creates a pseudo feature. The pseudo feature is basically only
- * used at this point with the BoxAndWhiskerWidget.
+ * used at this point with the BoxAndWhiskerAnalysis.
  */
 SearchActionHandler.prototype.processBaps = function (additionalParams) {
     var gj = { geometry: this.geojson };

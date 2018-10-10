@@ -1,7 +1,7 @@
 'use strict';
 
 
-function CompareWidget(config, bap) {
+function CompareAnalysis(config, bap) {
     let that = this
     let id = bap.id;
     let selector = "#" + id + "BAP";
@@ -566,4 +566,4 @@ function CompareWidget(config, bap) {
 
 }
 
-inherit(Widget, CompareWidget);
+inherit(Analysis, CompareAnalysis);

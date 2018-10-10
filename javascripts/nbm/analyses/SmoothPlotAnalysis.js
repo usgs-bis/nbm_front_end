@@ -2,7 +2,7 @@
 
 // this plot tags along with the box and whisker 
 
-function SmoothPlotWidget(config, bap) {
+function SmoothPlotAnalysis(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
     let dataURI = ""
@@ -408,4 +408,4 @@ function SmoothPlotWidget(config, bap) {
 
 }
 
-inherit(Widget, SmoothPlotWidget);
+inherit(Analysis, SmoothPlotAnalysis);

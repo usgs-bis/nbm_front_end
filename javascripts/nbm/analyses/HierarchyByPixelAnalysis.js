@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Hierarchy by pixel Widget/Table object.
+ * Hierarchy by pixel Analysis/Table object.
  * @param {*} chartData - chart data from the server
  * @constructor
  */
-var HierarchyByPixelWidget = function(chartData) {
+var HierarchyByPixelAnalysis = function(chartData) {
     var hierarchy;
     this.getHtml = function() {
         var html = '';
@@ -89,4 +89,4 @@ var HierarchyByPixelWidget = function(chartData) {
 
 };
 
-inherit(Widget, HierarchyByPixelWidget);
+inherit(Analysis, HierarchyByPixelAnalysis);

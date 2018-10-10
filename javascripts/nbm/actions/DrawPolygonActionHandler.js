@@ -56,7 +56,7 @@ DrawPolygonActionHandler.prototype.processHeaderBap = function (additionalParams
 
 /**
  * Creates the BAPs associated with this action, and creates a pseudo feature. The pseudo feature is basically only
- * used at this point with the BoxAndWhiskerWidget.
+ * used at this point with the BoxAndWhiskerAnalysis.
  */
 DrawPolygonActionHandler.prototype.processBaps = function () {
     var gj = JSON.stringify(this.geojson);

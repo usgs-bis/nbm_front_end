@@ -1,7 +1,7 @@
 'use strict';
 
-var SpeciesProtectionWidget = function (chartConfig) {
-    Widget.call(this, chartConfig);
+var SpeciesProtectionAnalysis = function (chartConfig) {
+    Analysis.call(this, chartConfig);
     var speciesProtection = chartConfig;
     var species = speciesProtection.species;
     var currentSpeciesData = species.all;
@@ -278,4 +278,4 @@ var SpeciesProtectionWidget = function (chartConfig) {
     }
 };
 
-inherit(Widget, SpeciesProtectionWidget);
+inherit(Analysis, SpeciesProtectionAnalysis);
