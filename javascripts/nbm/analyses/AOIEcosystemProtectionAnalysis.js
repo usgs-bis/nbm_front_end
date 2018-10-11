@@ -522,4 +522,4 @@ var AOIEcosystemProtectionAnalysis = function (bapConfig, bap) {
     }
 
 };
-inherit(Widget, AOIEcosystemProtectionAnalysis);
+inherit(Analysis, AOIEcosystemProtectionAnalysis);
