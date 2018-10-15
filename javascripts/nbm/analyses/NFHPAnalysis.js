@@ -1,6 +1,6 @@
 'use strict';
 
-let NFHPWidget = function (chartConfig,bap) {
+let NFHPAnalysis = function (chartConfig, bap) {
    
     let that = this;
     let config = chartConfig;
@@ -20,7 +20,7 @@ let NFHPWidget = function (chartConfig,bap) {
 
         let lookUpProp = that.bap.actionRef.placeNameProperty ? that.bap.actionRef.placeNameProperty : that.bap.actionRef.lookupProperty;
         let placeName = that.bap.actionRef.result.geojson.properties[lookUpProp];
-        return getHtmlFromJsRenderTemplate('#NFHPWidget', {
+        return getHtmlFromJsRenderTemplate('#NFHPAnalysis', {
             id: config.id + "NFHPChart",
             json: config.id + "json",
             bapID: config.id,
@@ -182,4 +182,4 @@ let NFHPWidget = function (chartConfig,bap) {
 
 };
 
-inherit(Widget, NFHPWidget);
+inherit(Analysis, NFHPAnalysis);

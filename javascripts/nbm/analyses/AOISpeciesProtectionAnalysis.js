@@ -1,6 +1,6 @@
 'use strict';
 
-var AOISpeciesProtectionWidget = function (bapConfig, bap) {
+var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
 
     let that = this;
 
@@ -433,4 +433,4 @@ var AOISpeciesProtectionWidget = function (bapConfig, bap) {
     }
 };
 
-inherit(Widget, AOISpeciesProtectionWidget);
+inherit(Analysis, AOISpeciesProtectionAnalysis);

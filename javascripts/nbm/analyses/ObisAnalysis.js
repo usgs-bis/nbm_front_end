@@ -1,6 +1,6 @@
 'use strict';
 
-var ObisWidget = function (bapConfig, bap) {
+var ObisAnalysis = function (bapConfig, bap) {
     let that = this;
 
     this.getHtml = function () {
@@ -205,4 +205,4 @@ var ObisWidget = function (bapConfig, bap) {
 
 }
 
-inherit(Widget, ObisWidget);
+inherit(Analysis, ObisAnalysis);

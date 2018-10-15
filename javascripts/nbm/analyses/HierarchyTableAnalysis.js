@@ -1,6 +1,6 @@
 'use strict';
 
-var HierarchyTableWidget = function (chart) {
+var HierarchyTableAnalysis = function (chart) {
     //this.chart = chart;
     var rows = [];
 
@@ -84,4 +84,4 @@ var HierarchyTableWidget = function (chart) {
     }
 };
 
-inherit(Widget, HierarchyTableWidget);
+inherit(Analysis, HierarchyTableAnalysis);

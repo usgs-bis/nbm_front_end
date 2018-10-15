@@ -1,6 +1,6 @@
 'use strict';
 
-var BarChartWidget = function (chartConfig) {
+var BarChartAnalysis = function (chartConfig) {
     var config = chartConfig;
 
     var formatter = {precision:0, decimalSeparator:'.', thousandsSeparator:','};
@@ -78,4 +78,4 @@ var BarChartWidget = function (chartConfig) {
     }
 };
 
-inherit(Widget, BarChartWidget);
+inherit(Analysis, BarChartAnalysis);

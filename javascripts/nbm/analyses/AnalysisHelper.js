@@ -1,51 +1,51 @@
 'use strict';
 
-var WidgetHelper = function () {
+var AnalysisHelper = function () {
     this.marker = undefined;
     this.timeSlider = false;
 };
 
-WidgetHelper.prototype.getWidget = function (config, bap) {
+AnalysisHelper.prototype.getWidget = function (config, bap) {
     if (config.type === "hierarchyByPixel") {
-        return new HierarchyByPixelWidget(config);
+        return new HierarchyByPixelAnalysis(config);
     } else if (config.type === "hierarchyTable") {
-        return new HierarchyTableWidget(config);
+        return new HierarchyTableAnalysis(config);
     } else if (config.type === "eco_AOI") {
-        return new AOIEcosystemProtectionWidget(config,bap);
+        return new AOIEcosystemProtectionAnalysis(config,bap);
     } else if (config.type === "species_AOI") {
-        return new AOISpeciesProtectionWidget(config,bap);
+        return new AOISpeciesProtectionAnalysis(config,bap);
     } else if (config.type === "richness") {
-        return new SpeciesRichnessWidget(config);
+        return new SpeciesRichnessAnalysis(config);
     } else if (config.type === "dynamicMatrix") {
-        return new CnrMatrixWidget(config);
+        return new CnrMatrixAnalysis(config);
     } else if (config.type === "boxAndWhisker") {
-        return new BoxAndWhiskerWidget(config, bap);
+        return new BoxAndWhiskerAnalysis(config, bap);
     } else if (config.type === "rasterQuery") {
-        return new BarChartWidget(config);
+        return new BarChartAnalysis(config);
     } else if (config.type === "vectorQuery") {
-        return new BarChartWidget(config);
+        return new BarChartAnalysis(config);
     } else if (config.type === "nfhp") {
-        return new NFHPWidget(config,bap);
+        return new NFHPAnalysis(config,bap);
     } else if (config.type === "nfhp_disturbance") {
-        return new NFHPDisturbanceWidget(config);
+        return new NFHPDisturbanceAnalysis(config);
     } else if (config.type === "hierarchyByPixelElastic") {
-        return new HBPElasticWidget(config, bap);
+        return new HBPElasticAnalysis(config, bap);
     } else if (config.type === "hierarchyTableElastic") {
-        return new HierarchyTableWidgetElastic(config, bap);
+        return new HierarchyTableAnalysisElastic(config, bap);
     } else if (config.type === "histogram") {
-        return new HistogramWidget(config, bap);
+        return new HistogramAnalysis(config, bap);
     } else if (config.type === "smoothPlot") {
-        return new SmoothPlotWidget(config, bap);
+        return new SmoothPlotAnalysis(config, bap);
     } else if (config.type === "comparePlot") {
-        return new CompareWidget(config, bap);
+        return new CompareAnalysis(config, bap);
     } else if (config.type === "obis") {
-        return new ObisWidget(config, bap);
+        return new ObisAnalysis(config, bap);
     } else if (config.type === "Phenocasts") {
-        return new PhenocastsWidget(config, bap);
+        return new PhenocastsAnalysis(config, bap);
 }
 };
 
-WidgetHelper.prototype.addTimeSlider = function () {
+AnalysisHelper.prototype.addTimeSlider = function () {
     if (this.timeSlider) {
         let t = $("#GlobalTimeSliderRange")
         t.trigger('slidechange');
@@ -95,7 +95,7 @@ WidgetHelper.prototype.addTimeSlider = function () {
     return ts
 }
 
-WidgetHelper.prototype.getBufferedFeature = function (feature) {
+AnalysisHelper.prototype.getBufferedFeature = function (feature) {
     var geojson = JSON.stringify(feature.geojson.geometry);
     var token = Math.random().toString();
     var numChunks = Math.floor(geojson.length / WAF_LIMIT);
@@ -117,20 +117,20 @@ WidgetHelper.prototype.getBufferedFeature = function (feature) {
         });
 };
 
-WidgetHelper.prototype.getRasterData = function (inputFeature, layer, years, npnProperty) {
+AnalysisHelper.prototype.getRasterData = function (inputFeature, layer, years, npnProperty) {
 
     return this.handleRequests(this.getDataRequests(inputFeature, layer, years[0], years[1], npnProperty))
 
 }
 
-WidgetHelper.prototype.getSingleRasterData = function (inputFeature, layer, timeString, npnProperty) {
+AnalysisHelper.prototype.getSingleRasterData = function (inputFeature, layer, timeString, npnProperty) {
 
     return this.handleRequests(this.getSingleRequest(inputFeature, layer, timeString, npnProperty))
 
 }
 
 
-WidgetHelper.prototype.getDataRequests = function (inputFeature, layer, minIdx, maxIdx, npnProperty) {
+AnalysisHelper.prototype.getDataRequests = function (inputFeature, layer, minIdx, maxIdx, npnProperty) {
     var geojsonString = JSON.stringify(inputFeature.geojson.geometry);
     var requests = [];
     var length = maxIdx - minIdx;
@@ -158,7 +158,7 @@ WidgetHelper.prototype.getDataRequests = function (inputFeature, layer, minIdx, 
     return requests;
 }
 
-WidgetHelper.prototype.getSingleRequest = function(inputFeature, layer, timeString, npnProperty) {
+AnalysisHelper.prototype.getSingleRequest = function(inputFeature, layer, timeString, npnProperty) {
     var geojsonString = JSON.stringify(inputFeature.geojson.geometry);
     var featureBounds = inputFeature.getLeafetFeatureBounds();
     var bounds = {
@@ -177,7 +177,7 @@ WidgetHelper.prototype.getSingleRequest = function(inputFeature, layer, timeStri
         });
 };
 
-WidgetHelper.prototype.handleRequests = function (requests) {
+AnalysisHelper.prototype.handleRequests = function (requests) {
     let jsonData = {};
     return requests.reduce(function (sequence, request) {
         return sequence.then(function () {
@@ -199,7 +199,7 @@ WidgetHelper.prototype.handleRequests = function (requests) {
         });
 };
 
-WidgetHelper.prototype.getSendGeojsonRequest = function (layer, years, geojson, bounds, feature) {
+AnalysisHelper.prototype.getSendGeojsonRequest = function (layer, years, geojson, bounds, feature) {
     if (geojson.length > WAF_LIMIT) {
         var token = Math.random().toString();
         var numChunks = Math.floor(geojson.length / WAF_LIMIT);

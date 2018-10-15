@@ -1,6 +1,6 @@
 'use strict';
 
-var NFHPDisturbanceWidget = function (chart) {
+var NFHPDisturbanceAnalysis = function (chart) {
     let that = this
     let config = chart;
     let rows = [];
@@ -361,4 +361,4 @@ var NFHPDisturbanceWidget = function (chart) {
 
 };
 
-inherit(Widget, NFHPDisturbanceWidget);
+inherit(Analysis, NFHPDisturbanceAnalysis);

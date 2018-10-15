@@ -2,7 +2,7 @@
 
 
 // this plot tags along with the box and whisker 
-function PhenocastsWidget(config, bap) {
+function PhenocastsAnalysis(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
     let dataURI = ""
@@ -454,4 +454,4 @@ function PhenocastsWidget(config, bap) {
 
 }
 
-inherit(Widget, PhenocastsWidget);
+inherit(Analysis, PhenocastsAnalysis);

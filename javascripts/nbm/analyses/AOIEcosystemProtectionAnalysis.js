@@ -1,6 +1,6 @@
 'use strict';
 
-var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
+var AOIEcosystemProtectionAnalysis = function (bapConfig, bap) {
     let that = this;
     let chartData = {
         ecoregion_protection: {},
@@ -522,4 +522,4 @@ var AOIEcosystemProtectionWidget = function (bapConfig, bap) {
     }
 
 };
-inherit(Widget, AOIEcosystemProtectionWidget);
+inherit(Analysis, AOIEcosystemProtectionAnalysis);

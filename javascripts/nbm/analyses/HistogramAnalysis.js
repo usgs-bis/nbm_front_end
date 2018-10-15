@@ -2,7 +2,7 @@
 
 
 // this plot tags along with the box and whisker 
-function HistogramWidget(config, bap) {
+function HistogramAnalysis(config, bap) {
     let id = bap.id
     let selector = "#" + id + "BAP";
     let dataURI = ""
@@ -337,4 +337,4 @@ function HistogramWidget(config, bap) {
     }
 }
 
-inherit(Widget, HistogramWidget);
+inherit(Analysis, HistogramAnalysis);

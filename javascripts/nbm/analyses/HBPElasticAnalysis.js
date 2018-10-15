@@ -1,11 +1,11 @@
 'use strict';
 
 /**
- * Hierarchy by pixel Widget/Table object.
+ * Hierarchy by pixel Analysis/Table object.
  * @param {*} chartData - chart data from the server
  * @constructor
  */
-var HBPElasticWidget = function (chartData, bap) {
+var HBPElasticAnalysis = function (chartData, bap) {
    
     this.config = chartData;
     var hierarchy = [];
@@ -174,4 +174,4 @@ var HBPElasticWidget = function (chartData, bap) {
 
 };
 
-inherit(Widget, HBPElasticWidget);
+inherit(Analysis, HBPElasticAnalysis);
