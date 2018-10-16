@@ -87,16 +87,14 @@ function displayMixedContentWarning(layerTitle) {
  * Show the spinner to the user.
  */
 function showSpinner() {
-    if($("#initializeBioscape").is(":visible")) return
+    // if($("#initializeBioscape").is(":visible")) return
      $("#mySpinner").fadeIn('fast');
-
 }
 
 /**
  * Hide the spinner from the user.
  */
 function hideSpinner() {
-
     $("#mySpinner").fadeOut('fast');
 }
 
