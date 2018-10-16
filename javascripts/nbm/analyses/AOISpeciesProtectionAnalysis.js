@@ -294,6 +294,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         var selected = speciesTitleMap[currentSpeciesTaxaType];
 
         $('#speciesReset').show();
+        $(".spProtRadio").show();
 
         var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in the Ecoregion";
         updateTableTitle('speciesTableTitle', title, dataItem.color, dataItem.index);
@@ -320,7 +321,6 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
     function resetSpeciesTable() {
         $("#spNameToggle").hide();
         $('#speciesReset').hide();
-
         var viewData = {
             speciesType: speciesTitleMap[currentSpeciesTaxaType],
             species: currentSpeciesData,
@@ -330,6 +330,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         toggleEcoregionSpeciesLayer("")
         toggleSpeciesHabitatLayer("")
         $("#speciesTableContainer").html(html);
+        $(".spProtRadio").show();
     }
 
     this.togglePriority = function(priority) {
