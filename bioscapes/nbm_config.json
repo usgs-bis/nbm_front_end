@@ -146,7 +146,7 @@
                     }
                 },
                 {
-                    "title": "Species Habitat",
+                    "title": "Habitat Map",
                     "serviceUrl": "https://www.sciencebase.gov/geoserver/CONUS_HabMap_2001v1/wms",
                     "serviceType": "WMS.overlay",
                     "metadataSBId": "",
