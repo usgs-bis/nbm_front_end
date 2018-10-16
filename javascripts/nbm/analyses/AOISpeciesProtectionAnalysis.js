@@ -77,8 +77,8 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
                         currentSpeciesData = getSpeciesListForTaxaType();
                         resetSpeciesTable();
                         updateSpeciesCharts();
-                        that.turnOffSpecies()
-
+                        that.turnOffSpecies();
+                        hideSpinner();
                     });
                     $("#resetSpeciesTable").on('click', function () {
                         resetSpeciesTable();
