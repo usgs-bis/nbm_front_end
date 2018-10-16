@@ -43,9 +43,9 @@ function toggleEcoregionSpeciesLayer(sppcode) {
 
 function toggleSpeciesHabitatLayer(sppcode) {
     showSpinner();
-    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Habitat"})
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
     if(!Spplayer.length) {
-        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Habitat"})
+        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
         if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
             hideSpinner();
             return
