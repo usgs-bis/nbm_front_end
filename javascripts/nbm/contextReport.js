@@ -34,11 +34,22 @@ function toggleEcoregionSpeciesLayer(sppcode) {
         Spplayer.mapLayer.leafletLayer.on("load",function() {
             hideSpinner();
         });
+        toggleSpeciesHabitatLayerOff()
     } else {
+        // Spplayer.mapLayer.leafletLayer.setParams({ CQL_FILTER: `SppCode='none'` })
         hideSpinner();
     }
-
     highlightRow(sppcode);
+}
+
+function toggleEcoregionSpeciesLayerOff() {
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
+    if(!Spplayer.length) {
+        return
+    }
+    Spplayer = Spplayer[0]
+    Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='none'`})
+    Spplayer.updateLegendUrl();
 }
 
 function toggleSpeciesHabitatLayer(sppcode) {
@@ -55,18 +66,31 @@ function toggleSpeciesHabitatLayer(sppcode) {
 
     }
     Spplayer = Spplayer[0]
-
     if (Spplayer.mapLayer.leafletLayer.wmsParams.layers !== sppcode) {
         Spplayer.mapLayer.leafletLayer.setParams({layers:sppcode})
         Spplayer.updateLegendUrl();
+        if (sppcode == "") {
+            Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
+        }
         Spplayer.mapLayer.leafletLayer.on("load",function() {
             hideSpinner();
         });
+        toggleEcoregionSpeciesLayerOff()
     } else {
         hideSpinner();
     }
-
     highlightRow(sppcode);
+}
+
+function toggleSpeciesHabitatLayerOff() {
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
+    if(!Spplayer.length) {
+        return
+    }
+    Spplayer = Spplayer[0]
+    Spplayer.mapLayer.leafletLayer.setParams({layers:''})
+    Spplayer.updateLegendUrl();
+    Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
 }
 
 function openLmeSpeciesJson(sciname, commonName) {

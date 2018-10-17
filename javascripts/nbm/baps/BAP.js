@@ -249,13 +249,15 @@ BAP.prototype.bindClicks = function () {
     var that = this;
 
     $("#" + this.config.id + "BapCase div.layerExpander").on('click', function () {
-        if( actionHandlerHelper.closeExpandedBap(that.config.id)) return 
-        var id = $(this).data('section');
-        let toggle = toggleContainer(id);
+        if( actionHandlerHelper.closeExpandedBap(that.config.id)) return
         if (!that.priority) {
-            $(`#${that.id}Inputs`).hide()
+            $(`#${that.id}Inputs`).hide();
+            $(`#${that.id}BapCase #priorityBap${that.id}`).click()
+        } else {
+            var id = $(this).data('section');
+            let toggle = toggleContainer(id);
+            that.updateState(toggle)
         }
-        that.updateState(toggle)
     });
     $("#" + this.config.id + "BapCase div.inputExpander").on('click', function () {
         var id = $(this).data('section');
@@ -454,9 +456,9 @@ BAP.prototype.loadBapState = function () {
             else {
                 $(`#${that.id}Inputs`).hide()
 
-                // was getting a weird svg render in the colapsed contaner
+                // was getting a weird svg render in the collapsed container
                // if (initBap.enabled) {
-                    showContainer(that.id + "BAP")
+               //      showContainer(that.id + "BAP")
                // }
                 
                 // else {
@@ -587,6 +589,10 @@ BAP.prototype.setPriorityBap = function (checked) {
                 if (bap != that.id && $(`#priorityBap${bap}`)[0].checked) {
                     $(`#priorityBap${this}`).click()
                 }
+                if (bap != that.id) {
+                    actionHandlerHelper.closeExpandedBap(bap)
+                    collapseContainer(this + "BAP")
+                }
             }
             catch (error) { }
         })
@@ -625,9 +631,7 @@ BAP.prototype.setPriorityBap = function (checked) {
             actionHandlerHelper.bufferedFeature = this.feature.geojson.geometry
             setTimeout(function(){ $(".modifiedPoly").show() }, 1000);
         }
-
         that.updateState(true)
-
     }
     else {
         $.each(layers, function (index, layer) {
