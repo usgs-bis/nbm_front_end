@@ -295,6 +295,8 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
 
         $('#speciesReset').show();
         $(".spProtRadio").show();
+        toggleEcoregionSpeciesLayerOff();
+        toggleSpeciesHabitatLayerOff();
 
         var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in the Ecoregion";
         updateTableTitle('speciesTableTitle', title, dataItem.color, dataItem.index);
@@ -327,8 +329,8 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         };
         var helpers = { format: escapeSingleQuotesInString };
         var html = getHtmlFromJsRenderTemplate('#speciesTableContainerTemplate', viewData, helpers);
-        toggleEcoregionSpeciesLayer("")
-        toggleSpeciesHabitatLayer("")
+        toggleEcoregionSpeciesLayerOff()
+        toggleSpeciesHabitatLayerOff()
         $("#speciesTableContainer").html(html);
         $(".spProtRadio").show();
     }
