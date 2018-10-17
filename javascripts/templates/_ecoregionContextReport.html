@@ -185,7 +185,7 @@
     </thead>
     <tbody>
         {{for species}}
-            <tr class="spRow tableRow" >
+            <tr id="{{:sppcode}}Row"  class="spRow tableRow speciesTableRow">
                 <td class="spCommonName shownTd text-chart-left" style="vertical-align:middle;width:58%;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:common_name ? common_name : "No common name recorded"}}</td>
                 <td class="spScientificName hiddenTd text-chart-left" style="vertical-align:middle;width:58%;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:scientific_name ? scientific_name : "No scientific name recorded"}}</td>
                 <td style="vertical-align:middle;width:20%;text-align:middle;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:~format(percent)}}</td>

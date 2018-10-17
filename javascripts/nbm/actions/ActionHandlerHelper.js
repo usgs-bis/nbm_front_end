@@ -537,7 +537,7 @@ ActionHandlerHelper.prototype.closeExpandedBap = function (id){
         $("#buildReportPdf").prop("disabled",false);
     }
 
-    // switch colapse icon 
+    // switch collapse icon
     $("#" + id + 'BAPControl').html('&#9660;');
    
     return true
@@ -579,7 +579,6 @@ ActionHandlerHelper.prototype.expandBap = function (id){
         compareBapModal.show()
         $(`#${id}BAP`).show()
     }
-
     
 }
 
