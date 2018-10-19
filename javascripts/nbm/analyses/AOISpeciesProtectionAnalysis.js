@@ -79,6 +79,9 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
                         updateSpeciesCharts();
                         that.turnOffSpecies();
                         hideSpinner();
+                        if (!that.bap.priority) {
+                            $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
+                        }
                     });
                     $("#resetSpeciesTable").on('click', function () {
                         resetSpeciesTable();
@@ -300,6 +303,9 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
 
         var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in the Ecoregion";
         updateTableTitle('speciesTableTitle', title, dataItem.color, dataItem.index);
+        if (!that.bap.priority) {
+            $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
+        }
     }
 
     /**

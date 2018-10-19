@@ -169,6 +169,9 @@ function PhenocastsAnalysis(config, bap) {
 
         button = $(selector).find('#getData');
         button.on('click', function () {
+            if (!that.bap.priority) {
+                $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
+            }
             $(selector).find('.afterSubmitAttribution').show();
             actionHandlerHelper.showTempPopup("Submitted polygon. Larger or more complex polygons will take longer to process");
             toggleSpinner();
