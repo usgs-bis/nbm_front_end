@@ -35,7 +35,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
 
     this.initializeWidget = function () {
 
-        // enable or disable the raster raido buttons based on analysis input
+        // enable or disable the raster radio buttons based on analysis input
         Specieslayer = bioScape.getAllLayers(false).filter(layer => { return layer.title == "Species Range" })
         if (Specieslayer.length) {
             let Spplayer = Specieslayer[0]
@@ -46,7 +46,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
             })
         }
 
-        const poi = actionHandlerHelper.getSearhActionHandler().getPOI()
+        const poi = actionHandlerHelper.getSearchActionHandler().getPOI()
 
         if (poi && poi.selectedId) {
             const placeName = poi.selectedName
