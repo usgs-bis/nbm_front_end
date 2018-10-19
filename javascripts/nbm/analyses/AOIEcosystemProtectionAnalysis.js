@@ -473,6 +473,9 @@ var AOIEcosystemProtectionAnalysis = function (bapConfig, bap) {
         var plural = myList.length == 1 ? '' : 's';
         var title = myList.length + " Ecological System" + plural + " with " + displayString + " protection on " + chartName + " Lands";
         updateTableTitle('ecosystemTableTitle', title, dataItem.color, dataItem.index);
+        if (!that.bap.priority) {
+            $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
+        }
     }
 
     /**
