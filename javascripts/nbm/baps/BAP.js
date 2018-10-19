@@ -250,14 +250,9 @@ BAP.prototype.bindClicks = function () {
 
     $("#" + this.config.id + "BapCase div.layerExpander").on('click', function () {
         if( actionHandlerHelper.closeExpandedBap(that.config.id)) return
-        if (!that.priority) {
-            $(`#${that.id}Inputs`).hide();
-            $(`#${that.id}BapCase #priorityBap${that.id}`).click()
-        } else {
-            var id = $(this).data('section');
-            let toggle = toggleContainer(id);
-            that.updateState(toggle)
-        }
+        var id = $(this).data('section');
+        let toggle = toggleContainer(id);
+        that.updateState(toggle)
     });
     $("#" + this.config.id + "BapCase div.inputExpander").on('click', function () {
         var id = $(this).data('section');
@@ -282,6 +277,10 @@ BAP.prototype.bindClicks = function () {
     $.each(layers, function (index, layer) {
         $(`#${that.id}BAP #toggleLayer${layer.id}`).click(function () {
             if (this.checked) {
+                if (!that.priority) {
+                    $(`#${that.id}BapCase #priorityBap${that.id}`).click()
+                }
+                this.checked = true
                 that.turnOffOtherLayers(layer.id)
                 layer.turnOnLayer()
                     .then(function () {
@@ -292,10 +291,7 @@ BAP.prototype.bindClicks = function () {
             } else {
                 layer.turnOffLayer()
                 that.updateState(true)
-
             }
-
-
         })
         $(`#${that.id}BAP #opacitySliderInput${layer.id}`).on("change mousemove", function () {
 
@@ -396,6 +392,7 @@ BAP.prototype.initializeBAP = function () {
             const p = ((that.actionRef || {}).config || {}).priority
             if (p == this.id || (!p && bioScape.defaultPriority == this.id)) {
                 $(`#${that.id}BapCase #priorityBap${that.id}`).click()
+                $(`#${that.id}BapCase div.inputExpander`).click()
             }
             else {
                 collapseContainer(this.id + "BAP")
@@ -453,8 +450,8 @@ BAP.prototype.loadBapState = function () {
                     that.updateState(true)
                 }, 1000)
             }
-            else {
-                $(`#${that.id}Inputs`).hide()
+            // else {
+            //     $(`#${that.id}Inputs`).hide()
 
                 // was getting a weird svg render in the collapsed container
                // if (initBap.enabled) {
@@ -464,7 +461,7 @@ BAP.prototype.loadBapState = function () {
                 // else {
                 //     collapseContainer(that.id + "BAP")
                 // }
-            }
+            // }
         }
     })
     if (!found) {
@@ -589,10 +586,6 @@ BAP.prototype.setPriorityBap = function (checked) {
                 if (bap != that.id && $(`#priorityBap${bap}`)[0].checked) {
                     $(`#priorityBap${this}`).click()
                 }
-                if (bap != that.id) {
-                    actionHandlerHelper.closeExpandedBap(bap)
-                    collapseContainer(this + "BAP")
-                }
             }
             catch (error) { }
         })
@@ -648,7 +641,7 @@ BAP.prototype.setPriorityBap = function (checked) {
         $.each(that.widgets, function (index, widget) {
             widget.togglePriority(false);
         });
-        $(`#${that.config.id}Inputs`).hide()
+        // $(`#${that.config.id}Inputs`).hide()
         this.priority = false
         $(".modifiedPoly").hide()
         this.updateState(true)

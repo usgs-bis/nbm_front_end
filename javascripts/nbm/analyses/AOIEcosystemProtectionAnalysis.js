@@ -20,7 +20,7 @@ var AOIEcosystemProtectionAnalysis = function (bapConfig, bap) {
 
     this.initializeWidget = function () {
 
-        const poi = actionHandlerHelper.getSearhActionHandler().getPOI()
+        const poi = actionHandlerHelper.getSearchActionHandler().getPOI()
 
         if (poi && poi.selectedId) {
             const placeName = poi.selectedName

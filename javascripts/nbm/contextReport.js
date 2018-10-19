@@ -36,7 +36,9 @@ function toggleEcoregionSpeciesLayer(sppcode) {
         });
         toggleSpeciesHabitatLayerOff()
     } else {
-        // Spplayer.mapLayer.leafletLayer.setParams({ CQL_FILTER: `SppCode='none'` })
+        // document.getElementById(`${sppcode}` + 'RangeRB').checked = false
+        sppcode = null
+        toggleEcoregionSpeciesLayerOff()
         hideSpinner();
     }
     highlightRow(sppcode);
@@ -77,6 +79,9 @@ function toggleSpeciesHabitatLayer(sppcode) {
         });
         toggleEcoregionSpeciesLayerOff()
     } else {
+        // document.getElementById(`${sppcode}` + 'HabitatRB').checked = false
+        sppcode = null
+        toggleSpeciesHabitatLayerOff()
         hideSpinner();
     }
     highlightRow(sppcode);

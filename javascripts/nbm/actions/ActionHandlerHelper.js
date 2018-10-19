@@ -134,7 +134,7 @@ ActionHandlerHelper.prototype.initializeSubmitButton = function () {
     });
 };
 
-ActionHandlerHelper.prototype.getSearhActionHandler = function () {
+ActionHandlerHelper.prototype.getSearchActionHandler = function () {
 
     let searchAH = actionHandlers.filter(ah => ah.type == "searchPoi" )
     if(searchAH.length) return searchAH[0]
@@ -729,7 +729,7 @@ ActionHandlerHelper.prototype.loadEmptySynthComp = function(message) {
 
         $.each(enabledBaps, function (key, bapObj){
             if (bapObj) {
-                html += bapObj.title + "<br><br>"
+                html += (bapObj.title == "Pheno Forecasts" ? "Phenology Forecasts" : bapObj.title) + "<br><br>"
             }
         });
 

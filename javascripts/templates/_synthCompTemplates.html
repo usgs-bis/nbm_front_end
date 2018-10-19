@@ -161,7 +161,7 @@
 <div class="layerExpander contextHeader" data-section="{{:id}}BAP">
 <div style='width: calc(100% - 45px);'>
 <span id="{{:id}}BAPControl">{{if openByDefault}}&#9660;{{else}}&#9658;{{/if}}</span>
-        <span class="bapTitle">{{:title}}</span>
+        <span class="bapTitle">{{:title == "Pheno Forecasts" ? "Phenology Forecasts" : title}}</span>
         {{if hasInfoDiv}}
         &nbsp;
             <div id="{{:id}}" class="moreInfo" style="display: inline-block;white-space:nowrap;">
@@ -208,7 +208,7 @@
                                     <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top" title="Toggle Layer"></span>
                                 </label>
                             </span>
-                            <span>{{:title}}</span>
+                            <span>{{:title == "Habitat Map" ? "Species Habitat" : title}}</span>
                             <span id="{{:id}}layerMoreInfo" style="white-space:nowrap; margin-left: 5px;">
                                 <i class="fa fa-circle fa-first hideBaseMapLayer" aria-hidden="true" data-original-title></i>
                                 <i class="fa fa-info-circle fa-second layerMoreInfo hideBaseMapLayer" aria-hidden="true" data-layer="{{:divId}}"></i>
@@ -299,8 +299,9 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
         <div class="bapHeader">
             <div class="row" style="margin-top: 35px;">
                     <div class="col col-md-12 ">
-                        <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Get Phenocast Forecast </div>
-                        <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
+                        <div id="bapRangeSlider"class= "sliderLabelCenter centerDiv" style="margin-top:10px;">
+                            <button id="getData" class="btn-xs ">Get Phenocast Forecast</button>
+                        </div>
                     </div>
 
                 <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>

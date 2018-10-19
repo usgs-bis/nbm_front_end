@@ -153,7 +153,7 @@
                     </td>
                     <td style="vertical-align:middle;width:11%;text-align:middle;">
                         <label class="clickSearch spProtRadio">
-                            <input type="radio" name="spLayer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
+                            <input type="radio" id="{{:sppcode}}RangeRB" name="spLayer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
                             <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
                             title="Range Map">
                             </span>
@@ -161,7 +161,7 @@
                     </td>
                     <td style="vertical-align:middle;width:11%;text-align:middle;">
                         <label class="clickSearch spProtRadio">
-                            <input type="radio" name="spLayer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
+                            <input type="radio" id="{{:sppcode}}HabitatRB" name="spLayer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
                             <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
                             title="Habitat Map">
                             </span>
@@ -191,7 +191,7 @@
                 <td style="vertical-align:middle;width:20%;text-align:middle;" onclick="openEcoregionSpeciesJson('{{:scientific_name}}', '{{:~formatName(common_name)}}');">{{:~format(percent)}}</td>
                 <td style="vertical-align:middle;width:11%;text-align:middle;">
                     <label class="clickSearch spProtRadio">
-                        <input type="radio" name="spLayer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
+                        <input type="radio" id="{{:sppcode}}RangeRB" name="spLayer" class="clickSearch" onclick="toggleEcoregionSpeciesLayer('{{:sppcode}}')" />
                         <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
                         title="Range Map">
                         </span>
@@ -199,7 +199,7 @@
                 </td>
                 <td style="vertical-align:middle;width:11%;text-align:middle;">
                     <label class="clickSearch spProtRadio">
-                        <input type="radio" name="spLayer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
+                        <input type="radio" id="{{:sppcode}}HabitatRB" name="spLayer" class="clickSearch" onclick="toggleSpeciesHabitatLayer('{{:sppcode}}')" />
                         <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
                         title="Habitat Map">
                         </span>
