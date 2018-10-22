@@ -22,11 +22,10 @@ inherit(ActionHandler, DrawPolygonActionHandler);
  */
 DrawPolygonActionHandler.prototype.processHeaderBap = function (additionalParams, headerBapId) {
     var that = this;
-    var gj = JSON.stringify(this.geojson);
 
     var myMap = {};
     myMap.id = this.headerBap;
-    myMap.featureValue = gj;
+    myMap.featureValue = JSON.stringify(this.geojson);
 
     if (this.synthesisComposition) {
         actionHandlerHelper.sc.featureValue = that.result.geojson.properties[that.lookupProperty];

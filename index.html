@@ -99,7 +99,9 @@
                 </div>
 
             </div>
-            <div id="mapControlContainer" class="mapControlContainer"> </div>
+            <div id="mapControlContainer" class="mapControlContainer">
+
+            </div>
 
 
 
@@ -203,7 +205,7 @@
                             <span id="latCoordinates"></span>,
                             <span style="font-weight:bold;">Long</span>:
                             <span id="lngCoordinates"></span>
-                            <span id="latCoordinates"></span>,
+                            <!--<span id="latCoordinates"></span>,-->
                             <span style="font-weight:bold;">Elev</span>
                             <span style="margin-left: -2px;">:</span>
                             <span id="elevationValue" >No Data</span>
@@ -416,6 +418,37 @@
     </div>
     <!-- /.modal -->
 
+    <!-- Upload shapefile model pop up -->
+    <div class="modal fade" id="shapeFileModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="jupyterLabel">Upload a Shapefile</h4>
+                </div>
+                <div class="modal-body">
+                    <p style="margin-left:15px;"> - Your shapefile must be zipped into a '.zip' extension and be under 5MB.</p>
+                    <p style="margin-left:15px;"> – Valid .shp, shx, .dbf, and .prj files must be included.</p>
+                    <p style="margin-left:15px;"> – Most common coordinate systems are supported.</p>
+                    <p style="margin-left:15px; margin-bottom:30px;"> – Only the first feature in your shapefile will be used.</p>
+                    <button onclick="$('#shapeFileInput').click()" type="button" class="btn-sm" style="margin-left: 15px;">Choose .zip File</button>
+                    <input type="file" id="shapeFileInput" style="visibility:hidden;" accept=".zip">
+                    <div id="zipResultBlock" class="hidden">
+                        <div id="zipResult"></div>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-sm submitPoly" data-dismiss="modal" >Submit</button>
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
     <script id="betaBannerTemplate" type="text/x-jsrender">
     <span id="beta-banner" data-toggle="modal" data-target="#disclaimerModal">beta</span>
 </script>
@@ -477,6 +510,7 @@
     <script type="text/javascript" src="javascripts/third_party/topojson/topojson-client@2.1.0.js"></script>
     <script type="text/javascript" src="javascripts/third_party/topojson/topojson-server@2.0.0.js"></script>
     <script type="text/javascript" src="javascripts/third_party/topojson/topojson-simplify@2.0.0.js"></script>
+    <script type="text/javascript" src="javascripts/third_party/shp/shp.min.js" ></script>
 
     <script type="text/javascript" src="javascripts/nbm/utilities.js"></script>
     <script type="text/javascript" src="javascripts/nbm/SynthesisComposition.js"></script>

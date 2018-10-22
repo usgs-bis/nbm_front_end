@@ -567,6 +567,20 @@ div.mapControlGroup > a:last-child {
     border-radius: 0 10px 10px 0;
 }
 
+#shapeFileModal .submitPoly{
+    right: -88%;
+    position: relative;
+    display: none;
+}
+.downloadPoly{
+    font-size: 12px;
+    vertical-align: middle;
+    color: lightblue;
+    border-radius: 7px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
 .action {
     padding-bottom: 5px;
 }

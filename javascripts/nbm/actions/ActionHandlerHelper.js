@@ -18,6 +18,7 @@ var ActionHandlerHelper = function () {
     this.headerSent = false;
     this.crossoverBaps = [];
     this.bufferedFeature = null;
+    this.JSZip = new JSZip()
 };
 
 /**
@@ -54,6 +55,8 @@ ActionHandlerHelper.prototype.addDrawCapability = function () {
                 e.preventDefault();
             }
         });
+
+        $("#mapControlContainer").append(getHtmlFromJsRenderTemplate('uploadShapefile'));//add the uploader
 
         //Create the object to store the drawn polygon and add it to the map
         drawnItems = new L.FeatureGroup();
@@ -354,8 +357,10 @@ ActionHandlerHelper.prototype.setCurrentActions = function () {
 
     if (canDraw) {
         $(".leaflet-draw, #polygonControls").show()
+        $(".leaflet-draw, #uploadPolygonShape").show();
     } else {
         $(".leaflet-draw, #polygonControls").hide();
+        $(".leaflet-draw, #uploadPolygonShape").hide();
         this.cleanUpDrawnPolygons();
     }
 };
@@ -758,4 +763,145 @@ ActionHandlerHelper.prototype.globalTimeSlider = function () {
     })
     return found;
 
+}
+// clear anything on the map and turn off summerization layers
+// when the user clicks the upload polygon button
+ActionHandlerHelper.prototype.handelUploadShapeFile = function () {
+
+    $.each(actionHandlers, function (index, actionHandler) {
+        actionHandler.cleanUp();
+    });
+    bioScape.turnOffSummarizationLayers()
+    this.uploadShapeFile()
+}
+
+// show the upload modal
+// when a file is uploaded check that it is under 5mb
+// send the file to be unziped and processsed
+ActionHandlerHelper.prototype.uploadShapeFile = function () {
+    let shapeFileModal = $("#shapeFileModal");
+    shapeFileModal.modal("show");
+    let $result = $("#zipResult");
+    $result.html("")
+    $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
+
+    let that = this;
+
+    $("#shapeFileInput").unbind().change(function () {
+        $result.html("")
+        if (typeof FileReader !== "undefined") {
+            var fileSize = this.files[0].size;
+            if (fileSize > 5000000) {
+                let $title = $("<h4>", {
+                    text: this.files[0].name
+                });
+                var $fileContent = $("<ul>");
+                $result.append($title);
+                $result.append($fileContent);
+                $("#zipResultBlock").removeClass("hidden").addClass("show");
+                $result.append($("<div>", {
+                    "class": "alert alert-danger",
+                    "style": "margin-top: 10px;",
+                    text: "Error reading " + this.files[0].name + ".  This file is over the 5MB limit."
+                }));
+                $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
+            }
+            else {
+                that.processShapeFile(this.files[0]);
+            }
+        }
+    });
+}
+
+//unzip and get the contents
+// show error message if file can not be read
+// turn into geojson and simplify
+// send to draw function on sumbit
+ActionHandlerHelper.prototype.processShapeFile = function (f) {
+    let that = this;
+    let $result = $("#zipResult");
+    $result.html("");
+    $("#zipResultBlock").removeClass("hidden").addClass("show");
+    let $title = $("<h4>", {
+        text: f.name
+    });
+    let $fileContent = $("<ul>");
+    $result.append($title);
+    $result.append('<i id="polyUploadSpinner" class="fa fa-spinner fa-pulse" style="font-size: 40px;margin-left: 55px;"></i>');
+    $result.append($fileContent);
+
+    let dateBefore = new Date();
+    this.JSZip = new JSZip()
+    this.JSZip.loadAsync(f)
+        .then(function (zip) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                shp(reader.result).then(function (geojson) {
+                    try{
+                        getSimplifiedGeojson(geojson.features[0])
+                            .then(function (geojson) {
+                                $("#polyUploadSpinner").hide()
+                                let dateAfter = new Date();
+                                $title.append($("<span>", {
+                                    "class": "small",
+                                    text: " (loaded in " + (dateAfter - dateBefore) + "ms)"
+                                }));
+
+                                zip.forEach(function (relativePath, zipEntry) {
+                                    $fileContent.append($("<li>", {
+                                        text: zipEntry.name
+                                    }));
+                                });
+                                $("#shapeFileModal .submitPoly").show()
+                                $("#shapeFileModal .submitPoly").unbind().click(function () {
+                                    that.drawAndSubmitUploadPoly(geojson)
+                                })
+                            })
+                    }
+                        // Not a shapefile? Wrong format?
+                    catch(error){
+                        $("#polyUploadSpinner").hide()
+                        $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
+                        $result.append($("<div>", {
+                            "class": "alert alert-danger",
+                            "style": "margin-top: 10px;",
+                            text: "Error reading " + f.name + ".  Is this a shape file?"
+                        }));
+                    }
+                })
+            }
+            reader.readAsArrayBuffer(f)
+
+        }, function (e) {
+            $("#polyUploadSpinner").hide()
+            $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
+            $result.append($("<div>", {
+                "class": "alert alert-danger",
+                "style": "margin-top: 10px;",
+                text: "Error reading " + f.name + ".  Is this a zip file?"
+            }));
+        });
+}
+
+ActionHandlerHelper.prototype.drawAndSubmitUploadPoly = function (geojson) {
+
+    drawing = false;
+
+    // make the drawn poly look like the identified feature
+    drawnItems = L.geoJson(geojson);
+    this.drawnItemsCopy = L.geoJson(geojson);;
+    drawnItems.setStyle({ fillOpacity: 0, weight: 8, color: '#000000' });
+    this.drawnItemsCopy.setStyle({ fillOpacity: 0, color: '#FF0000' });
+    drawnItems.addTo(map);
+    this.drawnItemsCopy.addTo(map);
+
+    this.headerSent = false;
+    this.cleanUp(false, true);
+
+    this.populateBottomBarWithClick();
+    this.initializeRightPanel();
+
+    this.initializeSubmitBapsButton();
+    this.handleLayerChange();
+    this.handleDrawPolygonActions();
 }

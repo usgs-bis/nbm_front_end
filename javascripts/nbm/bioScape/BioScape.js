@@ -146,6 +146,47 @@ var BioScape = function (id, data, sections, summarizationLayers, customBioscape
         return result;
     };
 
+    /**
+     * Returns the available summarization layers in the BioScape. Only return selected summarization layers,
+     *  or if non are selected return the default layer if one exists.
+     * @returns {Array.<*>}
+     */
+    this.getSummarizationLayers = function() {
+        var result = [];
+        var defaultLayer;
+        this.summarizationLayers.forEach(function(layer) {
+            if(layer.selected) {
+                result.push(layer);
+            } else if (layer.defaultSummaryLayer) {
+                defaultLayer = layer;
+            }
+        });
+
+        if (result.length == 0 && defaultLayer) {
+            result.push(defaultLayer);
+        }
+
+        return result;
+    };
+
+// turns off all summarization layers and closes the pannel
+// if no summary layers are turned on it assumes summarylayer is section0
+// and closes the panel
+    this.turnOffSummarizationLayers = function(){
+        let id = "section0"
+        let layers = this.getVisibleLayers();
+        $.each(layers, function (index, layer) {
+            try{
+                if(layer.section.title.toLowerCase() == "summarization layers"){
+                    layer.section.toggleLayer(layer.id) // why does an object method take in itself?
+                    id = layer.section.id
+                }
+            }
+            catch(error) {
+            }
+        })
+        collapseContainer(id)
+    }
 
      /**
      * Returns the layer with id or undefined.
