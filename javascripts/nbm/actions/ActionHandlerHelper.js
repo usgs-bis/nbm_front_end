@@ -18,7 +18,7 @@ var ActionHandlerHelper = function () {
     this.headerSent = false;
     this.crossoverBaps = [];
     this.bufferedFeature = null;
-    this.JSZip = new JSZip()
+    this.JSZip = null;
 };
 
 /**
@@ -150,28 +150,50 @@ ActionHandlerHelper.prototype.getSearchActionHandler = function () {
 ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
     if (!drawnItems || !drawnItems.getLayers().length) return Promise.resolve();
     this.headerSent = false;
-    this.cleanUp(false, true);
-
-    this.populateBottomBarWithClick();
-    this.initializeRightPanel();
     var promises = [];
-
     $("#synthesisCompositionTitle").html('')
     $.each(actionHandlers, function (index, actionHandler) {
-        if (actionHandler.type == "drawPolygon" ) { //&& map.hasLayer(actionHandler.layer.leafletLayer)
+        if (actionHandler.type == "drawPolygon" && map.hasLayer(actionHandler.layer.leafletLayer)) {
             if (!actionHandler.headerBap) {
                 promises.push(actionHandler.sendTriggerAction(false));
             } else {
-                if($("#HeaderBap" + index).length == 0){
-                    $("#synthesisCompositionTitle").append("<div id='HeaderBap" + index + "'></div>");
-                }
+                $("#synthesisCompositionBody").prepend("<div id='HeaderBap" + index + "'></div>");
                 promises.push(actionHandler.sendTriggerAction(true, "HeaderBap" + index));
             }
         }
     });
-
+    // analysisSubmit = false;
     return Promise.all(promises);
 };
+
+/**
+ * When a polygon is submitted, trigger the actions for all enabled "drawPolygon" action handlers
+ */
+// ActionHandlerHelper.prototype.handleDrawPolygonActions = function () {
+//     if (!drawnItems || !drawnItems.getLayers().length) return Promise.resolve();
+//     this.headerSent = false;
+//     this.cleanUp(false, true);
+//
+//     this.populateBottomBarWithClick();
+//     this.initializeRightPanel();
+//     var promises = [];
+//
+//     $("#synthesisCompositionTitle").html('')
+//     $.each(actionHandlers, function (index, actionHandler) {
+//         if (actionHandler.type == "drawPolygon" ) { //&& map.hasLayer(actionHandler.layer.leafletLayer)
+//             if (!actionHandler.headerBap) {
+//                 promises.push(actionHandler.sendTriggerAction(false));
+//             } else {
+//                 if($("#HeaderBap" + index).length == 0){
+//                     $("#synthesisCompositionTitle").append("<div id='HeaderBap" + index + "'></div>");
+//                 }
+//                 promises.push(actionHandler.sendTriggerAction(true, "HeaderBap" + index));
+//             }
+//         }
+//     });
+//
+//     return Promise.all(promises);
+// };
 
 
 ActionHandlerHelper.prototype.initPOISearch = function (search){
@@ -764,13 +786,15 @@ ActionHandlerHelper.prototype.globalTimeSlider = function () {
     return found;
 
 }
-// clear anything on the map and turn off summerization layers
+
+// clear anything on the map and turn off summarization layers
 // when the user clicks the upload polygon button
 ActionHandlerHelper.prototype.handelUploadShapeFile = function () {
 
     $.each(actionHandlers, function (index, actionHandler) {
         actionHandler.cleanUp();
     });
+    this.cleanUp(true);
     bioScape.turnOffSummarizationLayers()
     this.uploadShapeFile()
 }
@@ -788,6 +812,7 @@ ActionHandlerHelper.prototype.uploadShapeFile = function () {
     let that = this;
 
     $("#shapeFileInput").unbind().change(function () {
+        $("#shapeFileModal .submitPoly").hide()
         $result.html("")
         if (typeof FileReader !== "undefined") {
             var fileSize = this.files[0].size;
@@ -807,6 +832,7 @@ ActionHandlerHelper.prototype.uploadShapeFile = function () {
                 $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
             }
             else {
+                // userDraw = true;
                 that.processShapeFile(this.files[0]);
             }
         }
@@ -834,43 +860,59 @@ ActionHandlerHelper.prototype.processShapeFile = function (f) {
     this.JSZip = new JSZip()
     this.JSZip.loadAsync(f)
         .then(function (zip) {
-            let reader = new FileReader();
-            reader.onload = function (e) {
-                shp(reader.result).then(function (geojson) {
-                    try{
-                        getSimplifiedGeojson(geojson.features[0])
-                            .then(function (geojson) {
-                                $("#polyUploadSpinner").hide()
-                                let dateAfter = new Date();
-                                $title.append($("<span>", {
-                                    "class": "small",
-                                    text: " (loaded in " + (dateAfter - dateBefore) + "ms)"
-                                }));
-
-                                zip.forEach(function (relativePath, zipEntry) {
-                                    $fileContent.append($("<li>", {
-                                        text: zipEntry.name
+            let typeCheck = { shp: false, shx: false, dbf: false, prj: false }
+            zip.forEach(function (relativePath, zipEntry) {
+                let extension = zipEntry.name.split('.')
+                typeCheck[extension[extension.length - 1]] = true
+            });
+            if(typeCheck.shp && typeCheck.shx && typeCheck.dbf && typeCheck.prj){
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    shp(reader.result).then(function (geojson) {
+                        try {
+                            getSimplifiedGeojson(geojson.features[0])
+                                .then(function (geojson) {
+                                    $("#polyUploadSpinner").hide()
+                                    let dateAfter = new Date();
+                                    $title.append($("<span>", {
+                                        "class": "small",
+                                        text: " (loaded in " + (dateAfter - dateBefore) + "ms)"
                                     }));
-                                });
-                                $("#shapeFileModal .submitPoly").show()
-                                $("#shapeFileModal .submitPoly").unbind().click(function () {
-                                    that.drawAndSubmitUploadPoly(geojson)
+                                    zip.forEach(function (relativePath, zipEntry) {
+                                        $fileContent.append($("<li>", {
+                                            text: zipEntry.name
+                                        }));
+                                    });
+                                    $("#shapeFileModal .submitPoly").show()
+                                    $("#shapeFileModal .submitPoly").unbind().click(function () {
+                                        $("#shapeFileModal .submitPoly").hide()
+                                        that.drawAndSubmitUploadPoly(geojson)
+                                    })
                                 })
-                            })
-                    }
-                        // Not a shapefile? Wrong format?
-                    catch(error){
-                        $("#polyUploadSpinner").hide()
-                        $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
-                        $result.append($("<div>", {
-                            "class": "alert alert-danger",
-                            "style": "margin-top: 10px;",
-                            text: "Error reading " + f.name + ".  Is this a shape file?"
-                        }));
-                    }
-                })
+                        }
+                            // Not a shapefile? Wrong format?
+                        catch (error) {
+                            $("#polyUploadSpinner").hide()
+                            $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
+                            $result.append($("<div>", {
+                                "class": "alert alert-danger",
+                                "style": "margin-top: 10px;",
+                                text: "Error reading " + f.name + ".  Is this a shape file?"
+                            }));
+                        }
+                    })
+                }
+                reader.readAsArrayBuffer(f)
             }
-            reader.readAsArrayBuffer(f)
+            else{
+                $("#polyUploadSpinner").hide()
+                $("#shapeFileInput").replaceWith($("#shapeFileInput").val('').clone(true));
+                $result.append($("<div>", {
+                    "class": "alert alert-danger",
+                    "style": "margin-top: 10px;",
+                    text: "Error reading " + f.name + ". One or more files are missing."
+                }));
+            }
 
         }, function (e) {
             $("#polyUploadSpinner").hide()
@@ -897,11 +939,37 @@ ActionHandlerHelper.prototype.drawAndSubmitUploadPoly = function (geojson) {
 
     this.headerSent = false;
     this.cleanUp(false, true);
-
     this.populateBottomBarWithClick();
     this.initializeRightPanel();
-
-    this.initializeSubmitBapsButton();
     this.handleLayerChange();
     this.handleDrawPolygonActions();
+}
+
+ActionHandlerHelper.prototype.downloadAreaOfIntrest = function () {
+
+    if (this.enabledActions.length == 0) return
+    let geom = undefined
+    let geomOther = undefined
+
+    $.each(this.enabledActions, function (index, enabledAction) {
+        geom = enabledAction.validGeojson ? enabledAction.validGeojson : geom
+        geomOther = enabledAction.feature ? enabledAction.feature.geojson.geometry : geomOther
+    });
+
+    // we want the result of makevaild but if that does not exist get the original feature
+    geom = geom ? geom : geomOther
+    let title = ((this.sc.headerBap || {}).config || {}).title || "CnRExport"
+
+    var options = {
+        name: title,
+        folder: title,
+        types: {
+            point: 'points',
+            polygon: 'cnrExport',
+            line: 'lines'
+        }
+    }
+
+    let shpExport = multiPolyForExport(geom)
+    shpwrite.download(shpExport, options)
 }

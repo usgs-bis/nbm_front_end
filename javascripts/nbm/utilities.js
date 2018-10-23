@@ -1137,6 +1137,165 @@ function sendGeojsonChunks(featureValue, token) {
     return Promise.all(tempPromises);
 }
 
+function getSimplifiedGeojson(geojson) {
+    var MIN_LIMIT = 100000;
+    var SIG_FIGS = 6;
+    var MAX_LOOPS = 4;
+
+    var geojsonLength = JSON.stringify(geojson.geometry).length;
+
+    if (geojsonLength <= MIN_LIMIT) {
+        return Promise.resolve(geojson);
+    } else if (geojsonLength > 8000000) {
+        SIG_FIGS = 4;
+    } else if (geojsonLength > 3000000) {
+        SIG_FIGS = 5;
+    }
+
+    actionHandlerHelper.showTempPopup("This polygon has been simplified for analysis");
+
+    return new Promise(function (resolve, reject) {
+        setTimeout(function () {
+            if (G_LIMIT) MIN_LIMIT = G_LIMIT;
+            if (G_FIGS) SIG_FIGS = G_FIGS;
+            if (G_LOOPS) MAX_LOOPS = G_LOOPS;
+
+            if (DEBUG_MODE) {
+                console.log("\nInitial geometry length: ", geojsonLength.toLocaleString());
+                console.log("String length limit: ", MIN_LIMIT.toLocaleString());
+                console.log("Sig figs: ", SIG_FIGS.toLocaleString());
+                console.log("Max loops: ", MAX_LOOPS.toLocaleString());
+            }
+
+            var mult = Math.pow(10, 4);
+            var p;
+            var count = 0;
+
+            while (geojsonLength >= MIN_LIMIT && count < MAX_LOOPS) {
+                count++;
+                p = Math.floor(MIN_LIMIT / geojsonLength * mult) / mult;
+                if (DEBUG_MODE) {
+                    console.log("Length: ", geojsonLength);
+                    console.log("p: ", p);
+                }
+                geojson = getSimplifiedGeojsonObject(geojson, p);
+                geojsonLength = JSON.stringify(geojson.geometry).length;
+            }
+
+            if (DEBUG_MODE) {
+                console.log("Number of simplification iterations: ", count.toLocaleString());
+                console.log("Final geometry length: ", JSON.stringify(geojson.geometry).length.toLocaleString(), "\n");
+            }
+
+            geojson.geometry.crs = { "type": "name", "properties": { "name": "EPSG:4326" } };
+
+            resolve(geojson);
+        }, 0);
+    });
+
+}
+
+function sendChunkGeojson(myMap) {
+
+    myMap.featureValue.crs = { "type": "name", "properties": { "name": "EPSG:4326" } };
+    myMap.featureValue = JSON.stringify(myMap.featureValue)
+
+    if (myMap.featureValue.length > WAF_LIMIT) {
+        var token = Math.random().toString();
+        var numChunks = Math.floor(myMap.featureValue.length / WAF_LIMIT);
+
+        if (myMap.featureValue.length % WAF_LIMIT == 0) {
+            numChunks--;
+        }
+
+        var tempPromises = [];
+        var ok = true;
+
+        for (var i = 0; i < numChunks; i++) {
+            var sentMap = {
+                chunkToken: token,
+                numChunks: numChunks,
+                featureValue: myMap.featureValue.substring(i * WAF_LIMIT, (i + 1) * WAF_LIMIT),
+                index: i
+            };
+            tempPromises.push(sendPostRequest(myServer + "/bap/sendChunk", sentMap)
+                .then(function (chunkReturn) {
+                    if (!chunkReturn.success) {
+                        console.log("Got an error in a chunk");
+                        ok = false;
+                    }
+                    Promise.resolve();
+                }));
+        }
+
+        return Promise.all(tempPromises)
+            .then(function () {
+                if (ok) {
+                    myMap.chunkToken = token;
+                    myMap.featureValue = myMap.featureValue.substring(numChunks * WAF_LIMIT, myMap.featureValue.length);
+                    return sendPostRequest(myServer + "/bap/get", myMap)
+
+                } else {
+                    showErrorDialog('There was an error sending chunked geometry to the API. ' +
+                        'If the problem continues, please contact site admin', false);
+                }
+            });
+    } else {
+        return sendPostRequest(myServer + "/bap/get", myMap)
+
+    }
+
+}
+
+function multiPolyForExport(geom) {
+
+    let shpExport = {
+        type: 'FeatureCollection',
+        features: []
+    }
+    // when we use a simplified geom returned from postgres makevalid
+    if (geom.type == "GeometryCollection") {
+        $.each(geom.geometries, function (index, myGeom) {
+            let polygons = myGeom.coordinates
+            $.each(polygons, function (index, poly) {
+                if (myGeom.type == "MultiPolygon") {
+                    shpExport.features.push({ type: 'Feature', geometry: { type: 'Polygon', coordinates: poly, crs: { "type": "name", "properties": { "name": "EPSG:4326" } } } })
+                }
+            });
+        });
+    }
+    else if (geom.type == "MultiPolygon") {
+        let polygons = geom.coordinates
+        $.each(polygons, function (index, poly) {
+            shpExport.features.push({ type: 'Feature', geometry: { type: 'Polygon', coordinates: poly, crs: { "type": "name", "properties": { "name": "EPSG:4326" } } } })
+        });
+    }
+    else {
+        geom.type = 'Polygon'
+        shpExport.features.push({ type: 'Feature', geometry: geom })
+    }
+    return shpExport
+
+}
+
+// brute force, but one less package. used to determine when
+// to reload the page via javascript.
+function getCookie(co){
+    var name = co + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var k = 0; k <ca.length; k++) {
+        var c = ca[k];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
 // return chrome version or 0 if not chrome
 function getChromeVersion() {
     var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
