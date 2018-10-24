@@ -346,7 +346,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
             $(".spProtRadio").show();
         } else {
             highlightRow(null);
-            $(".spProtRadio").hide();
+            $(".spProtRadio").show();
         }
     }
 

@@ -527,8 +527,8 @@ BAP.prototype.GetBapLayers = function () {
 
 /**
  * turn off all layers asociated with baps
- * skips things like basemaps, summerization regions ect.
- * by providing the false flag to getVisableLayers()
+ * skips things like basemaps, summarization regions ect.
+ * by providing the false flag to getVisibleLayers()
  */
 BAP.prototype.turnOffOtherLayers = function (skipID) {
     let that = this;
@@ -600,9 +600,15 @@ BAP.prototype.setPriorityBap = function (checked) {
         }
 
         if (!thisLayer) return
-        
-        $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
 
+        if (layers && layers.length > 1) {
+            let layerZero = $(`#${that.id}BAP #toggleLayer${layers[0].id}`)[0]
+            let layerOne = $(`#${that.id}BAP #toggleLayer${layers[1].id}`)[0]
+            if (!layerZero.checked && layerOne.checked) {
+                thisLayer = layers[1]
+            }
+        }
+        $(`#${that.id}BAP #opacitySliderInput${thisLayer.id}`).val(parseFloat(thisLayer.getOpacity()));
         let helper = $(`#${that.id}BAP #toggleLayer${thisLayer.id}`);
         if (helper) {
             if (!this.hideInputs) {
@@ -643,7 +649,7 @@ BAP.prototype.setPriorityBap = function (checked) {
         });
         // $(`#${that.config.id}Inputs`).hide()
         this.priority = false
-        $(".modifiedPoly").hide()
+        // $(".modifiedPoly").hide()
         this.updateState(true)
     }
 };

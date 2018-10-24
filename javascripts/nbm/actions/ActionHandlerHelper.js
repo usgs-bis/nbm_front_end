@@ -484,13 +484,17 @@ ActionHandlerHelper.prototype.viewSynthCompJson = function () {
 
 ActionHandlerHelper.prototype.showSimplifiedJson = function (id) {
 
+    let modifiedPoly = $(".modifiedPoly");
+
     if (map.hasLayer(this.simplifiedFeature)) {
+        modifiedPoly.removeClass('glyphicon-check').addClass('glyphicon-unchecked');
         this.simplifiedFeature.remove();
     }
     else if (!this.bufferedFeature){
         return
     }
     else {
+        modifiedPoly.removeClass('glyphicon-unchecked').addClass('glyphicon-check');
         this.simplifiedFeature = L.geoJson( this.bufferedFeature,
             {
                 style: function () {
