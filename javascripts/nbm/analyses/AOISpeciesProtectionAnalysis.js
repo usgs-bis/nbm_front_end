@@ -15,6 +15,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         'all': 'Species'
     };
     let Specieslayer = []
+    var currentPlaceName
 
 
     const numberWithCommas = (x) => {
@@ -49,7 +50,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         const poi = actionHandlerHelper.getSearchActionHandler().getPOI()
 
         if (poi && poi.selectedId) {
-            const placeName = poi.selectedName
+            currentPlaceName = poi.selectedName
             this.getSpeciesProtection(poi.selectedId)
                 .then(function (data) {
                     chartData = data
@@ -68,8 +69,8 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
                     var helpers = { format: escapeSingleQuotesInString };
                     let html = getHtmlFromJsRenderTemplate('#speciesProtectionInfoTemplate', viewData, helpers);
                     $(`#${bap.id}Chart`).append(html)
-                    $(`#${bap.id}Chart`).find('#speciesBAPSubtitle').html(`Protection Status of Species in ${placeName}`)
-                    $(`#${bap.id}Chart`).find('#speciesTableTitle').html(`${viewData.speciesType} in ${placeName} (${viewData.totalSpecies})`)
+                    $(`#${bap.id}Chart`).find('#speciesBAPSubtitle').html(`Protection Status of Species in ${currentPlaceName}`)
+                    $(`#${bap.id}Chart`).find('#speciesTableTitle').html(`${viewData.speciesType} in ${currentPlaceName} (${viewData.totalSpecies})`)
 
                     initializeSpeciesCharts(chartData);
                     $("input[name='taxaType']").on('change', function () {
@@ -301,7 +302,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         toggleEcoregionSpeciesLayerOff();
         toggleSpeciesHabitatLayerOff();
 
-        var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in the Ecoregion";
+        var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in " + currentPlaceName;
         updateTableTitle('speciesTableTitle', title, dataItem.color, dataItem.index);
         if (!that.bap.priority) {
             $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
@@ -332,6 +333,7 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         var viewData = {
             speciesType: speciesTitleMap[currentSpeciesTaxaType],
             species: currentSpeciesData,
+            placeName: currentPlaceName
         };
         var helpers = { format: escapeSingleQuotesInString };
         var html = getHtmlFromJsRenderTemplate('#speciesTableContainerTemplate', viewData, helpers);
