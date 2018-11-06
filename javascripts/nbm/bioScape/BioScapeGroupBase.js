@@ -109,7 +109,8 @@ BioScapeGroupBase.prototype.toggleLayer = function(layerId, secondPass) {
                             onFinish();
                         } else {
                             showErrorDialog('The following map service is not available: ' + layer.serviceUrl +
-                                '\nPlease try again later.');
+                                '. Some site functionality may not work properly while this service is down' +
+                                '. If the problem continues, please contact site admin.');
                         }
                     });
             });

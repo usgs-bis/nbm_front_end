@@ -85,7 +85,8 @@ BioScapeLegend.prototype.setupLegendFromServer = function() {
         .done(function (data) {
             if(data.error) {
                 showErrorDialog('The following map service is not available: ' + self.serviceBaseUrl +
-                    ' Please try again later.');
+                    '. Some site functionality may not work properly while this service is down' +
+                    '. If the problem continues, please contact site admin.');
                 self.clear();
                 return;
             }
