@@ -139,7 +139,7 @@ AnalysisHelper.prototype.getDataRequests = function (inputFeature, layer, minIdx
         sw: featureBounds.getSouthWest(),
         ne: featureBounds.getNorthEast()
     };
-    var yearsPerRequest = 3;
+    var yearsPerRequest = 50;
     var years = [];
     var j = 0;
     for (var i = 0; i <= length; i++) {

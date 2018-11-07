@@ -637,11 +637,14 @@ function sendJsonRequestHandleError(url, timeout, params) {
         });
 }
 
+let checkedUrls = []
 function sendAjaxRequest(options, skipErrorMessage) {
     return Promise.resolve(
         $.ajax(options)
             .fail(function () {
                 if (!skipErrorMessage) {
+                    if (checkedUrls.indexOf(options.url) != -1) return;
+                    checkedUrls.push(options.url)
                     showErrorDialog('Error making request to ' + options.url +
                         '. Some site functionality may not work properly while this service is down' +
                         '. If the problem continues, please contact site admin.', 'Error', options);
