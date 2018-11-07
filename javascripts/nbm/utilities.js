@@ -127,14 +127,14 @@ function showErrorDialog(html, warning, options) {
         },
         html);
 
-    if (options) {
-        $.getJSON(myServer + "/main/checkService", options)
-            .done(function (data) {
-                if (DEBUG_MODE) {
-                    console.log("Check service response:", data);
-                }
-            });
-    }
+    // if (options) {
+    //     $.getJSON(myServer + "/main/checkService", options)
+    //         .done(function (data) {
+    //             if (DEBUG_MODE) {
+    //                 console.log("Check service response:", data);
+    //             }
+    //         });
+    // }
 }
 
 /**

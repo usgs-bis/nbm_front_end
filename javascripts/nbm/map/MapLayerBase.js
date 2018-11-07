@@ -15,9 +15,8 @@ var MapLayerBase = function(serviceUrl, leafletLayer, identifyAttributes, layerC
     this.downloader = undefined;
     this.isValid = undefined;
     this.layerCopy = layerCopy;
-    if (this.layerCopy) {
+    if(this.layerCopy) {
         this.layerCopy.setOpacity(0.0);
-        map.addLayer(this.layerCopy);
     }
 };
 /**
@@ -25,12 +24,20 @@ var MapLayerBase = function(serviceUrl, leafletLayer, identifyAttributes, layerC
  */
 MapLayerBase.prototype.addToMap = function() {
     map.addLayer(this.leafletLayer);
+    if (this.layerCopy) {
+        // this.layerCopy.setOpacity(0.0);
+        map.addLayer(this.layerCopy);
+    }
 };
 /**
  * Removes the layer from the Leaflet map.
  */
 MapLayerBase.prototype.removeFromMap = function() {
     map.removeLayer(this.leafletLayer);
+    if (this.layerCopy) {
+        // this.layerCopy.setOpacity(0.0);
+        map.removeLayer(this.layerCopy);
+    }
 };
 // /**
 //  * Retrieves metadata about the map service from the map service itself.

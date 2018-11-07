@@ -96,7 +96,10 @@ BAP.prototype.getInfoDivInfo = function () {
 };
 
 BAP.prototype.initializeWidgets = function () {
-
+    let layerInputs = this.getLayerInputs();
+    if (this.isNpn) {
+        console.log(layerInputs)
+    }
     if (!this.config.charts) return;
 
     var that = this;
@@ -282,12 +285,17 @@ BAP.prototype.bindClicks = function () {
                 }
                 this.checked = true
                 that.turnOffOtherLayers(layer.id)
-                layer.turnOnLayer()
-                    .then(function () {
-                        that.checked = true
-                        that.showTimeSlider(layer.timeIndex)
-                        that.updateState(true)
-                    })
+                console.log(layer.notCompatable)
+                console.log(layer)
+
+                if (!layer.mapLayer.notCompatable) {
+                    layer.turnOnLayer()
+                        .then(function () {
+                            that.checked = true
+                            that.showTimeSlider(layer.timeIndex)
+                            that.updateState(true)
+                        })
+                }
             } else {
                 layer.turnOffLayer()
                 that.updateState(true)

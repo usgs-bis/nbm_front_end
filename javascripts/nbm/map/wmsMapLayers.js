@@ -503,6 +503,7 @@ WmsMapLayer.prototype.getInfoFromWmsGetCapabilities = function() {
             return self.wmsCapabilitiesInfo;
         })
         .catch(function(err) {
+            self.notCompatable = true;
             console.log(err);
             return Promise.reject();
         });

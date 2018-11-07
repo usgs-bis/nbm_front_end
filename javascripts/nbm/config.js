@@ -20,10 +20,10 @@ if (myServer.indexOf("igskbac") !== -1) {
 }
 
 // FOR DEVELOPMENT 
-// myEnv = "dev"
-// myServer = "http://localhost:8080/bcb";
+myEnv = "dev"
+myServer = "http://localhost:8080/bcb";
 //myServer = "https://dev-api.sciencebase.gov/bcb";
-//myServer = "https://my-beta.usgs.gov/bcb";
+// myServer = "https://my-beta.usgs.gov/bcb";
 
 
 var allowsMixedContent = undefined;
