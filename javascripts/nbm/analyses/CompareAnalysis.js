@@ -39,6 +39,10 @@ function CompareAnalysis(config, bap) {
         let time1 = layer1.getTimeInfo();
         let time2 = layer2.getTimeInfo();
 
+        if (!time1 || !time2) {
+            return;
+        }
+
         button = $(selector).find('#getData');
         button.on('click', function () {
             that.submitData("Larger or more complex polygons will take longer to process", feature);

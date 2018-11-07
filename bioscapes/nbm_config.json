@@ -48,7 +48,7 @@
             "layers": [
                 {
                     "title": "First Leaf by Year",
-                    "serviceUrl": "https://geoserver-dev.usanpn.org/geoserver/si-x/wms?",
+                    "serviceUrl": "https://geoserver.usanpn.org/geoserver/si-x/wms?",
                     "serviceType": "tileLayer.wms",
                     "metadataSBId": "591c6ec6e4b0a7fdb43dea8a",
                     "featureName": "average_leaf_prism",
@@ -73,7 +73,7 @@
                 },
                 {
                     "title": "First Bloom",
-                    "serviceUrl": "https://geoserver-dev.usanpn.org/geoserver/si-x/wms?",
+                    "serviceUrl": "https://geoserver.usanpn.org/geoserver/si-x/wms?",
                     "serviceType": "tileLayer.wms",
                     "metadataSBId": "5ac3b12ee4b0e2c2dd0c2b95",
                     "featureName": "average_bloom_prism",
@@ -193,7 +193,7 @@
                 },
                     {
                     "title": "Phenocasts",
-                    "serviceUrl": "https://geoserver-dev.usanpn.org/geoserver/gdd/wms?",
+                    "serviceUrl": "https://geoserver.usanpn.org/geoserver/gdd/wms?",
                     "serviceType": "tileLayer.wms",
                     "metadataSBId": "5bacf0e3e4b08583a5d10c7f",
                     "featureName": "agdd",

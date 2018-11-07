@@ -57,8 +57,11 @@ BioScapeLayer.prototype.updateLegendUrl = function() {
 
 BioScapeLayer.prototype.turnOnLayer = function() {
     var that = this;
+    if (that.notCompatable) {
+        return Promise.reject();
+    }
     this.enabled = true;
-    bioScape.pendingLayers.push(this) // add layer to list of pending layers so we can remember to turn it off after it loads 
+    bioScape.pendingLayers.push(this) // add layer to list of pending layers so we can remember to turn it off after it loads
     return BioScapeLayerBase.prototype.turnOnLayer.call(this)
         .then(function(data) {
             if(data) {

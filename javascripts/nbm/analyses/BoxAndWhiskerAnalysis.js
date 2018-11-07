@@ -40,6 +40,10 @@ var BoxAndWhiskerAnalysis = function (serverAP, bap) {
         timeSlider = widgetHelper.addTimeSlider();
         let time = layer.getTimeInfo();
 
+        if (!time) {
+            return;
+        }
+
         button = $(selector).find('#getData');
         button.on('click', function () {
             that.submitData("Larger or more complex polygons will take longer to process", feature);

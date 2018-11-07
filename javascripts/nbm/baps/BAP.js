@@ -96,7 +96,6 @@ BAP.prototype.getInfoDivInfo = function () {
 };
 
 BAP.prototype.initializeWidgets = function () {
-
     if (!this.config.charts) return;
 
     var that = this;
@@ -282,12 +281,15 @@ BAP.prototype.bindClicks = function () {
                 }
                 this.checked = true
                 that.turnOffOtherLayers(layer.id)
-                layer.turnOnLayer()
-                    .then(function () {
-                        that.checked = true
-                        that.showTimeSlider(layer.timeIndex)
-                        that.updateState(true)
-                    })
+
+                if (!layer.mapLayer.notCompatable) {
+                    layer.turnOnLayer()
+                        .then(function () {
+                            that.checked = true
+                            that.showTimeSlider(layer.timeIndex)
+                            that.updateState(true)
+                        })
+                }
             } else {
                 layer.turnOffLayer()
                 that.updateState(true)
@@ -352,6 +354,12 @@ BAP.prototype.setEmptyBap = function () {
  * otherwise start bap as default
  */
 BAP.prototype.initializeBAP = function () {
+    let layerInputs = this.getLayerInputs()
+
+    let okay = true;
+    $.each(layerInputs, function(index, l) {
+        if (l.mapLayer.notCompatable) okay = false;
+    });
 
     let that = this;
 
@@ -362,6 +370,7 @@ BAP.prototype.initializeBAP = function () {
             bioScape.bapLoading(that.id,false)
         }
     })
+
 
     // build the widgets
     this.initializeWidgets();
@@ -386,11 +395,11 @@ BAP.prototype.initializeBAP = function () {
 
     // try to load the bap state
     try {
-        if (this.loadBapState()) { } // bap state loaded successfully 
+        if (this.loadBapState()) { } // bap state loaded successfully
         else {
-            // bap state did not load or there is no state to load 
+            // bap state did not load or there is no state to load
             const p = ((that.actionRef || {}).config || {}).priority
-            if (p == this.id || (!p && bioScape.defaultPriority == this.id)) {
+            if (okay && (p == this.id || (!p && bioScape.defaultPriority == this.id))) {
                 $(`#${that.id}BapCase #priorityBap${that.id}`).click()
                 $(`#${that.id}BapCase div.inputExpander`).click()
             }
@@ -404,6 +413,16 @@ BAP.prototype.initializeBAP = function () {
     }
 
     bioScape.bapLoading(this.id, true)
+
+    if (!okay) {
+        this.disableSelf()
+    }
+};
+
+BAP.prototype.disableSelf = function() {
+    this.htmlElement.css({
+        color: "gray"
+    })
 };
 
 
