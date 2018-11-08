@@ -371,6 +371,7 @@ select option {
     color: lightblue;
     border-radius: 7px;
     margin-bottom: 5px;
+    cursor: pointer;
 }
 .bioScapeTitle{
     white-space: nowrap;

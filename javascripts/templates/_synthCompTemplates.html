@@ -166,7 +166,7 @@
         &nbsp;
             <div id="{{:id}}" class="moreInfo" style="display: inline-block;white-space:nowrap;">
                 <i class="fa fa-circle fa-first" aria-hidden="true"></i>
-                <i class="fa fa-info-circle fa-second" aria-hidden="true"></i>
+                <i class="fa fa-info-circle fa-second" data-toggle="tooltip" data-placement="top" title="Information" aria-hidden="true"></i>
             </div>
         {{/if}}
         <div id="priorityBapInput{{:id}}" class="priorityBap">
@@ -211,7 +211,7 @@
                             <span>{{:title == "Habitat Map" ? "Species Habitat" : title}}</span>
                             <span id="{{:id}}layerMoreInfo" style="white-space:nowrap; margin-left: 5px;">
                                 <i class="fa fa-circle fa-first hideBaseMapLayer" aria-hidden="true" data-original-title></i>
-                                <i class="fa fa-info-circle fa-second layerMoreInfo hideBaseMapLayer" aria-hidden="true" data-layer="{{:divId}}"></i>
+                                <i class="fa fa-info-circle fa-second layerMoreInfo hideBaseMapLayer" style="padding-left: 1px;" data-toggle="tooltip" data-placement="top" title="Information" aria-hidden="true" data-layer="{{:divId}}"></i>
                             </span>
                         
                         </div>
