@@ -33,6 +33,7 @@ var BAP = function (serverAP, leaveOutJson, actionRef) {
     this.priority = false;
     this.isNpn = false;
     this.attribution = "";
+    this.sharedData = {};
 
     if (!$(`#${this.id}BAP`).length) $("#synthesisCompositionBody").append(getHtmlFromJsRenderTemplate('#emptyBapTemplate', { id: this.id }));
     this.htmlElement = $("#" + this.id + "BapCase");

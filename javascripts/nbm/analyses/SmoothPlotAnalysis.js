@@ -73,6 +73,11 @@ function SmoothPlotAnalysis(config, bap) {
 
     let ts = widgetHelper.addTimeSlider()
 
+    this.hideChart = function () {
+        let that = this;
+        $(selector).find(`#ridgeLinePlot${that.bap.id}`).hide()
+    }
+
     this.buildChart = function (chartData, id, divId) {
         if (!divId) divId = "ridgeLinePlot"
         let that = this
@@ -229,6 +234,7 @@ function SmoothPlotAnalysis(config, bap) {
                         .duration(200)
                         .style("opacity", .9);
                     div	.html(toolTipLabel(d, buk))
+                        .style("text-align", "center")
                         .style("left", (d3.event.layerX) + "px")
                         .style("top", (d3.event.layerY + 25) + "px");
                 })
@@ -392,8 +398,23 @@ function SmoothPlotAnalysis(config, bap) {
             return 1
         }
 
+        function formatDate(date, year) {
+            //The year sent in is the end of the prior year. The number here doesn't even really matter that much,
+            //since we just display MMM DD. But we have to add the year because FF browsers don't support parsing
+            //dates from just the month and day we were sending in. The dates were always one day off, so we add a day.
+            //Not really sure why that's happening.
+            year++;
+            let d = new Date(year + "-" + date)
+            d.setDate(d.getDate() + 1);
+            return AmCharts.formatDate(d, "MMM DD");
+        }
+
         function toolTipLabel(d, buk) {
-            return "<p>Year: <label>" + d.key + "</label></p>"
+            return "Year: <b>" + d.key + "</b><br>" +
+                "Mean: <b>" + formatDate(bap.sharedData[d.key].mean, d.key) + "</b><br>" +
+                "Median: <b>" + formatDate(bap.sharedData[d.key].median, d.key) + "</b><br>" +
+                "Minimum: <b>" + formatDate(bap.sharedData[d.key].minimum, d.key) + "</b><br>" +
+                "Maximum: <b>" + formatDate(bap.sharedData[d.key].maximum, d.key) + "</b><br>"
         }
 
         if (divId === "ridgeLinePlot") {

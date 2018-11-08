@@ -51,6 +51,10 @@ function HistogramAnalysis(config, bap) {
 
     let ts = widgetHelper.addTimeSlider()
 
+    this.hideChart = function () {
+        $(selector).find(`#histogramPlot${id}`).hide()
+    }
+
 
     this.buildChart = function (chartData, id) {
 

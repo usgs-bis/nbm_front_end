@@ -98,6 +98,9 @@ var BoxAndWhiskerAnalysis = function (serverAP, bap) {
         toggleSpinner();
         timeSlider.slider('disable');
         $(selector).find(".boxPlot").hide();
+        $.each(that.bap.widgets, function (index, widget) {
+            widget.hideChart();
+        });
         widgetHelper.getRasterData(inputFeature, layer, [values[0], values[1]], that.bap.config.bapProperties.npnProperty)
             .then(function (data) {
                 that.bap.rawJson = JSON.parse(JSON.stringify(data));//deep clone
@@ -155,10 +158,14 @@ var BoxAndWhiskerAnalysis = function (serverAP, bap) {
 
     };
 
+    this.hideChart = function () {
+    }
 
     this.buildChart = function (chartData, id) {
         that.updateTitle(chartData)
         $(selector).find(".boxPlot").show()
+
+        chart = undefined;
 
         Object.keys(chartData).forEach(function (year) {
             var bWData = getBoxPlotData(year,chartData[year]);
@@ -248,7 +255,7 @@ var BoxAndWhiskerAnalysis = function (serverAP, bap) {
             return a - b;
         });
 
-        // var mean = parseInt(getMean(arr), 10);
+        var mean = parseInt(getMean(arr), 10);
         var median = getMedian(arr);
         var lowerHinge = getTukeyQuartile(arr, 1);
         var upperHinge = getTukeyQuartile(arr, 3);
@@ -268,6 +275,19 @@ var BoxAndWhiskerAnalysis = function (serverAP, bap) {
             }
             return newArr;
         }, []);
+
+        that.bap.sharedData[date] = {
+            date: new Date(date),
+            highThreshold: getDateForChart(highOutliers > maximum ? maximum : highOutliers, date),
+            lowThreshold: getDateForChart(lowOutliers < minimum ? minimum : lowOutliers, date),
+            lowerHinge: getDateForChart(lowerHinge, date),
+            median: getDateForChart(median, date),
+            minimum: getDateForChart(minimum, date),
+            maximum: getDateForChart(maximum, date),
+            upperHinge: getDateForChart(upperHinge, date),
+            mean: getDateForChart(mean, date),
+            outliers: outliers
+        }
 
         return {
             date: new Date(date),
