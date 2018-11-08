@@ -428,9 +428,13 @@ var Initializer = (function(initializer) {
             var mobileContainer = $('#mobileBioScapeLegendContainer');
             mobileContainer.html( mobileContainer.html() ? '' : $('#legendDialog').html());
         } else {
-            createDialog('#legendDialog', 'Legend', {height: 500, width: 400});
+            if ($("#legendDialog").is(":visible")) {
+                $("button.ui-dialog-titlebar-close").click();
+            } else {
+                createDialog('#legendDialog', 'Legend', {height: 500, width: 400});
+            }
         }
-        toggleLegendCullButton();
+        // toggleLegendCullButton();
     }
 
     /**
