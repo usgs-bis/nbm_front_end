@@ -375,6 +375,7 @@ function CompareAnalysis(config, bap) {
                         .duration(200)
                         .style("opacity", .9);
                     tooltip1.html(getToolTipHTML(d, "LEAF"))
+                        .style("text-align", "center")
                         .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
@@ -399,6 +400,7 @@ function CompareAnalysis(config, bap) {
                         .duration(200)
                         .style("opacity", .9);
                     tooltip2.html(getToolTipHTML(d, "BLOOM"))
+                        .style("text-align", "center")
                         .style("left", (d3.event.layerX < 300 ? d3.event.layerX +15: d3.event.layerX - 130) + "px")
                         .style("top", (d3.event.layerY) + "px");
                 })
@@ -505,11 +507,15 @@ function CompareAnalysis(config, bap) {
             let processedData = []
             for (let currentYear in rawData[0]) {
                 let adv = rawData[0][currentYear].reduce(getSum) / rawData[0][currentYear].length
-                processedData.push({ year: currentYear, DOY: adv, value: 15 })
+                let min = rawData[0][currentYear].reduce((a, b) => Math.min(a, b))
+                let max = rawData[0][currentYear].reduce((a, b) => Math.max(a, b))
+                processedData.push({ year: currentYear, DOY: adv, value: 15, min: min, max: max })
             }
             for (let currentYear in rawData[1]) {
                 let adv = rawData[1][currentYear].reduce(getSum) / rawData[1][currentYear].length
-                processedData.push({ year: currentYear, DOY: adv, value: 15 })
+                let min = rawData[1][currentYear].reduce((a, b) => Math.min(a, b))
+                let max = rawData[1][currentYear].reduce((a, b) => Math.max(a, b))
+                processedData.push({ year: currentYear, DOY: adv, value: 15, min: min, max: max })
             }
             return processedData
 
@@ -552,15 +558,16 @@ function CompareAnalysis(config, bap) {
         }
 
         function getToolTipHTML(d, type) {
+            let idx = type === "LEAF" ? 0 : 1;
+            let title = type === "LEAF" ? "First Leaf" : "First Bloom"
 
-            let detail = type == "LEAF" ? `Leaf Index: <label>${dateFromDay(2018, d.values[0].DOY)} </label> <br>` : `Bloom Index: <label>${dateFromDay(2018, d.values[1].DOY)}</label>`
-
-            let html =
-                `<p>
-                Year: <label>${d.key}</label> <br>
-                ${detail}
-            </p>`
-            return html
+            return `
+                <b>${title}</b><br>
+                Year: <b>${d.key}</b><br>
+                Mean: <b>${dateFromDay(2018, d.values[idx].DOY)} </b><br>
+                Minimum: <b>${dateFromDay(2018, d.values[idx].min)} </b><br>
+                Maximum: <b>${dateFromDay(2018, d.values[idx].max)} </b><br>
+                `
         }
 
         if (divId === "comparePlot") {
