@@ -90,6 +90,7 @@ EsriMapLayer.prototype.verifyService = function() {
  */
 var EsriTiledMapLayer = function(properties, identifyAttributes) {
     EsriMapLayer.call(this, properties.url, L.esri.tiledMapLayer(properties), identifyAttributes);
+    this.leafletLayer.on("requestend", showSpinner);
 };
 inherit(EsriMapLayer, EsriTiledMapLayer);
 
