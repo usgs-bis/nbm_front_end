@@ -362,7 +362,9 @@ var AmChartsHelper = (function(helper) {
             //since we just display MMM DD. But we have to add the year because FF browsers don't support parsing
             //dates from just the month and day we were sending in.
             year++;
-            return AmCharts.formatDate(new Date(year + "-" + date), "MMM DD");
+            let d = new Date(year + "-" + date)
+            d.setDate(d.getDate() + 1);
+            return AmCharts.formatDate(d, "MMM DD");
         }
     }
 
