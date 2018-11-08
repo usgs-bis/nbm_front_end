@@ -9,7 +9,7 @@
     "globalTimeSlider": {
         "autoRangeAdjust": true,
         "startDate": "1981",
-        "endDate": "2017",
+        "endDate": "2018",
         "defaultDate": 2010,
         "rangeMinStart": 2005,
         "rangeMaxStart": 2015
