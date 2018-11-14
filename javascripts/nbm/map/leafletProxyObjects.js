@@ -4,8 +4,10 @@ var LAT_MIN = -60;
 var MAP_COORDINATES_WIDTH = 360;
 var MAP_OFFSET = 180;
 var EDGE_OF_MAP_THRESHOLD = 500;
-var MAP_ITITIAL_CENTER = [40,-86];
+var MAP_ITITIAL_CENTER = [40,-98];
 var MAP_INITIAL_ZOOM = 5;
+
+let usBounds = L.latLngBounds(L.latLng(21, -134), L.latLng(51, -63))
 
 
 L.LatLng.prototype.getLatForDisplay = function() {
@@ -64,7 +66,14 @@ var LeafletMapService = (function (leafletMapService){
             // maxZoom: maxZoom
         });
 
-        map.setView(MAP_ITITIAL_CENTER, MAP_INITIAL_ZOOM);
+        // map.setView(MAP_ITITIAL_CENTER, MAP_INITIAL_ZOOM);
+
+        if (!isVerticalOrientation()) {
+            centerMapRight(usBounds);
+        } else {
+            centerMapBottom(usBounds);
+        }
+
         var scale = new Scale();
         updateLatLngDisplay(map.getCenter());
         map
