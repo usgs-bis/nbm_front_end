@@ -14,81 +14,48 @@ function highlightRow(sppCode) {
     }
 }
 
-function toggleEcoregionSpeciesLayer(sppcode) {
-    showSpinner();
-    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
-    if(!Spplayer.length) {
-        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Range"})
-        if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
-            hideSpinner();
-            return
-        }
-        let id = Spplayer[0].actionConfig.baps[0]
-        $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
+// function toggleEcoregionSpeciesLayer(sppcode) {
+//     showSpinner();
+//     let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
+//     if(!Spplayer.length) {
+//         Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Species Range"})
+//         if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
+//             hideSpinner();
+//             return
+//         }
+//         let id = Spplayer[0].actionConfig.baps[0]
+//         $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
+//
+//     }
+//     Spplayer = Spplayer[0]
+//     if (Spplayer.mapLayer.leafletLayer.wmsParams.CQL_FILTER !== `SppCode='${sppcode}'`) {
+//         Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sppcode}'`})
+//         Spplayer.updateLegendUrl();
+//         Spplayer.mapLayer.leafletLayer.on("load",function() {
+//             hideSpinner();
+//         });
+//         toggleSpeciesHabitatLayerOff()
+//     } else {
+//         // document.getElementById(`${sppcode}` + 'RangeRB').checked = false
+//         sppcode = null
+//         toggleEcoregionSpeciesLayerOff()
+//         hideSpinner();
+//     }
+//     highlightRow(sppcode);
+// }
+//
+// function toggleEcoregionSpeciesLayerOff() {
+//     let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
+//     if(!Spplayer.length) {
+//         return
+//     }
+//     Spplayer = Spplayer[0]
+//     Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='none'`})
+//     Spplayer.updateLegendUrl();
+// }
 
-    }
-    Spplayer = Spplayer[0]
-    if (Spplayer.mapLayer.leafletLayer.wmsParams.CQL_FILTER !== `SppCode='${sppcode}'`) {
-        Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='${sppcode}'`})
-        Spplayer.updateLegendUrl();
-        Spplayer.mapLayer.leafletLayer.on("load",function() {
-            hideSpinner();
-        });
-        toggleSpeciesHabitatLayerOff()
-    } else {
-        // document.getElementById(`${sppcode}` + 'RangeRB').checked = false
-        sppcode = null
-        toggleEcoregionSpeciesLayerOff()
-        hideSpinner();
-    }
-    highlightRow(sppcode);
-}
-
-function toggleEcoregionSpeciesLayerOff() {
-    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Species Range"})
-    if(!Spplayer.length) {
-        return
-    }
-    Spplayer = Spplayer[0]
-    Spplayer.mapLayer.leafletLayer.setParams({CQL_FILTER:`SppCode='none'`})
-    Spplayer.updateLegendUrl();
-}
-
-function toggleSpeciesHabitatLayer(sppcode) {
-    showSpinner();
-    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
-    if(!Spplayer.length) {
-        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
-        if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
-            hideSpinner();
-            return
-        }
-        let id = Spplayer[0].actionConfig.baps[0]
-        $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
-
-    }
-    Spplayer = Spplayer[0]
-    if (Spplayer.mapLayer.leafletLayer.wmsParams.layers !== sppcode) {
-        Spplayer.mapLayer.leafletLayer.setParams({layers:sppcode})
-        Spplayer.updateLegendUrl();
-        if (sppcode == "") {
-            Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
-        }
-        Spplayer.mapLayer.leafletLayer.on("load",function() {
-            hideSpinner();
-        });
-        toggleEcoregionSpeciesLayerOff()
-    } else {
-        // document.getElementById(`${sppcode}` + 'HabitatRB').checked = false
-        sppcode = null
-        toggleSpeciesHabitatLayerOff()
-        hideSpinner();
-    }
-    highlightRow(sppcode);
-}
-
-function toggleSpeciesHabitatLayerOff() {
-    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title == "Habitat Map"})
+function toggleLayerOffGeneric(layerName) {
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title === layerName})
     if(!Spplayer.length) {
         return
     }
@@ -96,6 +63,40 @@ function toggleSpeciesHabitatLayerOff() {
     Spplayer.mapLayer.leafletLayer.setParams({layers:''})
     Spplayer.updateLegendUrl();
     Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
+}
+
+function toggleLayerGeneric(commonName, scientificName, sppcode, layerName) {
+    let layerFilter = `${commonName} (${scientificName}) ${sppcode} v1`
+    showSpinner();
+    let Spplayer = bioScape.getVisibleLayers(false).filter(layer=>{return layer.title === layerName})
+    if(!Spplayer.length) {
+        Spplayer = bioScape.getAllLayers(false).filter(layer=>{return layer.title === layerName})
+        if(!Spplayer.length || !Spplayer[0].actionConfig.baps.length) {
+            hideSpinner();
+            return
+        }
+        let id = Spplayer[0].actionConfig.baps[0]
+        $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
+
+    }
+    Spplayer = Spplayer[0]
+    if (Spplayer.mapLayer.leafletLayer.wmsParams.layers !== layerFilter) {
+        Spplayer.mapLayer.leafletLayer.setParams({layers:layerFilter})
+        Spplayer.updateLegendUrl();
+        if (sppcode === "") {
+            Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
+        }
+        Spplayer.mapLayer.leafletLayer.on("load",function() {
+            hideSpinner();
+        });
+        let toggleOff = layerName === "Species Range" ? "Habitat Map" : "Species Range"
+        toggleLayerOffGeneric(toggleOff)
+    } else {
+        sppcode = null
+        toggleLayerOffGeneric(layerName)
+        hideSpinner();
+    }
+    highlightRow(sppcode);
 }
 
 function openLmeSpeciesJson(sciname, commonName) {

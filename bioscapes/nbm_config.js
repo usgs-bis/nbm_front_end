@@ -1,4 +1,4 @@
-{
+let biogeography_bioscape = {
     "id": "5667130ee4b06a3ea36c8be8",
     "title": "National Biogeographic Map",
     "summary": "The National Biogeographic Map is a concept being pursued within the Core Science Analytics, Synthesis and Libraries program. It is intended as a cohesive point of entry to view and interact with all of the biogeographic and biodiversity data systems produced by our program or used within the analytical processes of our group. This bioscape provides the configuration details behind the National Biogeographic Map that drives an online mapping interface.",
@@ -36,7 +36,7 @@
                 "5b747802e4b0f5d5787ed299",
                 "5b7c1ef2e4b0f5d5788601be",
                 "5b86d48ce4b0702d0e7962b5",
-              	"5b96d589e4b0702d0e82700a"
+                "5b96d589e4b0702d0e82700a"
             ],
             "priority": "58bf0b61e4b014cc3a3a9c10"
         }
@@ -122,7 +122,7 @@
                 },
                 {
                     "title": "Species Range",
-                    "serviceUrl": "https://www.sciencebase.gov/geoserver/CONUS_Range_2001v1/wms",
+                    "serviceUrl": "https://www.sciencebase.gov/geoserver/CONUS_Range_2001/wms",
                     "serviceType": "WMS.overlay",
                     "metadataSBId": "",
                     "hideCheckbox": true,
@@ -132,9 +132,8 @@
                     },
                     "leafletProperties": {
                         "format": "image/png",
-                        "layers": "CONUS_Range_2001v1:Species_CONUS_Range_2001v1",
-                        "transparent": true,
-                        "CQL_FILTER": "SppCode='none'"
+                        // "layers": "CONUS_Range_2001v1:Species_CONUS_Range_2001v1",
+                        "transparent": true
                     },
                     "actionConfig": {
                         "displayCriteria": "defaultAlways",
@@ -147,10 +146,10 @@
                 },
                 {
                     "title": "Habitat Map",
-                    "serviceUrl": "https://www.sciencebase.gov/geoserver/CONUS_HabMap_2001v1/wms",
+                    "serviceUrl": "https://www.sciencebase.gov/geoserver/CONUS_HabMap_2001/wms",
                     "serviceType": "WMS.overlay",
                     "metadataSBId": "",
-                  	"hideCheckbox": true,
+                    "hideCheckbox": true,
                     "zoomLimits": {
                         "minZoom": 1,
                         "maxZoom": 18
@@ -191,7 +190,7 @@
                         ]
                     }
                 },
-                    {
+                {
                     "title": "Phenocasts",
                     "serviceUrl": "https://geoserver.usanpn.org/geoserver/gdd/wms?",
                     "serviceType": "tileLayer.wms",

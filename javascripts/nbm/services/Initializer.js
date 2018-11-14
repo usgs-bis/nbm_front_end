@@ -15,13 +15,14 @@ var Initializer = (function(initializer) {
         element: undefined
     };
 
+    // The config objects are defined in the 'bioscapes' directory
     let bioscapeMap = {
-        "biogeography": "bioscapes/nbm_config.json",
-        "terrestrial-ecosystems-2011": "bioscapes/nvcs_class_config.json"
+        "biogeography": biogeography_bioscape,
+        "terrestrial-ecosystems-2011": nvcs_bioscape
     }
 
     function getConfig(bioscape, state) {
-        let path = bioscapeMap[bioscape]
+        let knownConfig = bioscapeMap[bioscape]
         let bioscapeJson = {}
 
         return $.getJSON(myServer + "/bioscape/config/" + bioscape + "/" + myEnv)
@@ -35,10 +36,8 @@ var Initializer = (function(initializer) {
 
                 document.title = apiConfig.sbItem.title;
 
-                if (path) {
-                    return $.getJSON(path, function(config) {
-                        setupPage(bioscapeJson, config, state)
-                    })
+                if (knownConfig) {
+                    setupPage(bioscapeJson, knownConfig, state)
                 } else {
                     setupPage(bioscapeJson, apiConfig.config, state);
                 }

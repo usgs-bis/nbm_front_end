@@ -1,14 +1,14 @@
-{
-    "id": "5b0ef8a9e4b0c39c934b1992",
+let nvcs_bioscape = {
+    "id": "5810cd6fe4b0f497e7975237",
     "title": "GAP/LANDFIRE National Terrestrial Ecosystems 2011",
     "summary": "The GAP/LANDFIRE National Terrestrial Ecosystems represents a highly thematically detailed land cover map of the U.S.  The GAP/LANDFIRE National Terrestrial Ecosystems dataset is produced by the U.S. Geological Survey in collaboration with the LANDIFRE Program. The GAP produces data and tools that help meet critical national challenges such as biodiversity conservation, renewable energy development, climate change adaptation, and infrastructure investment. Learn more about GAP and other GAP data (including protected areas and species habitat maps) at http://gapanalysis.usgs.gov.",
     "lastUpdated": "April 7, 2017",
     "defaultBapMessage": " ",
-  	"hideHowToUse": true,
+    "hideHowToUse": true,
     "elevation" : {
-	    "elevationSource" : "https://nationalmap.gov/epqs/pqs.php?",
-  		"elevationTimeout" : "250"
-	},
+        "elevationSource" : "https://nationalmap.gov/epqs/pqs.php?",
+        "elevationTimeout" : "250"
+    },
     "rightPanelMessage": "Identify a location on the map to find out about the Ecosystems that occur there.",
     "layerSections": [
         {
@@ -17,7 +17,7 @@
             "expand": true,
             "opacityControl": true,
             "layers": [
-               
+
                 {
                     "title": "Class",
                     "serviceUrl": "https://www.sciencebase.gov/geoserver/nvcs/wms",
@@ -31,11 +31,11 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60",
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da",
+                            "582a1819e4b01fad8726554a"
                         ],
                         "additionalParams": {
                             "layerLevel": 0,
@@ -57,11 +57,11 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60",
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da",
+                            "582a1819e4b01fad8726554a"
                         ],
                         "additionalParams": {
                             "layerLevel": 1,
@@ -83,11 +83,11 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60",
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da",
+                            "582a1819e4b01fad8726554a"
                         ],
                         "additionalParams": {
                             "layerLevel": 2,
@@ -109,11 +109,11 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60",
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da",
+                            "582a1819e4b01fad8726554a"
                         ],
                         "additionalParams": {
                             "layerLevel": 3,
@@ -135,11 +135,11 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60",
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da",
+                            "582a1819e4b01fad8726554a"
                         ],
                         "additionalParams": {
                             "layerLevel": 4,
@@ -161,11 +161,11 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60",
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da",
+                            "582a1819e4b01fad8726554a"
                         ],
                         "additionalParams": {
                             "layerLevel": 5,
@@ -187,10 +187,10 @@
                     "actionConfig": {
                         "actionType": "none",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189",
-                            "5ac3cef9e4b0e2c2dd0c2c9a",
-                            "5ac29f8ae4b0e2c2dd0aa625",
-                            "5ac3c947e4b0e2c2dd0c2c60"
+                            "580ff6e4e4b0f497e7960b53",
+                            "580ffa58e4b0f497e7960b5e",
+                            "580a50ece4b0f497e7906700",
+                            "5811385de4b0f497e799c5da"
                         ],
                         "additionalParams": {
                             "layerLevel": 6,
@@ -217,9 +217,9 @@
                         "noDataValue": 0,
                         "lookupProperty": "pixel_value",
                         "baps": [
-                            "5ab93f5fe4b081f61ab9c97f"
+                            "582a1819e4b01fad8726554a"
                         ],
-                       "priority": "5ab93f5fe4b081f61ab9c97f",
+                        "priority": "5ab93f5fe4b081f61ab9c97f",
                         "additionalParams": {
                             "layerLevel": 6,
                             "levelName": "NVCS Ecological System",
@@ -238,7 +238,7 @@
                     "serviceUrl": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer",
                     "serviceType": "esri.tiledMapLayer",
                     "noLegend": true,
-                  	"selected": true,
+                    "selected": true,
                     "thumbnailImage": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/info/thumbnail",
                     "leafletProperties": {
                         "zIndex": 0
@@ -318,7 +318,7 @@
                         "layers": "ecoregion_geom",
                         "transparent": true,
                         "pane": "summarizationPane",
-                      	"opacity": 1
+                        "opacity": 1
                     },
                     "actionConfig": {
                         "displayCriteria": "defaultConditional",
@@ -326,7 +326,7 @@
                         "lookupProperty": "us_l3code",
                         "headerBap": "58b737a3e4b01ccd54ff854d",
                         "baps": [
-                            "5ac4e143e4b0e2c2dd0c9189"
+                            "580ff6e4e4b0f497e7960b53"
                         ]
                     }
                 },
@@ -342,7 +342,7 @@
                         "layers": "lcc_geom",
                         "transparent": true,
                         "pane": "summarizationPane",
-                      	"opacity": 1
+                        "opacity": 1
                     },
                     "actionConfig": {
                         "displayCriteria": "conditional",
@@ -350,7 +350,7 @@
                         "lookupProperty": "area_num",
                         "headerBap": "58c04dece4b014cc3a3bf3cf",
                         "baps": [
-                            "5ac3cef9e4b0e2c2dd0c2c9a"
+                            "580ffa58e4b0f497e7960b5e"
                         ]
                     }
                 },
@@ -365,7 +365,7 @@
                         "layers": "state_geom",
                         "transparent": true,
                         "pane": "summarizationPane",
-                      	"opacity": 1
+                        "opacity": 1
                     },
                     "actionConfig": {
                         "displayCriteria": "conditional",
@@ -373,7 +373,7 @@
                         "lookupProperty": "state_fips",
                         "headerBap": "58c04da0e4b014cc3a3bf3cb",
                         "baps": [
-                            "5ac29f8ae4b0e2c2dd0aa625"
+                            "580a50ece4b0f497e7906700"
                         ]
                     }
                 },
@@ -388,7 +388,7 @@
                         "layers": "county_geom",
                         "transparent": true,
                         "pane": "summarizationPane",
-                      	"opacity": 1
+                        "opacity": 1
                     },
                     "actionConfig": {
                         "displayCriteria": "conditional",
@@ -396,7 +396,7 @@
                         "lookupProperty": "stco_fipsc",
                         "headerBap": "58c04dc5e4b014cc3a3bf3cd",
                         "baps": [
-                            "5ac3c947e4b0e2c2dd0c2c60"
+                            "5811385de4b0f497e799c5da"
                         ]
                     }
                 }

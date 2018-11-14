@@ -643,7 +643,7 @@ function sendAjaxRequest(options, skipErrorMessage) {
         $.ajax(options)
             .fail(function () {
                 if (!skipErrorMessage) {
-                    if (checkedUrls.indexOf(options.url) != -1) return;
+                    // if (checkedUrls.indexOf(options.url) != -1) return;
                     checkedUrls.push(options.url)
                     showErrorDialog('Error making request to ' + options.url +
                         '. Some site functionality may not work properly while this service is down' +
