@@ -648,7 +648,7 @@ BAP.prototype.setPriorityBap = function (checked) {
                 if (helper[0]) {
                     helper[0].checked = false;
                 }
-                helper.click()
+                helper[0].click()
             } else {
                 if (helper[0]) {
                     helper[0].checked = true;
