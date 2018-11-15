@@ -181,8 +181,10 @@
         <tr class="even" style="font-weight: bold; color: lightblue; padding: 5px;">
             <th id="spLeftColTitle" style="width:58%;text-align:left;">Common Name</th>
             <th id="spRightColTitle" style="width:20%;text-align:left;">% Protected</th>
-            <th style="width:11%;text-align:left;">Range</th>
-            <th style="width:11%;text-align:left;">Habitat</th>
+            <th style="width:11%;text-align:left;" data-toggle="tooltip" data-placement="top"
+                        title="Known Range Map">Range</th>
+            <th style="width:11%;text-align:left;" data-toggle="tooltip" data-placement="top"
+                        title="Predicted Habitat Map">Habitat</th>
         </tr>
     </thead>
     <tbody>
@@ -195,7 +197,7 @@
                     <label class="clickSearch spProtRadio">
                         <input type="radio" id="{{:sppcode}}RangeRB" name="spLayer" class="clickSearch" onclick="toggleLayerGeneric('{{:~formatName(common_name)}}', '{{:scientific_name}}', '{{:sppcode}}', 'Species Range')" />
                         <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
-                        title="Range Map">
+                        title="Known Range Map">
                         </span>
                     </label>
                 </td>
@@ -203,7 +205,7 @@
                     <label class="clickSearch spProtRadio">
                         <input type="radio" id="{{:sppcode}}HabitatRB" name="spLayer" class="clickSearch" onclick="toggleLayerGeneric('{{:~formatName(common_name)}}', '{{:scientific_name}}', '{{:sppcode}}', 'Habitat Map')" />
                         <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top"
-                        title="Habitat Map">
+                        title="Predicted Habitat Map">
                         </span>
                     </label>
                 </td>
