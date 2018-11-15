@@ -11,6 +11,7 @@
 var BioScapeGroup = function(id, serverGroup, layers) {
     this.legend = false;
     this.expand = serverGroup.expand;
+    this.selectionType = serverGroup.selectionType;
     this.displayOpacityControl = serverGroup.opacityControl && serverGroup.opacityControl !== undefined;
     var layerHtmlControl = new LayerHtmlControl(this, serverGroup.selectionType, function(layerId) {return $("#" + layerId + " .layer-control")});
     BioScapeGroupBase.call(this, id, serverGroup, layers, layerHtmlControl);
@@ -88,5 +89,7 @@ BioScapeGroup.prototype.addHtmlToPage = function() {
 };
 BioScapeGroup.prototype.updateLayerOpacity = function(layerId, newOpacity) {
     var layer = this.layers[layerId];
-    layer.updateOpacity(newOpacity);
+    if (!layer.disabledOpacity) {
+        layer.updateOpacity(newOpacity);
+    }
 };

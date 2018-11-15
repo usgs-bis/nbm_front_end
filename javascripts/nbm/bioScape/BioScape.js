@@ -16,6 +16,7 @@ var BioScape = function (id, data, sections, summarizationLayers, customBioscape
     this.title = data.title;
     this.summary = data.summary;
     this.sections = sections;
+    this.radioSelections = data.radioSelections;
     this.summarizationLayers = summarizationLayers;
     this.definitionUrl = 'https://www.sciencebase.gov/catalog/item/5667124be4b06a3ea36c8be6';
     this.definition = 'There is no definition available currently, ScienceBase was unreachable.';

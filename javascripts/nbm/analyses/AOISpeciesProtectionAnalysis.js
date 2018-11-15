@@ -35,18 +35,6 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
     }
 
     this.initializeWidget = function () {
-
-        // enable or disable the raster radio buttons based on analysis input
-        Specieslayer = bioScape.getAllLayers(false).filter(layer => { return layer.title == "Species Range" })
-        if (Specieslayer.length) {
-            let Spplayer = Specieslayer[0]
-            $(`#${bap.id}BAP #toggleLayer${Spplayer.id}`).click(function () {
-                if (!($(`#${bap.id}BAP #toggleLayer${Spplayer.id}`)[0] || {}).checked) {
-                   that.turnOffSpecies()
-                }
-            })
-        }
-
         const poi = actionHandlerHelper.getSearchActionHandler().getPOI()
 
         if (poi && poi.selectedId) {
@@ -299,8 +287,8 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
 
         $('#speciesReset').show();
         $(".spProtRadio").show();
-        toggleLayerOffGeneric('Species Range');
-        toggleLayerOffGeneric('Habitat Map');
+        toggleLayerOffGeneric('Species Range', true);
+        toggleLayerOffGeneric('Habitat Map', true);
 
         var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in " + currentPlaceName;
         updateTableTitle('speciesTableTitle', title, dataItem.color, dataItem.index);
@@ -337,8 +325,8 @@ var AOISpeciesProtectionAnalysis = function (bapConfig, bap) {
         };
         var helpers = { format: escapeSingleQuotesInString };
         var html = getHtmlFromJsRenderTemplate('#speciesTableContainerTemplate', viewData, helpers);
-        toggleLayerOffGeneric('Species Range');
-        toggleLayerOffGeneric('Habitat Map');
+        toggleLayerOffGeneric('Species Range', true);
+        toggleLayerOffGeneric('Habitat Map', true);
         $("#speciesTableContainer").html(html);
         $(".spProtRadio").show();
     }

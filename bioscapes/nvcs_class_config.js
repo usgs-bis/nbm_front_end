@@ -10,10 +10,16 @@ let nvcs_bioscape = {
         "elevationTimeout" : "250"
     },
     "rightPanelMessage": "Identify a location on the map to find out about the Ecosystems that occur there.",
+    "radioSelections": {
+        "580ff6e4e4b0f497e7960b53":true,
+        "580ffa58e4b0f497e7960b5e":true,
+        "580a50ece4b0f497e7906700":true,
+        "5811385de4b0f497e799c5da":true,
+        "582a1819e4b01fad8726554a":true
+    },
     "layerSections": [
         {
             "title": "Analysis Layers",
-            "selectionType": "raido",
             "expand": true,
             "opacityControl": true,
             "layers": [

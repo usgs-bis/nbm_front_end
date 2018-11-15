@@ -61,8 +61,10 @@ function toggleLayerOffGeneric(layerName) {
     }
     Spplayer = Spplayer[0]
     Spplayer.mapLayer.leafletLayer.setParams({layers:''})
+    Spplayer.mapLayer.leafletLayer.wmsParams.layers = '';
     Spplayer.updateLegendUrl();
     Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
+    Spplayer.disabledOpacity = true;
 }
 
 function toggleLayerGeneric(commonName, scientificName, sppcode, layerName) {
@@ -79,12 +81,16 @@ function toggleLayerGeneric(commonName, scientificName, sppcode, layerName) {
         $(`#${id}BAP #toggleLayer${Spplayer[0].id}`).click()
 
     }
+
     Spplayer = Spplayer[0]
     if (Spplayer.mapLayer.leafletLayer.wmsParams.layers !== layerFilter) {
         Spplayer.mapLayer.leafletLayer.setParams({layers:layerFilter})
         Spplayer.updateLegendUrl();
         if (sppcode === "") {
+            Spplayer.disabledOpacity = true;
             Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
+        } else {
+            Spplayer.disabledOpacity = false;
         }
         Spplayer.mapLayer.leafletLayer.on("load",function() {
             hideSpinner();

@@ -202,9 +202,9 @@
                     {{for layerInputs}}
                     
                         <div style="display: flex; padding-left: 10px;">
-                            <span class="clickSearch" style="margin-right: 10px; {{if hideCheckbox}}display: none;{{/if}}">
-                                <label class="clickSearch" style="display: flex;">
-                                    <input id="toggleLayer{{:id}}" type="checkbox" class="clickSearch" />
+                            <span class="{{:buttonType}}" style="margin-right: 10px; {{if hideCheckbox}}display: none;{{/if}}">
+                                <label class="{{:buttonType}}" style="display: flex;">
+                                    <input id="toggleLayer{{:id}}" type="checkbox" class="{{:buttonType}}" />
                                     <span class=" fa clickSearch-target" data-toggle="tooltip" data-placement="top" title="Toggle Layer"></span>
                                 </label>
                             </span>

@@ -45,6 +45,7 @@ let biogeography_bioscape = {
         {
             "title": "Analysis Layers",
             "opacityControl": true,
+            "selectionType": "checkbox",
             "layers": [
                 {
                     "title": "First Leaf by Year",

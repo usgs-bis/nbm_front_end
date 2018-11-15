@@ -24,6 +24,7 @@ var BioScapeLayer = function(id, section, layer) {
         bsl.addSynthCompInformation(layer.synthesisComposition);
         //bsl.actionHandler = ActionHandler.createActionHandler(layer.actionConfig);
     }, this);
+    this.selectionType = section.selectionType;
     this.hideCheckbox = layer.hideCheckbox ? true : false;
     this.layerMetadata = undefined;
     this.baseMap = section.title == "Basemaps" ? true : false;

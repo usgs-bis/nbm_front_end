@@ -175,6 +175,15 @@ BAP.prototype.getFullHtml = function () {
         this.attribution = this.getNpnAttribution()
     }
 
+    let buttonType = "clickSearch"
+    if (bioScape.radioSelections && bioScape.radioSelections[this.id]) {
+        buttonType = "clickSearchRadio"
+    }
+
+    $.each(layerInputs, function(index, layer) {
+        layer.buttonType = buttonType
+    })
+
     var apViewModel = {
         id: this.config.id,
         title: title,
@@ -185,6 +194,7 @@ BAP.prototype.getFullHtml = function () {
         hasInputs: layerInputs.length,
         hideInputs: this.hideInputs,
         layerInputs: layerInputs,
+        buttonType: buttonType,
         sectionHtml: widgetHtml,
         imagePath: "", // <-- what is this for?
         attribution: this.attribution
@@ -281,7 +291,10 @@ BAP.prototype.bindClicks = function () {
                     $(`#${that.id}BapCase #priorityBap${that.id}`).click()
                 }
                 this.checked = true
-                that.turnOffOtherLayers(layer.id)
+
+                if (bioScape.radioSelections && bioScape.radioSelections[that.id]) {
+                    that.turnOffOtherLayers(layer.id)
+                }
 
                 if (!layer.mapLayer.notCompatable) {
                     layer.turnOnLayer()
@@ -557,11 +570,11 @@ BAP.prototype.turnOffOtherLayers = function (skipID) {
 
     $.each(visibleLayers, function (index, layer) {
         if (!layer.summarizationRegion && layer.id != skipID) {
-            if ((!String(layer.title).startsWith("PAD-US") && !String(layer.title).startsWith("GAP"))
-                && (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked)) {
+
+            if (($(`#${that.id}BAP #toggleLayer${layer.id}`)[0] || {}).checked) {
                 $(`#${that.id}BAP #toggleLayer${layer.id}`).click()
             }
-            else if (!String(layer.title).startsWith("PAD-US") && !String(layer.title).startsWith("GAP")) {
+            else {
                 layer.turnOffLayer(true)
                 layer.section.layerHtmlControl.handleTurnOff(layer.id)
             }
