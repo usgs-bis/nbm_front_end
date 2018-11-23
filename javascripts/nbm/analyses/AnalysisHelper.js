@@ -117,7 +117,7 @@ AnalysisHelper.prototype.checkSliders = function () {
             $(".gts-tooltip.tooltip-range").each(function(i) {
                 let elWidth = $(this).width();
                 let elCenter = elWidth / 2 + $(this).offset().left;
-                if (Math.abs(elCenter - displayCenter) - 3 < elWidth / 2 + displayWidth / 2) tooClose = true;
+                if (Math.abs(elCenter - displayCenter) < elWidth / 2 + displayWidth / 2) tooClose = true;
             });
 
             if (tooClose) {
@@ -127,7 +127,7 @@ AnalysisHelper.prototype.checkSliders = function () {
                 })
 
                 let topThing = $("#mouseCoordinates");
-                if (topThing.offset().left + topThing.width() + 5 > mapDisplayLeft) {
+                if (topThing.offset().left + topThing.width() + 3 > mapDisplayLeft) {
                     $(".ts-control-holder").css({
                         "padding-top": "27px"
                     })
