@@ -243,6 +243,7 @@ var Initializer = (function(initializer) {
                         let elev = identifiedElevationValue.Elevation_Query.Elevation;
                         elev = elev > -20 ? numberWithCommas(parseInt(elev))  + 'ft' : "No Data"
                         pane.html(elev);
+                        widgetHelper.checkSliders();
                     });
                 }
             }, timeout)

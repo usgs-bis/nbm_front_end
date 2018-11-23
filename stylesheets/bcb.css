@@ -1289,8 +1289,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     border-radius: 10px; 
     display: inline-block; 
     font: bold 15px/30px Georgia;
-    bottom: 140%;
-    left: 0;
+    /*bottom: 140%;*/
+    /*left: 0;*/
     margin-left: -1%;
     padding-top: 0px;
   }
@@ -1302,8 +1302,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     border-top: 10px solid #999999;
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    top: 100%;
-    left: 50%;
+    /*top: 100%;*/
+    /*left: 50%;*/
     margin-left: -5px;
     margin-top: -1px;
   }
@@ -1322,7 +1322,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .GlobalTimeSlider span{
-    background-color: #505050; 
+    background-color: #999;
     /* !important; */
 }
 
@@ -1335,7 +1335,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     visibility: visible;
     margin-left: -2em;
     opacity: unset;
-    bottom: -18px;
+    top: 18px;
     left: 22px;
     transform: rotate(135deg);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -1343,7 +1343,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .GlobalTimeSlider .gts-tooltip .tooltip-arrow, .GlobalTimeSliderRange .gts-tooltip .tooltip-arrow {
-    bottom: -3px;
+    top: 3px;
     left: 50%;
     margin-left: -5px;
     /* border-top: 6px solid rgba(10, 10, 15, .6); */
@@ -1373,7 +1373,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 }
 
 .GlobalTimeSlider .gts-tooltip{
-    bottom: -17px;
+    top: 17px;
     left: -16px;
 }
 
@@ -1610,7 +1610,7 @@ input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
     transform: rotate(225deg);
     font-size: 22px;
     margin-top: -12px;
-    color: #505050;
+    color: #999;
     border: none !important;
     outline-width: 0 !important;
 }
