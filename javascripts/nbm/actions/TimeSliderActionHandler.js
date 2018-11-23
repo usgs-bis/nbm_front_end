@@ -53,8 +53,9 @@ GlobalTimeSlider.prototype.initialize = function () {
 
     var sliderTooltip = function (event, ui) {
         var curValue = ui.value || time.defaultDate;
-        var tooltip = '<div class="gts-tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
-        that.ts.find('.ui-slider-handle').html(tooltip);
+        $("#tooltipInner").text('Map Display: ' + curValue);
+        // var tooltip = '<div class="gts-tooltip map-display"><div id="tooltipInner" class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+        // that.ts.find('.ui-slider-handle').html(tooltip);
     };
 
     this.ts = $("#GlobalTimeSlider").slider({
@@ -67,10 +68,10 @@ GlobalTimeSlider.prototype.initialize = function () {
 
 
     var curValue = time.defaultDate;
-    var tooltip = '<div class="gts-tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+    var tooltip = '<div class="gts-tooltip map-display"><div id="tooltipInner" class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
     that.ts.find('.ui-slider-handle').html(tooltip);
 
-    that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandle");
+    that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandle").css({color:"#999"});
 
 
 
@@ -139,11 +140,21 @@ GlobalTimeSlider.prototype.initialize = function () {
                 }
             })
             var curValue = ui.value || time.defaultDate;
-            var tooltip = '<div class="gts-tooltip"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
-            that.ts.find('.ui-slider-handle').html(tooltip);
+            $("#tooltipInner").text('Map Display: ' + curValue);
+            // var tooltip = '<div class="gts-tooltip map-display"><div class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
+            // that.ts.find('.ui-slider-handle').html(tooltip);
             bioScape.updateState()
+
+            widgetHelper.checkSliders();
+        },
+        slide: function(event, ui) {
+            var curValue = ui.value || time.defaultDate;
+            $("#tooltipInner").text('Map Display: ' + curValue);
+            widgetHelper.checkSliders();
         }
     });
+
+    widgetHelper.checkSliders();
 
     $("#GlobalTimeSliderbutton").click(function () {
 

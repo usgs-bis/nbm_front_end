@@ -46,6 +46,7 @@ AnalysisHelper.prototype.getWidget = function (config, bap) {
 };
 
 AnalysisHelper.prototype.addTimeSlider = function () {
+    let that = this;
     if (this.timeSlider) {
         let t = $("#GlobalTimeSliderRange")
         t.trigger('slidechange');
@@ -67,17 +68,21 @@ AnalysisHelper.prototype.addTimeSlider = function () {
         (min + .5 * (max - min)).toFixed(0)
 
     var sliderTooltip = function (event, ui) {
-
         if (ui.values) {
             t1Value = ui.values[0]
             t2Value = ui.values[1]
         }
 
-        var tooltip1 = '<div class="gts-tooltip"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
-        var tooltip2 = '<div class="gts-tooltip"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip1 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip2 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
         ts.find('span:eq( 0 )').html(tooltip1);
         ts.find('span:eq( 1 )').html(tooltip2);
     };
+
+    var slided = function(event, ui) {
+        that.checkSliders();
+        sliderTooltip(event, ui)
+    }
 
     ts.slider({
         range: true,
@@ -86,13 +91,62 @@ AnalysisHelper.prototype.addTimeSlider = function () {
         step: 1,
         values: [t1Value, t2Value],
         create: sliderTooltip,
-        slide: sliderTooltip,
-        change: sliderTooltip
+        slide: slided,
+        change: slided
     });
-    ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandleRange ");
+    ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandleRange ").css({color:"#999"});
+    this.checkSliders();
 
     this.timeSlider = true;
     return ts
+}
+
+AnalysisHelper.prototype.checkSliders = function () {
+    setTimeout(function() {
+        let tooClose = false;
+        let displayCenter = null;
+        let displayWidth =  null;
+        let mapDisplayLeft = null
+        $(".map-display").each(function(i) {
+            displayWidth = $(this).width();
+            displayCenter = displayWidth / 2 + $(this).offset().left;
+            mapDisplayLeft = $(this).offset().left;
+        })
+
+        if (displayCenter != null) {
+            $(".gts-tooltip.tooltip-range").each(function(i) {
+                let elWidth = $(this).width();
+                let elCenter = elWidth / 2 + $(this).offset().left;
+                if (Math.abs(elCenter - displayCenter) - 3 < elWidth / 2 + displayWidth / 2) tooClose = true;
+            });
+
+            if (tooClose) {
+                $(".map-display").css({
+                    left: "1px",
+                    top: "32px"
+                })
+
+                let topThing = $("#mouseCoordinates");
+                if (topThing.offset().left + topThing.width() + 5 > mapDisplayLeft) {
+                    $(".ts-control-holder").css({
+                        "padding-top": "27px"
+                    })
+                } else {
+                    $(".ts-control-holder").css({
+                        "padding-top": "3px"
+                    });
+                }
+            } else {
+                $(".ts-control-holder").css({
+                    "padding-top": "3px"
+                });
+                $(".map-display").css({
+                    left: "-16px",
+                    top: "17px"
+                })
+            }
+        }
+    }, 100)
 }
 
 AnalysisHelper.prototype.getBufferedFeature = function (feature) {
