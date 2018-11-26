@@ -102,51 +102,51 @@ AnalysisHelper.prototype.addTimeSlider = function () {
 }
 
 AnalysisHelper.prototype.checkSliders = function () {
-    setTimeout(function() {
-        let tooClose = false;
-        let displayCenter = null;
-        let displayWidth =  null;
-        let mapDisplayLeft = null
-        $(".map-display").each(function(i) {
-            displayWidth = $(this).width();
-            displayCenter = displayWidth / 2 + $(this).offset().left;
-            mapDisplayLeft = $(this).offset().left;
-        })
-
-        if (displayCenter != null) {
-            $(".gts-tooltip.tooltip-range").each(function(i) {
-                let elWidth = $(this).width();
-                let elCenter = elWidth / 2 + $(this).offset().left;
-                if (Math.abs(elCenter - displayCenter) < elWidth / 2 + displayWidth / 2) tooClose = true;
-            });
-
-            if (tooClose) {
-                $(".map-display").css({
-                    left: "1px",
-                    top: "32px"
-                })
-
-                let topThing = $("#mouseCoordinates");
-                if (topThing.offset().left + topThing.width() + 3 > mapDisplayLeft) {
-                    $(".ts-control-holder").css({
-                        "padding-top": "27px"
-                    })
-                } else {
-                    $(".ts-control-holder").css({
-                        "padding-top": "3px"
-                    });
-                }
-            } else {
-                $(".ts-control-holder").css({
-                    "padding-top": "3px"
-                });
-                $(".map-display").css({
-                    left: "-16px",
-                    top: "17px"
-                })
-            }
-        }
-    }, 100)
+    // setTimeout(function() {
+    //     let tooClose = false;
+    //     let displayCenter = null;
+    //     let displayWidth =  null;
+    //     let mapDisplayLeft = null
+    //     $(".map-display").each(function(i) {
+    //         displayWidth = $(this).width();
+    //         displayCenter = displayWidth / 2 + $(this).offset().left;
+    //         mapDisplayLeft = $(this).offset().left;
+    //     })
+    //
+    //     if (displayCenter != null) {
+    //         $(".gts-tooltip.tooltip-range").each(function(i) {
+    //             let elWidth = $(this).width();
+    //             let elCenter = elWidth / 2 + $(this).offset().left;
+    //             if (Math.abs(elCenter - displayCenter) < elWidth / 2 + displayWidth / 2) tooClose = true;
+    //         });
+    //
+    //         if (tooClose) {
+    //             $(".map-display").css({
+    //                 left: "1px",
+    //                 top: "32px"
+    //             })
+    //
+    //             let topThing = $("#mouseCoordinates");
+    //             if (topThing.offset().left + topThing.width() + 3 > mapDisplayLeft) {
+    //                 $(".ts-control-holder").css({
+    //                     "padding-top": "27px"
+    //                 })
+    //             } else {
+    //                 $(".ts-control-holder").css({
+    //                     "padding-top": "3px"
+    //                 });
+    //             }
+    //         } else {
+    //             $(".ts-control-holder").css({
+    //                 "padding-top": "3px"
+    //             });
+    //             $(".map-display").css({
+    //                 left: "-16px",
+    //                 top: "17px"
+    //             })
+    //         }
+    //     }
+    // }, 100)
 }
 
 AnalysisHelper.prototype.getBufferedFeature = function (feature) {

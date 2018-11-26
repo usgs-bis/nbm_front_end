@@ -71,9 +71,19 @@ GlobalTimeSlider.prototype.initialize = function () {
     var tooltip = '<div class="gts-tooltip map-display"><div id="tooltipInner" class="tooltip-inner">' + 'Map Display: ' + curValue + '</div><div class="tooltip-arrow"></div></div>';
     that.ts.find('.ui-slider-handle').html(tooltip);
 
-    that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandle").css({color:"#999"});
+    that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandle").css({
+        color:"#bbb",
+        "font-size": "40px",
+        // transform: "rotate(225deg) scaleY(1.5)",
+        top: "-33px"
+    });
 
-
+    $(".map-display").css({
+        left: "1px",
+        top: "24px",
+        // transform: "scaleY(.5) rotate(225deg)",
+        "font-size": "12px"
+    });
 
     // recursive function to fade in the layers
     GlobalTimeSlider.prototype.fade = function (targetOpacity, layer1, layer2, year, fade, timeOut) {
