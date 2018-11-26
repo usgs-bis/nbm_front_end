@@ -72,7 +72,7 @@ GlobalTimeSlider.prototype.initialize = function () {
     that.ts.find('.ui-slider-handle').html(tooltip);
 
     that.ts.find('.ui-slider-handle').removeClass("ui-corner-all ui-state-default").addClass("glyphicon glyphicon-tag customSliderHandle").css({
-        color:"#bbb",
+        color:"#fff",
         "font-size": "40px",
         // transform: "rotate(225deg) scaleY(1.5)",
         top: "-33px"
@@ -81,7 +81,7 @@ GlobalTimeSlider.prototype.initialize = function () {
     $(".map-display").css({
         left: "1px",
         top: "24px",
-        // transform: "scaleY(.5) rotate(225deg)",
+        transform: "rotate(135deg) scaleX(1.3333)",
         "font-size": "12px"
     });
 

@@ -1607,7 +1607,7 @@ input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
 }
 .customSliderHandle {
     background-color: transparent !important;
-    transform: rotate(225deg);
+    transform: scaleX(.75) rotate(225deg);
     font-size: 22px;
     margin-top: -12px;
     color: #999;
