@@ -73,10 +73,11 @@ AnalysisHelper.prototype.addTimeSlider = function () {
             t2Value = ui.values[1]
         }
 
-        var tooltip1 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
-        var tooltip2 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
-        ts.find('span:eq( 0 )').html(tooltip1).css({transform: "scaleY(1) rotate(225deg)"});
-        ts.find('span:eq( 1 )').html(tooltip2).css({transform: "scaleY(1) rotate(225deg)"});
+        var tooltip1 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner scale-helper">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
+        var tooltip2 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner scale-helper">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
+        ts.find('span:eq( 0 )').html(tooltip1).css({transform: "scaleY(.75) rotate(225deg)", top: "-2px"});
+        ts.find('span:eq( 1 )').html(tooltip2).css({transform: "scaleY(.75) rotate(225deg)", top: "-2px"});
+        $(".scale-helper").css({transform: "scaleY(1.3333)"})
     };
 
     var slided = function(event, ui) {

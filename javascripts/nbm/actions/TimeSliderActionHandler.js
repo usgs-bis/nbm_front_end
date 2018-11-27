@@ -75,13 +75,13 @@ GlobalTimeSlider.prototype.initialize = function () {
         color:"#fff",
         "font-size": "40px",
         // transform: "rotate(225deg) scaleY(1.5)",
-        top: "-30px"
+        top: "-25px"
     });
 
     $(".map-display").css({
         left: "-3px",
-        top: "24px",
-        transform: "rotate(135deg) scaleX(1.1111) scaleY(1.1111)",
+        top: "30px",
+        transform: "rotate(135deg) scaleX(1.3333) scaleY(1.3333)",
         "font-size": "12px"
     });
 

@@ -1335,8 +1335,8 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     visibility: visible;
     margin-left: -2em;
     opacity: unset;
-    top: 10px;
-    left: 23px;
+    top: 14px;
+    left: 26px;
     transform: rotate(135deg);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
@@ -1607,7 +1607,7 @@ input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
 }
 .customSliderHandle {
     background-color: transparent !important;
-    transform: scaleX(.9) scaleY(.9) rotate(225deg);
+    transform: scaleX(.75) scaleY(.75) rotate(225deg);
     font-size: 22px;
     margin-top: -12px;
     color: #999;
@@ -1618,7 +1618,7 @@ input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
 .customSliderHandleRange {
     color: white !important;
     background-color: transparent !important;
-    transform: scaleY(.75) rotate(225deg);
+    transform: scaleY(.5) rotate(225deg);
     font-size: 22px;
     margin-top: -12px;
     border: none !important;
@@ -1924,7 +1924,7 @@ div.chartTooltip p{
 }
 
 .ts-control-holder {
-    padding-top: 5px;
+    padding-top: 0;
 }
 
 /*.tooltip-range {*/
