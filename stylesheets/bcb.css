@@ -1356,7 +1356,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 .GlobalTimeSlider .tooltip-inner, .GlobalTimeSliderRange .tooltip-inner {
     max-width: 200px;
-    padding: 4px 8px;
+    padding: 2px 4px;
     color: #ffffff;
     text-align: center;
     text-decoration: none;
@@ -1607,7 +1607,7 @@ input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
 }
 .customSliderHandle {
     background-color: transparent !important;
-    transform: scaleX(.75) rotate(225deg);
+    transform: scaleX(.9) scaleY(.9) rotate(225deg);
     font-size: 22px;
     margin-top: -12px;
     color: #999;
@@ -1618,7 +1618,7 @@ input[type='checkbox'].clickSearchRadio:checked + span.clickSearch-target:after{
 .customSliderHandleRange {
     color: white !important;
     background-color: transparent !important;
-    transform: rotate(225deg);
+    transform: scaleY(.75) rotate(225deg);
     font-size: 22px;
     margin-top: -12px;
     border: none !important;
@@ -1924,8 +1924,12 @@ div.chartTooltip p{
 }
 
 .ts-control-holder {
-    padding-top: 17px;
+    padding-top: 5px;
 }
+
+/*.tooltip-range {*/
+    /*transform: scaleY(1.3333);*/
+/*}*/
 
 /*.map-display {*/
     /*left: 1px;*/

@@ -75,8 +75,8 @@ AnalysisHelper.prototype.addTimeSlider = function () {
 
         var tooltip1 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner">' + t1Value + '</div><div class="tooltip-arrow"></div></div>';
         var tooltip2 = '<div class="gts-tooltip tooltip-range"><div class="tooltip-inner">' + t2Value + '</div><div class="tooltip-arrow"></div></div>';
-        ts.find('span:eq( 0 )').html(tooltip1);
-        ts.find('span:eq( 1 )').html(tooltip2);
+        ts.find('span:eq( 0 )').html(tooltip1).css({transform: "scaleY(1) rotate(225deg)"});
+        ts.find('span:eq( 1 )').html(tooltip2).css({transform: "scaleY(1) rotate(225deg)"});
     };
 
     var slided = function(event, ui) {
