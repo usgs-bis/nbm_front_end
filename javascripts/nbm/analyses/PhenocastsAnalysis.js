@@ -12,6 +12,7 @@ function PhenocastsAnalysis(config, bap) {
     var endYear;
     let button = null;
     let submitted = false;
+    let featureId = null;
 
     let charts = {};
 
@@ -127,6 +128,11 @@ function PhenocastsAnalysis(config, bap) {
         return getHtmlFromJsRenderTemplate('#phenocastTemplate', { id: id });
     }
     this.initializeWidget = function () {
+        if (bap.actionRef && bap.actionRef.result.geojson.properties["feature_id"]) {
+            featureId = bap.actionRef.result.geojson.properties["feature_id"]
+        } else {
+            featureId = null;
+        }
         let AOI = bap.gid;
         if(AOI && AOI.includes('OBIS_Areas:')) {
             $(`#${bap.id}BapCase`).hide()
@@ -164,8 +170,8 @@ function PhenocastsAnalysis(config, bap) {
         dateStrings["Current"] = yyyy + '-' + mm + '-' + dd
         dateStrings["Six-Day"] = fyyyy + '-' + fmm + '-' + fdd
 
-        today = yyyy + '-' + mm + '-' + dd + 'T00:00:00.000Z';
-        futureDate = fyyyy + '-' + fmm + '-' + fdd + 'T00:00:00.000Z';
+        today = yyyy + '-' + mm + '-' + dd;
+        futureDate = fyyyy + '-' + fmm + '-' + fdd;
 
         button = $(selector).find('#getData');
         button.on('click', function () {
@@ -389,46 +395,91 @@ function PhenocastsAnalysis(config, bap) {
         });
     }
 
+    this.sendAgdd32FeatureRequest = function(date) {
+        var params = {
+            feature_id: featureId,
+            date: date,
+            token: PUBLIC_TOKEN
+        };
+
+        return sendJsonAjaxRequest(BIS_API + '/api/v1/phenocast/place/agdd_32', params);
+    };
+
+    this.sendAgdd50FeatureRequest = function(date) {
+        var params = {
+            feature_id: featureId,
+            date: date,
+            token: PUBLIC_TOKEN
+        };
+
+        return sendJsonAjaxRequest(BIS_API + '/api/v1/phenocast/place/agdd_50', params);
+    };
+
+    this.sendAgdd32PolygonRequest = function(date) {
+        var params = {
+            geojson: JSON.stringify(that.bap.feature.geojson.geometry),
+            date: date,
+            token: PUBLIC_TOKEN
+        };
+
+        return sendPostRequest(BIS_API + '/api/v1/phenocast/polygon/agdd_32', params, true);
+    };
+
+    this.sendAgdd50PolygonRequest = function(date) {
+        var params = {
+            geojson: JSON.stringify(that.bap.feature.geojson.geometry),
+            date: date,
+            token: PUBLIC_TOKEN
+        };
+
+        return sendPostRequest(BIS_API + '/api/v1/phenocast/polygon/agdd_50', params, true);
+    };
+
     this.getData = function(today, futureDate) {
         let requests = []
-        requests.push(Promise.resolve(widgetHelper.getSingleRequest(
-            that.bap.feature,
-            {featureName:"agdd"},
-            today,
-            "AGDD")
-            .then(function(data) {
-                rawData["agdd"]["Current"] = data
-                return Promise.resolve();
-            })));
-
-        requests.push(Promise.resolve(widgetHelper.getSingleRequest(
-            that.bap.feature,
-            {featureName:"agdd"},
-            futureDate,
-            "AGDD")
-            .then(function(data) {
-                rawData["agdd"]["Six-Day"] = data
-                return Promise.resolve();
-            })));
-
-        requests.push(Promise.resolve(widgetHelper.getSingleRequest(
-            that.bap.feature,
-            {featureName:"agdd_50f"},
-            today,
-            "AGDD")
-            .then(function(data) {
-                rawData["agdd_50f"]["Current"] = data
-                return Promise.resolve();
-            })));
-        requests.push(Promise.resolve(widgetHelper.getSingleRequest(
-            that.bap.feature,
-            {featureName:"agdd_50f"},
-            futureDate,
-            "AGDD")
-            .then(function(data) {
-                rawData["agdd_50f"]["Six-Day"] = data
-                return Promise.resolve();
-            })));
+        if (featureId) {
+            requests.push(this.sendAgdd32FeatureRequest(today)
+                .then(function(data) {
+                    rawData["agdd"]["Current"] = data[today]
+                    return Promise.resolve();
+                }))
+            requests.push(this.sendAgdd32FeatureRequest(futureDate)
+                .then(function(data) {
+                    rawData["agdd"]["Six-Day"] = data[futureDate]
+                    return Promise.resolve();
+                }))
+            requests.push(this.sendAgdd50FeatureRequest(today)
+                .then(function(data) {
+                    rawData["agdd_50f"]["Current"] = data[today]
+                    return Promise.resolve();
+                }))
+            requests.push(this.sendAgdd50FeatureRequest(futureDate)
+                .then(function(data) {
+                    rawData["agdd_50f"]["Six-Day"] = data[futureDate]
+                    return Promise.resolve();
+                }))
+        } else {
+            requests.push(this.sendAgdd32PolygonRequest(today)
+                .then(function(data) {
+                    rawData["agdd"]["Current"] = data[today]
+                    return Promise.resolve();
+                }))
+            requests.push(this.sendAgdd32PolygonRequest(futureDate)
+                .then(function(data) {
+                    rawData["agdd"]["Six-Day"] = data[futureDate]
+                    return Promise.resolve();
+                }))
+            requests.push(this.sendAgdd50PolygonRequest(today)
+                .then(function(data) {
+                    rawData["agdd_50f"]["Current"] = data[today]
+                    return Promise.resolve();
+                }))
+            requests.push(this.sendAgdd50PolygonRequest(futureDate)
+                .then(function(data) {
+                    rawData["agdd_50f"]["Six-Day"] = data[futureDate]
+                    return Promise.resolve();
+                }))
+        }
 
         return Promise.all(requests)
     }

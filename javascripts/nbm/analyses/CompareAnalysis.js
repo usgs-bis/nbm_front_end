@@ -10,6 +10,16 @@ function CompareAnalysis(config, bap) {
     let layer1 = null;
     let layer2 = null;
     let alreadySentBuffer = false
+    let featureId = null;
+    let urlFeatureMap = {
+        "LEAF_OUT_DAY": BIS_API + "/api/v1/phenology/place/firstleaf",
+        "BLOOM_DAY": BIS_API + "/api/v1/phenology/place/firstbloom"
+    }
+
+    let urlPolygonMap = {
+        "LEAF_OUT_DAY": BIS_API + "/api/v1/phenology/polygon/firstleaf",
+        "BLOOM_DAY": BIS_API + "/api/v1/phenology/polygon/firstbloom"
+    }
 
     this.dataNest = [];
     this.buk = null;
@@ -25,6 +35,12 @@ function CompareAnalysis(config, bap) {
         if(AOI && AOI.includes('OBIS_Areas:')) {
             $(`#${bap.id}BapCase`).hide()
             return
+        }
+
+        if (bap.actionRef && bap.actionRef.result.geojson.properties["feature_id"]) {
+            featureId = bap.actionRef.result.geojson.properties["feature_id"]
+        } else {
+            featureId = null;
         }
 
         if (that.bap.GetBapLayers().length > 1) {
@@ -88,6 +104,36 @@ function CompareAnalysis(config, bap) {
         }
     };
 
+    this.sendPhenologyFeatureRequest = function (property) {
+        let params = {
+            year_min: this.bap.state.range[0],
+            year_max: this.bap.state.range[1],
+            feature_id: featureId,
+            token: PUBLIC_TOKEN
+        }
+
+        return sendJsonAjaxRequest(urlFeatureMap[property], params);
+    }
+
+    this.sendPhenologyPolygonRequest = function(property, inputFeature) {
+        let params = {
+            year_min: this.bap.state.range[0],
+            year_max: this.bap.state.range[1],
+            geojson: JSON.stringify(inputFeature.geojson.geometry),
+            token: PUBLIC_TOKEN
+        }
+
+        return sendPostRequest(urlPolygonMap[property], params, true);
+    }
+
+    this.sendPhenologyRequest = function (property, inputFeature) {
+        if (featureId) {
+            return this.sendPhenologyFeatureRequest(property)
+        } else {
+            return this.sendPhenologyPolygonRequest(property, inputFeature)
+        }
+    }
+
 
     this.submitData = function (message, inputFeature) {
         var values = timeSlider.slider('values');
@@ -106,56 +152,23 @@ function CompareAnalysis(config, bap) {
 
         let promises = []
         that.bap.GetBapLayers().forEach(function (layer) {
-
-            promises.push(widgetHelper.getRasterData(inputFeature, layer, [values[0], values[1]], that.bap.config.bapProperties[layer.featureName])
+            promises.push(that.sendPhenologyRequest(that.bap.config.bapProperties[layer.featureName], inputFeature)
                 .then(function (data) {
-                    return data
-                })
-            )
+                    return data;
+                }))
         })
 
         Promise.all(promises).then(function (data) {
             that.bap.rawJson = data;
-            let missingYears = []
 
-            if (data.length != 2 || !data[0] || !data[1]) {
+            if (!data || data.length !== 2 || !data[0] || !data[1]) {
                 setError(' An error has occured. If the problem continues, please contact site admin.');
             }
             else {
-                for (let i = values[0]; i <= values[1]; i++) {
-                    if (!data[0][i] || !data[1][i]) {
-                        missingYears.push(i)
-                    }
-                }
-                if (!data[0][values[0]].length || !data[1][values[0]].length) {
-                    if (!alreadySentBuffer) {
-                        alreadySentBuffer = true;
-                        widgetHelper.getBufferedFeature(inputFeature)
-                            .then(function (bufferedFeature) {
-                                if (!bufferedFeature || !bufferedFeature.geometry) {
-                                    setError(' An error has occured. If the problem continues, please contact site admin.');
-                                }
-                                else {
-                                    that.bap.feature = ActionHandler.prototype.createPseudoFeature(bufferedFeature.geometry);
-                                    that.bap.simplified = true;
-                                    that.bap.showSimplifiedDiv();
-                                    that.submitData("No data received, resending polygon with buffer", that.bap.feature);
-                                }
-                            })
-                    }
-                    else {
-                        setError(' Your polygon falls outside the geographic extent of the data you\'re trying to analyze. ');
-                    }
-                }
-                else {
-                    if (missingYears.length) {
-                        setError(' There was an error analyzing data for the following years: ' + missingYears + '. ' +
-                            'They will not be displayed in the chart. If the problem continues, please contact site admin.');
-                    }
-                    else if (alreadySentBuffer) {
-                        setError(' Your polygon was buffered so it overlaps with the center of the nearest raster cell. ' +
-                            'You can click the \'square\' icon next to the polygon title to view the buffered polygon.');
-                    }
+                if (!data[0][values[0]] || !data[1][values[0]] || !data[0][values[0]].length || !data[1][values[0]].length) {
+                    setError(`Your polygon is either too small to intersect the center of any raster cells or it 
+                        falls outside the geographic extent of the data you're trying to analyze.`);
+                } else {
                     that.buildChart(data, id);
                 }
             }
