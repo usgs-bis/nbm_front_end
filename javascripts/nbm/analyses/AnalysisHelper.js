@@ -19,7 +19,7 @@ AnalysisHelper.prototype.getWidget = function (config, bap) {
     } else if (config.type === "dynamicMatrix") {
         return new CnrMatrixAnalysis(config);
     } else if (config.type === "boxAndWhisker") {
-        return new BoxAndWhiskerAnalysis(config, bap);
+        return new BoxAndWhiskerAnalysisD3(config, bap);
     } else if (config.type === "rasterQuery") {
         return new BarChartAnalysis(config);
     } else if (config.type === "vectorQuery") {

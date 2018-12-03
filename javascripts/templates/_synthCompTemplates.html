@@ -273,25 +273,21 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div class="bapChart">
         <div class="bapHeader">
             <div class="row" style="margin-top: 35px;">
-                    <div class="col col-md-12 ">
-                        <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
-                        <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
-                    </div>
+                <div class="col col-md-12 ">
+                    <div id="bapRangeSlider"  class="sliderLabelCenter centerDiv"> Analyze Time Period: {{: min}} to {{: max}} </div>
+                    <div class= "centerDiv" style="margin-top:10px;"> <button id="getData" class="btn-xs ">Submit</button> </div>
                 </div>
-        
-                <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
-                <div id="boxAndWhiskerError"></div>
             </div>
+            <i id="bapSpinner" class="fa fa-spinner fa-pulse spinnerContainer" style="display:none;"></i>
+            <div id="boxAndWhiskerError"></div>
         </div>
-
-        <div id="boxPlot{{:id}}" class="boxPlot" style="display:none;">
-            
-                <div id="boxPlotTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
-                <div id="boxPlotSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
-                <div id ="boxPlotChart{{:id}}" class="myNpnInfo" style="width:100%;height:500px;"></div>
+    
+        <div id="boxAndWhiskerPlot{{:id}}" class="boxAndWhiskerPlot" style="display:none;">        
+                <div id="boxAndWhiskerTitle" class = "ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="boxAndWhiskerSubTitle" class = "ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="boxAndWhiskerChart{{:id}}"></div>
         </div>
     </div>
-
 </script>
 
 <script id="phenocastTemplate" type="text/x-jsrender">
