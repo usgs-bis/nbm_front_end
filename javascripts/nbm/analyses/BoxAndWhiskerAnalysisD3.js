@@ -274,7 +274,8 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
             y.domain([min - 5, max + 5])
                 .range([height, 0]);
 
-            var barWidth = 30;
+            var barWidth = 35 - years.length;
+            barWidth = barWidth > 5 ? barWidth : 5
 
             let xAxis = d3.axisBottom(x)
 
@@ -350,7 +351,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
 
             // // Setup the group the box plot elements will render in
             var g = svg.append("g")
-                .attr("transform", "translate(-15,0)");
+                .attr("transform", `translate(-${parseInt(barWidth/2)},0)`);
 
             // Draw the box plot vertical lines
             var verticalLines = g.selectAll(".verticalLines")
