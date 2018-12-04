@@ -235,7 +235,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
         d3.select(`#boxAndWhiskerPlot${id}`).select(".svg-container-plot").remove()
 
 
-        let margin = { top: 20, right: 20, bottom: 25, left: 60 },
+        let margin = { top: 20, right: 20, bottom: 25, left: 65 },
             width = $(`#boxAndWhiskerPlot${id}`).width() - margin.left - margin.right,
             height = 450 - margin.top - margin.bottom;
 
@@ -429,6 +429,30 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                         .duration(500)
                         .style("opacity", 0);
                 });
+
+
+             // text label for the x axis
+             svg.append("g")
+             .append("text")
+             .attr("y",  height + margin.bottom + margin.top - 5)
+             .attr("x", width/2)
+             .attr("fill", "rgb(0, 0, 0)")
+             .attr("font-size", "14px")
+             .style("text-anchor", "middle")
+             .text("Year");
+
+
+         // text label for the y axis
+         svg.append("g")
+             .append("text")
+             .attr("transform", "rotate(-90)")
+             .attr("y", 0 - margin.left)
+             .attr("x", 0 - (height / 2))
+             .attr("dy", "1em")
+             .attr("fill", "rgb(0, 0, 0)")
+             .attr("font-size", "14px")
+             .style("text-anchor", "middle")
+             .text("Day of year");
 
             // Now render all the horizontal lines  - the whiskers
             var horizontalLineConfigs = [
