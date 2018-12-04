@@ -1,5 +1,11 @@
 'use strict';
-
+//////////////////////////////////////////////////
+//                                              //
+//                                              //
+// DEPRECIATED FOR BOX AND WHISKER USING D3 SVG //
+//                                              //
+//                                              //
+//////////////////////////////////////////////////
 var BoxAndWhiskerAnalysis = function (serverAP, bap) {
     let that = this
     let id = bap.id;
