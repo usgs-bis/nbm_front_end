@@ -721,6 +721,7 @@ label input:hover ~ .fa-custom-checkbox-class:before {
 .afterSubmitAttribution {
     display: none;
     padding: 15px;
+    margin-top: 20px;
 }
 
 .afterSubmitAttribution a {
