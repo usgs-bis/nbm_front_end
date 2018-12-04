@@ -386,7 +386,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 .style("opacity", 0)
                 .style("border", "3px solid rgb(56, 155, 198)");
 
-            // Draw the boxes of the box plot, filled in white and on top of vertical lines
+            // Draw the boxes of the box plot on top of vertical lines
             var rects = g.selectAll("rect")
                 .data(boxPlotData)
                 .enter()
@@ -430,7 +430,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                         .style("opacity", 0);
                 });
 
-            // Now render all the horizontal lines at once - the whiskers
+            // Now render all the horizontal lines  - the whiskers
             var horizontalLineConfigs = [
                 // Top whisker
                 {
@@ -466,6 +466,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                     .attr("fill", "none");
             }
 
+            // draw median line separate in red
             let median =
             {
                 x1: function (datum) { return x(datum.key) },
