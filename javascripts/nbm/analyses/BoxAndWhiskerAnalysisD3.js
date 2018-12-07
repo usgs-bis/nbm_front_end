@@ -559,7 +559,6 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 "Median: <b>" + dateFromDay(2018, bap.sharedData[d.key].median, d.key) + "</b><br>" +
                 "Minimum: <b>" + dateFromDay(2018, bap.sharedData[d.key].minimum, d.key) + "</b><br>" +
                 "Maximum: <b>" + dateFromDay(2018, bap.sharedData[d.key].maximum, d.key) + "</b><br>"
-            return "<p>Hello World</p>"
         }
 
         let bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
