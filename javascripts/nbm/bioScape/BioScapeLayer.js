@@ -44,16 +44,24 @@ BioScapeLayer.prototype.turnOffLayer = function(keepSelected) {
     }
 };
 
-BioScapeLayer.prototype.updateLegendUrl = function() {
+BioScapeLayer.prototype.updateLegendUrl = function(hide) {
     let imgDiv = $("#"+this.id+"Legend").find(".legendImg");
-    let url = this.legend.url.split("?")[0];
-    let layer = this.mapLayer.leafletLayer.wmsParams.layers;
-    let style = this.mapLayer.leafletLayer.wmsParams.styles;
-    url += `?service=wms&request=GetLegendGraphic&format=image%2Fpng&layer=${layer}`;
-    if (style) url += `&style=${style}`;
-    this.legend.url = url;
+    let title = $("#"+this.id+"Legend").find(".legendTitle");
+    if (hide) {
+        title.hide()
+        imgDiv.hide()
+    } else {
+        title.show()
+        imgDiv.show()
+        let url = this.legend.url.split("?")[0];
+        let layer = this.mapLayer.leafletLayer.wmsParams.layers;
+        let style = this.mapLayer.leafletLayer.wmsParams.styles;
+        url += `?service=wms&request=GetLegendGraphic&format=image%2Fpng&layer=${layer}`;
+        if (style) url += `&style=${style}`;
+        this.legend.url = url;
 
-    imgDiv.attr("src", url)
+        imgDiv.attr("src", url)
+    }
 };
 
 BioScapeLayer.prototype.turnOnLayer = function() {

@@ -62,7 +62,7 @@ function toggleLayerOffGeneric(layerName) {
     Spplayer = Spplayer[0]
     Spplayer.mapLayer.leafletLayer.setParams({layers:''})
     Spplayer.mapLayer.leafletLayer.wmsParams.layers = '';
-    Spplayer.updateLegendUrl();
+    Spplayer.updateLegendUrl(true);
     Spplayer.mapLayer.leafletLayer.setOpacity(0.0)
     Spplayer.disabledOpacity = true;
 }

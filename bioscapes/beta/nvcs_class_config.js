@@ -1,4 +1,4 @@
-let nvcs_bioscape = {
+let beta_nvcs_bioscape = {
     "id": "5810cd6fe4b0f497e7975237",
     "title": "GAP/LANDFIRE National Terrestrial Ecosystems 2011",
     "summary": "The GAP/LANDFIRE National Terrestrial Ecosystems represents a highly thematically detailed land cover map of the U.S.  The GAP/LANDFIRE National Terrestrial Ecosystems dataset is produced by the U.S. Geological Survey in collaboration with the LANDIFRE Program. The GAP produces data and tools that help meet critical national challenges such as biodiversity conservation, renewable energy development, climate change adaptation, and infrastructure investment. Learn more about GAP and other GAP data (including protected areas and species habitat maps) at http://gapanalysis.usgs.gov.",

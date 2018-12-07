@@ -1,4 +1,4 @@
-let biogeography_bioscape = {
+let beta_biogeography_bioscape = {
     "id": "5667130ee4b06a3ea36c8be8",
     "title": "National Biogeographic Map",
     "summary": "The National Biogeographic Map is a concept being pursued within the Core Science Analytics, Synthesis and Libraries program. It is intended as a cohesive point of entry to view and interact with all of the biogeographic and biodiversity data systems produced by our program or used within the analytical processes of our group. This bioscape provides the configuration details behind the National Biogeographic Map that drives an online mapping interface.",
@@ -35,8 +35,7 @@ let biogeography_bioscape = {
                 "5aa2b21ae4b0b1c392e9d968",
                 "5b747802e4b0f5d5787ed299",
                 "5b7c1ef2e4b0f5d5788601be",
-                "5b86d48ce4b0702d0e7962b5",
-                "5b96d589e4b0702d0e82700a"
+                "5b86d48ce4b0702d0e7962b5"
             ],
             "priority": "58bf0b61e4b014cc3a3a9c10"
         }
@@ -188,28 +187,6 @@ let biogeography_bioscape = {
                         "headerBap": "58dd6032e4b02ff32c68596b",
                         "baps": [
                             "5b747802e4b0f5d5787ed299"
-                        ]
-                    }
-                },
-                {
-                    "title": "Phenocasts",
-                    "serviceUrl": "https://geoserver.usanpn.org/geoserver/gdd/wms?",
-                    "serviceType": "tileLayer.wms",
-                    "metadataSBId": "5bacf0e3e4b08583a5d10c7f",
-                    "featureName": "agdd",
-                    "leafletProperties": {
-                        "format": "image/png",
-                        "layers": "agdd_50f,agdd",
-                        "transparent": true,
-                        "opacity": 0.5,
-                        "zIndex": 1
-                    },
-                    "actionConfig": {
-                        "displayCriteria": "defaultAlways",
-                        "actionType": "drawPolygon",
-                        "headerBap": "58dd6032e4b02ff32c68596b",
-                        "baps": [
-                            "5b96d589e4b0702d0e82700a"
                         ]
                     }
                 },

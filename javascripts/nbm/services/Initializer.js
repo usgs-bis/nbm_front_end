@@ -17,12 +17,18 @@ var Initializer = (function(initializer) {
 
     // The config objects are defined in the 'bioscapes' directory
     let bioscapeMap = {
-        "biogeography": biogeography_bioscape,
-        "terrestrial-ecosystems-2011": nvcs_bioscape
+        "dev": {
+            "biogeography": dev_biogeography_bioscape,
+            "terrestrial-ecosystems-2011": dev_nvcs_bioscape
+        },
+        "beta": {
+            "biogeography": beta_biogeography_bioscape,
+            "terrestrial-ecosystems-2011": beta_nvcs_bioscape
+        }
     }
 
     function getConfig(bioscape, state) {
-        let knownConfig = bioscapeMap[bioscape]
+        let knownConfig = bioscapeMap[myEnv][bioscape]
         let bioscapeJson = {}
 
         return $.getJSON(myServer + "/bioscape/config/" + bioscape + "/" + myEnv)
