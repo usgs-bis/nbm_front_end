@@ -478,7 +478,12 @@ WmsMapLayer.prototype.getInfoFromWmsGetCapabilities = function() {
         return Promise.resolve(this.wmsCapabilitiesInfo);
     }
 
-    return sendXmlAjaxRequest(this.serviceUrl + "&version=1.3.0")
+    let xmlUrl = this.serviceUrl + "&version=1.3.0";
+    if (xmlUrl.indexOf("geoserver.usanpn.org") !== -1) {
+        xmlUrl = BIS_API + "/api/v1/phenology/getcapabilities?token=" + PUBLIC_TOKEN
+    }
+
+    return sendXmlAjaxRequest(xmlUrl)
         .then(function(data) {
             if (data.error) {
                 return Promise.reject();
