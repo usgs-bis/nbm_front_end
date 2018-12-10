@@ -639,6 +639,7 @@ function sendJsonRequestHandleError(url, timeout, params) {
 
 let checkedUrls = []
 function sendAjaxRequest(options, skipErrorMessage) {
+    options.crossDomain = true;
     return Promise.resolve(
         $.ajax(options)
             .fail(function () {
