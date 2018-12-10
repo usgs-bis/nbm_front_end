@@ -24,6 +24,10 @@ var Initializer = (function(initializer) {
         "beta": {
             "biogeography": beta_biogeography_bioscape,
             "terrestrial-ecosystems-2011": beta_nvcs_bioscape
+        },
+        "prod": {
+            "biogeography": prod_biogeography_bioscape,
+            "terrestrial-ecosystems-2011": prod_nvcs_bioscape
         }
     }
 
