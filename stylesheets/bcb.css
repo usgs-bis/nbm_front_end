@@ -1259,20 +1259,22 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     /* height: 475px; */
 }
 
-.histogramPlot text, .boxAndWhiskerPlot text {
+.histogramPlot text, .boxAndWhiskerPlot text, .NFHPPlot text {
     color:rgb(204, 204, 204);
     fill:rgb(204, 204, 204) !important;
 
 }
 
-.histogramPlot .axis path, .histogramPlot .axis line, .boxAndWhiskerPlot .axis path, .boxAndWhiskerPlot .axis line, .boxAndWhiskerPlot line, .boxAndWhiskerPlot rect {
+.NFHPPlot .axis path, .NFHPPlot .axis line, .histogramPlot .axis path, .histogramPlot .axis line, .boxAndWhiskerPlot .axis path, .boxAndWhiskerPlot .axis line, .boxAndWhiskerPlot line, .boxAndWhiskerPlot rect {
     stroke: rgb(204, 204, 204);
 }
 .boxAndWhiskerMedianLine {
     stroke: red !important;
     fill: red !important;
 }
-
+.NFHPPlot {
+    margin-bottom: 15px;
+}
 
 .histogramPlot rect {
     /* fill: rgb(56, 155, 198); */
