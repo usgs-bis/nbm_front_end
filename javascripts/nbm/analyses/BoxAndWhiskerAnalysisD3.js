@@ -351,7 +351,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
 
             // // Setup the group the box plot elements will render in
             var g = svg.append("g")
-                .attr("transform", `translate(-${parseInt(barWidth/2)},0)`);
+                .attr("transform", `translate(-${parseInt(barWidth / 2)},0)`);
 
             // Draw the box plot vertical lines
             var verticalLines = g.selectAll(".verticalLines")
@@ -432,28 +432,28 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 });
 
 
-             // text label for the x axis
-             svg.append("g")
-             .append("text")
-             .attr("y",  height + margin.bottom + margin.top - 5)
-             .attr("x", width/2)
-             .attr("fill", "rgb(0, 0, 0)")
-             .attr("font-size", "14px")
-             .style("text-anchor", "middle")
-             .text("Year");
+            // text label for the x axis
+            svg.append("g")
+                .append("text")
+                .attr("y", height + margin.bottom + margin.top - 5)
+                .attr("x", width / 2)
+                .attr("fill", "rgb(0, 0, 0)")
+                .attr("font-size", "14px")
+                .style("text-anchor", "middle")
+                .text("Year");
 
 
-         // text label for the y axis
-         svg.append("g")
-             .append("text")
-             .attr("transform", "rotate(-90)")
-             .attr("y", 0 - margin.left)
-             .attr("x", 0 - (height / 2))
-             .attr("dy", "1em")
-             .attr("fill", "rgb(0, 0, 0)")
-             .attr("font-size", "14px")
-             .style("text-anchor", "middle")
-             .text("Day of year");
+            // text label for the y axis
+            svg.append("g")
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .attr("fill", "rgb(0, 0, 0)")
+                .attr("font-size", "14px")
+                .style("text-anchor", "middle")
+                .text("Day of year");
 
             // Now render all the horizontal lines  - the whiskers
             var horizontalLineConfigs = [

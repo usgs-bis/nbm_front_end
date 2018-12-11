@@ -438,10 +438,14 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     <div style="clear:both;"></div>
 </script>
 
-<script id="NFHPAnalysis" type="text/x-jsrender">
-    <div class="nfhpBapHeader" id="{{:bapID}}BapTitle">{{:title}}</div>
-    <div class="contextSubHeader subHeaderTitle" style=" color: rgb(204, 204, 204); line-height: 20px; font-size: 17px; margin-top: 30px; margin-left: 20px; margin-right: 20px; ">{{:title}}</div>
-    <div id="{{: id}}" style="width: 100%; height: 400px;"></div>
-    <div id="{{:noData}}" style="float:right">No Data</div>
-    <div style="clear:both;"></div>
+<script id="NFHPAnalysisTemplate" type="text/x-jsrender">
+    
+    <div class="bapChart">
+        <div id="NFHPPlot{{:id}}" class="NFHPPlot" style="display:none;">        
+                <div id="NFHPTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="NFHPSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="NFHPChart{{:id}}"></div>
+        </div>
+    </div>
+            
 </script>

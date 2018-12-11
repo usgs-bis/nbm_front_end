@@ -25,7 +25,7 @@ AnalysisHelper.prototype.getWidget = function (config, bap) {
     } else if (config.type === "vectorQuery") {
         return new BarChartAnalysis(config);
     } else if (config.type === "nfhp") {
-        return new NFHPAnalysis(config,bap);
+        return new NFHPAnalysisD3(config,bap);
     } else if (config.type === "nfhp_disturbance") {
         return new NFHPDisturbanceAnalysis(config);
     } else if (config.type === "hierarchyByPixelElastic") {
