@@ -464,6 +464,7 @@ select option {
 .divider {
     clear: both;
     border-top:1px solid rgba(245, 245, 245, .2);
+    margin-top: 10px;
 }
 
 div.table {
@@ -1259,20 +1260,20 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     /* height: 475px; */
 }
 
-.histogramPlot text, .boxAndWhiskerPlot text, .NFHPPlot text {
+.EcoSysPlot text, .histogramPlot text, .boxAndWhiskerPlot text, .NFHPPlot text {
     color:rgb(204, 204, 204);
     fill:rgb(204, 204, 204) !important;
 
 }
 
-.NFHPPlot .axis path, .NFHPPlot .axis line, .histogramPlot .axis path, .histogramPlot .axis line, .boxAndWhiskerPlot .axis path, .boxAndWhiskerPlot .axis line, .boxAndWhiskerPlot line, .boxAndWhiskerPlot rect {
+.EcoSysPlot .axis path, .EcoSysPlot .axis line, .NFHPPlot .axis path, .NFHPPlot .axis line, .histogramPlot .axis path, .histogramPlot .axis line, .boxAndWhiskerPlot .axis path, .boxAndWhiskerPlot .axis line, .boxAndWhiskerPlot line, .boxAndWhiskerPlot rect {
     stroke: rgb(204, 204, 204);
 }
 .boxAndWhiskerMedianLine {
     stroke: red !important;
     fill: red !important;
 }
-.NFHPPlot {
+.NFHPPlot, .EcoSysPlot {
     margin-bottom: 15px;
 }
 
@@ -1282,9 +1283,58 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     stroke-width: 1;
 }
 
+.EcoSysCoveragePieChart{
+    width: 75%;
+    margin: auto;
+}
+
+.EcoSysProtectionPieCharts{
+    display: flex;
+}
+.EcoSysProtectionPieCharts .EcoSysProtectionPieChartRight, .EcoSysProtectionPieCharts .EcoSysProtectionPieChartLeft{
+    width:50%;
+}
+
 .hidden {
     display: none;
 }
+
+.EcoSysBarChartLegend{
+    text-align: center;
+}
+.EcoSysPieChartLegend{
+    text-align: center;
+    margin-top: 25px;
+}
+.EcoSysCoveragePieChartLegend{
+    margin-top: 10px;
+}
+
+.EcoSysCoveragePieChartLegend .d3-legend-text{
+    font-size: 12px;
+    text-align: left;
+    width: 100%;
+    margin: auto;
+}
+.d3-legend-text{
+    font-size: 12px;
+    text-align: left;
+    width: 50%;
+    margin: auto;
+}
+
+.legend-key{
+    width:15px;
+    height:15px;
+    border:1px solid #000;
+    display: inline-block;
+    vertical-align: middle;
+    opacity: 0.5;
+    margin-right: 10px;
+}
+.gap-status-1-2 { background: #5a8f29;}
+.gap-status-3 { background: #cccccc;}
+.gap-status-4 { background: #424243;}
 
 
 .timeSliderToolTip { 

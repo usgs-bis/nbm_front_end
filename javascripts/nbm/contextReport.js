@@ -169,9 +169,9 @@ function sortByPercent(myList) {
 
 function updateTableTitle(divId, title, textColor, dataItemIndex) {
     var myBg = 'rgba(255,255,255,.7)';
-    if (dataItemIndex == 2 || dataItemIndex == 3 || dataItemIndex == 4) {
+    // if (dataItemIndex == 2 || dataItemIndex == 3 || dataItemIndex == 4) {
         myBg = 'rgba(0,0,0,.7)';
-    }
+    // }
     $('#' + divId)
         .html(title)
         .css({
