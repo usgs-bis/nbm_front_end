@@ -449,3 +449,34 @@ class="btn-xs" data-toggle="tooltip" data-placement="bottom" title="View the raw
     </div>
             
 </script>
+
+<script id="EcoSysAnalysisTemplate" type="text/x-jsrender">
+    
+    <div class="bapChart">
+        <div id="EcoSysPlot{{:id}}" class="EcoSysPlot" style="display:none;">        
+                <div id="EcoSysBarChart{{:id}}">
+                        <div id="EcoSysBarChartTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                        <div id="EcoSysBarChartSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+                </div>
+                <div class="divider"></div>
+
+                <div id="EcoSysProtectionPieCharts">
+                        <div id="EcoSysProtectionPieChartTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                        <div id="EcoSysProtectionPieChartSubTitle" class = " ridgeLinePlotSubTitle contextSubHeader subHeaderTitle" ></div>
+                        <div class="EcoSysProtectionPieCharts">
+                            <div class="EcoSysProtectionPieChartLeft" id="EcoSysProtectionPieChartLeft"></div>
+                            <div class="EcoSysProtectionPieChartRight" id="EcoSysProtectionPieChartRight"></div>
+                        </div>
+                        <div id="ecosReset" class="tableReset">
+                            <button id="resetEcosTable" class="btn-xs">Clear chart selection</button>
+                        </div>
+                       
+                        <div id="EcoSysProtectionTable"></div>
+                </div>
+                <div class="divider"></div>
+                <div id="EcoSysCoveragePieChartTitle" class = " ridgeLinePlotTitle contextSubHeader subHeaderTitle" ></div>
+                <div id="EcoSysCoveragePieChart" class="EcoSysCoveragePieChart"></div>
+        </div>
+    </div>
+            
+</script>
