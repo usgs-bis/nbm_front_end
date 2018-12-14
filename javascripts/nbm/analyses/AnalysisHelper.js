@@ -41,7 +41,7 @@ AnalysisHelper.prototype.getWidget = function (config, bap) {
     } else if (config.type === "obis") {
         return new ObisAnalysis(config, bap);
     } else if (config.type === "Phenocasts") {
-        return new PhenocastsAnalysis(config, bap);
+        return new PhenocastsAnalysisD3(config, bap);
 }
 };
 
