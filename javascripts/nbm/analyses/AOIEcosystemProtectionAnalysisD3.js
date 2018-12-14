@@ -150,8 +150,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
 
             $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="800" height="800" style="position: fixed;"></canvas>`)
-            ecoPlot.select(`#EcoSysCoveragePieChart`).select("svg").attr("height", 200)
-            ecoPlot.select(`#EcoSysCoveragePieChart`).select("svg").attr("width", 200)
+            ecoPlot.select(`#EcoSysCoveragePieChart`).select("svg").attr("height", 400)
+            ecoPlot.select(`#EcoSysCoveragePieChart`).select("svg").attr("width", 400)
             c = document.getElementById(`myCanvas${id}`);
             ctx = c.getContext('2d');
             ctx.drawSvg($(`#EcoSysCoveragePieChart .svg-container-plot`).html(), 0, 0, 800, 800);
@@ -160,7 +160,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             ecoPlot.select(`#EcoSysCoveragePieChart`).select("svg").attr("width", null)
             $("#canvasHolder").html("")
 
-            content.push({ image: c.toDataURL(), alignment: 'center', width: 200 })
+            content.push({ image: c.toDataURL(), alignment: 'center', width: 400 })
 
 
 
@@ -783,24 +783,9 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .text(function (d) { return d.name; });
 
 
-
-        // let html = ''
-        // for (let d of gap1_2_3) {
-        //     html += `<div class="d3-legend-text" ><div style=" background: ${d.color}" class="legend-key"></div>${d.name}</div>`
-        // }
-
-        // legendLeft.html(html)
-        // legendRight.html(html)
-
-
-
         function toolTipLabel(d) {
-
             return `<div><div>${d.data.name}</div><div>${d.data.count} Ecosystems</div></div>`
-
         }
-
-
 
 
     }

@@ -13,7 +13,7 @@ AnalysisHelper.prototype.getWidget = function (config, bap) {
     } else if (config.type === "eco_AOI") {
         return new AOIEcosystemProtectionAnalysisD3(config,bap);
     } else if (config.type === "species_AOI") {
-        return new AOISpeciesProtectionAnalysis(config,bap);
+        return new AOISpeciesProtectionAnalysisD3(config,bap);
     } else if (config.type === "richness") {
         return new SpeciesRichnessAnalysis(config);
     } else if (config.type === "dynamicMatrix") {

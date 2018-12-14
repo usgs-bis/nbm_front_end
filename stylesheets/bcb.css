@@ -1260,7 +1260,7 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
     /* height: 475px; */
 }
 
-.EcoSysPlot text, .histogramPlot text, .boxAndWhiskerPlot text, .NFHPPlot text {
+#sp12chart text, #sp123chart text, .EcoSysPlot text, .histogramPlot text, .boxAndWhiskerPlot text, .NFHPPlot text {
     color:rgb(204, 204, 204);
     fill:rgb(204, 204, 204) !important;
 
