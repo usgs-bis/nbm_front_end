@@ -141,7 +141,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             content.push({
                 style: 'tableStyle',
                 table: {
-                    headerRows: 1,
+                    headerRows: 0,
                     body: ecosBody
                 }
             }
