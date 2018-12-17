@@ -125,11 +125,8 @@ function NFHPAnalysisD3(config, bap) {
         chartData.reverse()
 
         let margin = { top: 20, right: 20, bottom: 25, left: 75 },
-            width = $(`#NFHPPlot${id}`).width() - margin.left - margin.right,
+            width = 480 - margin.left - margin.right,
             height = 400 - margin.top - margin.bottom;
-
-        // fix, maybe the dom is not ready? 
-        if(width <= 0) width = 385
 
         let x = d3.scaleLinear().range([0, width]);
         let y = d3.scaleBand().range([height, 0]);

@@ -236,9 +236,8 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
 
 
         let margin = { top: 20, right: 20, bottom: 25, left: 65 },
-            width = $(`#boxAndWhiskerPlot${id}`).width() - margin.left - margin.right,
+            width = 470 - margin.left - margin.right,
             height = 450 - margin.top - margin.bottom;
-
         let pos = $(`#boxAndWhiskerPlot${id}`).position()
 
         let x = d3.scalePoint();

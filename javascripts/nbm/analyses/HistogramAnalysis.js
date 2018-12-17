@@ -13,38 +13,38 @@ function HistogramAnalysis(config, bap) {
         return getHtmlFromJsRenderTemplate('#histogramTemplate', { id: id });
     }
     this.initializeWidget = function () {
-     
+
     }
 
-    this.getPdfLayout = function() {
+    this.getPdfLayout = function () {
 
-        try{
+        try {
             $("#canvasHolder").html(`<canvas id="myCanvas${id}" width="800" height="800" style="position: fixed;"></canvas>`)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("height",500)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("width",500)
-            
+            d3.select(`#histogramPlot${id}`).select("svg").attr("height", 500)
+            d3.select(`#histogramPlot${id}`).select("svg").attr("width", 500)
+
             let c = document.getElementById(`myCanvas${id}`);
             let ctx = c.getContext('2d');
             ctx.drawSvg($(`#histogramChart${id} .svg-container-plot`).html(), 0, 0, 800, 800);
-            
+
             // clean up
-            d3.select(`#histogramPlot${id}`).select("svg").attr("height",null)
-            d3.select(`#histogramPlot${id}`).select("svg").attr("width",null)
+            d3.select(`#histogramPlot${id}`).select("svg").attr("height", null)
+            d3.select(`#histogramPlot${id}`).select("svg").attr("width", null)
             $("#canvasHolder").html("")
 
             return {
                 content: [
-                    {text: $(selector).find("#histogramTitle").text(),style: ['titleChart'], pageBreak: 'before'},
-                    {text: $(selector).find("#histogramSubTitle").text(),style: ['subTitleChart']},
-                    {image: c.toDataURL(),  alignment: 'center', width:500}
+                    { text: $(selector).find("#histogramTitle").text(), style: ['titleChart'], pageBreak: 'before' },
+                    { text: $(selector).find("#histogramSubTitle").text(), style: ['subTitleChart'] },
+                    { image: c.toDataURL(), alignment: 'center', width: 500 }
                 ],
                 charts: []
             }
-           
+
         }
-        catch(error){
+        catch (error) {
             //showErrorDialog("Error printing one or more charts to report.",false);
-            return {content:[],charts:[]}
+            return { content: [], charts: [] }
         }
     }
 
@@ -58,7 +58,7 @@ function HistogramAnalysis(config, bap) {
 
     this.buildChart = function (chartData, id) {
 
-        
+
 
         $(selector).find(`#histogramPlot${id}`).show()
         $(selector).find(".ridgeLinePlotRangeValue").html(3);
@@ -68,7 +68,7 @@ function HistogramAnalysis(config, bap) {
 
 
         let margin = { top: 20, right: 20, bottom: 25, left: 60 },
-            width = $(`#histogramPlot${id}`).width() - margin.left - margin.right,
+            width = 465 - margin.left - margin.right,
             height = 450 - margin.top - margin.bottom;
 
         let pos = $(`#histogramPlot${id}`).position()
@@ -115,7 +115,7 @@ function HistogramAnalysis(config, bap) {
             histogram.select("#histogramSubTitle").append("text")
                 .text(`All Years for the Period ${years[0]} to ${years[years.length - 1]}`);
             startYear = years[0];
-            endYear = years[years.length-1];
+            endYear = years[years.length - 1];
 
             histogram.transition()
 
@@ -130,11 +130,11 @@ function HistogramAnalysis(config, bap) {
                 .classed("svg-content-responsive", true)
                 .attr("version", "1.1")
                 .attr("baseProfile", "full")
-                .attr("xmlns","http://www.w3.org/2000/svg")
+                .attr("xmlns", "http://www.w3.org/2000/svg")
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
-          
+
             svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
@@ -147,9 +147,9 @@ function HistogramAnalysis(config, bap) {
                 .call(yAxis)
 
 
-            let div =  histogram.select(`#histogramChart${id}`)
-                .append("div")	
-                .attr("class", "chartTooltip histogramToolTip")		
+            let div = histogram.select(`#histogramChart${id}`)
+                .append("div")
+                .attr("class", "chartTooltip histogramToolTip")
                 .style("opacity", 0)
                 .style("border", "3px solid rgb(56, 155, 198)");
 
@@ -163,21 +163,21 @@ function HistogramAnalysis(config, bap) {
                 .attr("width", width / (1 + (domain.xMax - domain.xMin)))
                 .attr("y", function (d) { return y(d.count); })
                 .attr("height", function (d) { return height - y(d.count); })
-                .on("mouseover", function(d) {
+                .on("mouseover", function (d) {
                     d3.select(this)
-                    .attr("fill", "rgb(45, 125, 159)");		
-                    div.transition()		
-                        .duration(200)		
-                        .style("opacity", .9);		
-                    div	.html(toolTipLabel(d, buk))	
-                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX + 10 : d3.event.layerX - 185  ) + "px")		
-                        .style("top", (d3.event.layerY) + "px");	
-                    })					
-                .on("mouseout", function(d) {
+                        .attr("fill", "rgb(45, 125, 159)");
+                    div.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    div.html(toolTipLabel(d, buk))
+                        .style("left", (d3.event.layerX < 300 ? d3.event.layerX + 10 : d3.event.layerX - 185) + "px")
+                        .style("top", (d3.event.layerY) + "px");
+                })
+                .on("mouseout", function (d) {
                     d3.select(this).attr("fill", "rgb(56, 155, 198)");
-                    div.transition()		
-                        .duration(500)		
-                        .style("opacity", 0);	
+                    div.transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 });
 
 
@@ -217,8 +217,8 @@ function HistogramAnalysis(config, bap) {
             // text label for the x axis
             svg.append("g")
                 .append("text")
-                .attr("y",  height + margin.bottom + margin.top - 5)
-                .attr("x", width/2)
+                .attr("y", height + margin.bottom + margin.top - 5)
+                .attr("x", width / 2)
                 .attr("fill", "rgb(0, 0, 0)")
                 .attr("font-size", "14px")
                 .style("text-anchor", "middle")
@@ -237,11 +237,11 @@ function HistogramAnalysis(config, bap) {
                 .style("text-anchor", "middle")
                 .text("Number of Grid Cells");
 
-           
+
 
         }
 
-      
+
         function type(d) {
             d.count = d.count;
             d.day = +d.day;
@@ -314,11 +314,11 @@ function HistogramAnalysis(config, bap) {
             return formatTime(new Date(date.setDate(day)));
         }
         function toolTipLabel(d, buk) {
-            var percentage = parseInt(parseInt(d.count)/parseInt(totalCount) * 100);
+            var percentage = parseInt(parseInt(d.count) / parseInt(totalCount) * 100);
             if (percentage < 1) {
-                percentage = '< 1' ;
+                percentage = '< 1';
             }
-            else{
+            else {
                 percentage = percentage.toString();
             }
 
@@ -327,7 +327,7 @@ function HistogramAnalysis(config, bap) {
                 return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
             }
             else {
-                return `<p> Days: <label> ${dateFromDay(2018, (d.day * buk) +1)} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
+                return `<p> Days: <label> ${dateFromDay(2018, (d.day * buk) + 1)} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
             }
         }
 
