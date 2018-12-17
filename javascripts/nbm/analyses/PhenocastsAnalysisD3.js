@@ -361,11 +361,9 @@ function PhenocastsAnalysisD3(config, bap) {
         data.reverse()
 
         let margin = { top: 20, right: 50, bottom: 35, left: 30 },
-            width = $(`#${id}`).width() - margin.left - margin.right,
+            width = 465 - margin.left - margin.right,
             height = 195 - margin.top - margin.bottom;
 
-        // fix, maybe the dom is not ready? 
-        if (width <= 0) width = 385
         var opacityHover = 1;
         var otherOpacityOnHover = .8;
 

@@ -61,7 +61,6 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
                     $(`#${bap.id}Chart`).find('#speciesTableTitle').html(`${viewData.speciesType} in ${currentPlaceName} (${viewData.totalSpecies})`)
 
                     initializeSpeciesCharts(chartData);
-                    updateSpeciesCharts();
                     $("input[name='taxaType']").on('change', function () {
                         currentSpeciesTaxaType = this.value;
                         currentSpeciesData = getSpeciesListForTaxaType();
@@ -278,8 +277,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
         r.transition()
         r.select(".svg-container-plot").remove()
 
-        let width = $(`#sp12chart`).width()
-        if (width <= 0) width = 385         // fix, maybe the dom is not ready? 
+        let width = 385
         let height = width
         let padding = 10
         let opacity = .8

@@ -412,13 +412,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
         data.columns = ["name", 'Gap Status 1 & 2', 'Gap Status 3', 'Gap Status 4']
 
         let margin = { top: 20, right: 20, bottom: 125, left: 60 },
-            width = $(`#EcoSysPlot${id}`).width() - margin.left - margin.right,
+            width = 385 - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
-
-
-        // fix, maybe the dom is not ready? 
-        if (width <= 0) width = 385
-
 
         let x = d3.scaleLinear().range([0, width]);
         let y = d3.scaleBand().range([height, 0]);
@@ -583,8 +578,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
 
 
-        let width = $(`#EcoSysPlot${id}`).width()
-        if (width <= 0) width = 385         // fix, maybe the dom is not ready? 
+        let width = 385
         let height = width
         let padding = 10
         let opacity = .8
@@ -871,8 +865,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
 
 
-        let width = $(`#EcoSysPlot${id}`).width() / 2
-        if (width <= 0) width = 385 / 2         // fix, maybe the dom is not ready? 
+        let width = 190
         let height = width
         let padding = 10
         let opacity = .8
