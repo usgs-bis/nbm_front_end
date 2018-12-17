@@ -94,6 +94,12 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
         try {
             var spRows = $('#spTable tbody').children();
             var spBody = this.getTableBody(spRows);
+            let updatedSpBody=[]
+            updatedSpBody.push([$('#speciesTableTitle').text()])
+            for(let row of spBody){
+                updatedSpBody.push([row[0]])
+            }
+
 
             let c, d, ctx
             let l = d3.select(`#sp12chart`)
@@ -150,12 +156,12 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
                     ]
                 }
             )
-            content.push({ text: $('#speciesTableTitle').text(), style: 'bapContent', margin: [0, 15, 0, 5], bold: true, alignment: 'center' })
+            //content.push({ text: $('#speciesTableTitle').text(), style: 'bapContent', margin: [0, 15, 0, 5], bold: true})
             content.push({
                 style: 'tableStyle',
                 table: {
                     headerRows: 1,
-                    body: spBody
+                    body: updatedSpBody
                 }
             })
 
