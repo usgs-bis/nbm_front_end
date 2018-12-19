@@ -528,17 +528,17 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             let g = ""
             if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 1 & 2']) > 0.01 ) {
                 p = parseFloat(d.data['Gap Status 1 & 2']).toFixed(2).toString() + "%"
-                v = d.data.status12_v + " arces"
+                v = d.data.status12_v + " acres"
                 g = "Gap Status 1 & 2"
             }
             else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 3']) > 0.01) {
                 p = parseFloat(d.data['Gap Status 3']).toFixed(2).toString() + "%"
-                v = d.data.status3_v + " arces"
+                v = d.data.status3_v + " acres"
                 g = "Gap Status 3"
             }
             else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 4']) > 0.01) {
                 p = parseFloat(d.data['Gap Status 4']).toFixed(2).toString() + "%"
-                v = d.data.status4_v + " arces"
+                v = d.data.status4_v + " acres"
                 g = "Gap Status 4"
             }
             return `<div"><div>${g}</div><div>${p}</div><div>${v}</div></div>`
