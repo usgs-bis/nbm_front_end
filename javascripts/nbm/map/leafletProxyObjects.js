@@ -62,7 +62,7 @@ var LeafletMapService = (function (leafletMapService){
         // }
         map = L.map('map', {
             maxBounds: bounds,
-            minZoom: 2
+            minZoom: 3
             // maxZoom: maxZoom
         });
 
@@ -86,6 +86,7 @@ var LeafletMapService = (function (leafletMapService){
                 updateUrlWithState();
             })
             .on('zoomend', function () {
+                console.log(map.getZoom())
                 map.getContainer().focus();
                 toggleLegendCullButton();
                 resetLegendCull();
