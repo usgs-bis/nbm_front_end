@@ -411,7 +411,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
         ]
         data.columns = ["name", 'Gap Status 1 & 2', 'Gap Status 3', 'Gap Status 4']
 
-        let margin = { top: 20, right: 20, bottom: 125, left: 60 },
+        let margin = { top: 20, right: 20, bottom: 125, left: 40 + (4 * placeName.length) },
             width = 385 - margin.left - margin.right,
             height = 300 - margin.top - margin.bottom;
 
@@ -478,8 +478,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .attr("x", function (d) { return x(d[0]); })
             .attr("width", function (d) { return x(d[1]) - x(d[0]); })
             .attr("height", y.bandwidth())
-            .style("stroke", "black")
-            .style("stroke-width", "1px")
+            .style("stroke", "rgb(204, 204, 204)")
+            .style("stroke-width", "0.5")
             .on("mouseover", function (d) {
                 tooltip.transition()
                     .duration(200)
@@ -513,8 +513,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .attr('width', legendRectSize)
             .attr('height', legendRectSize)
             .style('fill', z)
-            .style("stroke", "black")
-            .style("stroke-width", "1px");
+            .style("stroke", "rgb(204, 204, 204)")
+            .style("stroke-width", "0.5")
 
         legend.append('text')
             .attr('x', legendRectSize + legendSpacing)
@@ -526,19 +526,19 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             let p = ""
             let v = ""
             let g = ""
-            if (d && d[1] - d[0] == d.data['Gap Status 1 & 2']) {
+            if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 1 & 2']) > 0.01 ) {
                 p = parseFloat(d.data['Gap Status 1 & 2']).toFixed(2).toString() + "%"
-                v = d.data.status12_v + " acers"
+                v = d.data.status12_v + " arces"
                 g = "Gap Status 1 & 2"
             }
-            else if (d && d[1] - d[0] == d.data['Gap Status 3']) {
+            else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 3']) > 0.01) {
                 p = parseFloat(d.data['Gap Status 3']).toFixed(2).toString() + "%"
-                v = d.data.status3_v + " acers"
+                v = d.data.status3_v + " arces"
                 g = "Gap Status 3"
             }
-            else if (d && d[1] - d[0] == d.data['Gap Status 4']) {
+            else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 4']) > 0.01) {
                 p = parseFloat(d.data['Gap Status 4']).toFixed(2).toString() + "%"
-                v = d.data.status4_v + " acers"
+                v = d.data.status4_v + " arces"
                 g = "Gap Status 4"
             }
             return `<div"><div>${g}</div><div>${p}</div><div>${v}</div></div>`
