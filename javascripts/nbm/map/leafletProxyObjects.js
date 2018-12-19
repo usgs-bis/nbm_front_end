@@ -86,7 +86,6 @@ var LeafletMapService = (function (leafletMapService){
                 updateUrlWithState();
             })
             .on('zoomend', function () {
-                console.log(map.getZoom())
                 map.getContainer().focus();
                 toggleLegendCullButton();
                 resetLegendCull();
