@@ -381,7 +381,6 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
         let EcoBar = d3.select(`#EcoSysPlot${id}`)
 
-
         // Title
         EcoBar.select("#EcoSysBarChartTitle").append("text")
             .text(`Protection Status of ${placeName} Compared to the Continental United States`);
@@ -526,17 +525,17 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             let p = ""
             let v = ""
             let g = ""
-            if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 1 & 2']) > 0.01 ) {
+            if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 1 & 2']) < 0.01 ) {
                 p = parseFloat(d.data['Gap Status 1 & 2']).toFixed(2).toString() + "%"
                 v = d.data.status12_v + " acres"
                 g = "Gap Status 1 & 2"
             }
-            else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 3']) > 0.01) {
+            else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 3']) < 0.01) {
                 p = parseFloat(d.data['Gap Status 3']).toFixed(2).toString() + "%"
                 v = d.data.status3_v + " acres"
                 g = "Gap Status 3"
             }
-            else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 4']) > 0.01) {
+            else if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 4']) < 0.01) {
                 p = parseFloat(d.data['Gap Status 4']).toFixed(2).toString() + "%"
                 v = d.data.status4_v + " acres"
                 g = "Gap Status 4"
