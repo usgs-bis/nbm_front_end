@@ -483,7 +483,14 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
 
 
         function toolTipLabel(d) {
-            return `<div><div>${d.data.name}</div><div>${d.data.count} Species</div></div>`
+            return (
+                `
+<div style="font-weight: bold; font-size: 14px;">
+<div>${d.data.name}</div>
+<div>${d.data.count} Species</div>
+</div>
+`
+            )
         }
 
     }
