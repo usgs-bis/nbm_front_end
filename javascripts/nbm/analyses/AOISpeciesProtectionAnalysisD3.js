@@ -446,8 +446,8 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             .style('fill', function (d, i) {
                 return d.color
             })
-            .style("stroke", "black")
-            .style("stroke-width", "1px");
+            // .style("stroke", "black")
+            // .style("stroke-width", "1px");
 
         legendL.append('text')
             .attr('x', legendRectSize + legendSpacing)
@@ -472,8 +472,8 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             .style('fill', function (d, i) {
                 return d.color
             })
-            .style("stroke", "black")
-            .style("stroke-width", "1px");
+            // .style("stroke", "black")
+            // .style("stroke-width", "1px");
 
         legendR.append('text')
             .attr('x', legendRectSize + legendSpacing)

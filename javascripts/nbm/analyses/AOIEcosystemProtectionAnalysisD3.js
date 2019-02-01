@@ -740,8 +740,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .style('fill', function (d, i) {
                 return d.color
             })
-            .style("stroke", "black")
-            .style("stroke-width", "1px");
+        // .style("stroke", "black")
+        // .style("stroke-width", "1px");
 
         legendL.append('text')
             .attr('x', legendRectSize + legendSpacing)
@@ -766,8 +766,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .style('fill', function (d, i) {
                 return d.color
             })
-            .style("stroke", "black")
-            .style("stroke-width", "1px");
+        // .style("stroke", "black")
+        // .style("stroke-width", "1px");
 
         legendR.append('text')
             .attr('x', legendRectSize + legendSpacing)
@@ -872,7 +872,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
 
 
-        let width = 190
+        let width = 225
         let height = width
         let padding = 10
         let opacity = .8
@@ -889,25 +889,26 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .classed("svg-container-plot", true)
             .append("svg")
             .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + (width + 80) + " " + (height + 250))
+            .attr("viewBox", "0 0 " + (width + 80) + " " + (height + 285))
             .classed("svg-content-responsive", true)
             .attr("version", "1.1")
             .attr("baseProfile", "full")
             .attr("xmlns", "http://www.w3.org/2000/svg")
             .append("g")
-            .attr('transform', 'translate(' + ((width / 2) + 40) + ',' + ((height / 2) + 50) + ')');
+            .attr('transform', 'translate(' + ((width / 2) + 40) + ',' + ((height / 2) + 85) + ')');
 
 
-        var arc = d3.arc()
-            .innerRadius(radius * 0)
-            .outerRadius(radius * 0.7);
+        const arc = d3.arc()
+            .innerRadius(0)
+            .outerRadius(radius);
 
         var outerArc = d3.arc()
-            .outerRadius(radius * 0.8)
-            .innerRadius(radius * 0.8);
+            .outerRadius(radius * 1.2)
+            .innerRadius(radius * 1.2);
 
-        var pie = d3.pie()
-            .value(function (d) { return d.percent; })
+
+        const pie = d3.pie()
+            .value((d) => { return d.percent; })
             .sort(null);
 
         let tooltip = EcoPie.select(`#EcoSysCoveragePieChart`)
@@ -967,15 +968,15 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
                 // see label transform function for explanations of these three lines.
                 //var pos = outerArc.centroid(d);
                 //pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
-                const staggerAmt=[5,15,25,35,45,55,65,75,85]
+                const staggerAmt = [5, 15, 25, 35, 45, 55, 65, 75, 85]
                 let stagger = outerArc.centroid(d)
-                if(d.value < 3){
-                    stagger[1] = stagger[1] > 0 ? stagger[1] +  staggerAmt[labelCount%8] : stagger[1] -  staggerAmt[labelCount%8]
-                    labelCount ++
+                if (d.value < 3) {
+                    stagger[1] = stagger[1] > 0 ? stagger[1] + staggerAmt[labelCount % 8] : stagger[1] - staggerAmt[labelCount % 8]
+                    labelCount++
                 }
-                if(d.value < 0.1) return []
-                let finalPos = stagger[0] >= 0 ? [stagger[0] + 10,stagger[1]] : [stagger[0] -10,stagger[1]]
-                return [arc.centroid(d), stagger, finalPos] 
+                if (d.value < 0.1) return []
+                let finalPos = stagger[0] >= 0 ? [stagger[0] + 10, stagger[1]] : [stagger[0] - 10, stagger[1]]
+                return [arc.centroid(d), stagger, finalPos]
             })
             .style("opacity", `0.5`)
             .style("stroke", `black`)
@@ -989,26 +990,26 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .enter().append('text')
             .attr('dy', '.35em')
             .html(function (d) {
-                if(d.value < 0.1) return ''
+                if (d.value < 0.1) return ''
                 return (parseFloat(d.data.percent)).toFixed(2).toString() + '%';
             })
             .attr('transform', function (d) {
                 // var pos = outerArc.centroid(d);
                 // pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
-                const staggerAmt=[5,15,25,35,45,55,65,75,85]
+                const staggerAmt = [5, 15, 25, 35, 45, 55, 65, 75, 85]
                 let stagger = outerArc.centroid(d)
-                if(d.value < 3){
-                    stagger[1] = stagger[1] > 0 ? stagger[1] +  staggerAmt[labelCount%8] : stagger[1] -  staggerAmt[labelCount%8]
-                    labelCount ++
+                if (d.value < 3) {
+                    stagger[1] = stagger[1] > 0 ? stagger[1] + staggerAmt[labelCount % 8] : stagger[1] - staggerAmt[labelCount % 8]
+                    labelCount++
                 }
-                let finalPos = stagger[0] >= 0 ? [stagger[0] + 13,stagger[1]] : [stagger[0] -13,stagger[1]]
+                let finalPos = stagger[0] >= 0 ? [stagger[0] + 13, stagger[1]] : [stagger[0] - 13, stagger[1]]
 
                 return 'translate(' + finalPos + ')';
             })
             .style('text-anchor', function (d) {
                 return (midAngle(d)) < Math.PI ? 'start' : 'end';
             })
-            .style("font-size", `8px`);
+            .style("font-size", `9px`);
 
 
         var legendRectSize = 12;
@@ -1029,8 +1030,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .style('fill', function (d, i) {
                 return d.color
             })
-            // .style("stroke", "black")
-            // .style("stroke-width", "1px");
+        // .style("stroke", "black")
+        // .style("stroke-width", "1px");
 
         legend.append('text')
             .attr('x', legendRectSize + legendSpacing)
