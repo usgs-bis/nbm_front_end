@@ -25,7 +25,7 @@ td {
 }
 
 .table-fixed tbody {
-    height: 430px;
+    max-height: 430px;
     overflow-y: auto;
     width: 100%;
 }
@@ -300,6 +300,7 @@ select option {
 
 .spProtRadio {
     display: none;
+    margin:0px;
 }
 
 .spRow {
@@ -1266,9 +1267,20 @@ a.divHover:hover, a.divHover:visited, a.divHover:active {
 
 }
 
-.EcoSysPlot .axis path, .EcoSysPlot .axis line, .NFHPPlot .axis path, .NFHPPlot .axis line, .histogramPlot .axis path, .histogramPlot .axis line, .boxAndWhiskerPlot .axis path, .boxAndWhiskerPlot .axis line, .boxAndWhiskerPlot line, .boxAndWhiskerPlot rect {
+.EcoSysPlot .axis path, .EcoSysPlot .axis line, .NFHPPlot .axis path, .NFHPPlot .axis line, .histogramPlot .axis path, .histogramPlot .axis line, .boxAndWhiskerPlot .axis path, .boxAndWhiskerPlot .axis line, .boxAndWhiskerPlot line, .boxAndWhiskerPlot rect, .boxAndWhiskerPlot circle  {
     stroke: rgb(204, 204, 204);
 }
+.boxAndWhiskerPlot circle{
+    fill: rgb(204, 204, 204);
+}
+
+/* .EcoSysCoveragePieChart polyline{
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+} */
+
 .boxAndWhiskerMedianLine {
     stroke: red !important;
     fill: red !important;

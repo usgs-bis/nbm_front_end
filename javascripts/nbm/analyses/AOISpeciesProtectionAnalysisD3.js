@@ -537,6 +537,13 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
 
         var title = myList.length + " " + selected + " with " + displayString + " within " + chartName + " in " + currentPlaceName;
         updateTableTitle('speciesTableTitle', title, data.color, data.count);
+        if (data.name == '< 1%') {
+            $('#speciesTableTitle').css('background-color', 'rgb(255,255,255,0.7)')
+        }
+        else {
+            $('#speciesTableTitle').css('background-color', 'rgb(0,0,0,0.7)')
+
+        }
         if (!that.bap.priority) {
             $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
         }

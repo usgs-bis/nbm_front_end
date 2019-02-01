@@ -165,7 +165,7 @@ var ObisAnalysis = function (bapConfig, bap) {
                     .duration(500)
                     .style("opacity", 0);
             });
-
+c
         svg.append("g")
             .append("text")
             .attr("y", height + margin.bottom + margin.top)

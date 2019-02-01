@@ -286,16 +286,31 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
             // Prepare the data for the box plots
             var boxPlotData = [];
             for (var [key, groupCount] of Object.entries(dta)) {
+                let median = groupCount.length % 2 === 0 ? ((groupCount[(groupCount.length / 2) - 1] + groupCount[groupCount.length / 2]) / 2) : groupCount[Math.floor(groupCount.length / 2)]
 
-                var record = {};
-                var localMin = d3.min(groupCount);
-                var localMax = d3.max(groupCount);
+                let medianIndexLT = groupCount.length % 2 === 0 ? groupCount.length / 2 : Math.floor(groupCount.length / 2)
+                let q1_temp = groupCount.filter((g, i) => { return i > medianIndexLT })
+                let q1 = q1_temp.length % 2 === 0 ? ((q1_temp[(q1_temp.length / 2) - 1] + q1_temp[q1_temp.length / 2]) / 2) : q1_temp[Math.floor(q1_temp.length / 2)]
 
-                record["key"] = key;
-                record["counts"] = groupCount;
-                record["quartile"] = boxQuartiles(groupCount);
-                record["whiskers"] = [localMin, localMax];
+                let medianIndexGT = groupCount.length % 2 === 0 ? (groupCount.length / 2 - 1) : Math.floor(groupCount.length / 2)
+                let q3_temp = groupCount.filter((g, i) => { return i < medianIndexGT })
+                let q3 = q3_temp.length % 2 === 0 ? ((q3_temp[(q3_temp.length / 2) - 1] + q3_temp[q3_temp.length / 2]) / 2) : q3_temp[Math.floor(q3_temp.length / 2)]
 
+                let iqr = q3 - q1
+                let cleanData = groupCount.filter(g => { return g > q1 - (1.5 * iqr) && g < q3 + (1.5 * iqr) })
+                let outliers = groupCount.filter(g => { return g < q1 - (1.5 * iqr) || g > q3 + (1.5 * iqr) })
+                outliers = outliers.map(o=> {return {key:key,value:o}})
+
+                let record = {
+                    key: key,
+                    counts: groupCount,
+                    median: median,
+                    q1: q1,
+                    q3: q3,
+                    min: d3.min(cleanData),
+                    max: d3.max(cleanData),
+                    outliers: outliers
+                }
                 boxPlotData.push(record);
             }
 
@@ -362,7 +377,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 }
                 )
                 .attr("y1", function (datum) {
-                    var whisker = datum.whiskers[0];
+                    var whisker = datum.min;
                     return y(whisker);
                 }
                 )
@@ -371,7 +386,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 }
                 )
                 .attr("y2", function (datum) {
-                    var whisker = datum.whiskers[1];
+                    var whisker = datum.max;
                     return y(whisker);
                 }
                 )
@@ -393,8 +408,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 .append("rect")
                 .attr("width", barWidth)
                 .attr("height", function (datum) {
-                    var quartiles = datum.quartile;
-                    var height = y(quartiles[2]) - y(quartiles[0]);
+                    var height = y(datum.q1) - y(datum.q3);
                     return height;
                 }
                 )
@@ -403,7 +417,7 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 }
                 )
                 .attr("y", function (datum) {
-                    return y(datum.quartile[0]);
+                    return y(datum.q3);
                 }
                 )
                 .attr("fill", function (datum) {
@@ -459,17 +473,17 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 // Top whisker
                 {
                     x1: function (datum) { return x(datum.key) },
-                    y1: function (datum) { return y(datum.whiskers[0]) },
+                    y1: function (datum) { return y(datum.min) },
                     x2: function (datum) { return x(datum.key) + barWidth },
-                    y2: function (datum) { return y(datum.whiskers[0]) }
+                    y2: function (datum) { return y(datum.min) }
                 },
 
                 // Bottom whisker
                 {
                     x1: function (datum) { return x(datum.key) },
-                    y1: function (datum) { return y(datum.whiskers[1]) },
+                    y1: function (datum) { return y(datum.max) },
                     x2: function (datum) { return x(datum.key) + barWidth },
-                    y2: function (datum) { return y(datum.whiskers[1]) }
+                    y2: function (datum) { return y(datum.max) }
                 }
             ];
 
@@ -490,13 +504,29 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                     .attr("fill", "none");
             }
 
+            var outlier = g.selectAll(".whiskers")
+                .data(boxPlotData)
+                .enter()
+                .append('g')
+                .selectAll('circle')
+                .data(function (d) { return d.outliers; })
+                .enter()
+                .append("circle")
+                .attr("r", 2)
+                .attr("cx", function (d) {
+                    return x(d.key) + barWidth / 2
+                })
+                .attr("cy", function (d) {
+                    return y(d.value);
+                });
+
             // draw median line separate in red
             let median =
             {
                 x1: function (datum) { return x(datum.key) },
-                y1: function (datum) { return y(datum.quartile[1]) },
+                y1: function (datum) { return y(datum.median) },
                 x2: function (datum) { return x(datum.key) + barWidth },
-                y2: function (datum) { return y(datum.quartile[1]) }
+                y2: function (datum) { return y(datum.median) }
             }
             g.selectAll(".whiskers")
                 .data(boxPlotData)
@@ -511,25 +541,10 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
                 .attr("fill", "rgb(255, 0, 0)")
                 .attr("class", " boxAndWhiskerMedianLine");
 
-
-
-
-            function boxQuartiles(d) {
-                return [
-                    d3.quantile(d, .25),
-                    d3.quantile(d, .5),
-                    d3.quantile(d, .75)
-                ];
-            }
-
         }
 
 
-        function type(d) {
-            d.count = d.count;
-            d.day = +d.day;
-            return d;
-        }
+       
         function dateFromDay(year, day) {
             var date = new Date(year, 0);
             return formatTime(new Date(date.setDate(day)));
@@ -554,10 +569,10 @@ function BoxAndWhiskerAnalysisD3(config, bap) {
 
         function toolTipLabel(d, buk) {
             return "Year: <b>" + d.key + "</b><br>" +
-                "Mean: <b>" + dateFromDay(2018, bap.sharedData[d.key].mean, d.key) + "</b><br>" +
-                "Median: <b>" + dateFromDay(2018, bap.sharedData[d.key].median, d.key) + "</b><br>" +
-                "Minimum: <b>" + dateFromDay(2018, bap.sharedData[d.key].minimum, d.key) + "</b><br>" +
-                "Maximum: <b>" + dateFromDay(2018, bap.sharedData[d.key].maximum, d.key) + "</b><br>"
+                "Mean: <b>" + dateFromDay(d.key, bap.sharedData[d.key].mean) + "</b><br>" +
+                "Median: <b>" + dateFromDay(d.key, bap.sharedData[d.key].median) + "</b><br>" +
+                "Minimum: <b>" + dateFromDay(d.key, bap.sharedData[d.key].minimum) + "</b><br>" +
+                "Maximum: <b>" + dateFromDay(d.key, bap.sharedData[d.key].maximum) + "</b><br>"
         }
 
         let bucketSize = parseInt($(selector).find(".ridgeLinePlotRange").val());
