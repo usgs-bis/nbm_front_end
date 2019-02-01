@@ -662,7 +662,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .attr('d', arc)
             .attr('fill', function (d) { return d.data.color })
             .style('opacity', opacity)
-            .style('stroke', 'white')
+            //.style('stroke', 'white')
             .on("click", function (d) {
                 updateEcosTable(gap12title, d.data);
             })
@@ -697,7 +697,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .attr('d', arc)
             .attr('fill', function (d) { return d.data.color })
             .style('opacity', opacity)
-            .style('stroke', 'white')
+            //.style('stroke', 'white')
             .on("click", function (d) {
                 updateEcosTable(gap123title, d.data);
             })
