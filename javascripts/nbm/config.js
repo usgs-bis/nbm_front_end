@@ -12,6 +12,7 @@ if (myServer.indexOf("igskbac") !== -1) {
     myServer = "https://dev-api.sciencebase.gov/bcb";
     myEnv = "dev";
     BIS_API = "http://master.staging.sciencebase.gov/bis";
+    //BIS_API = "https://dev-api.sciencebase.gov/bis";
 } else if (myServer.indexOf("my-beta.usgs.gov") !== -1){
     myServer = "https://my-beta.usgs.gov/bcb";
     myEnv = "beta";
