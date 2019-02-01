@@ -577,9 +577,9 @@ function CompareAnalysis(config, bap) {
             return `
                 <b>${title}</b><br>
                 Year: <b>${d.key}</b><br>
-                Mean: <b>${dateFromDay(2018, d.values[idx].DOY)} </b><br>
-                Minimum: <b>${dateFromDay(2018, d.values[idx].min)} </b><br>
-                Maximum: <b>${dateFromDay(2018, d.values[idx].max)} </b><br>
+                Mean: <b>${dateFromDay(d.key, d.values[idx].DOY)} </b><br>
+                Minimum: <b>${dateFromDay(d.key, d.values[idx].min)} </b><br>
+                Maximum: <b>${dateFromDay(d.key, d.values[idx].max)} </b><br>
                 `
         }
 

@@ -322,12 +322,12 @@ function HistogramAnalysis(config, bap) {
                 percentage = percentage.toString();
             }
 
-            let count = `Number of Grid Cells: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Number of Grid Cells = values that occur ${dateFromDay(2018, (d.day * buk) + 1)} to ${dateFromDay(2018, (d.day * buk) + buk)} for all selected years (${startYear} to ${endYear}). <br />`
+            let count = `Number of Grid Cells: <label>${parseInt(d.count)} </label> of <label>${parseInt(totalCount)} </label> ( ~ ${percentage}%)<br />  Number of Grid Cells = values that occur ${dateFromDay(d.key, (d.day * buk) + 1)} to ${dateFromDay(d.key, (d.day * buk) + buk)} for all selected years (${startYear} to ${endYear}). <br />`
             if (buk == 1) {
-                return ` <p>  Day: <label> ${dateFromDay(2018, d.day)} </label><br />${count} </p>`
+                return ` <p>  Day: <label> ${dateFromDay(d.key, d.day)} </label><br />${count} </p>`
             }
             else {
-                return `<p> Days: <label> ${dateFromDay(2018, (d.day * buk) + 1)} </label> to <label> ${dateFromDay(2018, (d.day * buk) + buk)} </label><br />${count} </p>`
+                return `<p> Days: <label> ${dateFromDay(d.key, (d.day * buk) + 1)} </label> to <label> ${dateFromDay(d.key, (d.day * buk) + buk)} </label><br />${count} </p>`
             }
         }
 

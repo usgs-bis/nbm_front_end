@@ -525,7 +525,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             let p = ""
             let v = ""
             let g = ""
-            if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 1 & 2']) < 0.01 ) {
+            if (d && Math.abs(d[1] - d[0] - d.data['Gap Status 1 & 2']) < 0.01) {
                 p = parseFloat(d.data['Gap Status 1 & 2']).toFixed(2).toString() + "%"
                 v = d.data.status12_v + " acres"
                 g = "Gap Status 1 & 2"
@@ -817,7 +817,15 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
         var plural = myList.length == 1 ? '' : 's';
         var title = myList.length + " Ecological System" + plural + " with " + data.name + " protection on " + chartName + " Lands";
+
         updateTableTitle('ecosystemTableTitle', title, data.color, data.count);
+        if (data.name == '< 1%') {
+            $('#ecosystemTableTitle').css('background-color', 'rgb(255,255,255,0.7)')
+        }
+        else {
+            $('#ecosystemTableTitle').css('background-color', 'rgb(0,0,0,0.7)')
+
+        }
         if (!that.bap.priority) {
             $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
         }
@@ -881,18 +889,22 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .classed("svg-container-plot", true)
             .append("svg")
             .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + (width + 80) + " " + (height + 200))
+            .attr("viewBox", "0 0 " + (width + 80) + " " + (height + 250))
             .classed("svg-content-responsive", true)
             .attr("version", "1.1")
             .attr("baseProfile", "full")
             .attr("xmlns", "http://www.w3.org/2000/svg")
             .append("g")
-            .attr('transform', 'translate(' + ((width / 2) + 40) + ',' + (height / 2) + ')');
+            .attr('transform', 'translate(' + ((width / 2) + 40) + ',' + ((height / 2) + 50) + ')');
 
 
         var arc = d3.arc()
-            .innerRadius(0)
-            .outerRadius(radius);
+            .innerRadius(radius * 0)
+            .outerRadius(radius * 0.7);
+
+        var outerArc = d3.arc()
+            .outerRadius(radius * 0.8)
+            .innerRadius(radius * 0.8);
 
         var pie = d3.pie()
             .value(function (d) { return d.percent; })
@@ -912,11 +924,12 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .data(pie(ecosystem_coverage))
             .enter()
             .append("g")
+            .attr("class", "slice")
             .append('path')
             .attr('d', arc)
             .attr('fill', function (d) { return d.data.color })
             .style('opacity', opacity)
-            .style('stroke', 'white')
+            // .style('stroke', 'white')
             .on("mouseover", function (d) {
                 d3.selectAll('path')
                     .style("opacity", otherOpacityOnHover);
@@ -938,6 +951,66 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
             });
 
+        svg.append('g').classed('labels', true);
+        svg.append('g').classed('lines', true);
+
+
+        function midAngle(d) { return d.startAngle + (d.endAngle - d.startAngle) / 2; }
+
+        let labelCount = 1
+        var polyline = svg.select('.lines')
+            .selectAll('polyline')
+            .data(pie(ecosystem_coverage))
+            .enter().append('polyline')
+            .attr('points', function (d) {
+
+                // see label transform function for explanations of these three lines.
+                //var pos = outerArc.centroid(d);
+                //pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                const staggerAmt=[5,15,25,35,45,55,65,75,85]
+                let stagger = outerArc.centroid(d)
+                if(d.value < 3){
+                    stagger[1] = stagger[1] > 0 ? stagger[1] +  staggerAmt[labelCount%8] : stagger[1] -  staggerAmt[labelCount%8]
+                    labelCount ++
+                }
+                if(d.value < 0.1) return []
+                let finalPos = stagger[0] >= 0 ? [stagger[0] + 10,stagger[1]] : [stagger[0] -10,stagger[1]]
+                return [arc.centroid(d), stagger, finalPos] 
+            })
+            .style("opacity", `0.5`)
+            .style("stroke", `black`)
+            .style("stroke-width", `1px`)
+            .style("fill", `none`);
+
+
+        labelCount = 1
+        var label = svg.select('.labels').selectAll('text')
+            .data(pie(ecosystem_coverage))
+            .enter().append('text')
+            .attr('dy', '.35em')
+            .html(function (d) {
+                if(d.value < 0.1) return ''
+                return (parseFloat(d.data.percent)).toFixed(2).toString() + '%';
+            })
+            .attr('transform', function (d) {
+                // var pos = outerArc.centroid(d);
+                // pos[0] = radius * 0.95 * (midAngle(d) < Math.PI ? 1 : -1);
+                const staggerAmt=[5,15,25,35,45,55,65,75,85]
+                let stagger = outerArc.centroid(d)
+                if(d.value < 3){
+                    stagger[1] = stagger[1] > 0 ? stagger[1] +  staggerAmt[labelCount%8] : stagger[1] -  staggerAmt[labelCount%8]
+                    labelCount ++
+                }
+                let finalPos = stagger[0] >= 0 ? [stagger[0] + 13,stagger[1]] : [stagger[0] -13,stagger[1]]
+
+                return 'translate(' + finalPos + ')';
+            })
+            .style('text-anchor', function (d) {
+                return (midAngle(d)) < Math.PI ? 'start' : 'end';
+            })
+            .style("font-size", `8px`);
+
+
         var legendRectSize = 12;
         var legendSpacing = 4;
 
@@ -947,7 +1020,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .append('g')
             .attr('class', 'legend')
             .attr('transform', function (d, i) {
-                return 'translate(' + ((-1 * (width / 2)) -40 ) + ',' + (height / 2 + 20 + (15 * i)) + ')';
+                return 'translate(' + ((-1 * (width / 2)) - 40) + ',' + (height / 2 + 20 + (15 * i)) + ')';
             });
 
         legend.append('rect')
@@ -956,15 +1029,14 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .style('fill', function (d, i) {
                 return d.color
             })
-            .style("stroke", "black")
-            .style("stroke-width", "1px");
+            // .style("stroke", "black")
+            // .style("stroke-width", "1px");
 
         legend.append('text')
             .attr('x', legendRectSize + legendSpacing)
             .attr('y', legendRectSize - legendSpacing)
             .attr('font-size', 'smaller')
             .text(function (d) { return d.name; });
-
 
 
 

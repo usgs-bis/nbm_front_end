@@ -411,10 +411,10 @@ function SmoothPlotAnalysis(config, bap) {
 
         function toolTipLabel(d, buk) {
             return "Year: <b>" + d.key + "</b><br>" +
-                "Mean: <b>" + dateFromDay(2018, bap.sharedData[d.key].mean, d.key) + "</b><br>" +
-                "Median: <b>" + dateFromDay(2018, bap.sharedData[d.key].median, d.key) + "</b><br>" +
-                "Minimum: <b>" + dateFromDay(2018, bap.sharedData[d.key].minimum, d.key) + "</b><br>" +
-                "Maximum: <b>" + dateFromDay(2018, bap.sharedData[d.key].maximum, d.key) + "</b><br>"
+                "Mean: <b>" + dateFromDay(d.key, bap.sharedData[d.key].mean) + "</b><br>" +
+                "Median: <b>" + dateFromDay(d.key, bap.sharedData[d.key].median) + "</b><br>" +
+                "Minimum: <b>" + dateFromDay(d.key, bap.sharedData[d.key].minimum) + "</b><br>" +
+                "Maximum: <b>" + dateFromDay(d.key, bap.sharedData[d.key].maximum) + "</b><br>"
         }
 
         if (divId === "ridgeLinePlot") {
