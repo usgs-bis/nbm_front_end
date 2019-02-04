@@ -12,6 +12,9 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
         gap1_2: [],
         gap1_2_3: [],
     }
+    let sortDecending = true;
+    let viewData = null;
+
 
     const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -32,7 +35,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
                     if (!flag) return;
                     that.bap.rawJson = chartData
 
-                    let viewData = {
+                    viewData = {
                         ecosystems: chartData.ecological_systems
                     };
 
@@ -50,6 +53,8 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
                     $("#resetEcosTable").on('click', function () {
                         resetEcosTable();
                     });
+
+
                     resetEcosTable()
                 })
         }
@@ -806,10 +811,10 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             }
         }
 
-        var sorted = sortByPercent(myList);
+        //var sorted = sortByPercent(myList);
 
-        var viewData = {
-            ecosystems: sorted
+        viewData = {
+            ecosystems: myList
         };
         var helpers = { acresFormat: formatEcosAcresProtected, format: formatStatusPercentage };
         var html = getHtmlFromJsRenderTemplate('#updateEcosTableTemplate', viewData, helpers);
@@ -829,6 +834,29 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
         if (!that.bap.priority) {
             $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
         }
+
+        $("#ecosTable th").on('click', function (e) {
+            sortDecending = !sortDecending
+            if (e.currentTarget.innerText === 'Ecological System') {
+                chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+                if (sortDecending) {
+                    chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
+                }
+            }
+            else if (e.currentTarget.innerText === 'Acres Protected') {
+                chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.acres > b.acres) ? 1 : ((b.acres > a.acres) ? -1 : 0));
+                if (sortDecending) {
+                    chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.acres < b.acres) ? 1 : ((b.acres < a.acres) ? -1 : 0));
+                }
+            }
+            else if (e.currentTarget.innerText === '% Protected') {
+                chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a[gapStatusProperty] > b[gapStatusProperty]) ? 1 : ((b[gapStatusProperty] > a[gapStatusProperty]) ? -1 : 0));
+                if (sortDecending) {
+                    chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a[gapStatusProperty] < b[gapStatusProperty]) ? 1 : ((b[gapStatusProperty] < a[gapStatusProperty]) ? -1 : 0));
+                }
+            }
+            updateEcosTable(chartName, data)
+        })
     }
 
     /**
@@ -838,13 +866,36 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
         let ecosystems = chartData.ecological_systems
         $("#ecosReset").hide();
 
-        var viewData = {
+        viewData = {
             ecosystems: ecosystems
         };
         var helpers = { format: formatStatusPercentage };
         var html = getHtmlFromJsRenderTemplate('#ecosTableContainerTemplate', viewData, helpers);
 
         $(`#EcoSysProtectionTable`).html(html);
+
+        $("#ecosTable th").on('click', function (e) {
+            sortDecending = !sortDecending
+            if (e.currentTarget.innerText === 'Ecological System') {
+                chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+                if (sortDecending) {
+                    chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
+                }
+            }
+            else if (e.currentTarget.innerText === 'GAP 1 & 2 Protection (%)') {
+                chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.status_1_2 > b.status_1_2) ? 1 : ((b.status_1_2 > a.status_1_2) ? -1 : 0));
+                if (sortDecending) {
+                    chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.status_1_2 < b.status_1_2) ? 1 : ((b.status_1_2 < a.status_1_2) ? -1 : 0));
+                }
+            }
+            else if (e.currentTarget.innerText === 'GAP 1, 2 & 3 Protection (%)') {
+                chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.status_1_2_3 > b.status_1_2_3) ? 1 : ((b.status_1_2_3 > a.status_1_2_3) ? -1 : 0));
+                if (sortDecending) {
+                    chartData.ecological_systems = chartData.ecological_systems.sort((a, b) => (a.status_1_2_3 < b.status_1_2_3) ? 1 : ((b.status_1_2_3 < a.status_1_2_3) ? -1 : 0));
+                }
+            }
+            resetEcosTable()
+        })
     }
 
     /**

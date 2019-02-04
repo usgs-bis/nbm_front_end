@@ -16,7 +16,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
     };
     let Specieslayer = []
     var currentPlaceName
-
+    let sortDecending = true
 
     const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -80,6 +80,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
                     $("#spNameCheckbox").on('click', function () {
                         toggleSpeciesName(this);
                     });
+                    resetSpeciesTable();
 
                     that.togglePriority(bap.priority)
                 })
@@ -519,10 +520,10 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             }
         }
 
-        var sorted = sortByPercent(myList);
+        //var sorted = sortByPercent(myList);
 
         var viewData = {
-            species: sorted
+            species: myList
         };
         var helpers = { format: formatStatusPercentage, formatName: escapeSingleQuotesInString };
         var html = getHtmlFromJsRenderTemplate('#updateSpeciesProtectionTableTemplate', viewData, helpers);
@@ -547,6 +548,23 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
         if (!that.bap.priority) {
             $(`#${that.bap.id}BapCase #priorityBap${that.bap.id}`).click()
         }
+
+        $("#spTable th").on('click', function (e) {
+            sortDecending = !sortDecending
+            if (e.currentTarget.innerText === 'Common Name') {
+                currentSpeciesData = currentSpeciesData.sort((a, b) => (a.common_name > b.common_name) ? 1 : ((b.common_name > a.common_name) ? -1 : 0));
+                if (sortDecending) {
+                    currentSpeciesData = currentSpeciesData.sort((a, b) => (a.common_name < b.common_name) ? 1 : ((b.common_name < a.common_name) ? -1 : 0));
+                }
+            }
+            if (e.currentTarget.innerText === '% Protected') {
+                currentSpeciesData = currentSpeciesData.sort((a, b) => (a[gapStatusProperty] > b[gapStatusProperty]) ? 1 : ((b[gapStatusProperty] > a[gapStatusProperty]) ? -1 : 0));
+                if (sortDecending) {
+                    currentSpeciesData = currentSpeciesData.sort((a, b) => (a[gapStatusProperty] < b[gapStatusProperty]) ? 1 : ((b[gapStatusProperty] < a[gapStatusProperty]) ? -1 : 0));
+                }
+            }
+            updateSpeciesTable(chartName, data)
+        })
     }
 
     /**
@@ -581,6 +599,18 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
         toggleLayerOffGeneric('Habitat Map', true);
         $("#speciesTableContainer").html(html);
         $(".spProtRadio").show();
+
+        $("#spTable th").on('click', function (e) {
+
+            sortDecending = !sortDecending
+            if (e.currentTarget.innerText === 'Species Name') {
+                currentSpeciesData = currentSpeciesData.sort((a, b) => (a.common_name > b.common_name) ? 1 : ((b.common_name > a.common_name) ? -1 : 0));
+                if (sortDecending) {
+                    currentSpeciesData = currentSpeciesData.sort((a, b) => (a.common_name < b.common_name) ? 1 : ((b.common_name < a.common_name) ? -1 : 0));
+                }
+            }
+            resetSpeciesTable()
+        })
     }
 
     this.togglePriority = function (priority) {
