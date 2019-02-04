@@ -16,7 +16,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
     };
     let Specieslayer = []
     var currentPlaceName
-    let sortDecending = true
+    let sortDecending = false
 
     const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -42,7 +42,8 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             this.getSpeciesProtection(poi.selectedId)
                 .then(function (data) {
                     chartData = data
-                    currentSpeciesData = data.species.all
+                    currentSpeciesData = data.species.all.sort((a, b) => (a.common_name > b.common_name) ? 1 : ((b.common_name > a.common_name) ? -1 : 0));
+
                     that.bap.rawJson = chartData
 
                     var viewData = {

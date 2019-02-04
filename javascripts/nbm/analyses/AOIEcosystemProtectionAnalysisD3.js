@@ -12,7 +12,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
         gap1_2: [],
         gap1_2_3: [],
     }
-    let sortDecending = true;
+    let sortDecending = false;
     let viewData = null;
 
 
@@ -36,7 +36,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
                     that.bap.rawJson = chartData
 
                     viewData = {
-                        ecosystems: chartData.ecological_systems
+                        ecosystems: chartData.ecological_systems.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
                     };
 
 
