@@ -501,7 +501,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
 
             })
 
-        var legendRectSize = 18;
+        var legendRectSize = 15;
         var legendSpacing = 4;
 
         var legend = svg.selectAll('.legend')
@@ -510,7 +510,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .append('g')
             .attr('class', 'legend')
             .attr('transform', function (d, i) {
-                return 'translate(' + 0 + ',' + (height + 40 + (25 * i)) + ')';
+                return 'translate(' + 0 + ',' + (height + 40 + (20 * i)) + ')';
             });
 
         legend.append('rect')
@@ -736,7 +736,7 @@ var AOIEcosystemProtectionAnalysisD3 = function (bapConfig, bap) {
             .append('g')
             .attr('class', 'legend')
             .attr('transform', function (d, i) {
-                return 'translate(' + (-1 * (width / 4)) + ',' + (height / 2 + 25 + (35 * i)) + ')';
+                return 'translate(' + (-1 * (width / 4)) + ',' + (height / 2 + 25 + (35 * i)) + ')'; 
             });
 
         legendL.append('rect')

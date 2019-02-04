@@ -309,7 +309,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             .classed("svg-container-plot", true)
             .append("svg")
             .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + width + " " + (height + 150))
+            .attr("viewBox", "0 0 " + width + " " + (height + 250))
             .classed("svg-content-responsive", true)
             .attr("version", "1.1")
             .attr("baseProfile", "full")
@@ -323,7 +323,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             .classed("svg-container-plot", true)
             .append("svg")
             .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + width + " " + (height + 150))
+            .attr("viewBox", "0 0 " + width + " " + (height + 250))
             .classed("svg-content-responsive", true)
             .attr("version", "1.1")
             .attr("baseProfile", "full")
@@ -430,8 +430,8 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
 
             });
 
-        var legendRectSize = 18;
-        var legendSpacing = 4;
+            var legendRectSize = 30;
+            var legendSpacing = 10;
 
         var legendL = svgLeft.selectAll('.legend')
             .data(chartData.status_1_2)
@@ -439,7 +439,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             .append('g')
             .attr('class', 'legend')
             .attr('transform', function (d, i) {
-                return 'translate(' + (-1 * (width / 4)) + ',' + (height / 2 + 20 + (22 * i)) + ')';
+                return 'translate(' + (-1 * (width / 4)) + ',' + (height / 2 + 25 + (35 * i)) + ')';
             });
 
         legendL.append('rect')
@@ -454,7 +454,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
         legendL.append('text')
             .attr('x', legendRectSize + legendSpacing)
             .attr('y', legendRectSize - legendSpacing)
-            .attr('font-size', 'small')
+            .attr('font-size', 'x-large')
             .text(function (d) { return d.name; });
 
 
@@ -465,7 +465,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
             .append('g')
             .attr('class', 'legend')
             .attr('transform', function (d, i) {
-                return 'translate(' + (-1 * (width / 4)) + ',' + (height / 2 + 25 + (22 * i)) + ')';
+                return 'translate(' + (-1 * (width / 4)) + ',' + (height / 2 + 25 + (35 * i)) + ')';
             });
 
         legendR.append('rect')
@@ -480,7 +480,7 @@ var AOISpeciesProtectionAnalysisD3 = function (bapConfig, bap) {
         legendR.append('text')
             .attr('x', legendRectSize + legendSpacing)
             .attr('y', legendRectSize - legendSpacing)
-            .attr('font-size', 'small')
+            .attr('font-size', 'x-large')
             .text(function (d) { return d.name; });
 
 
